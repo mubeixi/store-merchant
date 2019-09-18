@@ -1,0 +1,16 @@
+export const PLUGINSLIST = [
+  { label: 'xxxx', value: '图文导航', icon: 'icongongdanguanli' },
+  { label: 'xxxx', value: '图片广告', icon: 'icongongdanguanli' },
+  { label: 'xxxx', value: '分类商品', icon: 'icongongdanguanli' },
+  { label: 'xxxx', value: '商品列表', icon: 'icongongdanguanli' },
+  { label: 'xxxx', value: '图片混排', icon: 'icongongdanguanli' },
+  { label: 'xxxx', value: '优惠券', icon: 'icongongdanguanli' },
+  { label: 'xxxx', value: '店铺信息', icon: 'icongongdanguanli' },
+  { label: 'xxxx', value: '公告', icon: 'icongongdanguanli' },
+  { label: 'xxxx', value: '搜索', icon: 'icongongdanguanli' },
+  { label: 'xxxx', value: '视频', icon: 'icongongdanguanli' },
+  { label: 'xxxx', value: '辅助间隙', icon: 'icongongdanguanli' },
+  { label: 'xxxx', value: '标题', icon: 'icongongdanguanli' },
+  { label: 'xxxx', value: '文本', icon: 'icongongdanguanli' },
+  { label: 'hr', value: '辅助线', icon: 'icongongdanguanli' },
+]

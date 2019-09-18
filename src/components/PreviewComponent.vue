@@ -1,0 +1,411 @@
+<template>
+  <div>
+    <div class="canvasBox" @drop="dropEv"  @dragover.prevent>
+      <div class="canvas" id="canvas"  @setData="setDataEv">
+        <section
+          :ref="item | dragSorts"
+          v-for="(item, index) in templateList[templateEditIndex]"
+          :key="index"
+          class="section"
+          :class="setClass(item)"
+          :data-name="item"
+          @mousedown="activeStatus($event, index, item)"
+          @contextmenu.stop.prevent="contextmenuRightEv($event, item, index)"
+        >
+<!--          <div class="sortStatus" v-show="sort.sortIndex === index || index === templateList[templateEditIndex].length"></div>-->
+
+<!--          <my-scale-->
+<!--            ref="plugin"-->
+<!--            class="scale"-->
+<!--            v-if="item.indexOf('scale') !== -1"-->
+<!--            @setData="setDataEv"-->
+<!--            :index="index"-->
+<!--            :data="templateData[templateEditIndex][index]"-->
+<!--            draggable="true"-->
+<!--          />-->
+
+
+<!--          <my-img-->
+<!--            ref="plugin"-->
+<!--            class="image"-->
+<!--            v-if="item.indexOf('img') !== -1"-->
+<!--            @setData="setDataEv"-->
+<!--            :data="templateData[templateEditIndex][index]"-->
+<!--            :index="index"-->
+<!--            draggable="true"-->
+<!--          />-->
+<!--          <my-input-->
+<!--            ref="plugin"-->
+<!--            v-if="item.indexOf('input') !== -1"-->
+<!--            @setData="setDataEv"-->
+<!--            :data="templateData[templateEditIndex][index]"-->
+<!--            :index="index"-->
+<!--            draggable="true"-->
+<!--          />-->
+
+<!--          <menu-nav-->
+<!--            ref="plugin"-->
+<!--            v-if="item.indexOf('nav') !== -1"-->
+<!--            @setData="setDataEv"-->
+<!--            draggable="true"-->
+<!--            :data="templateData[templateEditIndex][index]"-->
+<!--            :index="index"-->
+<!--          />-->
+<!--          <list-->
+<!--            ref="plugin"-->
+<!--            v-if="item.indexOf('list') !== -1"-->
+<!--            @setData="setDataEv"-->
+<!--            draggable="true"-->
+<!--            :data="templateData[templateEditIndex][index]"-->
+<!--            :index="index"-->
+<!--          />-->
+<!--          <swiper-->
+<!--            ref="plugin"-->
+<!--            v-if="item.indexOf('swiper') !== -1"-->
+<!--            @setData="setDataEv"-->
+<!--            :draggable="true"-->
+<!--            :data="templateData[templateEditIndex][index]"-->
+<!--            :index="index"-->
+<!--          />-->
+
+          <hr-component
+            ref="plugin"
+            v-if="item.indexOf('hr') !== -1"
+            @setData="setDataEv"
+            :draggable="true"
+            :data="templateData[templateEditIndex][index]"
+            :index="index"
+          />
+<!--              <space-component-->
+<!--                ref="plugin"-->
+<!--                v-if="item.indexOf('space') !== -1"-->
+<!--                @setData="setDataEv"-->
+<!--                :draggable="true"-->
+<!--                :data="templateData[templateEditIndex][index]"-->
+<!--                :index="index"-->
+<!--              />-->
+
+
+
+
+          <div class="sortStatus" v-show="sort.sortIndex === templateList[templateEditIndex].length && index + 1 === templateList[templateEditIndex].length"></div>
+
+        </section>
+
+        <div class="removeModal" ref="removeModal" v-show="removePosition.show">
+          <!-- <h4>您确定要删除 {{ currentData.name }} 组件吗？</h4> -->
+          <h4>您确定要删除这个组件吗？</h4>
+          <p>
+            <input
+              type="button"
+              value="确定"
+              class="ok"
+              @click="removeTemplate"
+            />
+            <input
+              type="button"
+              value="取消"
+              class="on"
+              @click="removePosition.show = false"
+            />
+          </p>
+        </div>
+        <ul
+          class="contextmenuRight"
+          ref="rightMenu"
+          @mousedown.stop="hideRightMenu"
+        >
+          <li class="menuList" type="showRemovePrompt">
+            删除
+          </li>
+          <!-- <li class="menuList" type="reload">
+            重新加载
+          </li>
+          <li class="menuList" type="go">
+            前进
+          </li>
+          <li class="menuList" type="back">
+            返回
+          </li> -->
+        </ul>
+        <div class="editActiveStatus" :style="editData" ref="editActiveEl">
+          <div class="arc topleft"></div>
+          <div class="arc topmiddle"></div>
+          <div class="arc topright"></div>
+          <div class="arc middleleft"></div>
+          <div class="arc middleright"></div>
+          <div class="arc bottomleft"></div>
+          <div class="arc bottommiddle"></div>
+          <div class="arc bottomright"></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="handle text-center">
+      <el-button type="primary">保存</el-button>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import { State, Action, Getter } from 'vuex-class';
+
+import SpaceComponent from '@/components/diy/SpaceComponent';
+import HrComponent from "@/components/diy/HrComponent.vue";
+
+import {deepCopy,getStyle} from "@/common/utils";
+import Hr from "@/assets/js/diy/hr";
+import {pageMove} from "@/common/utils";
+
+@Component({
+    props: {
+
+    },
+    watch:{
+
+    },
+    components: {
+        SpaceComponent,
+        HrComponent
+    },
+    filters: {
+        dragSorts(val) {
+            let dragSort = ['nav', 'list', 'swiper', 'input']
+            if (dragSort.indexOf(val) === -1) return ''
+            return 'allTemplate'
+        }
+    },
+    methods:{
+        setDataEv(data) {
+            //this.$emit('setData', data)
+        },
+        activeStatus(e, index, item) {
+
+            this.sort.downIndex = index
+            var currentEl = e.currentTarget
+            let config = {
+                width: getStyle(currentEl, 'width'),
+                height: getStyle(currentEl, 'height'),
+                left: currentEl.offsetLeft + 'px',
+                top: currentEl.offsetTop + 'px',
+                display: 'block'
+            }
+
+            //方便删除的
+            this.currentData.index = index
+            this.currentData.name = item
+            this.editData = config
+        },
+        contextmenuRightEv(e, item, index) {
+            this.$refs.rightMenu.style.display = 'block'
+            this.$refs.rightMenu.style.left = e.clientX + 'px'
+            this.$refs.rightMenu.style.top = e.clientY + 'px'
+
+            this.removePosition.x = e.clientX
+            this.removePosition.y = e.clientY
+
+            this.currentData.index = index
+            this.currentData.name = item
+
+            this.removePosition.show = false
+        },
+        removeTemplate() {
+            this.deleteItem(this.currentData.index, this.currentData.name)
+
+            this.removePosition.show = false
+
+            this.$emit('setData', [])
+            // console.log(this)
+        },
+        deleteItem(index, name) {
+            this.templateList[this.templateEditIndex].splice(index, 1)
+            this.templateData[this.templateEditIndex].splice(index, 1)
+
+            //用心良苦啊,删除的时候还要保留这个页面，确实比较符合需要
+            if (name.substring(0, 9) === 'switchNav') {
+                //删除导航及其他页面
+                this.templateData = [this.templateData[this.templateEditIndex]]
+                this.templateList = [this.templateList[this.templateEditIndex]]
+                ActiveAttrObj.tabIndex = 0
+            }
+            this.$Message.info(`删除成功！`)
+            this.editData.display = 'none'
+        },
+        hideRightMenu(e) {
+            let type = e.target.getAttribute('type')
+            this.$refs.rightMenu.style.display = 'none'
+            this[type]()
+        },
+    }
+})
+
+export default class PreviewComponent extends Vue {
+    @State attrData: attrData;
+    @State editStatus: editStatus;
+
+
+
+
+    dragMove =  ['input']
+    sort = {
+        downIndex: -1,
+        sortIndex: -1
+    }
+
+    editData = {
+        display: 'none'
+    }
+
+
+    currentData = {
+        index: -1,
+        name: ''
+    }
+
+    removePosition =  {
+        show: false
+    }
+
+
+    templateData = []
+    templateList = []
+    templateEditIndex = 0
+    pageTemplateName = ''
+    computed = {
+
+    }
+    $fun: any;
+
+
+    setDataEv(){}
+
+    setClass(className) {
+        if (typeof className == 'undefined') return ''
+        className = className.replace(/[0-9]?/g, '')
+        return this.dragMove.map(v => {
+            if (v === className) {
+                return 'dragMove ' + className
+            } else {
+                return className
+            }
+        })
+    }
+
+
+    dropEv(e: any) {
+
+        const templateName = e.dataTransfer.getData('text/plain')
+        console.log(templateName)
+        if (templateName === '') return //在页面内拖动时，无需添加组件
+
+        //如果是switchNav组件，特殊操作。虽然我也不知道为什么要这样
+        //因为没有swtichNav的时候，只有一个页面，所以是一个二维数组（最外层键名为0，所有数据都在子数组中按组件顺序存下来），但是有switchNav之后，二维数组长度会变化（多个页面），所以需要特殊处理下。
+        let newClass = {}
+        // //console.log(templateName)
+        switch (templateName) {
+            case 'hr':
+                newClass = new Hr()
+                break
+            // case 'nav':
+            //     newClass = new NavJS()
+            //     break
+            // case 'swiper':
+            //     newClass = new BannerJS()
+            //     break
+            // case 'input':
+            //     newClass = new InputJS()
+            //     break
+            // case 'scale':
+            //     newClass = new ScaleJS()
+            //     break
+            default:
+                this.$fun.error('组件不存在')
+                break;
+        }
+
+        //
+        // //这里面的数据，会跟踪吗
+        //
+        if (!Array.isArray(this.templateData[this.templateEditIndex])) {
+            this.$set(this.templateData, this.templateEditIndex, [])
+        }
+
+        this.templateData[this.templateEditIndex].push(
+            deepCopy({}, newClass)
+        )
+
+        if (!Array.isArray(this.templateList[this.templateEditIndex])) {
+            this.$set(this.templateList, this.templateEditIndex, [])
+        }
+        // this.templateList[this.templateEditIndex].push(templateName)
+        this.templateList[this.templateEditIndex].push(
+            templateName + this.templateList[this.templateEditIndex].length
+        )
+
+        // //this.refreshAttrFun();//需要模拟点击一下。
+        //
+        //
+        // //这里是用来模拟点击的
+        setTimeout(() => {
+
+            let lastIndex = this.templateList[this.templateEditIndex].length - 1
+
+            let dragEl = document.querySelectorAll('.canvas > section')[lastIndex].getElementsByClassName(`${templateName}`)[0]
+
+            console.log(dragEl)
+            if (!dragEl) return
+
+            //模拟点击
+            dragEl.click()
+            //pageMove.init('sort', this, () => console.log(22222))
+
+            //每次页面都会重排一次，可能是因为这里导致拖拽切换导航的时候，页面其他元素不显示了。
+            //始终把 tabbar 放到最后
+            //this.tabbarLast()
+        }, 0)
+
+    }
+
+}
+
+
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped lang="stylus">
+.canvasBox
+  height 667px
+  overflow-x hidden
+  overflow-y auto
+  border 1px dashed #bcbcbc
+.canvas
+  height 100%
+.handle
+  margin-top 80px
+
+
+
+.contextmenuRight {
+  display: none;
+  overflow: hidden; /*隐藏溢出的元素*/
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  position: fixed; /*自定义菜单相对与body元素进行定位*/
+  background-color: white;
+  z-index: 21;
+  // padding: 10px 0;
+  border: 1px solid #e6e6e6;
+  font-size: 14px;
+}
+
+.menuList {
+  width: 130px;
+  line-height: 36px;
+  padding: 0 20px;
+  cursor: default;
+
+  &:hover {
+    background-color: #e6e6e6;
+  }
+}
+</style>
