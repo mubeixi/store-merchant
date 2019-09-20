@@ -28,3 +28,6 @@ export const tabIndex = function (state: any, value: any) {
   state.tabIndex = value
 };
 
+// export const eTitle = function (state: any, value: any) {
+//   state.eTitle = value
+// };

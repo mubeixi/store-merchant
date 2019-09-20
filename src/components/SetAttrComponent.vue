@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="title" style=""><div class="leftText">{{eTitle}}</div></div>
+    <div class="title" style="" v-show="eTitle"><div  class="leftText">{{eTitle}}</div></div>
     <el-form ref="form" :model="form" label-width="80px">
       <el-form-item inline-message
                     class="formitem"
@@ -75,7 +75,7 @@ import BindLinkComponents from '@/components/BindLinkComponents'
 @Component({
     components:{BindLink:BindLinkComponents},
     props:{
-        eTitle:{type:String, default:'属性设置'}
+        // eTitle:{type:String, default:'属性设置'}
     },
     data(){
       return {
@@ -185,6 +185,9 @@ import BindLinkComponents from '@/components/BindLinkComponents'
         ...mapActions(['setActiveAttr'])
     },
     computed:{
+        eTitle(){
+            return this.$store.state.activeAttr.attrData.title?this.$store.state.activeAttr.attrData.title:''
+        },
         activeAttr:{
             get(){
                 return this.$store.state.activeAttr
