@@ -67,7 +67,14 @@
 <!--            :data="templateData[templateEditIndex][index]"-->
 <!--            :index="index"-->
 <!--          />-->
-
+          <text-component
+            ref="plugin"
+            v-if="item.indexOf('text') !== -1"
+            @setData="setDataEv"
+            :draggable="true"
+            :data="templateData[templateEditIndex][index]"
+            :index="index"
+          />
           <hr-component
             ref="plugin"
             v-if="item.indexOf('hr') !== -1"
@@ -153,9 +160,11 @@ import { State, Action, Getter } from 'vuex-class';
 import {mapState,mapActions} from "vuex";
 import SpaceComponent from '@/components/diy/SpaceComponent';
 import HrComponent from "@/components/diy/HrComponent.vue";
+import TextComponent from "@/components/diy/TextComponent.vue";
 
 import {deepCopy,getStyle} from "@/common/utils";
 import Hr from "@/assets/js/diy/hr";
+import Text from "@/assets/js/diy/text"
 import {pageMove} from "@/common/utils";
 
 @Component({
@@ -181,7 +190,7 @@ import {pageMove} from "@/common/utils";
     },
     components: {
         SpaceComponent,
-        HrComponent
+        HrComponent,TextComponent
     },
     filters: {
         dragSorts(val) {
@@ -329,7 +338,10 @@ export default class PreviewComponent extends Vue {
         switch (templateName) {
             case 'hr':
                 newClass = new Hr()
-                break
+                break;
+            case 'text':
+                newClass = new Text()
+                break;
             // case 'nav':
             //     newClass = new NavJS()
             //     break
@@ -373,7 +385,7 @@ export default class PreviewComponent extends Vue {
         setTimeout(() => {
 
             let lastIndex = this.templateList[this.templateEditIndex].length - 1
-
+            console.log(lastIndex)
             let dragEl = document.querySelectorAll('.canvas > section')[lastIndex].getElementsByClassName(`${templateName}`)[0]
 
             console.log(dragEl)

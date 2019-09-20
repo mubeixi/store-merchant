@@ -11,6 +11,6 @@ export const PLUGINSLIST = [
   { label: 'xxxx', value: '视频', icon: 'icongongdanguanli' },
   { label: 'xxxx', value: '辅助间隙', icon: 'icongongdanguanli' },
   { label: 'xxxx', value: '标题', icon: 'icongongdanguanli' },
-  { label: 'xxxx', value: '文本', icon: 'icongongdanguanli' },
+  { label: 'text', value: '文本', icon: 'icongongdanguanli' },
   { label: 'hr', value: '辅助线', icon: 'icongongdanguanli' },
 ]

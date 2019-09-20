@@ -58,6 +58,7 @@ function setAttrData() {
       {
         type: 'input',
         text: '线高度',
+        inputType:'number',
         editType: 'style',
         editKey: 'height',
         model: this.style.height,
@@ -65,6 +66,7 @@ function setAttrData() {
 
       {
         type: 'input',
+        inputType:'number',
         text: '上下间距',
         editType: 'style',
         editKey: 'margin',
@@ -91,7 +93,7 @@ function attrData(options = {}) {
 class Hr extends Common{
 
 
-  tag = 'space';
+  tag = 'hr';
   //activeIndex = 0;
 
   style = {

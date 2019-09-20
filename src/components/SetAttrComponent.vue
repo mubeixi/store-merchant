@@ -18,12 +18,18 @@
                   @input='change(item)'
                   :type='item.inputType'></el-input>
 
-        <el-tooltip v-if="showPage(item) === 'array'" class="item rightBtn" effect="dark"
-                    :content="activeItem[item.index].tooltip | pageTooltip" placement="right">
-          <el-button v-if="!activeItem[item.index].tooltip" @click.prevent="selectPageShow = true">选择页面
+
+
+<!--        activeItem[item.index].tooltip | pageTooltip-->
+        <el-tooltip v-if="item.type === 'setlink'" class="item rightBtn" effect="dark"
+                    :content="''| pageTooltip" placement="right">
+<!--          v-if="0&&!activeItem[item.index].tooltip"-->
+          <el-button v-if="0"  @click.prevent="selectPageShow = true">选择页面
           </el-button>
           <el-button v-else icon="el-icon-check" @click.prevent="selectPageShow = true">选择页面</el-button>
         </el-tooltip>
+
+<!--        <bind-link v-model="selectPageShow" :checkedIndex='pageChecked' :data='currentData.customizeObject' @change='selectPagePath' />-->
 
         <el-button v-if="item.removeBtn" class="rightBtn" @click.prevent="removeInput(item, index)"
                    icon='el-icon-minus'></el-button>
@@ -64,18 +70,26 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
 import {mapActions,mapState} from "vuex";
-
+import BindLinkComponents from '@/components/BindLinkComponents'
 //没有继承，是依靠vuex的数据。也不碍事啊
 @Component({
+    components:{BindLink:BindLinkComponents},
     props:{
         eTitle:{type:String, default:'属性设置'}
     },
     data(){
       return {
-          currentData:null,
+          selectPageShow:false,
+          currentData:{},
           clickObj:{},
           color1:null
       }
+    },
+    filters: {
+        pageTooltip(str) {
+            if (str) return str;
+            return '选择的链接将会显示在这里'
+        }
     },
     methods:{
         radioChange(radio, item) {
@@ -91,7 +105,7 @@ import {mapActions,mapState} from "vuex";
             console.log(item)
             console.log('修改类别是'+item.editType+'修改字段是'+item.editKey)
 
-            if (item.editType && (item.editType === 'style' || item.editType === 'config')) {
+            if (item.editType && (item.editType === 'style' || item.editType === 'config' || item.editType === 'value')) {
 
                 if (!this.activeAttr[item.editType]){
                     this.activeAttr.activeAttr[item.editType] = {}
@@ -187,6 +201,7 @@ export default class SetAttrComponent extends Vue {
 
 
   form = {
+
       name: '',
       region: '',
       date1: '',
@@ -196,6 +211,48 @@ export default class SetAttrComponent extends Vue {
       resource: '',
       desc: ''
   }
+
+    pageChecked() {
+        // debugger
+        // if (Object.keys(this.currentData).length === 0) return undefined;
+        // let index = this.currentData.index;
+        // if (typeof this.currentData.index === 'undefined') {
+        //     return undefined
+        // }
+        // if (!this.activeItem[index]) return undefined;
+        //
+        // return {
+        //     type: this.activeItem[index].linkType,
+        //     id: this.activeItem[index].id
+        // }
+    }
+
+    selectPagePath(data) {
+        // let {tooltip, type, path, dataItem, dataType} = data;
+        // let index = this.currentData.index;
+        //
+        // // this.activeData.config.setValueCb && this.activeData.config.setValueCb()
+        //
+        // this.$set(this.activeItem[index], 'tooltip', tooltip);
+        // this.$set(this.activeItem[index], 'link', path);
+        // this.$set(this.activeItem[index], 'linkType', type);
+        // this.$set(this.activeItem[index], 'dataItem', dataItem);
+        // this.$set(this.activeItem[index], 'id', dataItem.id);
+        // this.$set(this.activeItem[index], 'type', dataType);
+        // this.$set(this.activeItem[index], 'show', true);
+        //
+        // if (typeof this.currentData.selectLink.checkedPageCb === 'function') {
+        //     let data = this.currentData.selectLink.checkedPageCb(this.activeItem[index], this.activeData);
+        //     let {assignment} = data;
+        //     if (assignment) return;
+        //     data = deepCopy(this.activeItem[index], data);
+        //     data.linkType = type;
+        //     data.tooltip = tooltip;
+        //     data.id = dataItem.id;
+        //
+        //     this.$set(this.activeItem, index, data)
+        // }
+    }
 
 
 }

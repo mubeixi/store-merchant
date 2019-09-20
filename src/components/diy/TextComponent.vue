@@ -1,12 +1,12 @@
 <template>
-  <div @click.stop="setData({}, 0)" :style="{paddingTop:style.margin+'px',paddingBottom:style.margin+'px'}">
-    <div :style="{borderBottomWidth:style.height+'px',borderBottomColor:style.color,borderBottomStyle:hr.config.type}" class="hr"></div>
+  <div @click.stop="setData({}, 0)" >
+    <div :class="{islink:text.value.link?1:0}" :style="{fontSize:text.style.fontSize+'px',color:text.style.color,backgroundColor:text.style.bgColor,textAlign:text.style.textAlign}" class="text">{{text.value.content}}</div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import Hr from "@/assets/js/diy/hr";
+import Text from "@/assets/js/diy/text";
 import {mapState,mapActions,mapMutations} from "vuex";
 import {deepCopyStrict,deepCopy} from "@/common/utils";
 
@@ -22,12 +22,12 @@ import {deepCopyStrict,deepCopy} from "@/common/utils";
     },
     data(){
       return {
-          hr:{}
+          text:{}
       }
     },
     computed:{
         style() {
-            return deepCopyStrict(this.hr.styleDefault,this.hr.style)
+            return deepCopyStrict(this.text.styleDefault,this.text.style)
         },
         activeAttr:{
             get(){
@@ -55,7 +55,7 @@ import {deepCopyStrict,deepCopy} from "@/common/utils";
         setData(item, index) {
 
             //console.log('hehe',this.hr)
-            this.$store.commit('activeAttr',this.hr);//这里点击之后，setAttr马上就有响应。
+            this.$store.commit('activeAttr',this.text);//这里点击之后，setAttr马上就有响应。
 
 
             //用vuex就不要一层层传递了，头都晕了
@@ -65,15 +65,15 @@ import {deepCopyStrict,deepCopy} from "@/common/utils";
     },
 
 })
-export default class HrComponent extends Vue {
-
+export default class TextComponent extends Vue {
 
 
 
     created(){
         this.$store.commit('tabIndex',this.index);//设置tabIndex，等于templData是二维数组，这个是二维数组的
-        this.hr = deepCopy(new Hr(this),this.data)
+        this.text = deepCopy(new Text(this),this.data)
     }
+
 
 
 
