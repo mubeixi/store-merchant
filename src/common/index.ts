@@ -92,7 +92,7 @@ const fun = {
 }
 
 import filter from './filter'
-console.log(filter)
+// console.log(filter)
 
 export default {
   install(){

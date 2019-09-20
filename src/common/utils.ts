@@ -28,9 +28,16 @@ function addFun(object, newobj) {
 
 // 会修改原数据
 //浅拷贝对象。。
-function mergeDate(current, newObj) {
+/**
+ *
+ * @param current
+ * @param newObj
+ * @param strict 开启严格模式，模板值为false不copy
+ */
+function mergeDate(current, newObj,strict) {
   for (let key in newObj) {
     if (!newObj.hasOwnProperty(key)) continue
+    if(strict && !newObj[key])continue
 
     if (typeof newObj[key] === 'object') {
       if (!current[key]) {
@@ -39,6 +46,7 @@ function mergeDate(current, newObj) {
       }
       mergeDate(current[key], newObj[key])
     } else {
+
       if (!current) {
         current = newObj
         continue
@@ -47,6 +55,7 @@ function mergeDate(current, newObj) {
         Vue.set(current, key, newObj[key])
         continue
       }
+
       Vue.set(current, key, newObj[key])
     }
   }
@@ -56,6 +65,13 @@ function mergeDate(current, newObj) {
 export function deepCopy(currentObj, newObject) {
   addFun(currentObj, newObject)
   mergeDate(currentObj, newObject)
+  return currentObj
+}
+
+
+export function deepCopyStrict(currentObj, newObject) {
+  addFun(currentObj, newObject,1)
+  mergeDate(currentObj, newObject,1)
   return currentObj
 }
 

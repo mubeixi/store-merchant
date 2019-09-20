@@ -22,6 +22,7 @@
     import PreviewComponent from "@/components/PreviewComponent.vue";
     import PluginsComponent from "@/components/PluginsComponent.vue";
     import {mapState,mapActions,mapMutations} from "vuex";
+
     @Component({
         components: {
             PluginsComponent,
@@ -43,7 +44,6 @@
 
         created() {
 
-            //this.$fun.success('这是一条成功的提示消息');
         }
     }
 </script>

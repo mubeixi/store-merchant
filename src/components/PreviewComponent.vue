@@ -150,7 +150,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
-
+import {mapState,mapActions} from "vuex";
 import SpaceComponent from '@/components/diy/SpaceComponent';
 import HrComponent from "@/components/diy/HrComponent.vue";
 
@@ -163,7 +163,21 @@ import {pageMove} from "@/common/utils";
 
     },
     watch:{
-
+      templateData: {
+          deep: true,
+          handler(val) {
+              console.log('预览的数据变化',val)
+              this.setTmplData(val)
+          }
+      },
+      activeAttr:{
+        deep:true,
+        handler(val){
+            //去修改准备提交到线上的数据对象
+            //等于右边有变动，中间预览马上就跟着变了
+            this.$set(this.templateData[this.templateEditIndex],this.tabIndex,val)
+        }
+      },
     },
     components: {
         SpaceComponent,
@@ -175,6 +189,13 @@ import {pageMove} from "@/common/utils";
             if (dragSort.indexOf(val) === -1) return ''
             return 'allTemplate'
         }
+    },
+    computed:{
+        templateEditIndex:{
+            get:function(){ return this.$store.state.templateEditIndex},
+            set:function(){}
+        },
+        ...mapState(['activeAttr','tabIndex'])
     },
     methods:{
         setDataEv(data) {
@@ -237,6 +258,8 @@ import {pageMove} from "@/common/utils";
             this.$refs.rightMenu.style.display = 'none'
             this[type]()
         },
+        //修改当前活跃的index,以及
+        ...mapActions(['setTemplateEditIndex','setTmplData'])
     }
 })
 
@@ -270,7 +293,7 @@ export default class PreviewComponent extends Vue {
 
     templateData = []
     templateList = []
-    templateEditIndex = 0
+
     pageTemplateName = ''
     computed = {
 

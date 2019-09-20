@@ -16,14 +16,14 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import {PLUGINSLIST} from "@/common/data";
 
 @Component
-export default class PreviewComponent extends Vue {
+export default class PluginsComponent extends Vue {
   @Prop() private msg!: string;
   plugins = PLUGINSLIST
 
   sourceDrag(e: Object): Object{
 
       var templateName = e.target.getAttribute('data-label')
-      console.log(templateName)
+      //console.log(templateName)
       e.dataTransfer.setData('text/plain', templateName)
 
   }

@@ -1,5 +1,6 @@
 import Common from './commonClass'
 import Vue from 'vue'
+import {deepCopy} from "@/common/utils";
 
 
 function setValue() {
@@ -20,10 +21,11 @@ function setAttrData() {
       {
         type: 'color',
         text: '背景颜色',
-        model: this.config.style.color,
+        model: this.style.color,
         editType: 'style',
         editKey: 'color',
-        editCb: (item: { model: any; }) => {
+        editCb: item =>item.model,
+        editCb2: (item) => {
 
           let val = item.model
           if (!val || val.indexOf(',')==-1) return
@@ -42,22 +44,29 @@ function setAttrData() {
         editType: 'config',
         editKey: 'type',
         model: this.config.type,
+
         value: [
           {
-            label: 'solid',
-            value: '实线'
+            label: '实线',
+            value: 'solid'
           },
           {
-            label: 'dashed',
-            value: '虚线'
+            label: '虚线',
+            value: 'dashed'
           },
         ]
       },
+      {
+        type: 'input',
+        text: '上下间距',
+        editType: 'style',
+        editKey: 'margin',
+        model: this.style.margin,
+      }
 
     ]
   }
 
-  console.log(data)
 
   Vue.set(this, 'attrData', data)
 }
@@ -71,31 +80,44 @@ function attrData(options = {}) {
 
 
 }
+//
+class Hr extends Common{
 
-class Hr extends Common {
-
-  constructor(vm) {
-    super()
-
-    //统一这样来初始化
-    attrData.call(this)
-
-  }
 
   tag = 'space';
   //activeIndex = 0;
 
+  style = {
+    color: '',
+    margin:'',
+    height:''
+  }
+
+  styleDefault = {
+    color: '#e7e7e7',
+    margin:'4',
+    height:'1'
+  }
+
   config = {
-    type: 'solid',
-    style:{
-      color: '#e7e7e7',
-      margin:'4',
-      height:'1'
-    }
+    type: 'solid'
+  }
+
+
+  constructor(vm) {
+
+
+    super()
+
+    this.vmObj = vm
+
+    //统一这样来初始化
+    attrData.call(this)
+
+
   }
 
   //value = []
-
 
 
   setIndex(index: Number, options: Object) {
