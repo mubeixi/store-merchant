@@ -54,7 +54,7 @@ import {deepCopyStrict,deepCopy} from "@/common/utils";
     methods:{
         setData(item, index) {
 
-            console.log('hehe',this.hr)
+            //console.log('hehe',this.hr)
             this.$store.commit('activeAttr',this.hr);//这里点击之后，setAttr马上就有响应。
 
 
