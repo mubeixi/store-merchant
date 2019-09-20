@@ -194,7 +194,7 @@ import {pageMove} from "@/common/utils";
     },
     filters: {
         dragSorts(val) {
-            let dragSort = ['nav', 'list', 'swiper', 'input']
+            let dragSort = ['nav', 'list', 'swiper', 'input','hr','text']
             if (dragSort.indexOf(val) === -1) return ''
             return 'allTemplate'
         }
@@ -276,9 +276,6 @@ export default class PreviewComponent extends Vue {
     @State attrData: attrData;
     @State editStatus: editStatus;
 
-
-
-
     dragMove =  ['input']
     sort = {
         downIndex: -1,
@@ -304,11 +301,8 @@ export default class PreviewComponent extends Vue {
     templateList = []
 
     pageTemplateName = ''
-    computed = {
 
-    }
     $fun: any;
-
 
     setDataEv(){}
 
@@ -393,7 +387,8 @@ export default class PreviewComponent extends Vue {
 
             //模拟点击
             dragEl.click()
-            //pageMove.init('sort', this, () => console.log(22222))
+
+            pageMove.init('sort', this, () => console.log(22222))
 
             //每次页面都会重排一次，可能是因为这里导致拖拽切换导航的时候，页面其他元素不显示了。
             //始终把 tabbar 放到最后

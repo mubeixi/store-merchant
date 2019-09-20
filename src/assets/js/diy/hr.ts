@@ -9,8 +9,17 @@ function setValue() {
 }
 
 function setConfig() {
+
+  //如果新对象，那么可以考虑用默认值替换掉。
+  if(JSON.stringify(this.style)===JSON.stringify({
+    color: '',
+    margin:'',
+    height:'',
+  })){
+    Vue.set(this, 'style', JSON.parse(JSON.stringify(this.styleDefault)))
+  }
   // let config = {}
-  // Vue.set(this, 'config', config)
+
 }
 
 function setAttrData() {
@@ -83,6 +92,7 @@ function setAttrData() {
 function attrData(options = {}) {
 
   let {value, config, attrData} = options;
+  console.log(value,config,attrData)
   if (value !== false) setValue.call(this);
   if (config !== false) setConfig.call(this);
   if (attrData !== false) setAttrData.call(this);

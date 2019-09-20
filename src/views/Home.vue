@@ -8,8 +8,8 @@
       <div class="preview">
         <preview-component @setData="setDataEv"></preview-component>
       </div>
-      <div class="setattr">
-        <set-attr-component></set-attr-component>
+      <div class="setattr"  >
+        <set-attr-component ref="setAttr"></set-attr-component>
       </div>
     </div>
 
@@ -22,6 +22,7 @@
     import PreviewComponent from "@/components/PreviewComponent.vue";
     import PluginsComponent from "@/components/PluginsComponent.vue";
     import {mapState,mapActions,mapMutations} from "vuex";
+    import {moveEl} from "@/common/utils";
 
     @Component({
         components: {
@@ -37,6 +38,11 @@
         },
         computed:{
             ...mapState(['activeAttr','editStatus'])
+        },
+        mounted() {
+
+            //右侧如果内容过多，可以用滚动栏
+            moveEl(this.$refs.setAttr.$el)
         }
     })
     export default class Home extends Vue {

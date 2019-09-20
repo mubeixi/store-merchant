@@ -9,6 +9,16 @@ function setValue() {
 }
 
 function setConfig() {
+
+  if(JSON.stringify(this.style)===JSON.stringify({
+    color: '',
+    bgColor:'',
+    fontSize:'',
+    textAlign:'',
+  })){
+    Vue.set(this, 'style', JSON.parse(JSON.stringify(this.styleDefault)))
+  }
+
   // let config = {}
   // Vue.set(this, 'config', config)
 }

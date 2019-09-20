@@ -58,6 +58,8 @@ import {deepCopyStrict,deepCopy} from "@/common/utils";
             this.$store.commit('activeAttr',this.hr);//这里点击之后，setAttr马上就有响应。
 
 
+            this.$store.commit('tabIndex',this.index)
+
             //用vuex就不要一层层传递了，头都晕了
             //this.$emit('setData', this.img.attrData)
         },

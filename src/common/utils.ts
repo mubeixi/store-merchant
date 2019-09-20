@@ -79,6 +79,36 @@ export function deepCopyStrict(currentObj, newObject) {
 var sortEl
 var pageMoveArr = {}
 
+export const moveEl = function(el) {
+
+  var overflow = ''
+  console.log(el)
+  let [x, y] = [0, 0]
+  var title = el.getElementsByClassName('title')[0]
+  title.addEventListener('mousedown', down, false)
+
+  window.addEventListener('mouseup', function() {
+      document.getElementsByClassName('preview')[0].style.overflow = overflow
+      window.removeEventListener('mousedown', down)
+      window.removeEventListener('mousemove', move)
+    },false)
+
+  function down(e) {
+    overflow = document.getElementsByClassName('pageContent')[0].style.overflow
+    document.getElementsByClassName('pageContent')[0].style.overflow = 'hidden'
+
+    x = e.clientX - el.offsetLeft
+    y = e.clientY - el.offsetTop
+
+    window.addEventListener('mousemove', move, false)
+  }
+  function move(e) {
+    el.style.left = e.clientX - x + 'px'
+    el.style.top = e.clientY - y + 'px'
+  }
+}
+
+
 export class pageMove {
   static init(dragEl, vm, cb) {
     pageMove.x = 0
@@ -97,11 +127,9 @@ export class pageMove {
 
     pageMove.canvasPageY = $('.canvas')[0].offsetTop
     pageMove.pageContentScrollY = 0
-    pageMove.headerHeight = parseInt(
-      getStyle($('header.mainHeader')[0], 'height')
-    )
+    pageMove.headerHeight = 0;//parseInt(getStyle($('header.mainHeader')[0], 'height'))
     pageMove.pageOffsetY = pageMove.canvasPageY - pageMove.pageContentScrollY + pageMove.headerHeight
-
+    console.log(pageMove.pageOffsetY)
     pageMove.cb = cb
 
     //sort
@@ -200,21 +228,22 @@ export class pageMove {
 
   static getPageScroll() {
     let that = pageMove
-    // $('.pageContent')[0].onscroll = function pageScroll(e) {
-    //   let target = e.target || e.srcElement
-    //   that.pageContentScrollX = target.scrollLeft
-    //   that.pageContentScrollY = target.scrollTop
-    //
-    //   that.pageOffsetX =
-    //     that.canvasPageX - target.scrollLeft + that.leftMenuMainX
-    //   that.pageOffsetY =
-    //     that.canvasPageY - target.scrollTop + that.headerHeight
-    // }
+    $('.preview')[0].onscroll = function pageScroll(e) {
+      let target = e.target || e.srcElement
+      that.pageContentScrollX = target.scrollLeft
+      that.pageContentScrollY = target.scrollTop
+
+      that.pageOffsetX =
+        that.canvasPageX - target.scrollLeft + that.leftMenuMainX
+      that.pageOffsetY =
+        that.canvasPageY - target.scrollTop + that.headerHeight
+    }
   }
 
   static initSort() {
     var that = pageMove
     sortEl = document.querySelectorAll('.canvas > section')
+    console.log(sortEl);//所有的元素，批量添加拖动事件监听
     Array.from(sortEl).map(v => {
       v.ondragstart = that.sortStart
       v.ondrag = that.sortDrag
@@ -235,10 +264,7 @@ export class pageMove {
 
   static sortDrag(e) {
     let that = pageMove
-    let current =
-      e.clientY -
-      $('.pageContent')[0].offsetTop +
-      pageMove.canvasScrollTop
+    let current = e.clientY - $('.main')[0].offsetTop + pageMove.canvasScrollTop
 
     // console.log(that.sortMiddleArr)
     let index = -1
@@ -264,31 +290,34 @@ export class pageMove {
     e.preventDefault()
     e.stopPropagation()
 
-    let downIndex = that.vm.$data.sort.downIndex
-    let sortIndex = that.vm.$data.sort.sortIndex
+    let downIndex = that.vm.$data.sort.downIndex//原来在的位置
+    let sortIndex = that.vm.$data.sort.sortIndex//需要被拖动到的位置
 
     if (downIndex == sortIndex) {
       // console.log('不替换')
     } else {
+
+      //从下往上移动
       if (downIndex != sortIndex && downIndex - sortIndex >= 1) {
         that.sortPage(
-          that.vm.$data.templateData[ActiveAttrObj.tabIndex],
+          that.vm.$data.templateData[that.vm.templateEditIndex],
           downIndex,
           sortIndex
         )
         that.sortPage(
-          that.vm.$data.templateList[ActiveAttrObj.tabIndex],
+          that.vm.$data.templateList[that.vm.templateEditIndex],
           downIndex,
           sortIndex
         )
       } else {
+        //从上往下移动
         that.sortPage(
-          that.vm.$data.templateData[ActiveAttrObj.tabIndex],
+          that.vm.$data.templateData[that.vm.templateEditIndex],
           downIndex,
           sortIndex - 1
         )
         that.sortPage(
-          that.vm.$data.templateList[ActiveAttrObj.tabIndex],
+          that.vm.$data.templateList[that.vm.templateEditIndex],
           downIndex,
           sortIndex - 1
         )
@@ -299,21 +328,28 @@ export class pageMove {
     that.vm.$data.editData.display = 'none'
   }
 
+  /**
+   *
+   * @param data  拖动的数据
+   * @param downIndex 原来的位置
+   * @param sortIndex 需要换到的位置
+   */
   static sortPage(data, downIndex, sortIndex) {
+    console.log(data,downIndex,sortIndex)
     var sort = data.splice(downIndex, 1)
     data.splice(sortIndex, 0, ...sort)
   }
 
-  // sortDragenter(){
-  //     console.log('进入范围')
-  // }
-  // sortDragover(e){
-  //     // console.log('对象范围内移动', e)
-  // }
-  // sortDragleave(){
-  //     console.log('离开过程对象的范围')
-  //     console.log('\n')
-  // }
+  sortDragenter(){
+      console.log('进入范围')
+  }
+  sortDragover(e){
+      console.log('对象范围内移动', e)
+  }
+  sortDragleave(){
+      console.log('离开过程对象的范围')
+      console.log('\n')
+  }
 
   static sortDrop(e) {
     e.preventDefault()
