@@ -1,6 +1,6 @@
 <template>
   <div @click.stop="setData({}, 0)" :style="{paddingTop:style.margin+'px',paddingBottom:style.margin+'px'}">
-    <div :style="{borderBottomHeight:style.height+'px',borderBottomColor:style.color,borderBottomStyle:hr.config.type}" class="hr"></div>
+    <div :style="{borderBottomWidth:style.height+'px',borderBottomColor:style.color,borderBottomStyle:hr.config.type}" class="hr"></div>
   </div>
 </template>
 

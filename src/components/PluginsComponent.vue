@@ -70,6 +70,11 @@ export default class PluginsComponent extends Vue {
           display: block;
           text-align: center;
           font-size: 25px;
+          color : #999;
+          cursor: pointer;
+          &:hover{
+            color : #333
+          }
         }
         p {
           text-align: center;

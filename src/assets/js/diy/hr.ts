@@ -44,7 +44,6 @@ function setAttrData() {
         editType: 'config',
         editKey: 'type',
         model: this.config.type,
-
         value: [
           {
             label: '实线',
@@ -56,6 +55,14 @@ function setAttrData() {
           },
         ]
       },
+      {
+        type: 'input',
+        text: '线高度',
+        editType: 'style',
+        editKey: 'height',
+        model: this.style.height,
+      },
+
       {
         type: 'input',
         text: '上下间距',
@@ -90,7 +97,7 @@ class Hr extends Common{
   style = {
     color: '',
     margin:'',
-    height:''
+    height:'',
   }
 
   styleDefault = {
