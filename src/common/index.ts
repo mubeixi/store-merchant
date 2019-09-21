@@ -36,6 +36,7 @@ import {
   ColorPicker
 } from 'element-ui'
 
+
 Vue.use(Input);
 Vue.use(Button);
 Vue.use(Pagination);
@@ -67,6 +68,7 @@ Vue.use(Checkbox)
 Vue.use(ColorPicker)
 
 
+
 const fun = {
   success : ({msg = '操作成功',title = '成功'})=>Notification({
     title: title,
@@ -91,7 +93,7 @@ const fun = {
 
 }
 
-import filter from './filter'
+import filter from './filter.js'
 // console.log(filter)
 
 export default {

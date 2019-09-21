@@ -6,11 +6,15 @@
         <plugins-component></plugins-component>
       </div>
       <div class="preview">
-        <preview-component @setData="setDataEv"></preview-component>
+        <preview-component ref="preview" @setData="setDataEv"></preview-component>
       </div>
       <div class="setattr"  >
         <set-attr-component ref="setAttr"></set-attr-component>
       </div>
+    </div>
+
+    <div class="right" >
+      <right-component></right-component>
     </div>
 
   </div>
@@ -21,6 +25,7 @@
     import SetAttrComponent from '@/components/SetAttrComponent.vue'; // @ is an alias to /src
     import PreviewComponent from "@/components/PreviewComponent.vue";
     import PluginsComponent from "@/components/PluginsComponent.vue";
+    import RightComponent from "@/components/RightComponent.vue";
     import {mapState,mapActions,mapMutations} from "vuex";
     import {moveEl} from "@/common/utils";
 
@@ -28,7 +33,8 @@
         components: {
             PluginsComponent,
             SetAttrComponent,
-            PreviewComponent
+            PreviewComponent,
+            RightComponent
         },
         methods:{
             //这个数据一直往上传，这么辛苦
@@ -67,5 +73,14 @@
     margin-right 90px
   .setattr
     width 540px
-
+.right
+  position fixed
+  right 0px
+  width 100px
+  background white
+  top 10%
+  min-height 30%
+  max-height 80%
+  /*overflow-y scroll*/
+  border 1px solid #e7e7e7
 </style>

@@ -23,3 +23,17 @@ p{
   display flex
 .flex1
   flex 1
+
+
+
+.editActiveStatus{position: absolute;left:0;top:0;border:1px solid #298df8;width:100px;height: 100px;pointer-events:none;z-index:20;
+  > *{position: absolute;width:0;height: 0;padding: 3px;border:1px solid #298df8;background-color: white;border-radius: 50%;}
+  .topleft{left:0;top:0;transform: translate(-50%, -50%);}
+  .topmiddle{left: 50%;top:0;transform: translate(-50%, -50%);}
+  .topright{right:0;top:0;transform: translate(50%, -50%);}
+  .middleleft{left:0;top:50%;transform: translate(-50%, -50%);}
+  .middleright{right:0;top:50%;transform: translate(50%, -50%);}
+  .bottomleft{left:0;bottom:0;transform: translate(-50%,50%);}
+  .bottommiddle{left:50%;bottom:0;transform: translate(-50%, 50%);}
+  .bottomright{right:0;bottom:0;transform: translate(50%,50%);}
+}

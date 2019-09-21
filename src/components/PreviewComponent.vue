@@ -9,7 +9,8 @@
           class="section"
           :class="setClass(item)"
           :data-name="item"
-          @mousedown="activeStatus($event, index, item)"
+          :data-tag="templateData[templateEditIndex][index].tag"
+          @click="activeStatus($event, index, item)"
           @contextmenu.stop.prevent="contextmenuRightEv($event, item, index)"
         >
 <!--          <div class="sortStatus" v-show="sort.sortIndex === index || index === templateList[templateEditIndex].length"></div>-->
@@ -100,6 +101,15 @@
             :data="templateData[templateEditIndex][index]"
             :index="index"
           ></title-component>
+
+          <video-component
+            ref="plugin"
+            v-if="item.indexOf('video') !== -1"
+            @setData="setDataEv"
+            :draggable="true"
+            :data="templateData[templateEditIndex][index]"
+            :index="index"
+          />
 <!--              <space-component-->
 <!--                ref="plugin"-->
 <!--                v-if="item.indexOf('space') !== -1"-->
@@ -108,8 +118,6 @@
 <!--                :data="templateData[templateEditIndex][index]"-->
 <!--                :index="index"-->
 <!--              />-->
-
-
 
 
           <div class="sortStatus" v-show="sort.sortIndex === templateList[templateEditIndex].length && index + 1 === templateList[templateEditIndex].length"></div>
@@ -174,261 +182,279 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
-import {mapState,mapActions} from "vuex";
+import { mapState, mapActions } from 'vuex';
 import SpaceComponent from '@/components/diy/SpaceComponent';
-import HrComponent from "@/components/diy/HrComponent.vue";
-import TextComponent from "@/components/diy/TextComponent.vue";
-import SpaceComponent from "@/components/diy/SpaceComponent";
-import TitleComponent from "@/components/diy/TitleComponent.vue";
+import HrComponent from '@/components/diy/HrComponent.vue';
+import TextComponent from '@/components/diy/TextComponent.vue';
+import TitleComponent from '@/components/diy/TitleComponent.vue';
+import VideoComponent from '@/components/diy/VideoComponent.vue';
 
-import {deepCopy,getStyle} from "@/common/utils";
-import Hr from "@/assets/js/diy/hr";
-import Text from "@/assets/js/diy/text"
-import Space from "@/assets/js/diy/space";
-import Title from "@/assets/js/diy/title";
+import { deepCopy, getStyle, pageMove } from '@/common/utils';
+import Hr from '@/assets/js/diy/hr';
+import Text from '@/assets/js/diy/text';
+import Space from '@/assets/js/diy/space';
+import Title from '@/assets/js/diy/title';
+import Video from '@/assets/js/diy/video';
 
-
-import {pageMove} from "@/common/utils";
 
 @Component({
-    props: {
+    name:'PreviewComponent',
+  props: {
 
-    },
-    watch:{
-      templateData: {
-          deep: true,
-          handler(val) {
-              console.log('预览的数据变化',val)
-              this.setTmplData(val)
-          }
-      },
-      activeAttr:{
-        deep:true,
-        handler(val){
-            //去修改准备提交到线上的数据对象
-            //等于右边有变动，中间预览马上就跟着变了
-            this.$set(this.templateData[this.templateEditIndex],this.tabIndex,val)
-        }
+  },
+  watch: {
+    templateData: {
+      deep: true,
+      handler(val) {
+        //console.log('预览的数据变化', val);
+        this.setTmplData(val);
       },
     },
-    components: {
-        SpaceComponent,
-        HrComponent,
-        TextComponent,
-        SpaceComponent,
-        TitleComponent
+    activeAttr: {
+      deep: true,
+      handler(val) {
+        // 去修改准备提交到线上的数据对象
+        // 等于右边有变动，中间预览马上就跟着变了
+        this.$set(this.templateData[this.templateEditIndex], this.tabIndex, val);
+      },
     },
-    filters: {
-        dragSorts(val) {
-            let dragSort = ['nav', 'list', 'swiper', 'input','hr','text']
-            if (dragSort.indexOf(val) === -1) return ''
-            return 'allTemplate'
-        }
+  },
+  components: {
+    SpaceComponent,
+    HrComponent,
+    TextComponent,
+    SpaceComponent,
+    TitleComponent,
+    VideoComponent
+  },
+  filters: {
+    dragSorts(val) {
+      const dragSort = ['nav', 'list', 'swiper', 'input', 'hr', 'text'];
+      if (dragSort.indexOf(val) === -1) return '';
+      return 'allTemplate';
     },
-    computed:{
-        templateEditIndex:{
-            get:function(){ return this.$store.state.templateEditIndex},
-            set:function(){}
-        },
-        ...mapState(['activeAttr','tabIndex'])
+  },
+  computed: {
+    templateEditIndex: {
+      get() { return this.$store.state.templateEditIndex; },
+      set() {},
     },
-    methods:{
-        setDataEv(data) {
-            //this.$emit('setData', data)
-        },
-        activeStatus(e, index, item) {
+    ...mapState(['activeAttr', 'tabIndex']),
+  },
+  methods: {
+    clickPlugin(idx){
 
-            this.sort.downIndex = index
-            var currentEl = e.currentTarget
-            let config = {
-                width: getStyle(currentEl, 'width'),
-                height: getStyle(currentEl, 'height'),
-                left: currentEl.offsetLeft + 'px',
-                top: currentEl.offsetTop + 'px',
-                display: 'block'
-            }
 
-            //方便删除的
-            this.currentData.index = index
-            this.currentData.name = item
-            this.editData = config
-        },
-        contextmenuRightEv(e, item, index) {
-            this.$refs.rightMenu.style.display = 'block'
-            this.$refs.rightMenu.style.left = e.clientX + 'px'
-            this.$refs.rightMenu.style.top = e.clientY + 'px'
+        const sectionEl = document.querySelectorAll('.canvas > section')[idx];
+        if(!sectionEl)return;
+        sectionEl.click()
+        let templateName = sectionEl.getAttribute('data-tag');
 
-            this.removePosition.x = e.clientX
-            this.removePosition.y = e.clientY
+            let dragEl = sectionEl.getElementsByClassName(`${templateName}`)[0];
+        console.log(templateName,dragEl);
+        if (!dragEl) return;
+        // 模拟点击
+        dragEl.click();
 
-            this.currentData.index = index
-            this.currentData.name = item
+    },
+    setDataEv(data) {
+      // this.$emit('setData', data)
+    },
+    activeStatus(e, index, item) {
+        console.log(e,index,item)
+      this.sort.downIndex = index;
+      const currentEl = e.currentTarget;
+      const config = {
+        width: getStyle(currentEl, 'width'),
+        height: getStyle(currentEl, 'height'),
+        left: `${currentEl.offsetLeft}px`,
+        top: `${currentEl.offsetTop}px`,
+        display: 'block',
+      };
+      console.log(config)
 
-            this.removePosition.show = false
-        },
-        removeTemplate() {
-            this.deleteItem(this.currentData.index, this.currentData.name)
+      // 方便删除的
+      this.currentData.index = index;
+      this.currentData.name = item;
+      this.editData = config;
+    },
+    contextmenuRightEv(e, item, index) {
+      this.$refs.rightMenu.style.display = 'block';
+      this.$refs.rightMenu.style.left = `${e.clientX}px`;
+      this.$refs.rightMenu.style.top = `${e.clientY}px`;
 
-            this.removePosition.show = false
+      this.removePosition.x = e.clientX;
+      this.removePosition.y = e.clientY;
 
-            this.$emit('setData', [])
-            // console.log(this)
-        },
-        deleteItem(index, name) {
-            this.templateList[this.templateEditIndex].splice(index, 1)
-            this.templateData[this.templateEditIndex].splice(index, 1)
+      this.currentData.index = index;
+      this.currentData.name = item;
 
-            //用心良苦啊,删除的时候还要保留这个页面，确实比较符合需要
-            if (name.substring(0, 9) === 'switchNav') {
-                //删除导航及其他页面
-                this.templateData = [this.templateData[this.templateEditIndex]]
-                this.templateList = [this.templateList[this.templateEditIndex]]
-                ActiveAttrObj.tabIndex = 0
-            }
-            this.$Message.info(`删除成功！`)
-            this.editData.display = 'none'
-        },
-        hideRightMenu(e) {
-            let type = e.target.getAttribute('type')
-            this.$refs.rightMenu.style.display = 'none'
-            this[type]()
-        },
-        //修改当前活跃的index,以及
-        ...mapActions(['setTemplateEditIndex','setTmplData'])
-    }
+      this.removePosition.show = false;
+    },
+    removeTemplate() {
+      this.deleteItem(this.currentData.index, this.currentData.name);
+
+      this.removePosition.show = false;
+
+      this.$emit('setData', []);
+      // console.log(this)
+    },
+    deleteItem(index, name) {
+      this.templateList[this.templateEditIndex].splice(index, 1);
+      this.templateData[this.templateEditIndex].splice(index, 1);
+
+      // 用心良苦啊,删除的时候还要保留这个页面，确实比较符合需要
+      if (name.substring(0, 9) === 'switchNav') {
+        // 删除导航及其他页面
+        this.templateData = [this.templateData[this.templateEditIndex]];
+        this.templateList = [this.templateList[this.templateEditIndex]];
+        ActiveAttrObj.tabIndex = 0;
+      }
+      this.$fun.info({ msg: '删除成功！' });
+      this.editData.display = 'none';
+    },
+    hideRightMenu(e) {
+      const type = e.target.getAttribute('type');
+      this.$refs.rightMenu.style.display = 'none';
+      this[type]();
+    },
+    // 修改当前活跃的index,以及
+    ...mapActions(['setTemplateEditIndex', 'setTmplData']),
+  },
 })
 
 export default class PreviewComponent extends Vue {
     @State attrData: attrData;
+
     @State editStatus: editStatus;
 
-    dragMove =  ['input']
+    dragMove = ['input']
+
     sort = {
-        downIndex: -1,
-        sortIndex: -1
+      downIndex: -1,
+      sortIndex: -1,
     }
 
     editData = {
-        display: 'none'
+      display: 'none',
     }
 
 
     currentData = {
-        index: -1,
-        name: ''
+      index: -1,
+      name: '',
     }
 
-    removePosition =  {
-        show: false
+    removePosition = {
+      show: false,
     }
 
 
     templateData = []
+
     templateList = []
 
     pageTemplateName = ''
 
     $fun: any;
 
-    setDataEv(){}
+    setDataEv() {}
 
     setClass(className) {
-        if (typeof className == 'undefined') return ''
-        className = className.replace(/[0-9]?/g, '')
-        return this.dragMove.map(v => {
-            if (v === className) {
-                return 'dragMove ' + className
-            } else {
-                return className
-            }
-        })
+      if (typeof className === 'undefined') return '';
+      className = className.replace(/[0-9]?/g, '');
+      return this.dragMove.map((v) => {
+        if (v === className) {
+          return `dragMove ${className}`;
+        }
+        return className;
+      });
     }
 
 
     dropEv(e: any) {
+      const templateName = e.dataTransfer.getData('text/plain');
+      console.log(templateName);
+      if (templateName === '') return; // 在页面内拖动时，无需添加组件
 
-        const templateName = e.dataTransfer.getData('text/plain')
-        console.log(templateName)
-        if (templateName === '') return //在页面内拖动时，无需添加组件
+      // 如果是switchNav组件，特殊操作。虽然我也不知道为什么要这样
+      // 因为没有swtichNav的时候，只有一个页面，所以是一个二维数组（最外层键名为0，所有数据都在子数组中按组件顺序存下来），但是有switchNav之后，二维数组长度会变化（多个页面），所以需要特殊处理下。
+      let newClass = {};
+      // //console.log(templateName)
+      switch (templateName) {
+        case 'hr':
+          newClass = new Hr();
+          break;
+        case 'text':
+          newClass = new Text();
+          break;
+        case 'space':
+          newClass = new Space();
+          break;
+        case 'title':
+          newClass = new Title();
+          break;
+          case 'video':
+              newClass = new Video();
+              break;
+          // case 'nav':
+          //     newClass = new NavJS()
+          //     break
+          // case 'swiper':
+          //     newClass = new BannerJS()
+          //     break
+          // case 'input':
+          //     newClass = new InputJS()
+          //     break
+          // case 'scale':
+          //     newClass = new ScaleJS()
+          //     break
+        default:
+          this.$fun.error('组件不存在');
+          break;
+      }
 
-        //如果是switchNav组件，特殊操作。虽然我也不知道为什么要这样
-        //因为没有swtichNav的时候，只有一个页面，所以是一个二维数组（最外层键名为0，所有数据都在子数组中按组件顺序存下来），但是有switchNav之后，二维数组长度会变化（多个页面），所以需要特殊处理下。
-        let newClass = {}
-        // //console.log(templateName)
-        switch (templateName) {
-            case 'hr':
-                newClass = new Hr()
-                break;
-            case 'text':
-                newClass = new Text()
-                break;
-            case 'space':
-                newClass = new Space()
-                break;
-            case 'title':
-                newClass = new Title()
-                break;
-            // case 'nav':
-            //     newClass = new NavJS()
-            //     break
-            // case 'swiper':
-            //     newClass = new BannerJS()
-            //     break
-            // case 'input':
-            //     newClass = new InputJS()
-            //     break
-            // case 'scale':
-            //     newClass = new ScaleJS()
-            //     break
-            default:
-                this.$fun.error('组件不存在')
-                break;
-        }
+      //
+      // //这里面的数据，会跟踪吗
+      //
+      if (!Array.isArray(this.templateData[this.templateEditIndex])) {
+        this.$set(this.templateData, this.templateEditIndex, []);
+      }
 
-        //
-        // //这里面的数据，会跟踪吗
-        //
-        if (!Array.isArray(this.templateData[this.templateEditIndex])) {
-            this.$set(this.templateData, this.templateEditIndex, [])
-        }
+      this.templateData[this.templateEditIndex].push(
+        deepCopy({}, newClass),
+      );
 
-        this.templateData[this.templateEditIndex].push(
-            deepCopy({}, newClass)
-        )
+      if (!Array.isArray(this.templateList[this.templateEditIndex])) {
+        this.$set(this.templateList, this.templateEditIndex, []);
+      }
+      // this.templateList[this.templateEditIndex].push(templateName)
+      this.templateList[this.templateEditIndex].push(
+        templateName + this.templateList[this.templateEditIndex].length,
+      );
 
-        if (!Array.isArray(this.templateList[this.templateEditIndex])) {
-            this.$set(this.templateList, this.templateEditIndex, [])
-        }
-        // this.templateList[this.templateEditIndex].push(templateName)
-        this.templateList[this.templateEditIndex].push(
-            templateName + this.templateList[this.templateEditIndex].length
-        )
+      // //this.refreshAttrFun();//需要模拟点击一下。
+      //
+      //
+      // //这里是用来模拟点击的
+      setTimeout(() => {
+        const lastIndex = this.templateList[this.templateEditIndex].length - 1;
+        console.log(lastIndex);
+        const dragEl = document.querySelectorAll('.canvas > section')[lastIndex].getElementsByClassName(`${templateName}`)[0];
 
-        // //this.refreshAttrFun();//需要模拟点击一下。
-        //
-        //
-        // //这里是用来模拟点击的
-        setTimeout(() => {
+        console.log(dragEl);
+        if (!dragEl) return;
 
-            let lastIndex = this.templateList[this.templateEditIndex].length - 1
-            console.log(lastIndex)
-            let dragEl = document.querySelectorAll('.canvas > section')[lastIndex].getElementsByClassName(`${templateName}`)[0]
+        // 模拟点击
+        dragEl.click();
 
-            console.log(dragEl)
-            if (!dragEl) return
+        pageMove.init('sort', this, () => console.log(22222));
 
-            //模拟点击
-            dragEl.click()
-
-            pageMove.init('sort', this, () => console.log(22222))
-
-            //每次页面都会重排一次，可能是因为这里导致拖拽切换导航的时候，页面其他元素不显示了。
-            //始终把 tabbar 放到最后
-            //this.tabbarLast()
-        }, 0)
-
+        // 每次页面都会重排一次，可能是因为这里导致拖拽切换导航的时候，页面其他元素不显示了。
+        // 始终把 tabbar 放到最后
+        // this.tabbarLast()
+      }, 0);
     }
-
 }
 
 
@@ -445,7 +471,6 @@ export default class PreviewComponent extends Vue {
   height 100%
 .handle
   margin-top 80px
-
 
 
 .contextmenuRight {
