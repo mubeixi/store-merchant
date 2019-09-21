@@ -83,6 +83,14 @@
             :data="templateData[templateEditIndex][index]"
             :index="index"
           />
+          <space-component
+            ref="plugin"
+            v-if="item.indexOf('space') !== -1"
+            @setData="setDataEv"
+            :draggable="true"
+            :data="templateData[templateEditIndex][index]"
+            :index="index"
+          ></space-component>
 <!--              <space-component-->
 <!--                ref="plugin"-->
 <!--                v-if="item.indexOf('space') !== -1"-->
@@ -161,10 +169,14 @@ import {mapState,mapActions} from "vuex";
 import SpaceComponent from '@/components/diy/SpaceComponent';
 import HrComponent from "@/components/diy/HrComponent.vue";
 import TextComponent from "@/components/diy/TextComponent.vue";
+import SpaceComponent from "@/components/diy/SpaceComponent";
 
 import {deepCopy,getStyle} from "@/common/utils";
 import Hr from "@/assets/js/diy/hr";
 import Text from "@/assets/js/diy/text"
+import Space from "@/assets/js/diy/space";
+
+
 import {pageMove} from "@/common/utils";
 
 @Component({
@@ -175,7 +187,7 @@ import {pageMove} from "@/common/utils";
       templateData: {
           deep: true,
           handler(val) {
-              console.log('预览的数据变化',val)
+              //console.log('预览的数据变化',val)
               this.setTmplData(val)
           }
       },
@@ -190,7 +202,9 @@ import {pageMove} from "@/common/utils";
     },
     components: {
         SpaceComponent,
-        HrComponent,TextComponent
+        HrComponent,
+        TextComponent,
+        SpaceComponent
     },
     filters: {
         dragSorts(val) {
@@ -335,6 +349,9 @@ export default class PreviewComponent extends Vue {
                 break;
             case 'text':
                 newClass = new Text()
+                break;
+            case 'space':
+                newClass = new Space()
                 break;
             // case 'nav':
             //     newClass = new NavJS()
