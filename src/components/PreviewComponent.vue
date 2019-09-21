@@ -10,6 +10,7 @@
           :class="setClass(item)"
           :data-name="item"
           :data-tag="templateData[templateEditIndex][index].tag"
+          @mousedown="activeStatus($event, index, item)"
           @click="activeStatus($event, index, item)"
           @contextmenu.stop.prevent="contextmenuRightEv($event, item, index)"
         >
@@ -110,6 +111,15 @@
             :data="templateData[templateEditIndex][index]"
             :index="index"
           />
+
+          <search-component
+            ref="plugin"
+            v-if="item.indexOf('search') !== -1"
+            @setData="setDataEv"
+            :draggable="true"
+            :data="templateData[templateEditIndex][index]"
+            :index="index"
+          />
 <!--              <space-component-->
 <!--                ref="plugin"-->
 <!--                v-if="item.indexOf('space') !== -1"-->
@@ -188,6 +198,7 @@ import HrComponent from '@/components/diy/HrComponent.vue';
 import TextComponent from '@/components/diy/TextComponent.vue';
 import TitleComponent from '@/components/diy/TitleComponent.vue';
 import VideoComponent from '@/components/diy/VideoComponent.vue';
+import SearchComponent from '@/components/diy/SearchComponent.vue';
 
 import { deepCopy, getStyle, pageMove } from '@/common/utils';
 import Hr from '@/assets/js/diy/hr';
@@ -195,6 +206,7 @@ import Text from '@/assets/js/diy/text';
 import Space from '@/assets/js/diy/space';
 import Title from '@/assets/js/diy/title';
 import Video from '@/assets/js/diy/video';
+import Search from '@/assets/js/diy/search';
 
 
 @Component({
@@ -225,7 +237,8 @@ import Video from '@/assets/js/diy/video';
     TextComponent,
     SpaceComponent,
     TitleComponent,
-    VideoComponent
+    VideoComponent,
+    SearchComponent
   },
   filters: {
     dragSorts(val) {
@@ -395,8 +408,11 @@ export default class PreviewComponent extends Vue {
           newClass = new Title();
           break;
           case 'video':
-              newClass = new Video();
-              break;
+          newClass = new Video();
+          break;
+          case 'search':
+          newClass = new Search();
+          break;
           // case 'nav':
           //     newClass = new NavJS()
           //     break

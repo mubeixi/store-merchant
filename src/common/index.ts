@@ -33,9 +33,11 @@ import {
   DatePicker,
   CheckboxGroup,
   Checkbox,
-  ColorPicker
+  ColorPicker,
+  Slider
 } from 'element-ui'
 
+import Uploadimg from '@/components/common/uploadImgComponents'
 
 Vue.use(Input);
 Vue.use(Button);
@@ -64,8 +66,9 @@ Vue.use(TimePicker);
 Vue.use(Col);
 Vue.use(DatePicker);
 Vue.use(CheckboxGroup);
-Vue.use(Checkbox)
-Vue.use(ColorPicker)
+Vue.use(Checkbox);
+Vue.use(ColorPicker);
+Vue.use(Slider);
 
 
 

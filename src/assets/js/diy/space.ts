@@ -73,7 +73,7 @@ class Space extends Common{
 
   styleDefault = {
     bgColor: '#fff',
-    height:'0'
+    height:'10'//默认是10吧
   }
 
   config = {

@@ -16,6 +16,11 @@
 
 
 
+        <div v-if="item.type === 'slider'">
+          <el-slider @input='change(item)' show-input  v-model="item.model" :max="item.max" :min="item.min"></el-slider>
+        </div>
+
+
         <el-input @blur="inputBlurEvent(item)" v-if="item.type === 'input'" autosize v-model="item.model" class="input"
                   @input='change(item)'
                   :type='item.inputType'></el-input>
@@ -32,6 +37,23 @@
         </el-tooltip>
 
 <!--        <bind-link v-model="selectPageShow" :checkedIndex='pageChecked' :data='currentData.customizeObject' @change='selectPagePath' />-->
+
+        <div v-if="item.type==='addbtn'">
+          <el-button @click="item.editCb"  type="primary"  size="small">{{item.label}}</el-button>
+        </div>
+
+        <div v-if="item.type==='arr'" class="arr-box">
+          <div v-for="(arr_item,idx) in item.value" :key="idx" class="arr-row" style="background: #f2f2f2;padding: 20px;">
+<!--            简单值-->
+            <div class="flex" v-if="['text','number'].indexOf(item.row_type)!==-1">
+              <span class="padding10-c">{{item.label}}</span> <el-input @input="item.inputCB(item)" class="flex1" v-model="item.value[idx]" />
+            </div>
+
+            <i class="el-icon-circle-close del-icon"></i>
+
+          </div>
+        </div>
+
 
         <el-button v-if="item.removeBtn" class="rightBtn" @click.prevent="removeInput(item, index)"
                    icon='el-icon-minus'></el-button>
@@ -96,7 +118,30 @@ import uploadImgComponents from '@/components/common/uploadImgComponents'
             return '选择的链接将会显示在这里'
         }
     },
+    computed:{
+        eTitle(){
+            return this.$store.state.tmplData.length>0 && this.$store.state.activeAttr.attrData.title?this.$store.state.activeAttr.attrData.title:''
+        },
+        activeAttr:{
+            get(){
+                return this.$store.state.activeAttr
+            },
+            set(nval){
+
+                //this.setActiveAttr(navl)
+            }
+        },
+        ...mapState(['tmplData'])
+    },
     methods:{
+        addInput(item) {
+            let index = item.index;
+            let value = JSON.parse(JSON.stringify(this.currentData.value[index]));
+            this.currentData.value.splice(index, 0, value);
+            this.currentData.setIndex(0, {
+                value: false
+            })
+        },
         //用函数来校验灵活一点
         inputBlurEvent(item){
 
@@ -203,21 +248,7 @@ import uploadImgComponents from '@/components/common/uploadImgComponents'
         },
         ...mapActions(['setActiveAttr'])
     },
-    computed:{
-        eTitle(){
-            return this.$store.state.tmplData.length>0 && this.$store.state.activeAttr.attrData.title?this.$store.state.activeAttr.attrData.title:''
-        },
-        activeAttr:{
-            get(){
-                return this.$store.state.activeAttr
-            },
-            set(nval){
 
-                //this.setActiveAttr(navl)
-            }
-        },
-        ...mapState(['tmplData'])
-    }
 })
 
 
@@ -286,7 +317,9 @@ export default class SetAttrComponent extends Vue {
 <style>
   .fun-color-pick .el-color-picker__icon.el-icon-arrow-down{display:none}
 </style>
-<style scoped lang="stylus">
+<style scoped lang="less">
+@import "../assets/css/variable.less";
+
 .title{
   display: flex;
   line-height: 18px;
@@ -294,6 +327,23 @@ export default class SetAttrComponent extends Vue {
   padding-left: 10px;
   border-left: 2px solid rgb(63, 142, 243);
   margin-bottom: 25px;
+}
+
+.arr-box{
+  .arr-row{
+    position:relative;
+    .del-icon{
+      position: absolute;
+      right: -14px;
+      top: -14px;
+      font-size: 28px;
+      color: #999;
+      cursor: pointer;
+      &:hover{
+        color: @danger;
+      }
+    }
+  }
 }
 
 </style>

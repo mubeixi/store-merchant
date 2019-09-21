@@ -26,3 +26,4 @@ export const setTmplData = ({commit},data) => {
 
   commit('tmplData',data)
 }
+
