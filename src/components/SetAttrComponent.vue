@@ -332,6 +332,10 @@ export default class SetAttrComponent extends Vue {
 .arr-box{
   .arr-row{
     position:relative;
+    margin-bottom: 20px;
+    span{
+      color: #666;
+    }
     .del-icon{
       position: absolute;
       right: -14px;

@@ -101,6 +101,7 @@
     .box{
       margin: 0 15px;
       position: relative;
+
       .input{
           width: 100%;
           box-sizing: border-box;
