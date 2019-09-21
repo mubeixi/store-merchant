@@ -1,9 +1,10 @@
 <template>
   <div class="left-template">
     <ul>
-      <li :data-label="item.label" draggable="true" @dragstart="sourceDrag" v-for="(item,key) in plugins">
+      <li :data-label="item.label" draggable="true" :title="item.tip" @dragstart="sourceDrag" v-for="(item,key) in plugins">
         <div class="center">
-          <i data-v-ecfd6a32="" class="iconfont" :class="item.icon"></i>
+          <img draggable="false" class="icon" :src="item.icon"  />
+<!--          <i data-v-ecfd6a32="" class="iconfont" :class="item.icon"></i>-->
           <p class="text">{{item.value}}</p>
         </div>
       </li>
@@ -21,9 +22,9 @@ export default class PluginsComponent extends Vue {
   plugins = PLUGINSLIST
 
   sourceDrag(e: Object): Object{
-
+      console.log(e.target)
       var templateName = e.target.getAttribute('data-label')
-      //console.log(templateName)
+      console.log(templateName)
       e.dataTransfer.setData('text/plain', templateName)
 
   }
@@ -52,6 +53,7 @@ export default class PluginsComponent extends Vue {
         box-sizing border-box;
         position: relative;
         float: left;
+        cursor: pointer;
         &:nth-child(3n+3){
           width: 90px;
           border-right:bottom;
@@ -62,6 +64,20 @@ export default class PluginsComponent extends Vue {
           top: 50%;
           transform: translateY(-50%);
           width: 100%;
+        }
+        .icon{
+          width: 26px;
+          height: 26px;
+          opacity :0.8;
+          margin: 0 auto 8px;
+          display: block;
+          text-align: center;
+          font-size: 25px;
+          color : #999;
+
+          &:hover{
+           opacity :1;
+          }
         }
         i.iconfont {
           width: 36px;

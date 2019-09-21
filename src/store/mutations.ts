@@ -20,7 +20,6 @@ export const editStatus = function (state: { editStatus: any; }, value: any) {
 };
 
 export const tmplData = function (state: any, value: any) {
-
   state.tmplData = value
 };
 

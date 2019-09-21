@@ -91,6 +91,15 @@
             :data="templateData[templateEditIndex][index]"
             :index="index"
           ></space-component>
+
+          <title-component
+            ref="plugin"
+            v-if="item.indexOf('title') !== -1"
+            @setData="setDataEv"
+            :draggable="true"
+            :data="templateData[templateEditIndex][index]"
+            :index="index"
+          ></title-component>
 <!--              <space-component-->
 <!--                ref="plugin"-->
 <!--                v-if="item.indexOf('space') !== -1"-->
@@ -170,11 +179,13 @@ import SpaceComponent from '@/components/diy/SpaceComponent';
 import HrComponent from "@/components/diy/HrComponent.vue";
 import TextComponent from "@/components/diy/TextComponent.vue";
 import SpaceComponent from "@/components/diy/SpaceComponent";
+import TitleComponent from "@/components/diy/TitleComponent.vue";
 
 import {deepCopy,getStyle} from "@/common/utils";
 import Hr from "@/assets/js/diy/hr";
 import Text from "@/assets/js/diy/text"
 import Space from "@/assets/js/diy/space";
+import Title from "@/assets/js/diy/title";
 
 
 import {pageMove} from "@/common/utils";
@@ -187,7 +198,7 @@ import {pageMove} from "@/common/utils";
       templateData: {
           deep: true,
           handler(val) {
-              //console.log('预览的数据变化',val)
+              console.log('预览的数据变化',val)
               this.setTmplData(val)
           }
       },
@@ -204,7 +215,8 @@ import {pageMove} from "@/common/utils";
         SpaceComponent,
         HrComponent,
         TextComponent,
-        SpaceComponent
+        SpaceComponent,
+        TitleComponent
     },
     filters: {
         dragSorts(val) {
@@ -352,6 +364,9 @@ export default class PreviewComponent extends Vue {
                 break;
             case 'space':
                 newClass = new Space()
+                break;
+            case 'title':
+                newClass = new Title()
                 break;
             // case 'nav':
             //     newClass = new NavJS()

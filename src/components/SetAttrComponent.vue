@@ -186,16 +186,18 @@ import BindLinkComponents from '@/components/BindLinkComponents'
     },
     computed:{
         eTitle(){
-            return this.$store.state.activeAttr.attrData.title?this.$store.state.activeAttr.attrData.title:''
+            return this.$store.state.tmplData.length>0 && this.$store.state.activeAttr.attrData.title?this.$store.state.activeAttr.attrData.title:''
         },
         activeAttr:{
             get(){
                 return this.$store.state.activeAttr
             },
             set(nval){
-                this.setActiveAttr(navl)
+
+                //this.setActiveAttr(navl)
             }
-        }
+        },
+        ...mapState(['tmplData'])
     }
 })
 

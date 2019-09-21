@@ -1,14 +1,14 @@
 <template>
-  <div @click.stop="setData({}, 0)" >
-    <div :class="{islink:text.value.link?1:0}"
-         :style="{fontSize:text.style.fontSize+'px',color:text.style.color,backgroundColor:text.style.bgColor,textAlign:text.style.textAlign}"
-         class="text">{{text.value.content}}</div>
+  <div @click.stop="setData({}, 0)"  class="title" :style="{color:title.style.color,backgroundColor:title.style.bgColor}">
+<!--    :class="{islink:title.value.link?1:0}"-->
+    <div class="text">{{title.value.title}}</div>
+    <div class="small">{{title.value.small}}</div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import Text from "@/assets/js/diy/text";
+import Title from "@/assets/js/diy/title";
 import {mapState,mapActions,mapMutations} from "vuex";
 import {deepCopyStrict,deepCopy} from "@/common/utils";
 
@@ -24,12 +24,12 @@ import {deepCopyStrict,deepCopy} from "@/common/utils";
     },
     data(){
       return {
-          text:{}
+          title:{}
       }
     },
     computed:{
         style() {
-            return deepCopyStrict(this.text.styleDefault,this.text.style)
+            return deepCopyStrict(this.title.styleDefault,this.title.style)
         },
         activeAttr:{
             get(){
@@ -57,7 +57,7 @@ import {deepCopyStrict,deepCopy} from "@/common/utils";
         setData(item, index) {
 
             //console.log('hehe',this.hr)
-            this.$store.commit('activeAttr',this.text);//这里点击之后，setAttr马上就有响应。
+            this.$store.commit('activeAttr',this.title);//这里点击之后，setAttr马上就有响应。
             this.$store.commit('tabIndex',this.index)
 
             //用vuex就不要一层层传递了，头都晕了
@@ -67,13 +67,13 @@ import {deepCopyStrict,deepCopy} from "@/common/utils";
     },
 
 })
-export default class TextComponent extends Vue {
+export default class TitleComponent extends Vue {
 
 
 
     created(){
         this.$store.commit('tabIndex',this.index);//设置tabIndex，等于templData是二维数组，这个是二维数组的
-        this.text = deepCopy(new Text(this),this.data)
+        this.title = deepCopy(new Title(this),this.data)
     }
 
 
@@ -84,6 +84,13 @@ export default class TextComponent extends Vue {
 </script>
 
 <style scoped lang="stylus">
-.text
+.title
+
   width 100%
+  .text
+    font-size 18px
+    /*color #333*/
+  .small
+    font-size 14px
+    /*color #666*/
 </style>
