@@ -1,12 +1,13 @@
 {
-  "name": "project",
+  "name": "网中网商城移动端模板diy",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "vue-cli-service serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "push": "node ./push.js"
   },
   "dependencies": {
     "core-js": "^2.6.5",
