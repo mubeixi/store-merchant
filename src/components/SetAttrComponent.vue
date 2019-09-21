@@ -10,11 +10,13 @@
                     v-for="(item, index) in activeAttr.attrData.content"
                     :key="index">
 
-        <Uploadimg v-if="item.type === 'uploadImg'" class="myUploadImg" :onSuccess='uploadImg'
-                   :type='item.uploadType'
-                   :imgUrl='item.model'></Uploadimg>
+        <upload-img-components v-if="item.type === 'uploadImg'" class="myUploadImg" :onSuccess='uploadImg'
+                               :type='item.uploadType'
+                               :imgUrl='item.model'></upload-img-components>
 
-        <el-input v-if="item.type === 'input'" autosize v-model="item.model" class="input"
+
+
+        <el-input @blur="inputBlurEvent(item)" v-if="item.type === 'input'" autosize v-model="item.model" class="input"
                   @input='change(item)'
                   :type='item.inputType'></el-input>
 
@@ -71,9 +73,12 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
 import {mapActions,mapState} from "vuex";
 import BindLinkComponents from '@/components/BindLinkComponents'
+import uploadImgComponents from '@/components/common/uploadImgComponents'
+
+
 //没有继承，是依靠vuex的数据。也不碍事啊
 @Component({
-    components:{BindLink:BindLinkComponents},
+    components:{BindLink:BindLinkComponents,uploadImgComponents},
     props:{
         // eTitle:{type:String, default:'属性设置'}
     },
@@ -92,6 +97,20 @@ import BindLinkComponents from '@/components/BindLinkComponents'
         }
     },
     methods:{
+        //用函数来校验灵活一点
+        inputBlurEvent(item){
+
+          if(!item.patternFunc)return;
+          if(!item.patternFunc(item.model)){
+              item.model = '';
+              this.$fun.warning({msg:item.parrern_tip||'表单填写不符合要求'})
+          }
+        },
+        uploadImg(response) {
+            console.log(response);
+            this.currentData.model = 'https://knowledges.qd101.net/uploads/20190921/183707ef00bcaa47dc813d3dd50c0061.jpg';//response.data.url;
+            this.change(this.currentData)
+        },
         radioChange(radio, item) {
 
             //if (typeof item.attrData === 'function') item.attrData(this.activeData, radio);
@@ -179,7 +198,7 @@ import BindLinkComponents from '@/components/BindLinkComponents'
             }
         },
         saveCurrentItem(item) {
-            // if (this.activeAttr.isSendAjax) return;
+            if (this.activeAttr.isSendAjax) return;
             this.currentData = item
         },
         ...mapActions(['setActiveAttr'])
