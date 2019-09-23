@@ -14,6 +14,8 @@
           @click="activeStatus($event, index, item)"
           @contextmenu.stop.prevent="contextmenuRightEv($event, item, index)"
         >
+
+
 <!--          <div class="sortStatus" v-show="sort.sortIndex === index || index === templateList[templateEditIndex].length"></div>-->
 
 <!--          <my-scale-->
@@ -120,6 +122,17 @@
             :data="templateData[templateEditIndex][index]"
             :index="index"
           />
+
+
+
+          <coupon-component
+            ref="plugin"
+            v-if="item.indexOf('coupon') !== -1"
+            @setData="setDataEv"
+            :draggable="true"
+            :data="templateData[templateEditIndex][index]"
+            :index="index"
+          />
 <!--              <space-component-->
 <!--                ref="plugin"-->
 <!--                v-if="item.indexOf('space') !== -1"-->
@@ -199,6 +212,7 @@ import TextComponent from '@/components/diy/TextComponent.vue';
 import TitleComponent from '@/components/diy/TitleComponent.vue';
 import VideoComponent from '@/components/diy/VideoComponent.vue';
 import SearchComponent from '@/components/diy/SearchComponent.vue';
+import CouponComponent from '@/components/diy/CouponComponent.vue';
 
 import { deepCopy, getStyle, pageMove } from '@/common/utils';
 import Hr from '@/assets/js/diy/hr';
@@ -207,10 +221,11 @@ import Space from '@/assets/js/diy/space';
 import Title from '@/assets/js/diy/title';
 import Video from '@/assets/js/diy/video';
 import Search from '@/assets/js/diy/search';
+import Coupon from '@/assets/js/diy/coupon';
 
 
 @Component({
-    name:'PreviewComponent',
+  name: 'PreviewComponent',
   props: {
 
   },
@@ -218,7 +233,7 @@ import Search from '@/assets/js/diy/search';
     templateData: {
       deep: true,
       handler(val) {
-        //console.log('预览的数据变化', val);
+        // console.log('预览的数据变化', val);
         this.setTmplData(val);
       },
     },
@@ -232,13 +247,14 @@ import Search from '@/assets/js/diy/search';
     },
   },
   components: {
+      CouponComponent,
     SpaceComponent,
     HrComponent,
     TextComponent,
     SpaceComponent,
     TitleComponent,
     VideoComponent,
-    SearchComponent
+    SearchComponent,
   },
   filters: {
     dragSorts(val) {
@@ -255,26 +271,23 @@ import Search from '@/assets/js/diy/search';
     ...mapState(['activeAttr', 'tabIndex']),
   },
   methods: {
-    clickPlugin(idx){
+    clickPlugin(idx) {
+      const sectionEl = document.querySelectorAll('.canvas > section')[idx];
+      if (!sectionEl) return;
+      sectionEl.click();
+      const templateName = sectionEl.getAttribute('data-tag');
 
-
-        const sectionEl = document.querySelectorAll('.canvas > section')[idx];
-        if(!sectionEl)return;
-        sectionEl.click()
-        let templateName = sectionEl.getAttribute('data-tag');
-
-            let dragEl = sectionEl.getElementsByClassName(`${templateName}`)[0];
-        console.log(templateName,dragEl);
-        if (!dragEl) return;
-        // 模拟点击
-        dragEl.click();
-
+      const dragEl = sectionEl.getElementsByClassName(`${templateName}`)[0];
+      console.log(templateName, dragEl);
+      if (!dragEl) return;
+      // 模拟点击
+      dragEl.click();
     },
     setDataEv(data) {
       // this.$emit('setData', data)
     },
     activeStatus(e, index, item) {
-        console.log(e,index,item)
+      console.log(e, index, item);
       this.sort.downIndex = index;
       const currentEl = e.currentTarget;
       const config = {
@@ -284,7 +297,7 @@ import Search from '@/assets/js/diy/search';
         top: `${currentEl.offsetTop}px`,
         display: 'block',
       };
-      console.log(config)
+      console.log(config);
 
       // 方便删除的
       this.currentData.index = index;
@@ -407,12 +420,16 @@ export default class PreviewComponent extends Vue {
         case 'title':
           newClass = new Title();
           break;
-          case 'video':
+        case 'video':
           newClass = new Video();
           break;
-          case 'search':
+        case 'search':
           newClass = new Search();
           break;
+        case 'coupon':
+          newClass = new Coupon();
+          break;
+
           // case 'nav':
           //     newClass = new NavJS()
           //     break
@@ -480,6 +497,7 @@ export default class PreviewComponent extends Vue {
 <style scoped lang="stylus">
 .canvasBox
   height 667px
+  background #f2f2f2
   overflow-x hidden
   overflow-y auto
   border 1px dashed #bcbcbc

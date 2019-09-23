@@ -38,107 +38,106 @@
 </template>
 
 <script>
-  import {baseApiUrl} from '@/common/env';
-  import {mapState,mapActions} from 'vuex';
+import { mapState, mapActions } from 'vuex';
+import { baseApiUrl } from '@/common/env';
 
-  function noop() {
-  }
+function noop() {
+}
 
-  export default {
-    props: {
-      data: {
-        type: Object,
-        default: () => ({
-          _ajax: 2
-        })
-      },
-      imgUrl: {
-        type: String,
-        default: ''
-      },
-      type: {
-        type: String,
-        default: ''
-      },
-      multiple: {
-        type: Boolean,
-        default: false
-      },
-      limit: {
-        type: Number,
-        default: 1
-      },
-      'onPreview': {
-        type: Function,
-        default: noop
-      },
-      showFileList: {
-        type: Boolean,
-        default: true
-      },
-      'onSuccess': {
-        type: Function,
-        default: noop
-      },
-      'onRemove': {
-        type: Function,
-        default: noop
-      }
+export default {
+  props: {
+    data: {
+      type: Object,
+      default: () => ({
+        _ajax: 2,
+      }),
     },
-    data() {
-      return {
-        baseURL: baseApiUrl,
-        ajaxData: {
-          _ajax: 2,
-          ...this.data
+    imgUrl: {
+      type: String,
+      default: '',
+    },
+    type: {
+      type: String,
+      default: '',
+    },
+    multiple: {
+      type: Boolean,
+      default: false,
+    },
+    limit: {
+      type: Number,
+      default: 1,
+    },
+    onPreview: {
+      type: Function,
+      default: noop,
+    },
+    showFileList: {
+      type: Boolean,
+      default: true,
+    },
+    onSuccess: {
+      type: Function,
+      default: noop,
+    },
+    onRemove: {
+      type: Function,
+      default: noop,
+    },
+  },
+  data() {
+    return {
+      baseURL: baseApiUrl,
+      ajaxData: {
+        _ajax: 2,
+        ...this.data,
+      },
+    };
+  },
+  computed: {
+    activeAttr: {
+      get() { return this.$store.state.activeAttr; },
+      set: () => {},
+    },
+
+  },
+  methods: {
+    error(err, file, fileList) {
+      this.$fun.error({
+        msg: JSON.stringify(err),
+        title: '上传失败',
+      });
+      // 写死试一下
+      const mock = {
+        data: {
+          url: 'https://knowledges.qd101.net/uploads/20190921/183707ef00bcaa47dc813d3dd50c0061.jpg',
+        },
+      };
+      this.onSuccess.apply(this, mock);
+    },
+    change() {
+      this.activeAttr.isSendAjax = false;
+    },
+    beforeUpload() {
+      this.activeAttr.isSendAjax = true;
+    },
+    success(...params) {
+      try {
+        const needLogin = params[0].data.need_login && params[0].data.need_login.toString();
+        if (needLogin === '1') {
+          this.$message('请先登录');
+          return this.$router.push('/login');
         }
-      }
-    },
-    computed: {
-      activeAttr:{
-        get:function(){return this.$store.state.activeAttr},
-        set:()=>{}
+      } catch (err) {
+        this.$alert(err.message);
       }
 
+      this.onSuccess.apply(this, params);
     },
-    methods: {
-      error(err, file, fileList){
-        this.$fun.error({
-          msg:JSON.stringify(err),
-          title:'上传失败'
-        })
-        //写死试一下
-        const mock = {
-          data:{
-            url:'https://knowledges.qd101.net/uploads/20190921/183707ef00bcaa47dc813d3dd50c0061.jpg'
-          }
-        };
-        this.onSuccess.apply(this, mock)
-      },
-      change() {
-        this.activeAttr.isSendAjax = false
-      },
-      beforeUpload() {
-        this.activeAttr.isSendAjax = true
-      },
-      success(...params) {
-
-        try {
-          let needLogin = params[0].data.need_login && params[0].data.need_login.toString();
-          if (needLogin === '1') {
-            this.$message('请先登录');
-            return this.$router.push('/login')
-          }
-        } catch (err) {
-          this.$alert(err.message)
-        }
-
-        this.onSuccess.apply(this, params)
-      }
-    },
-    created() {
-    }
-  }
+  },
+  created() {
+  },
+};
 </script>
 
 <style lang="stylus" scoped>

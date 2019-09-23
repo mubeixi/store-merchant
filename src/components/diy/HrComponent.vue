@@ -6,80 +6,71 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import Hr from "@/assets/js/diy/hr";
-import {mapState,mapActions,mapMutations} from "vuex";
-import {deepCopyStrict,deepCopy} from "@/common/utils";
+import { mapState, mapActions, mapMutations } from 'vuex';
+import Hr from '@/assets/js/diy/hr';
+import { deepCopyStrict, deepCopy } from '@/common/utils';
 
 @Component({
-    props:{
-        index:{
-          required:true
-        },
-        data: {
-            type: Object,
-            default: () => ({})
-        },
+  props: {
+    index: {
+      required: true,
     },
-    data(){
-      return {
-          hr:{}
-      }
+    data: {
+      type: Object,
+      default: () => ({}),
     },
-    computed:{
-        style() {
-            return deepCopyStrict(this.hr.styleDefault,this.hr.style)
-        },
-        activeAttr:{
-            get(){
-                return this.$store.state.activeAttr
-            },
-            set(nval){
-
-            }
-        },
-      ...mapState(['editStatus'])
+  },
+  data() {
+    return {
+      hr: {},
+    };
+  },
+  computed: {
+    style() {
+      return deepCopyStrict(this.hr.styleDefault, this.hr.style);
     },
-    watch:{
-        //属性变化
-        activeAttr:{
-            deep:true,
-            handler(val){
+    activeAttr: {
+      get() {
+        return this.$store.state.activeAttr;
+      },
+      set(nval) {
 
-            }
-        }
+      },
     },
-    components: {
+    ...mapState(['editStatus']),
+  },
+  watch: {
+    // 属性变化
+    activeAttr: {
+      deep: true,
+      handler(val) {
 
+      },
     },
-    methods:{
-        setData(item, index) {
+  },
+  components: {
 
-            //console.log('hehe',this.hr)
-            this.$store.commit('activeAttr',this.hr);//这里点击之后，setAttr马上就有响应。
+  },
+  methods: {
+    setData(item, index) {
+      // console.log('hehe',this.hr)
+      this.$store.commit('activeAttr', this.hr);// 这里点击之后，setAttr马上就有响应。
 
 
-            this.$store.commit('tabIndex',this.index)
+      this.$store.commit('tabIndex', this.index);
 
-            //用vuex就不要一层层传递了，头都晕了
-            //this.$emit('setData', this.img.attrData)
-        },
-        // ...mapActions(),
+      // 用vuex就不要一层层传递了，头都晕了
+      // this.$emit('setData', this.img.attrData)
     },
+    // ...mapActions(),
+  },
 
 })
 export default class HrComponent extends Vue {
-
-
-
-
-    created(){
-        this.$store.commit('tabIndex',this.index);//设置tabIndex，等于templData是二维数组，这个是二维数组的
-        this.hr = deepCopy(new Hr(this),this.data)
-    }
-
-
-
-
+  created() {
+    this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
+    this.hr = deepCopy(new Hr(this), this.data);
+  }
 }
 </script>
 

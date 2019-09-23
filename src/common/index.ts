@@ -1,6 +1,5 @@
 import Vue from 'vue';
-//const i18n = require('i18n');
-import interceptorsConfig from './interceptors';
+// const i18n = require('i18n');
 import {
   Alert,
   Breadcrumb,
@@ -27,6 +26,7 @@ import {
   Tabs,
   Tooltip,
   Tree,
+  Table,
   Upload,
   TimePicker,
   Col,
@@ -34,10 +34,15 @@ import {
   CheckboxGroup,
   Checkbox,
   ColorPicker,
-  Slider
-} from 'element-ui'
+  Slider,
+  TableColumn
+} from 'element-ui';
+import interceptorsConfig from './interceptors';
 
-import Uploadimg from '@/components/common/uploadImgComponents'
+import Uploadimg from '@/components/common/uploadImgComponents';
+
+import filter from './filter.js';
+
 
 Vue.use(Input);
 Vue.use(Button);
@@ -69,39 +74,43 @@ Vue.use(CheckboxGroup);
 Vue.use(Checkbox);
 Vue.use(ColorPicker);
 Vue.use(Slider);
+Vue.use(TableColumn)
+Vue.use(Table)
 
 
-
-const fun = {
-  success : ({msg = '操作成功',title = '成功'})=>Notification({
-    title: title,
+export const fun = {
+  success: ({ msg = '操作成功', title = '成功' }) => Notification({
+    title,
     message: msg,
-    type: 'success'
+    type: 'success',
   }),
-  warning : ({msg = '',title = '警告'})=>Notification({
-    title: title,
+  warning: ({ msg = '', title = '警告' }) => Notification({
+    title,
     message: msg,
-    type: 'warning'
+    type: 'warning',
   }),
-  info : ({msg = '',title = '消息'})=>Notification({
-    title: title,
+  info: ({ msg = '', title = '消息' }) => Notification({
+    title,
     message: msg,
-    type: 'info'
+    type: 'info',
   }),
-  error : ({msg = '错误',title = '错误'})=>Notification({
-    title: title,
+  error: ({ msg = '错误', title = '错误' }) => Notification({
+    title,
     message: msg,
-    type: 'error'
+    type: 'error',
   }),
+  // Loading:({text = 'loading',fullscreen = false,lock = true,spinner = 'el-icon-loading',mask = false}) =>{
+  //   window.funLoading = Loading.service({text,fullscreen,lock,spinner,background:mask?'rgba(0, 0, 0, 0.1)':null})
+  //
+  // },
+  // close:()=>{window.funLoading.close()}
 
-}
-
-import filter from './filter.js'
+};
 // console.log(filter)
 
 export default {
-  install(){
-    //Vue.prototype.$i18n = i18n
+  install() {
+    // Vue.prototype.$i18n = i18n
     Vue.prototype.$loading = Loading.service;
     Vue.prototype.$notify = Notification;
     Vue.prototype.$message = Message;
@@ -109,9 +118,8 @@ export default {
     Vue.prototype.$confirm = MessageBox.confirm;
     Vue.prototype.$fun = fun;
     Vue.http.interceptors.push(interceptorsConfig);
-    filter.map(value => {
+    filter.map((value) => {
       Vue.filter(value.name, value.methods);
     });
-
-  }
-}
+  },
+};

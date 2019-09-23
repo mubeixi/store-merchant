@@ -10,21 +10,19 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import {mapState,mapActions} from "vuex";
+import { mapState, mapActions } from 'vuex';
 
 @Component({
-    methods:{
-        emitPreviewPlugin(idx){
-
-            this.$parent.$refs.preview.clickPlugin(idx)
-        }
+  methods: {
+    emitPreviewPlugin(idx) {
+      this.$parent.$refs.preview.clickPlugin(idx);
     },
-    computed:{
-        ...mapState(['tmplData','templateEditIndex'])
-    }
+  },
+  computed: {
+    ...mapState(['tmplData', 'templateEditIndex']),
+  },
 })
 export default class RightComponent extends Vue {
-
 
 
 }

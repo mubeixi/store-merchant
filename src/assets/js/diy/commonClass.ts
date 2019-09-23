@@ -1,8 +1,8 @@
 class Basis {
   constructor() {
-    this.commonStyle = []
-    this.isEdit = true
+    this.commonStyle = [];
+    this.isEdit = true;
   }
 }
 
-export default Basis
+export default Basis;

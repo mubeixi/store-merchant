@@ -1,6 +1,6 @@
-import Common from './commonClass'
-import Vue from 'vue'
-import {deepCopy} from "@/common/utils";
+import Vue from 'vue';
+import Common from './commonClass';
+import { deepCopy } from '@/common/utils';
 
 
 function setValue() {
@@ -9,12 +9,11 @@ function setValue() {
 }
 
 function setConfig() {
-
-  if(JSON.stringify(this.style)===JSON.stringify({
+  if (JSON.stringify(this.style) === JSON.stringify({
     color: '',
-    bgColor:''
-  })){
-    Vue.set(this, 'style', JSON.parse(JSON.stringify(this.styleDefault)))
+    bgColor: '',
+  })) {
+    Vue.set(this, 'style', JSON.parse(JSON.stringify(this.styleDefault)));
   }
 
   // let config = {}
@@ -22,27 +21,26 @@ function setConfig() {
 }
 
 function setAttrData() {
-
-  let data = {
+  const data = {
     title: '标题设置',
     content: [
       {
         type: 'input',
         text: '名称',
-        inputType:'input',
+        inputType: 'input',
         editType: 'value',
         editKey: 'title',
         model: this.value.title,
-        editCb: item =>item.model
+        editCb: item => item.model,
       },
       {
         type: 'input',
         text: '副标题',
-        inputType:'input',
+        inputType: 'input',
         editType: 'value',
         editKey: 'small',
         model: this.value.small,
-        editCb: item =>item.model
+        editCb: item => item.model,
       },
       {
         type: 'color',
@@ -50,7 +48,7 @@ function setAttrData() {
         model: this.style.bgColor,
         editType: 'style',
         editKey: 'bgColor',
-        editCb: item =>item.model
+        editCb: item => item.model,
       },
       {
         type: 'color',
@@ -58,7 +56,7 @@ function setAttrData() {
         model: this.style.color,
         editType: 'style',
         editKey: 'color',
-        editCb: item =>item.model
+        editCb: item => item.model,
       },
       {
         type: 'setlink',
@@ -66,40 +64,35 @@ function setAttrData() {
         editType: 'value',
         editKey: 'link',
         model: this.value.link,
-        editCb: item =>item.model
-      }
+        editCb: item => item.model,
+      },
 
-    ]
-  }
+    ],
+  };
 
 
-  Vue.set(this, 'attrData', data)
+  Vue.set(this, 'attrData', data);
 }
 
 function attrData(options = {}) {
-
-  let {value, config, attrData} = options;
+  const { value, config, attrData } = options;
   if (value !== false) setValue.call(this);
   if (config !== false) setConfig.call(this);
   if (attrData !== false) setAttrData.call(this);
-
-
 }
 //
-class Title extends Common{
-
-
+class Title extends Common {
   tag = 'title';
-  //activeIndex = 0;
+  // activeIndex = 0;
 
   style = {
     color: '',
-    bgColor:''
+    bgColor: '',
   }
 
   styleDefault = {
     color: '#333',
-    bgColor:'#e6e6e6'
+    bgColor: '#e6e6e6',
   }
 
   config = {
@@ -108,26 +101,25 @@ class Title extends Common{
 
 
   value ={
-    link:'',
-    title:'大标题',
-    small:'小标题'
+    link: '',
+    title: '大标题',
+    small: '小标题',
   }
 
 
   constructor() {
-    super()
+    super();
 
-    //统一这样来初始化
-    attrData.call(this)
-
+    // 统一这样来初始化
+    attrData.call(this);
   }
 
-  //value = []
+  // value = []
 
   setIndex(index: Number, options: Object) {
     this.activeIndex = index;
-    attrData.call(this, options)
+    attrData.call(this, options);
   }
 }
 
-export default Title
+export default Title;

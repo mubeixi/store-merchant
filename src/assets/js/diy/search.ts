@@ -1,6 +1,6 @@
-import Common from './commonClass'
-import Vue from 'vue'
-import {deepCopy} from "@/common/utils";
+import Vue from 'vue';
+import Common from './commonClass';
+import { deepCopy } from '@/common/utils';
 
 
 function setValue() {
@@ -9,57 +9,53 @@ function setValue() {
 }
 
 function setConfig() {
-
-  //如果新对象，那么可以考虑用默认值替换掉。
-  if(JSON.stringify(this.style)===JSON.stringify({
+  // 如果新对象，那么可以考虑用默认值替换掉。
+  if (JSON.stringify(this.style) === JSON.stringify({
     bgColor: '',
-    height:30,
-    color:'',
-    inputBgColor:''
-  })){
-    Vue.set(this, 'style', JSON.parse(JSON.stringify(this.styleDefault)))
+    height: 30,
+    color: '',
+    inputBgColor: '',
+  })) {
+    Vue.set(this, 'style', JSON.parse(JSON.stringify(this.styleDefault)));
   }
   // let config = {}
-
 }
 
 function setAttrData() {
-
-  let data = {
+  const data = {
     title: '辅助间隙设置',
     content: [
       {
         type: 'addbtn',
-        text:'',
+        text: '',
         label: '添加热词',
-        editCb: item =>{
-          let temp = [...this.value.hot]
+        editCb: (item) => {
+          const temp = [...this.value.hot];
 
-          temp.push('热词')
-          console.log(this,temp)
-          Vue.set(this.value,'hot',temp)
+          temp.push('热词');
+          console.log(this, temp);
+          Vue.set(this.value, 'hot', temp);
 
-          //设置一下
-          this.setIndex(0,{config:false,value:false})
+          // 设置一下
+          this.setIndex(0, { config: false, value: false });
 
-          //都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData',this.attrData);//传出去
-          this.vm.$store.state.activeAttr.value.hot = this.value.hot;//传出去
-
-        }
+          // 都是改写vuex里面的数据，两种写法都可以
+          this.vm.$store.commit('attrData', this.attrData);// 传出去
+          this.vm.$store.state.activeAttr.value.hot = this.value.hot;// 传出去
+        },
       },
       {
         type: 'arr',
-        row_type:'text',//text/num这些代表简单的值，可以直接设置。
-        label:'热词名称',
-        value:this.value.hot,
-        //之类是输入的回调，可以根据需要决定写什么
-        inputCB:(item)=>{
-          this.value.hot = [...item.value]
+        row_type: 'text', // text/num这些代表简单的值，可以直接设置。
+        label: '热词名称',
+        value: this.value.hot,
+        // 之类是输入的回调，可以根据需要决定写什么
+        inputCB: (item) => {
+          this.value.hot = [...item.value];
 
-          this.vm.$store.state.activeAttr.value.hot = this.value.hot;//传出去
-        }
-        //用函数来包容万象，返回数组
+          this.vm.$store.state.activeAttr.value.hot = this.value.hot;// 传出去
+        },
+        // 用函数来包容万象，返回数组
         // getFunc:()=>{
         //   let arr = this.config.hot,rt = [];
         //   for(var i in  arr){
@@ -78,18 +74,18 @@ function setAttrData() {
         value: [
           {
             label: '方形',
-            value: 'square'
+            value: 'square',
           },
           {
             label: '圆形',
-            value: 'round'
+            value: 'round',
           },
-        ]
+        ],
       },
       {
         type: 'slider',
         text: '高度',
-        min:24,
+        min: 24,
         editType: 'style',
         editKey: 'height',
         model: this.style.height,
@@ -100,7 +96,7 @@ function setAttrData() {
         model: this.style.bgColor,
         editType: 'style',
         editKey: 'bgColor',
-        editCb: item =>item.model
+        editCb: item => item.model,
       },
       {
         type: 'color',
@@ -108,7 +104,7 @@ function setAttrData() {
         model: this.style.inputBgColor,
         editType: 'style',
         editKey: 'inputBgColor',
-        editCb: item =>item.model
+        editCb: item => item.model,
       },
       {
         type: 'color',
@@ -116,40 +112,33 @@ function setAttrData() {
         model: this.style.color,
         editType: 'style',
         editKey: 'color',
-        editCb: item =>item.model
+        editCb: item => item.model,
       },
-    ]
-  }
+    ],
+  };
 
 
-
-  Vue.set(this, 'attrData', data)
+  Vue.set(this, 'attrData', data);
 }
 
 function attrData(options = {}) {
-
-
-  let {value, config, attrData} = options;
-  console.log(value,config,attrData)
+  const { value, config, attrData } = options;
+  console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
   if (config !== false) setConfig.call(this);
   if (attrData !== false) setAttrData.call(this);
-
-
 }
 
 
-class Search extends Common{
-
-
+class Search extends Common {
   tag = 'search';
-  //activeIndex = 0;
+  // activeIndex = 0;
 
   style = {
     bgColor: '',
-    height:30,
-    color:'',
-    inputBgColor:''
+    height: 30,
+    color: '',
+    inputBgColor: '',
   }
 
   /**
@@ -160,41 +149,36 @@ class Search extends Common{
    */
   styleDefault = {
     bgColor: '#fff',
-    height:30,
-    color:'#444',
-    inputBgColor:'#f2f2f2'
+    height: 30,
+    color: '#444',
+    inputBgColor: '#f2f2f2',
   }
 
   config = {
 
-    type:'round'//quare
+    type: 'round', // quare
   }
 
   value = {
-    hot:['女装'],
+    hot: ['女装'],
   }
 
 
   constructor() {
+    super();
 
 
-    super()
-
-
-    //统一这样来初始化
-    attrData.call(this,{})
-
-
+    // 统一这样来初始化
+    attrData.call(this, {});
   }
 
-  //value = []
+  // value = []
 
 
   setIndex(index: Number, options: Object) {
     this.activeIndex = index;
-    attrData.call(this, options)
+    attrData.call(this, options);
   }
-
 }
 
-export default Search
+export default Search;

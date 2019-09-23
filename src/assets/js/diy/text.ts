@@ -1,6 +1,6 @@
-import Common from './commonClass'
-import Vue from 'vue'
-import {deepCopy} from "@/common/utils";
+import Vue from 'vue';
+import Common from './commonClass';
+import { deepCopy } from '@/common/utils';
 
 
 function setValue() {
@@ -9,14 +9,13 @@ function setValue() {
 }
 
 function setConfig() {
-
-  if(JSON.stringify(this.style)===JSON.stringify({
+  if (JSON.stringify(this.style) === JSON.stringify({
     color: '',
-    bgColor:'',
-    fontSize:'',
-    textAlign:'',
-  })){
-    Vue.set(this, 'style', JSON.parse(JSON.stringify(this.styleDefault)))
+    bgColor: '',
+    fontSize: '',
+    textAlign: '',
+  })) {
+    Vue.set(this, 'style', JSON.parse(JSON.stringify(this.styleDefault)));
   }
 
   // let config = {}
@@ -24,18 +23,17 @@ function setConfig() {
 }
 
 function setAttrData() {
-
-  let data = {
+  const data = {
     title: '文字设置',
     content: [
       {
         type: 'input',
         text: '文本内容',
-        inputType:'textarea',
+        inputType: 'textarea',
         editType: 'value',
         editKey: 'content',
         model: this.value.content,
-        editCb: item =>item.model
+        editCb: item => item.model,
       },
       {
         type: 'radio',
@@ -46,17 +44,17 @@ function setAttrData() {
         value: [
           {
             label: '大',
-            value: '18'
+            value: '18',
           },
           {
             label: '中',
-            value: '14'
+            value: '14',
           },
           {
             label: '小',
-            value: '12'
-          }
-        ]
+            value: '12',
+          },
+        ],
       },
       {
         type: 'color',
@@ -64,7 +62,7 @@ function setAttrData() {
         model: this.style.bgColor,
         editType: 'style',
         editKey: 'bgColor',
-        editCb: item =>item.model
+        editCb: item => item.model,
       },
       {
         type: 'color',
@@ -72,7 +70,7 @@ function setAttrData() {
         model: this.style.color,
         editType: 'style',
         editKey: 'color',
-        editCb: item =>item.model
+        editCb: item => item.model,
       },
       {
         type: 'radio',
@@ -83,17 +81,17 @@ function setAttrData() {
         value: [
           {
             label: '左',
-            value: 'left'
+            value: 'left',
           },
           {
             label: '中',
-            value: 'center'
+            value: 'center',
           },
           {
             label: '右',
-            value: 'right'
-          }
-        ]
+            value: 'right',
+          },
+        ],
       },
       {
         type: 'setlink',
@@ -101,44 +99,39 @@ function setAttrData() {
         editType: 'value',
         editKey: 'link',
         model: this.value.link,
-        editCb: item =>item.model
-      }
+        editCb: item => item.model,
+      },
 
-    ]
-  }
+    ],
+  };
 
 
-  Vue.set(this, 'attrData', data)
+  Vue.set(this, 'attrData', data);
 }
 
 function attrData(options = {}) {
-
-  let {value, config, attrData} = options;
+  const { value, config, attrData } = options;
   if (value !== false) setValue.call(this);
   if (config !== false) setConfig.call(this);
   if (attrData !== false) setAttrData.call(this);
-
-
 }
 //
-class Hr extends Common{
-
-
+class Hr extends Common {
   tag = 'text';
-  //activeIndex = 0;
+  // activeIndex = 0;
 
   style = {
     color: '',
-    bgColor:'',
-    fontSize:'',
-    textAlign:'',
+    bgColor: '',
+    fontSize: '',
+    textAlign: '',
   }
 
   styleDefault = {
     color: '#333',
-    bgColor:'#e6e6e6',
-    fontSize:'14',
-    textAlign:'left',
+    bgColor: '#e6e6e6',
+    fontSize: '14',
+    textAlign: 'left',
   }
 
   config = {
@@ -147,31 +140,27 @@ class Hr extends Common{
 
 
   value ={
-    link:'',
-    content:'这是一行文字'
+    link: '',
+    content: '这是一行文字',
   }
 
 
   constructor(vm) {
+    super();
 
+    this.vmObj = vm;
 
-    super()
-
-    this.vmObj = vm
-
-    //统一这样来初始化
-    attrData.call(this)
-
-
+    // 统一这样来初始化
+    attrData.call(this);
   }
 
-  //value = []
+  // value = []
 
 
   setIndex(index: Number, options: Object) {
     this.activeIndex = index;
-    attrData.call(this, options)
+    attrData.call(this, options);
   }
 }
 
-export default Hr
+export default Hr;

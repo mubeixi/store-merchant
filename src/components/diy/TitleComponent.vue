@@ -8,78 +8,69 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import Title from "@/assets/js/diy/title";
-import {mapState,mapActions,mapMutations} from "vuex";
-import {deepCopyStrict,deepCopy} from "@/common/utils";
+import { mapState, mapActions, mapMutations } from 'vuex';
+import Title from '@/assets/js/diy/title';
+import { deepCopyStrict, deepCopy } from '@/common/utils';
 
 @Component({
-    props:{
-        index:{
-          required:true
-        },
-        data: {
-            type: Object,
-            default: () => ({})
-        },
+  props: {
+    index: {
+      required: true,
     },
-    data(){
-      return {
-          title:{}
-      }
+    data: {
+      type: Object,
+      default: () => ({}),
     },
-    computed:{
-        style() {
-            return deepCopyStrict(this.title.styleDefault,this.title.style)
-        },
-        activeAttr:{
-            get(){
-                return this.$store.state.activeAttr
-            },
-            set(nval){
+  },
+  data() {
+    return {
+      title: {},
+    };
+  },
+  computed: {
+    style() {
+      return deepCopyStrict(this.title.styleDefault, this.title.style);
+    },
+    activeAttr: {
+      get() {
+        return this.$store.state.activeAttr;
+      },
+      set(nval) {
 
-            }
-        },
-      ...mapState(['editStatus'])
+      },
     },
-    watch:{
-        //属性变化
-        activeAttr:{
-            deep:true,
-            handler(val){
+    ...mapState(['editStatus']),
+  },
+  watch: {
+    // 属性变化
+    activeAttr: {
+      deep: true,
+      handler(val) {
 
-            }
-        }
+      },
     },
-    components: {
+  },
+  components: {
 
+  },
+  methods: {
+    setData(item, index) {
+      // console.log('hehe',this.hr)
+      this.$store.commit('activeAttr', this.title);// 这里点击之后，setAttr马上就有响应。
+      this.$store.commit('tabIndex', this.index);
+
+      // 用vuex就不要一层层传递了，头都晕了
+      // this.$emit('setData', this.img.attrData)
     },
-    methods:{
-        setData(item, index) {
-
-            //console.log('hehe',this.hr)
-            this.$store.commit('activeAttr',this.title);//这里点击之后，setAttr马上就有响应。
-            this.$store.commit('tabIndex',this.index)
-
-            //用vuex就不要一层层传递了，头都晕了
-            //this.$emit('setData', this.img.attrData)
-        },
-        // ...mapActions(),
-    },
+    // ...mapActions(),
+  },
 
 })
 export default class TitleComponent extends Vue {
-
-
-
-    created(){
-        this.$store.commit('tabIndex',this.index);//设置tabIndex，等于templData是二维数组，这个是二维数组的
-        this.title = deepCopy(new Title(this),this.data)
-    }
-
-
-
-
-
+  created() {
+    this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
+    this.title = deepCopy(new Title(this), this.data);
+  }
 }
 </script>
 

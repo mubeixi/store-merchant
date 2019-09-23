@@ -1,4 +1,4 @@
-import {PLUGINSLIST} from './data';
+import { PLUGINSLIST } from './data';
 
 export default [
   {
@@ -11,13 +11,13 @@ export default [
   {
     name: 'getTitleByTag',
     methods: (tag) => {
-      for (var plugin of PLUGINSLIST) {
+      for (const plugin of PLUGINSLIST) {
         if (plugin.label === tag) {
           return plugin.value;
         }
       }
       // throw '未知组件';
       return '未知组件';
-    }
+    },
   },
 ];

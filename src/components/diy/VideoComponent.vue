@@ -5,80 +5,73 @@
 </template>
 
 <script lang="ts">
-    import { Component, Prop, Vue } from 'vue-property-decorator';
-    import Video from "@/assets/js/diy/video";
-    import {mapState,mapActions,mapMutations} from "vuex";
-    import {deepCopyStrict,deepCopy} from "@/common/utils";
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import { mapState, mapActions, mapMutations } from 'vuex';
+import Video from '@/assets/js/diy/video';
+import { deepCopyStrict, deepCopy } from '@/common/utils';
 
     @Component({
-        props:{
-            index:{
-                required:true
-            },
-            data: {
-                type: Object,
-                default: () => ({})
-            },
+      props: {
+        index: {
+          required: true,
         },
-        data(){
-            return {
-                video:{}
-            }
+        data: {
+          type: Object,
+          default: () => ({}),
         },
-        computed:{
-            style() {
-                return deepCopyStrict(this.video.styleDefault,this.video.style)
-            },
-            activeAttr:{
-                get(){
-                    return this.$store.state.activeAttr
-                },
-                set(nval){
-
-                }
-            },
-            ...mapState(['editStatus'])
+      },
+      data() {
+        return {
+          video: {},
+        };
+      },
+      computed: {
+        style() {
+          return deepCopyStrict(this.video.styleDefault, this.video.style);
         },
-        watch:{
-            //属性变化
-            activeAttr:{
-                deep:true,
-                handler(val){
+        activeAttr: {
+          get() {
+            return this.$store.state.activeAttr;
+          },
+          set(nval) {
 
-                }
-            }
+          },
         },
-        components: {
+        ...mapState(['editStatus']),
+      },
+      watch: {
+        // 属性变化
+        activeAttr: {
+          deep: true,
+          handler(val) {
 
+          },
         },
-        methods:{
-            setData(item, index) {
+      },
+      components: {
 
-                //console.log('hehe',this.video)
-                this.$store.commit('activeAttr',this.video);//这里点击之后，setAttr马上就有响应。
+      },
+      methods: {
+        setData(item, index) {
+          // console.log('hehe',this.video)
+          this.$store.commit('activeAttr', this.video);// 这里点击之后，setAttr马上就有响应。
 
 
-                this.$store.commit('tabIndex',this.index)
+          this.$store.commit('tabIndex', this.index);
 
-                //用vuex就不要一层层传递了，头都晕了
-                //this.$emit('setData', this.img.attrData)
-            },
-            // ...mapActions(),
+          // 用vuex就不要一层层传递了，头都晕了
+          // this.$emit('setData', this.img.attrData)
         },
+        // ...mapActions(),
+      },
 
     })
-    export default class VideoComponent extends Vue {
-
-        created(){
-
-            this.$store.commit('tabIndex',this.index);//设置tabIndex，等于templData是二维数组，这个是二维数组的
-            this.video = deepCopy(new Video(this),this.data)
-        }
-
-
-
-
-    }
+export default class VideoComponent extends Vue {
+  created() {
+    this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
+    this.video = deepCopy(new Video(this), this.data);
+  }
+}
 </script>
 
 <style scoped lang="stylus">

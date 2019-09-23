@@ -21,48 +21,46 @@
 </template>
 
 <script lang="ts">
-    import {Component, Vue} from 'vue-property-decorator';
-    import SetAttrComponent from '@/components/SetAttrComponent.vue'; // @ is an alias to /src
-    import PreviewComponent from "@/components/PreviewComponent.vue";
-    import PluginsComponent from "@/components/PluginsComponent.vue";
-    import RightComponent from "@/components/RightComponent.vue";
-    import {mapState,mapActions,mapMutations} from "vuex";
-    import {moveEl} from "@/common/utils";
+import { Component, Vue } from 'vue-property-decorator';
+import { mapState, mapActions, mapMutations } from 'vuex';
+import SetAttrComponent from '@/components/SetAttrComponent.vue'; // @ is an alias to /src
+import PreviewComponent from '@/components/PreviewComponent.vue';
+import PluginsComponent from '@/components/PluginsComponent.vue';
+import RightComponent from '@/components/RightComponent.vue';
+import { moveEl } from '@/common/utils';
 
     @Component({
-        components: {
-            PluginsComponent,
-            SetAttrComponent,
-            PreviewComponent,
-            RightComponent
+      components: {
+        PluginsComponent,
+        SetAttrComponent,
+        PreviewComponent,
+        RightComponent,
+      },
+      methods: {
+        // 这个数据一直往上传，这么辛苦
+        setDataEv(data) {
+          // this.activeObj = data
         },
-        methods:{
-            //这个数据一直往上传，这么辛苦
-            setDataEv(data) {
-                //this.activeObj = data
-            },
-        },
-        computed:{
-            ...mapState(['activeAttr','editStatus'])
-        },
-        mounted() {
-
-            //右侧如果内容过多，可以用滚动栏
-            moveEl(this.$refs.setAttr.$el)
-        }
+      },
+      computed: {
+        ...mapState(['activeAttr', 'editStatus']),
+      },
+      mounted() {
+        // 右侧如果内容过多，可以用滚动栏
+        moveEl(this.$refs.setAttr.$el);
+      },
     })
-    export default class Home extends Vue {
+export default class Home extends Vue {
+  created() {
 
-
-        created() {
-
-        }
-    }
+  }
+}
 </script>
 <style lang="stylus" scoped>
 .wrap
   width 1390px
-  margin 100px auto 0
+  padding-top 100px
+  margin 0px auto 0
   .plugins
     width 272px
     height 600px

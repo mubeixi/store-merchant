@@ -5,83 +5,74 @@
 </template>
 
 <script lang="ts">
-    import { Component, Prop, Vue } from 'vue-property-decorator';
-    import Space from "@/assets/js/diy/space";
-    import {mapState,mapActions,mapMutations} from "vuex";
-    import {deepCopyStrict,deepCopy} from "@/common/utils";
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import { mapState, mapActions, mapMutations } from 'vuex';
+import Space from '@/assets/js/diy/space';
+import { deepCopyStrict, deepCopy } from '@/common/utils';
 
     @Component({
-        props:{
-            index:{
-                required:true
-            },
-            data: {
-                type: Object,
-                default: () => ({})
-            },
+      props: {
+        index: {
+          required: true,
         },
-        data(){
-            return {
-                space:{}
-            }
+        data: {
+          type: Object,
+          default: () => ({}),
         },
-        computed:{
-            style() {
-                return deepCopyStrict(this.space.styleDefault,this.space.style)
-            },
-            activeAttr:{
-                get(){
-                    return this.$store.state.activeAttr
-                },
-                set(nval){
-
-                }
-            },
-            ...mapState(['editStatus'])
+      },
+      data() {
+        return {
+          space: {},
+        };
+      },
+      computed: {
+        style() {
+          return deepCopyStrict(this.space.styleDefault, this.space.style);
         },
-        watch:{
-            //属性变化
-            activeAttr:{
-                deep:true,
-                handler(val){
+        activeAttr: {
+          get() {
+            return this.$store.state.activeAttr;
+          },
+          set(nval) {
 
-                }
-            }
+          },
         },
-        components: {
+        ...mapState(['editStatus']),
+      },
+      watch: {
+        // 属性变化
+        activeAttr: {
+          deep: true,
+          handler(val) {
 
+          },
         },
-        methods:{
-            setData(item, index) {
+      },
+      components: {
 
-                //console.log('hehe',this.space)
-                this.$store.commit('activeAttr',this.space);//这里点击之后，setAttr马上就有响应。
+      },
+      methods: {
+        setData(item, index) {
+          // console.log('hehe',this.space)
+          this.$store.commit('activeAttr', this.space);// 这里点击之后，setAttr马上就有响应。
 
 
-                this.$store.commit('tabIndex',this.index)
+          this.$store.commit('tabIndex', this.index);
 
-                //用vuex就不要一层层传递了，头都晕了
-                //this.$emit('setData', this.img.attrData)
-            },
-            // ...mapActions(),
+          // 用vuex就不要一层层传递了，头都晕了
+          // this.$emit('setData', this.img.attrData)
         },
+        // ...mapActions(),
+      },
 
     })
-    export default class SpaceComponent extends Vue {
-
-
-
-
-        created(){
-            console.log(4444)
-            this.$store.commit('tabIndex',this.index);//设置tabIndex，等于templData是二维数组，这个是二维数组的
-            this.space = deepCopy(new Space(this),this.data)
-        }
-
-
-
-
-    }
+export default class SpaceComponent extends Vue {
+  created() {
+    console.log(4444);
+    this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
+    this.space = deepCopy(new Space(this), this.data);
+  }
+}
 </script>
 
 <style scoped lang="stylus">

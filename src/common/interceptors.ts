@@ -9,16 +9,19 @@
 
 import { router } from '../router';
 
-export default function(request, next) {
+import {fun} from "@/common/index";
 
-  next(function(response) {
+export default function (request, next) {
+  next((response) => {
 
     if (response.status !== 200) {
-      //vant.showMsg('服务器出去旅行了');
+      // vant.showMsg('服务器出去旅行了');
     } else {
 
-      switch (+response.body.code) {
-        case 1:
+      window.funLoading && window.funLoading.close();
+
+      switch (+response.body.errorCode) {
+        case 0:
           break;
         case 20005:
           // if (window.location.href.indexOf('login') < 0) {
@@ -95,7 +98,8 @@ export default function(request, next) {
 
           break;
         default:
-          //vant.showMsg(response.body.msg || '请求数据为空或者有误');
+          fun.error({msg:response.body.msg||'请求错误'})
+          // vant.showMsg(response.body.msg || '请求数据为空或者有误');
       }
     }
   });
