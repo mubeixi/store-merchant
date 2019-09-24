@@ -29,7 +29,7 @@ function setAttrData() {
         type: 'addbtn',
         text: '',
         label: '选择优惠券',
-        dialogCb:(coupon_list)=>{
+        dialogCB:(coupon_list)=>{
 
           this.value.list = [...coupon_list];
           this.setIndex(0, { config: false, value: false });
@@ -40,7 +40,7 @@ function setAttrData() {
           this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
         },
         //这个按钮的功能，主要是新增页面吧
-        editCb: (pageEl) => {
+        editCB: (pageEl) => {
 
           let tempArr = []
           for(var i in this.value.list){
@@ -70,7 +70,7 @@ function setAttrData() {
           //
           // this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
         },
-        removeCb:(idx)=>{
+        removeCB:(idx)=>{
           this.value.list.splice(idx,1);
 
           this.setIndex(0, { config: false, value: false });
