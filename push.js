@@ -17,5 +17,5 @@ shell.cd('../shop-diy-dist');
 
 // 不能在一股脑全部添加了
 shell.exec('git add htdocs/member/shop/setting/diy/');
-shell.exec("git commit -m '前端自动编译提交 function'");
+shell.exec("git commit -m 'autopush");
 shell.exec('git push origin master');

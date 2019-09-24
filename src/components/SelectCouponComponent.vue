@@ -33,6 +33,7 @@
           max-height="500"
           ref="multipleTable"
           @selection-change="handleSelectionChange"
+          @row-click="handleRowChange"
           style="width: 100%">
           <el-table-column type="selection">
           </el-table-column>
@@ -168,6 +169,10 @@ export default {
 
   },
   methods:{
+    //单击某一行
+    handleRowChange(	row, column, event  ){
+      this.$refs.multipleTable.toggleRowSelection(row)
+    },
     filterTag(value, row) {
       return row.tag === value;
     },
