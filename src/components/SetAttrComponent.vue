@@ -43,7 +43,7 @@
 
         <div v-if="item.type==='arr' && item.value.length>0" class="arr-box">
           <div v-for="(arr_item,idx) in item.value" :key="idx" class="arr-row" style="background: #f2f2f2;padding: 20px;">
-<!--            简单值-->
+            <!--简单值-->
             <div class="flex" v-if="['text','number'].indexOf(item.row_type)!==-1">
               <span class="padding10-c">{{item.label}}</span> <el-input @input="item.inputCB(item)" class="flex1" v-model="item.value[idx]" />
             </div>
@@ -53,8 +53,18 @@
             </div>
 
             <div class="row-container" v-if="['swiper'].indexOf(item.row_type)!==-1">
-              <upload-img-components tip="（建议图片尺寸700px*380px）" :cropperOption="{aspectRatio:1/1}" class="myUploadImg" :onSuccess='item.imgCB' type='avatar' :idx2="idx" :imgUrl='item.value[idx].img_src' />
-              <el-button  size="small" @click.prevent="bindLinkDialogShow = true">绑定链接</el-button>
+              <upload-img-components
+                tip="（建议图片尺寸700px*380px）"
+                :cropperOption="{aspectRatio:1/1}"
+                class="myUploadImg"
+                :onSuccess='item.imgCB'
+                type='avatar'
+                :idx2="idx"
+                :imgUrl='item.value[idx].img_src' />
+              <div>
+                <el-button :title="item.value[idx].tooltip"  size="small" @click="openSwiperBindLink(item,idx,item.bindCB)"    >绑定链接</el-button>
+                <span class="padding10-c font12">{{item.value[idx].tooltip}}</span>
+              </div>
             </div>
 
             <i class="el-icon-circle-close del-icon" @click="item.removeCB(idx)"></i>
@@ -98,7 +108,7 @@
 <!--      </el-form-item>-->
     </el-form>
 
-    <bind-link-components @cancel="bindLinkCancel"   :show.sync="bindLinkDialogShow" :data="bindLinkData" />
+    <bind-link-components @cancel="bindLinkCancel" :onSuccess="bindLinkSuccessCall" :idx2="bindLinkIdx2"   :pageEl="pageEl"   :show="bindLinkDialogShow" />
 
     <select-coupon-component @coupon="bindCouponSelect" @couponCancel="couponCancel" :ids="coupon_ids"   :show.sync="couponDialogShow" />
   </div>
@@ -122,9 +132,11 @@ import SelectCouponComponent from "@/components/SelectCouponComponent.vue";
   },
   data() {
     return {
+        bindLinkDialogShow:false,
+        bindLinkIdx2:null,
+        bindLinkSuccessCall:null,
       selectPageShow: false,
       bindLinkData:null,
-      bindLinkDialogShow:false,
       currentData: {},
       clickObj: {},
       color1: null,
@@ -158,6 +170,11 @@ import SelectCouponComponent from "@/components/SelectCouponComponent.vue";
       this.pageEl = this
     },
   methods: {
+      openSwiperBindLink(item,idx2,success){
+          this.bindLinkDialogShow = true
+          this.bindLinkIdx2 = idx2
+          this.bindLinkSuccessCall = success
+      },
       switchChange(item) {
           this.change(item)
       },

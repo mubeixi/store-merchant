@@ -48,7 +48,7 @@ export const getSkinConfig = (data,options) => fetch('get_shophome',data,options
 //更新商城的配置
 export const setSkinConfig = (data,options) => fetch('update_shophome',data,options)
 
-
+export const getProductCategory = (data,options) => fetch('pro_cate',data,options)
 
 
 

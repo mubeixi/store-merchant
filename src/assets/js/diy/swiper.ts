@@ -31,6 +31,22 @@ function setAttrData() {
         row_type: 'swiper', // text/num这些代表简单的值，可以直接设置。
         label: '',
         value: this.value.list,
+        bindCB:(dataType, type, path, tooltip, dataItem,pageEl,idx2)=>{
+
+          console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
+          pageEl.bindLinkDialogShow = false;
+
+          console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
+          Vue.set(this.value.list[idx2],'link',path);
+          Vue.set(this.value.list[idx2],'linkType',type);
+          Vue.set(this.value.list[idx2],'tooltip',tooltip);
+          //
+          this.setIndex(0, { config: false, value: false });
+          // // 都是改写vuex里面的数据，两种写法都可以
+          this.vm.$store.commit('attrData', this.attrData);// 传出去
+          this.vm.$store.state.activeAttr.value.list = this.value.list;
+
+        },
         // 之类是输入的回调，可以根据需要决定写什么
         imgCB: (item,idx2) => {
           console.log(item.data.path,idx2)
@@ -66,6 +82,9 @@ function setAttrData() {
         type: 'addbtn',
         text: '',
         label: '新增图片',
+        // openBindLink:(pageEl,item,idx)=>{
+        //   pageEl.bindLinkDialogShow = true
+        // },
         dialogCB:(coupon_list)=>{
 
           this.value.list = [...coupon_list];
@@ -85,9 +104,6 @@ function setAttrData() {
           //都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
-
-          pageEl.bindLinkDialogShow = true;
-
 
           // // 设置一下
           // this.setIndex(0, { config: false, value: false });
