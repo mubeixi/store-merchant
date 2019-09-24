@@ -1,4 +1,5 @@
 import { PLUGINSLIST } from './data';
+import {baseApiUrl} from '@/common/env';
 
 export default [
   {
@@ -7,6 +8,13 @@ export default [
       if (val.indexOf('px') == -1) return `${val}px`;
       return val;
     },
+  },
+  {
+    name:'domain',
+    methods:(url) => {
+      if (url.indexOf('http') == -1) return baseApiUrl+url;
+      return url;
+    }
   },
   {
     name: 'getTitleByTag',

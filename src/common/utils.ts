@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import {baseApiUrl} from "@/common/env";
 
 function $(el) {
   return document.querySelectorAll(el);
@@ -8,6 +9,10 @@ export const getStyle = function (el, name) {
   return window.getComputedStyle(el, null)[name];
 };
 
+export const domain = (url)=>{
+  if (url.indexOf('http') == -1) return baseApiUrl+url;
+  return url;
+}
 
 // 会修改原数据
 function addFun(object, newobj) {
@@ -143,7 +148,7 @@ export class pageMove {
 
     if (dragEl === 'sort') return pageMove.initSort();
 
-    pageMove.saveCb(dragEl, cb);
+    pageMove.saveCB(dragEl, cb);
     Array.from(dragEl).map((node) => {
       const isSortStatus = node.children[0].className.indexOf('sortStatus') !== -1;
       pageMove.dragObj = isSortStatus ? node.children[1] : node.children[0];
@@ -159,7 +164,7 @@ export class pageMove {
     });
   }
 
-  static saveCb(dragEl, cb) {
+  static saveCB(dragEl, cb) {
     const name = dragEl[0].getAttribute('data-name');
     pageMove.cb = cb;
     pageMoveArr[name] = {

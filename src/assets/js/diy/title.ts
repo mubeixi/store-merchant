@@ -31,7 +31,7 @@ function setAttrData() {
         editType: 'value',
         editKey: 'title',
         model: this.value.title,
-        editCb: item => item.model,
+        editCB: item => item.model,
       },
       {
         type: 'input',
@@ -40,7 +40,7 @@ function setAttrData() {
         editType: 'value',
         editKey: 'small',
         model: this.value.small,
-        editCb: item => item.model,
+        editCB: item => item.model,
       },
       {
         type: 'color',
@@ -48,7 +48,7 @@ function setAttrData() {
         model: this.style.bgColor,
         editType: 'style',
         editKey: 'bgColor',
-        editCb: item => item.model,
+        editCB: item => item.model,
       },
       {
         type: 'color',
@@ -56,7 +56,7 @@ function setAttrData() {
         model: this.style.color,
         editType: 'style',
         editKey: 'color',
-        editCb: item => item.model,
+        editCB: item => item.model,
       },
       {
         type: 'setlink',
@@ -64,7 +64,7 @@ function setAttrData() {
         editType: 'value',
         editKey: 'link',
         model: this.value.link,
-        editCb: item => item.model,
+        editCB: item => item.model,
       },
 
     ],

@@ -33,7 +33,7 @@ function setAttrData() {
         editType: 'value',
         editKey: 'content',
         model: this.value.content,
-        editCb: item => item.model,
+        editCB: item => item.model,
       },
       {
         type: 'radio',
@@ -62,7 +62,7 @@ function setAttrData() {
         model: this.style.bgColor,
         editType: 'style',
         editKey: 'bgColor',
-        editCb: item => item.model,
+        editCB: item => item.model,
       },
       {
         type: 'color',
@@ -70,7 +70,7 @@ function setAttrData() {
         model: this.style.color,
         editType: 'style',
         editKey: 'color',
-        editCb: item => item.model,
+        editCB: item => item.model,
       },
       {
         type: 'radio',
@@ -99,7 +99,7 @@ function setAttrData() {
         editType: 'value',
         editKey: 'link',
         model: this.value.link,
-        editCb: item => item.model,
+        editCB: item => item.model,
       },
 
     ],

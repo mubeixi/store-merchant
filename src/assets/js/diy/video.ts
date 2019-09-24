@@ -43,7 +43,7 @@ function setAttrData() {
         model: this.config.cover,
         editType: 'config',
         editKey: 'cover',
-        editCb: item => item.model,
+        editCB: item => item.model,
       },
     ],
   };

@@ -36,6 +36,17 @@ export const login = (data:Object,options) => fetch('users_login', data,options)
 
 export const getCouponList = (data,options) => fetch('get_unaccalimed_coupon',data,options)
 
+export const getProductList = (data,options) => fetch('get_prod',data,options)
+
+export const getShopSkinList = (data,options) => fetch('get_shopskin',data,options)
+
+export const chooseShopSkin = (data,options) => fetch('choose_shopskin',data,options)
+
+//获取商城的配置
+export const getSkinConfig = (data,options) => fetch('get_shophome',data,options)
+
+//更新商城的配置
+export const setSkinConfig = (data,options) => fetch('update_shophome',data,options)
 
 
 
@@ -54,15 +65,11 @@ function get_Appid() {
   return 'xhh';
 }
 
-function get_Users_ID() {
-  return ls.get('Users_ID')
-}
+export const get_Users_ID = ()=>ls.get('Users_ID')
 
-function get_Users_Account(){
-  return ls.get('Users_Account');
-}
+export const get_Users_Account= ()=>ls.get('Users_Account')
 
-function createToken(object) {
+export const createToken = function(object) {
   object = ObjectToArr(object);
   var signString = ObjectToString(object);
   signString = signString.slice(0, -1);

@@ -29,7 +29,7 @@ function setAttrData() {
         type: 'addbtn',
         text: '',
         label: '添加热词',
-        editCb: (item) => {
+        editCB: (item) => {
           const temp = [...this.value.hot];
 
           temp.push('热词');
@@ -96,7 +96,7 @@ function setAttrData() {
         model: this.style.bgColor,
         editType: 'style',
         editKey: 'bgColor',
-        editCb: item => item.model,
+        editCB: item => item.model,
       },
       {
         type: 'color',
@@ -104,7 +104,7 @@ function setAttrData() {
         model: this.style.inputBgColor,
         editType: 'style',
         editKey: 'inputBgColor',
-        editCb: item => item.model,
+        editCB: item => item.model,
       },
       {
         type: 'color',
@@ -112,7 +112,7 @@ function setAttrData() {
         model: this.style.color,
         editType: 'style',
         editKey: 'color',
-        editCb: item => item.model,
+        editCB: item => item.model,
       },
     ],
   };

@@ -24,7 +24,7 @@ function setAttrData() {
           model: this.style.color,
           editType: 'style',
           editKey: 'color',
-          editCb: (item: { model: any; }) => {
+          editCB: (item: { model: any; }) => {
 
             let val = item.model
             if (!val || val.indexOf(',')==-1) return

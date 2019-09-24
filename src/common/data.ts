@@ -3,7 +3,7 @@ export const PLUGINSLIST = [
     label: 'xxxx', tip: '好用的工具', value: '图文导航', icon: require('@/assets/img/plugin-icon/1.png'),
   },
   {
-    label: 'xxxx', tip: '好用的工具', value: '图片广告', icon: require('@/assets/img/plugin-icon/2.png'),
+    label: 'swiper', tip: '好用的工具', value: '图片广告', icon: require('@/assets/img/plugin-icon/2.png'),
   },
   {
     label: 'xxxx', tip: '好用的工具', value: '分类商品', icon: require('@/assets/img/plugin-icon/3.png'),
@@ -21,7 +21,7 @@ export const PLUGINSLIST = [
     label: 'xxxx', tip: '好用的工具', value: '店铺信息', icon: require('@/assets/img/plugin-icon/7.png'),
   },
   {
-    label: 'xxxx', tip: '好用的工具', value: '公告', icon: require('@/assets/img/plugin-icon/8.png'),
+    label: 'notice', tip: '好用的工具', value: '公告', icon: require('@/assets/img/plugin-icon/8.png'),
   },
   {
     label: 'search', tip: '好用的工具', value: '搜索', icon: require('@/assets/img/plugin-icon/9.png'),

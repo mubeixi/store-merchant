@@ -30,8 +30,8 @@ function setAttrData() {
         model: this.style.color,
         editType: 'style',
         editKey: 'color',
-        editCb: item => item.model,
-        editCb2: (item) => {
+        editCB: item => item.model,
+        editCB2: (item) => {
           const val = item.model;
           if (!val || val.indexOf(',') == -1) return;
           const color = val.split(',');

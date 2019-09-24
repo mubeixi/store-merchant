@@ -1,6 +1,6 @@
 <template>
   <div @click.stop="setData({}, 0)" :title="'播放地址'+video.config.src"   class="video">
-    <img :src="video.config.cover" />
+    <img :src="video.config.cover|domain" />
   </div>
 </template>
 

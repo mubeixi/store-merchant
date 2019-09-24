@@ -37,7 +37,7 @@ function setAttrData() {
         model: this.style.bgColor,
         editType: 'style',
         editKey: 'bgColor',
-        editCb: item => item.model,
+        editCB: item => item.model,
       },
     ],
   };

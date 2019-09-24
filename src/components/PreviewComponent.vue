@@ -124,10 +124,26 @@
           />
 
 
-
+          <swiper-component
+            ref="plugin"
+            v-if="item.indexOf('swiper') !== -1"
+            @setData="setDataEv"
+            :draggable="true"
+            :data="templateData[templateEditIndex][index]"
+            :index="index"
+          />
           <coupon-component
             ref="plugin"
             v-if="item.indexOf('coupon') !== -1"
+            @setData="setDataEv"
+            :draggable="true"
+            :data="templateData[templateEditIndex][index]"
+            :index="index"
+          />
+
+          <notice-component
+            ref="plugin"
+            v-if="item.indexOf('notice') !== -1"
             @setData="setDataEv"
             :draggable="true"
             :data="templateData[templateEditIndex][index]"
@@ -197,7 +213,7 @@
 
     </div>
     <div class="handle text-center">
-      <el-button type="primary">保存</el-button>
+      <el-button @click="uploadConfig" type="primary">保存</el-button>
     </div>
   </div>
 </template>
@@ -213,6 +229,8 @@ import TitleComponent from '@/components/diy/TitleComponent.vue';
 import VideoComponent from '@/components/diy/VideoComponent.vue';
 import SearchComponent from '@/components/diy/SearchComponent.vue';
 import CouponComponent from '@/components/diy/CouponComponent.vue';
+import SwiperComponent from '@/components/diy/SwiperComponent.vue';
+import NoticeComponent from '@/components/diy/NoticeComponent.vue';
 
 import { deepCopy, getStyle, pageMove } from '@/common/utils';
 import Hr from '@/assets/js/diy/hr';
@@ -222,6 +240,10 @@ import Title from '@/assets/js/diy/title';
 import Video from '@/assets/js/diy/video';
 import Search from '@/assets/js/diy/search';
 import Coupon from '@/assets/js/diy/coupon';
+import Swiper from '@/assets/js/diy/swiper';
+import Notice from '@/assets/js/diy/notice';
+
+import {getSkinConfig,setSkinConfig} from '@/common/fetch';
 
 
 @Component({
@@ -247,6 +269,7 @@ import Coupon from '@/assets/js/diy/coupon';
     },
   },
   components: {
+      NoticeComponent,
       CouponComponent,
     SpaceComponent,
     HrComponent,
@@ -255,6 +278,7 @@ import Coupon from '@/assets/js/diy/coupon';
     TitleComponent,
     VideoComponent,
     SearchComponent,
+      SwiperComponent
   },
   filters: {
     dragSorts(val) {
@@ -271,6 +295,22 @@ import Coupon from '@/assets/js/diy/coupon';
     ...mapState(['activeAttr', 'tabIndex']),
   },
   methods: {
+    uploadConfig(){
+
+        let postData = {
+            Skin_ID:this.skinInfo.Skin_ID,
+            Home_Json:JSON.stringify(this.templateData)
+        }
+        console.log('保存模板',this.templateData);
+        setSkinConfig(postData).then(res=>{
+            if(res.errorCode===0){
+                this.$fun.success('配置保存成功')
+            }
+
+        }).catch(e=>{
+            this.$fun.error('配置保存失败')
+        })
+    },
     clickPlugin(idx) {
       const sectionEl = document.querySelectorAll('.canvas > section')[idx];
       if (!sectionEl) return;
@@ -382,9 +422,17 @@ export default class PreviewComponent extends Vue {
 
     pageTemplateName = ''
 
-    $fun: any;
 
     setDataEv() {}
+
+    skinInfo = null
+
+    created(){
+        getSkinConfig().then(res=>{
+            console.log(res)
+            this.skinInfo = res.data
+        })
+    }
 
     setClass(className) {
       if (typeof className === 'undefined') return '';
@@ -429,13 +477,16 @@ export default class PreviewComponent extends Vue {
         case 'coupon':
           newClass = new Coupon();
           break;
+        case 'notice':
+            newClass = new Notice();
+            break;
 
           // case 'nav':
           //     newClass = new NavJS()
           //     break
-          // case 'swiper':
-          //     newClass = new BannerJS()
-          //     break
+          case 'swiper':
+              newClass = new Swiper()
+              break;
           // case 'input':
           //     newClass = new InputJS()
           //     break

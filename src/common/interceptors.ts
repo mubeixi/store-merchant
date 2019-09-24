@@ -98,7 +98,7 @@ export default function (request, next) {
 
           break;
         default:
-          fun.error({msg:response.body.msg||'请求错误'})
+          fun.error({msg:response.body.msg||'服务器去旅行了'})
           // vant.showMsg(response.body.msg || '请求数据为空或者有误');
       }
     }

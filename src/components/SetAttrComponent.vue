@@ -14,6 +14,8 @@
                                :type='item.uploadType'
                                :imgUrl='item.model'></upload-img-components>
 
+
+
         <div v-if="item.type === 'slider'">
           <el-slider @input='change(item)' show-input  v-model="item.model" :max="item.max" :min="item.min"></el-slider>
         </div>
@@ -36,7 +38,7 @@
 <!--        <bind-link v-model="selectPageShow" :checkedIndex='pageChecked' :data='currentData.customizeObject' @change='selectPagePath' />-->
 
         <div v-if="item.type==='addbtn'">
-          <el-button @click="item.editCb(pageEl)"  type="primary"  size="small">{{item.label}}</el-button>
+          <el-button @click="item.editCB(pageEl)"  type="primary"  size="small">{{item.label}}</el-button>
         </div>
 
         <div v-if="item.type==='arr' && item.value.length>0" class="arr-box">
@@ -50,7 +52,12 @@
               <span class="padding10-c">{{item.label}} : {{item.value[idx].Coupon_Title}}</span>
             </div>
 
-            <i class="el-icon-circle-close del-icon" @click="item.removeCb(idx)"></i>
+            <div class="row-container" v-if="['swiper'].indexOf(item.row_type)!==-1">
+              <upload-img-components tip="（建议图片尺寸700px*380px）" :cropperOption="{aspectRatio:1/1}" class="myUploadImg" :onSuccess='item.imgCB' type='avatar' :idx2="idx" :imgUrl='item.value[idx].img_src' />
+              <el-button  size="small" @click.prevent="bindLinkDialogShow = true">绑定链接</el-button>
+            </div>
+
+            <i class="el-icon-circle-close del-icon" @click="item.removeCB(idx)"></i>
 
           </div>
         </div>
@@ -91,6 +98,8 @@
 <!--      </el-form-item>-->
     </el-form>
 
+    <bind-link-components @cancel="bindLinkCancel"   :show.sync="bindLinkDialogShow" :data="bindLinkData" />
+
     <select-coupon-component @coupon="bindCouponSelect" @couponCancel="couponCancel" :ids="coupon_ids"   :show.sync="couponDialogShow" />
   </div>
 </template>
@@ -107,13 +116,15 @@ import SelectCouponComponent from "@/components/SelectCouponComponent.vue";
 
 // 没有继承，是依靠vuex的数据。也不碍事啊
 @Component({
-  components: {SelectCouponComponent, BindLink: BindLinkComponents, uploadImgComponents },
+  components: {SelectCouponComponent, BindLinkComponents, uploadImgComponents },
   props: {
     // eTitle:{type:String, default:'属性设置'}
   },
   data() {
     return {
       selectPageShow: false,
+      bindLinkData:null,
+      bindLinkDialogShow:false,
       currentData: {},
       clickObj: {},
       color1: null,
@@ -147,6 +158,9 @@ import SelectCouponComponent from "@/components/SelectCouponComponent.vue";
       this.pageEl = this
     },
   methods: {
+      switchChange(item) {
+          this.change(item)
+      },
     addInput(item) {
       const { index } = item;
       const value = JSON.parse(JSON.stringify(this.currentData.value[index]));
@@ -163,17 +177,23 @@ import SelectCouponComponent from "@/components/SelectCouponComponent.vue";
         this.$fun.warning({ msg: item.parrern_tip || '表单填写不符合要求' });
       }
     },
+    uploadSwiperImg(response){
+
+    },
     uploadImg(response) {
-      console.log(response);
-      this.currentData.model = 'https://knowledges.qd101.net/uploads/20190921/183707ef00bcaa47dc813d3dd50c0061.jpg';// response.data.url;
+
+      this.currentData.model = response.data.path;// response.data.url;
       this.change(this.currentData);
+    },
+    bindLinkCancel(){
+        this.bindLinkDialogShow = false
     },
     couponCancel(){
         this.couponDialogShow = false
     },
     bindCouponSelect(coupons){
         this.couponDialogShow = false
-        this.currentData.dialogCb(coupons)
+        this.currentData.dialogCB(coupons)
     },
     radioChange(radio, item) {
       // if (typeof item.attrData === 'function') item.attrData(this.activeData, radio);
@@ -206,13 +226,13 @@ import SelectCouponComponent from "@/components/SelectCouponComponent.vue";
         // }
 
         // 有回调函数的,可以去函数里面做各种关联操作和格式化操作。比如像素加px，颜色值的转换之类，json转换之类。简单值的就直接走下面赋值了
-        if (item.editCb) {
-          editObj[item.editKey] = item.editCb(item);
+        if (item.editCB) {
+          editObj[item.editKey] = item.editCB(item);
         } else {
           editObj[item.editKey] = item.model;
         }
       } else if (item.editType === 'sort') {
-        item.editCb(item);
+        item.editCB(item);
       } else {
         // 这里最主要的就是一次回调
 
@@ -223,12 +243,12 @@ import SelectCouponComponent from "@/components/SelectCouponComponent.vue";
         // 返回值就可以了。
         // if (this.activeAttr.tag && this.activeAttr.tag.indexOf('switchNav') != -1) {
         //
-        //     this.activeAttr.value[index][item.editKey] = typeof item.editCb === 'function' ? item.editCb(item, imgUrl) : item.model
+        //     this.activeAttr.value[index][item.editKey] = typeof item.editCB === 'function' ? item.editCB(item, imgUrl) : item.model
         //
         // } else {
         //
         //     //既然已经是model绑定了，为什么这里又改一遍?
-        //     this.activeAttr.value[index][item.editKey] = typeof item.editCb === 'function' ? item.editCb(item, imgUrl) : item.model
+        //     this.activeAttr.value[index][item.editKey] = typeof item.editCB === 'function' ? item.editCB(item, imgUrl) : item.model
         //
         // }
 
@@ -299,7 +319,7 @@ export default class SetAttrComponent extends Vue {
     // let {tooltip, type, path, dataItem, dataType} = data;
     // let index = this.currentData.index;
     //
-    // // this.activeData.config.setValueCb && this.activeData.config.setValueCb()
+    // // this.activeData.config.setValueCB && this.activeData.config.setValueCB()
     //
     // this.$set(this.activeItem[index], 'tooltip', tooltip);
     // this.$set(this.activeItem[index], 'link', path);
@@ -309,8 +329,8 @@ export default class SetAttrComponent extends Vue {
     // this.$set(this.activeItem[index], 'type', dataType);
     // this.$set(this.activeItem[index], 'show', true);
     //
-    // if (typeof this.currentData.selectLink.checkedPageCb === 'function') {
-    //     let data = this.currentData.selectLink.checkedPageCb(this.activeItem[index], this.activeData);
+    // if (typeof this.currentData.selectLink.checkedPageCB === 'function') {
+    //     let data = this.currentData.selectLink.checkedPageCB(this.activeItem[index], this.activeData);
     //     let {assignment} = data;
     //     if (assignment) return;
     //     data = deepCopy(this.activeItem[index], data);

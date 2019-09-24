@@ -1,5 +1,5 @@
 <template>
-  <div @click.stop="setData({}, 0)" >
+  <div @click.stop="setData({}, 0)" class="text">
     <div :class="{islink:text.value.link?1:0}"
          :style="{fontSize:text.style.fontSize+'px',color:text.style.color,backgroundColor:text.style.bgColor,textAlign:text.style.textAlign}"
          class="text">{{text.value.content}}</div>
