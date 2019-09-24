@@ -1,12 +1,13 @@
 <template>
-  <div class="uploadImg">
+  <div class="uploadImg flex">
     <el-upload
       class="upload"
       v-if="type === 'avatar'"
       :multiple="multiple"
       :limit="limit"
-      :data='ajaxData'
-      :action="baseURL+'admin/ajax/upload'"
+      :name="name"
+      :data.sync='ajaxData'
+      :action="baseURL+'/api/little_program/shopconfig.php'"
       list-type="picture-card"
       :show-file-list='false'
       :on-preview="onPreview"
@@ -15,7 +16,11 @@
       :on-remove="onRemove"
       :before-upload='beforeUpload'
       :on-change='change'>
-      <img class="avatar" v-if="imgUrl" :src="imgUrl | http"/>
+      <div v-if="imgUrl">
+        <img class="avatar" :style="{height:parseInt(this.cropperOption.aspectRatio*100)+'%'}"  :src="imgUrl | domain"/>
+
+      </div>
+
       <i v-else class="el-icon-plus"></i>
     </el-upload>
     <!--/api/frontend/ajax/upload-->
@@ -23,34 +28,50 @@
       v-else
       :multiple="multiple"
       :limit="limit"
+      :name="name"
       class="upload"
-      :data='ajaxData'
-      :action="baseURL+'admin/ajax/upload'"
+      :data.sync='ajaxData'
+      :action="baseURL+'/api/little_program/shopconfig.php'"
       list-type="picture-card"
       :show-file-list='showFileList'
       :on-preview="onPreview"
       :on-success='success'
       :on-error="error"
       :on-remove="onRemove">
+
       <i class="el-icon-plus"></i>
     </el-upload>
+
+    <span class="graytext font12 tip" >{{tip}}</span>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex';
 import { baseApiUrl } from '@/common/env';
+import {get_Users_ID,createToken} from '@/common/fetch';
 
 function noop() {
 }
 
 export default {
   props: {
+
+    idx2: {
+      default: -1,
+    },
     data: {
       type: Object,
       default: () => ({
-        _ajax: 2,
       }),
+    },
+    name: {
+      type: String,
+      default: 'image',
+    },
+    tip:{
+      type: String,
+      default: '',
     },
     imgUrl: {
       type: String,
@@ -84,14 +105,22 @@ export default {
       type: Function,
       default: noop,
     },
+    cropperOption:{
+      type: Object,
+      default: () => ({aspectRatio:0.5})
+    },
+    cropper:{
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       baseURL: baseApiUrl,
-      ajaxData: {
-        _ajax: 2,
-        ...this.data,
-      },
+      // ajaxData: {
+      //   act:'upload_image',
+      //   ...this.data,
+      // },
     };
   },
   computed: {
@@ -99,6 +128,13 @@ export default {
       get() { return this.$store.state.activeAttr; },
       set: () => {},
     },
+    ajaxData(){
+      let param = { Users_ID:get_Users_ID(),act:'upload_image'}
+
+      let ajaxData = createToken(param)
+      console.log(ajaxData)
+      return ajaxData;
+    }
 
   },
   methods: {
@@ -110,7 +146,7 @@ export default {
       // 写死试一下
       const mock = {
         data: {
-          url: 'https://knowledges.qd101.net/uploads/20190921/183707ef00bcaa47dc813d3dd50c0061.jpg',
+          path: 'https://knowledges.qd101.net/uploads/20190921/183707ef00bcaa47dc813d3dd50c0061.jpg',
         },
       };
       this.onSuccess.apply(this, mock);
@@ -119,20 +155,13 @@ export default {
       this.activeAttr.isSendAjax = false;
     },
     beforeUpload() {
+
+
       this.activeAttr.isSendAjax = true;
     },
     success(...params) {
-      try {
-        const needLogin = params[0].data.need_login && params[0].data.need_login.toString();
-        if (needLogin === '1') {
-          this.$message('请先登录');
-          return this.$router.push('/login');
-        }
-      } catch (err) {
-        this.$alert(err.message);
-      }
 
-      this.onSuccess.apply(this, params);
+      this.onSuccess.call(this,params[0],this.idx2);
     },
   },
   created() {
@@ -145,8 +174,12 @@ export default {
     .upload {
       .avatar {
         width: 100%;
-        height: 100%;
+        /*height: 100%;*/
       }
     }
+  }
+  .tip{
+    margin-top 110px
+    margin-left 10px
   }
 </style>
