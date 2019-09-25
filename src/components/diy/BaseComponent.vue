@@ -4,8 +4,8 @@
       <img class="logo" :src="base.config.logo|domain" />
       <div class="title">{{base.config.title}}</div>
       <div class="desc">{{base.config.desc}}</div>
-      <div class="total">{{base.config.total}}</div>
-      <div class="new">{{base.config.new}}</div>
+      <div class="total">商品 {{base.config.total}}</div>
+      <div class="new">新品 {{base.config.new}}</div>
     </div>
   </div>
 </template>
@@ -82,7 +82,7 @@ import { deepCopyStrict, deepCopy,domain } from '@/common/utils';
       },
 
     })
-export default class SwiperComponent extends Vue {
+export default class BaseComponent extends Vue {
   created() {
     Base.prototype.vm = this;
     this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
