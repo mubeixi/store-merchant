@@ -1,7 +1,8 @@
 <template>
   <div class="uploadImg flex">
     <el-upload
-      class="upload"
+      class="upload avatar-uploader"
+      :class="{mini:mini}"
       v-if="type === 'avatar'"
       :multiple="multiple"
       :limit="limit"
@@ -29,7 +30,9 @@
       :multiple="multiple"
       :limit="limit"
       :name="name"
-      class="upload"
+      class="upload avatar-uploader"
+
+      :class="{mini:mini}"
       :data.sync='ajaxData'
       :action="baseURL+'/api/little_program/shopconfig.php'"
       list-type="picture-card"
@@ -38,7 +41,6 @@
       :on-success='success'
       :on-error="error"
       :on-remove="onRemove">
-
       <i class="el-icon-plus"></i>
     </el-upload>
 
@@ -56,7 +58,9 @@ function noop() {
 
 export default {
   props: {
-
+    mini: {
+      type: Boolean,
+    },
     idx2: {
       default: -1,
     },
@@ -182,4 +186,7 @@ export default {
     margin-top 110px
     margin-left 10px
   }
+
+
+
 </style>

@@ -9,7 +9,7 @@ export const PLUGINSLIST = [
     label: 'xxxx', tip: '好用的工具', value: '分类商品', icon: require('@/assets/img/plugin-icon/3.png'),
   },
   {
-    label: 'xxxx', tip: '好用的工具', value: '商品列表', icon: require('@/assets/img/plugin-icon/4.png'),
+    label: 'goods', tip: '好用的工具', value: '商品列表', icon: require('@/assets/img/plugin-icon/4.png'),
   },
   {
     label: 'xxxx', tip: '好用的工具', value: '图片混排', icon: require('@/assets/img/plugin-icon/5.png'),

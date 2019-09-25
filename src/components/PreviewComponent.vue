@@ -158,6 +158,15 @@
             :data="templateData[templateEditIndex][index]"
             :index="index"
           />
+
+          <goods-component
+            ref="plugin"
+            v-if="item.indexOf('goods') !== -1"
+            @setData="setDataEv"
+            :draggable="true"
+            :data="templateData[templateEditIndex][index]"
+            :index="index"
+          />
 <!--              <space-component-->
 <!--                ref="plugin"-->
 <!--                v-if="item.indexOf('space') !== -1"-->
@@ -231,6 +240,8 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
 import { mapState, mapActions } from 'vuex';
+import {getSkinConfig,setSkinConfig} from '@/common/fetch';
+
 import SpaceComponent from '@/components/diy/SpaceComponent';
 import HrComponent from '@/components/diy/HrComponent.vue';
 import TextComponent from '@/components/diy/TextComponent.vue';
@@ -241,6 +252,7 @@ import CouponComponent from '@/components/diy/CouponComponent.vue';
 import SwiperComponent from '@/components/diy/SwiperComponent.vue';
 import NoticeComponent from '@/components/diy/NoticeComponent.vue';
 import BaseComponent from '@/components/diy/BaseComponent.vue';
+import GoodsComponent from '@/components/diy/GoodsComponent';
 
 import { deepCopy, getStyle, pageMove } from '@/common/utils';
 import Hr from '@/assets/js/diy/hr';
@@ -253,8 +265,10 @@ import Coupon from '@/assets/js/diy/coupon';
 import Swiper from '@/assets/js/diy/swiper';
 import Notice from '@/assets/js/diy/notice';
 import Base from '@/assets/js/diy/base';
+import Goods from '@/assets/js/diy/goods';
 
-import {getSkinConfig,setSkinConfig} from '@/common/fetch';
+
+
 
 
 @Component({
@@ -280,6 +294,7 @@ import {getSkinConfig,setSkinConfig} from '@/common/fetch';
     },
   },
   components: {
+      GoodsComponent,
       NoticeComponent,
       CouponComponent,
     SpaceComponent,
@@ -495,6 +510,9 @@ export default class PreviewComponent extends Vue {
             break;
         case 'base':
             newClass = new Base();
+            break;
+        case 'goods':
+            newClass = new Goods();
             break;
 
           // case 'nav':

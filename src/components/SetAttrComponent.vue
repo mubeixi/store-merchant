@@ -90,7 +90,70 @@
           <el-radio v-for="(radio, ind) in item.value" :key="ind" :label="radio.value" @change="radioChange(radio, item)">{{ radio.label }}</el-radio>
         </el-radio-group>
 
+        <el-checkbox @change="change(item)" v-if="item.type === 'checkbox'" v-model="item.model">{{item.label}}</el-checkbox>
 
+        <div v-if="item.type === 'diy'" class="flex">
+          <el-checkbox @change="checkboxCB(item)"  v-model="item.model.show">{{item.label}}</el-checkbox>
+
+          <template v-if="item.row_type === 'buybtn'">
+
+            <el-radio-group style="margin-left: 20px;padding-top: 14px" v-model="item.model.style" @change="item.radioCB(item.model.style)">
+              <el-radio :label="1">样式一</el-radio>
+              <el-radio :label="2">样式二</el-radio>
+            </el-radio-group>
+
+           <el-input style="width: 140px;margin-left: 20px;" v-model="item.model.text" @input="item.inputCB(item.model.text)" />
+            <el-tooltip class="item" effect="dark" content="自定义按钮的文本" placement="right">
+              <i class="el-icon-question" ></i>
+            </el-tooltip>
+
+
+          </template>
+
+          <template v-if="item.row_type === 'tag'">
+            <el-radio-group style="margin-left: 20px;padding-top: 14px" v-model="item.model.style" @change="item.radioCB(item.model.style)">
+              <el-radio label="new">新品</el-radio>
+              <el-radio label="hot">热卖</el-radio>
+              <el-radio label="diy">自定义</el-radio>
+            </el-radio-group>
+            <!--非新品和热卖才-->
+            <upload-img-components style="margin-left: 20px;" v-if="item.model.style === 'diy'"
+                                   class="myUploadImg"
+                                   :onSuccess='item.radioImgCB'
+                                   type='avatar'
+                                   :mini="true"
+                                   :imgUrl='item.model.img'></upload-img-components>
+          </template>
+
+        </div>
+
+        <div v-if="item.type === 'origin'" >
+
+
+          <el-radio-group v-model="item.model" >
+            <el-radio v-for="(radio, ind) in item.value" :key="ind" :label="radio.value" @change="radioChange(radio, item)">{{ radio.label }}</el-radio>
+          </el-radio-group>
+
+          <div v-if="item.model==='filter'">
+            <el-tooltip class="item rightBtn" effect="dark" :content="item.origintooltip" placement="right">
+              <el-button @click="openGoodsBindList(item,item.bindListCB)"  type="primary"  size="small">选择商品</el-button>
+            </el-tooltip>
+
+          </div>
+
+          <div v-if="item.model!='filter'">
+            <el-tooltip class="item rightBtn" effect="dark" :content="item.origintooltip" placement="right">
+              <el-button @click="openGoodsBindCate(item,item.bindCateCB)"  type="primary"  size="small">绑定分类</el-button>
+            </el-tooltip>
+
+          </div>
+
+          <div v-if="item.model!='filter'">
+            <span >产品数量</span><el-input style="width: 140px;margin-left: 20px;" type="number" v-model="item.limit" @input="item.inputCB(item.limit)" /><span class="padding10-c font14 graytext">(最多显示30个)</span>
+          </div>
+
+
+        </div>
 
         <el-color-picker
           show-alpha
@@ -108,6 +171,10 @@
 <!--      </el-form-item>-->
     </el-form>
 
+    <select-goods-component @cancel="bindListCancel" :onSuccess="bindListSuccessCall"    :pageEl="pageEl"   :show="bindListDialogShow" />
+
+    <bind-cate-components @cancel="bindCateCancel" :onSuccess="bindCateSuccessCall"    :pageEl="pageEl"   :show="bindCateDialogShow" />
+
     <bind-link-components @cancel="bindLinkCancel" :onSuccess="bindLinkSuccessCall" :idx2="bindLinkIdx2"   :pageEl="pageEl"   :show="bindLinkDialogShow" />
 
     <select-coupon-component @coupon="bindCouponSelect" @couponCancel="couponCancel" :ids="coupon_ids"   :show.sync="couponDialogShow" />
@@ -121,17 +188,21 @@ import { mapActions, mapState } from 'vuex';
 import BindLinkComponents from '@/components/BindLinkComponents';
 import uploadImgComponents from '@/components/common/uploadImgComponents';
 import SelectCouponComponent from '@/components/SelectCouponComponent';
-import SelectCouponComponent from "@/components/SelectCouponComponent.vue";
-
+import BindCateComponents from '@/components/BindCateComponents';
+import SelectGoodsComponent from '@/components/SelectGoodsComponent';
 
 // 没有继承，是依靠vuex的数据。也不碍事啊
 @Component({
-  components: {SelectCouponComponent, BindLinkComponents, uploadImgComponents },
+  components: {SelectCouponComponent, BindLinkComponents, uploadImgComponents,BindCateComponents,SelectGoodsComponent },
   props: {
     // eTitle:{type:String, default:'属性设置'}
   },
   data() {
     return {
+        bindListDialogShow:false,
+        bindListSuccessCall:null,
+        bindCateDialogShow:false,
+        bindCateSuccessCall:null,
         bindLinkDialogShow:false,
         bindLinkIdx2:null,
         bindLinkSuccessCall:null,
@@ -170,6 +241,14 @@ import SelectCouponComponent from "@/components/SelectCouponComponent.vue";
       this.pageEl = this
     },
   methods: {
+      openGoodsBindList(item,success){
+          this.bindListDialogShow = true
+          this.bindListSuccessCall = success
+      },
+      openGoodsBindCate(item,success){
+          this.bindCateDialogShow = true
+          this.bindCateSuccessCall = success
+      },
       openSwiperBindLink(item,idx2,success){
           this.bindLinkDialogShow = true
           this.bindLinkIdx2 = idx2
@@ -202,6 +281,12 @@ import SelectCouponComponent from "@/components/SelectCouponComponent.vue";
       this.currentData.model = response.data.path;// response.data.url;
       this.change(this.currentData);
     },
+      bindCateCancel(){
+          this.bindCateDialogShow = false
+      },
+      bindListCancel(){
+          this.bindListDialogShow = false
+      },
     bindLinkCancel(){
         this.bindLinkDialogShow = false
     },
@@ -224,7 +309,10 @@ import SelectCouponComponent from "@/components/SelectCouponComponent.vue";
       console.log(item);
       console.log(`修改类别是${item.editType}修改字段是${item.editKey}`);
 
+
+
       if (item.editType && (item.editType === 'style' || item.editType === 'config' || item.editType === 'value')) {
+
         if (!this.activeAttr[item.editType]) {
           this.activeAttr.activeAttr[item.editType] = {};
         }
@@ -243,6 +331,7 @@ import SelectCouponComponent from "@/components/SelectCouponComponent.vue";
         // }
 
         // 有回调函数的,可以去函数里面做各种关联操作和格式化操作。比如像素加px，颜色值的转换之类，json转换之类。简单值的就直接走下面赋值了
+          //反正会跑一次回调的
         if (item.editCB) {
           editObj[item.editKey] = item.editCB(item);
         } else {
@@ -398,4 +487,12 @@ export default class SetAttrComponent extends Vue {
   }
 }
 
+
+.el-icon-question{
+  font-size: 22px !important;
+  margin-top: 9px;
+  margin-left: 10px;
+  cursor: pointer;
+  color: #409eff;
+}
 </style>

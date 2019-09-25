@@ -12,6 +12,7 @@ export default [
   {
     name:'domain',
     methods:(url) => {
+      if(!url)return '';
       if (url.indexOf('http') == -1) return baseApiUrl+url;
       return url;
     }
