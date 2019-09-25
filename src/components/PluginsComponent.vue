@@ -51,7 +51,7 @@ export default class PluginsComponent extends Vue {
         box-sizing border-box;
         position: relative;
         float: left;
-        cursor: pointer;
+        cursor: move;
         &:nth-child(3n+3){
           width: 90px;
           border-right:bottom;

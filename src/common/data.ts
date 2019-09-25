@@ -18,7 +18,7 @@ export const PLUGINSLIST = [
     label: 'coupon', tip: '好用的工具', value: '优惠券', icon: require('@/assets/img/plugin-icon/6.png'),
   },
   {
-    label: 'xxxx', tip: '好用的工具', value: '店铺信息', icon: require('@/assets/img/plugin-icon/7.png'),
+    label: 'base', tip: '好用的工具', value: '店铺信息', icon: require('@/assets/img/plugin-icon/7.png'),
   },
   {
     label: 'notice', tip: '好用的工具', value: '公告', icon: require('@/assets/img/plugin-icon/8.png'),

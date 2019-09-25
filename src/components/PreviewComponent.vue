@@ -149,6 +149,15 @@
             :data="templateData[templateEditIndex][index]"
             :index="index"
           />
+
+          <base-component
+            ref="plugin"
+            v-if="item.indexOf('base') !== -1"
+            @setData="setDataEv"
+            :draggable="true"
+            :data="templateData[templateEditIndex][index]"
+            :index="index"
+          />
 <!--              <space-component-->
 <!--                ref="plugin"-->
 <!--                v-if="item.indexOf('space') !== -1"-->
@@ -231,6 +240,7 @@ import SearchComponent from '@/components/diy/SearchComponent.vue';
 import CouponComponent from '@/components/diy/CouponComponent.vue';
 import SwiperComponent from '@/components/diy/SwiperComponent.vue';
 import NoticeComponent from '@/components/diy/NoticeComponent.vue';
+import BaseComponent from '@/components/diy/BaseComponent.vue';
 
 import { deepCopy, getStyle, pageMove } from '@/common/utils';
 import Hr from '@/assets/js/diy/hr';
@@ -242,6 +252,7 @@ import Search from '@/assets/js/diy/search';
 import Coupon from '@/assets/js/diy/coupon';
 import Swiper from '@/assets/js/diy/swiper';
 import Notice from '@/assets/js/diy/notice';
+import Base from '@/assets/js/diy/base';
 
 import {getSkinConfig,setSkinConfig} from '@/common/fetch';
 
@@ -278,7 +289,9 @@ import {getSkinConfig,setSkinConfig} from '@/common/fetch';
     TitleComponent,
     VideoComponent,
     SearchComponent,
-      SwiperComponent
+      SwiperComponent,
+      BaseComponent
+
   },
   filters: {
     dragSorts(val) {
@@ -479,6 +492,9 @@ export default class PreviewComponent extends Vue {
           break;
         case 'notice':
             newClass = new Notice();
+            break;
+        case 'base':
+            newClass = new Base();
             break;
 
           // case 'nav':
