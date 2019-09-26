@@ -13,9 +13,9 @@ Vue.http.options.emulateJSON = true;
 Vue.http.options.emulateHTTP = true;
 
 import Common from './common/index';
-
-
 Vue.use(Common);
+
+
 
 Vue.config.productionTip = false;
 
