@@ -29,15 +29,15 @@ function setAttrData() {
         type: 'radio',
         text: '显示模式',
         editType: 'config',
-        editKey: 'style',
-        model: this.config.style,
+        editKey: 'type',
+        model: this.config.type,
         value: [
           {
-            label: '样式1',
+            label: '图片导航',
             value: 1,
           },
           {
-            label: '样式2',
+            label: '文字导航',
             value: 2,
           },
 
@@ -223,7 +223,7 @@ class Nav extends Common {
   }
 
   config = {
-    style:1,
+    type:1,
     // loop:false,//是否循环
     // interval:5000,//切换时间
     // autoplay:false,//自动播放

@@ -3,7 +3,7 @@
     <div class="box"  :class="[className]" >
       <ul class="list" :style="{display:nav.value.list.length<5?'flex':'block'}">
         <li v-for="(item,idx) in nav.value.list" class="item" :style="{flex:nav.value.list.length<5?'1':''}">
-          <div class="cover" :style="{backgroundImage:'url('+domainFunc(item.img)+')'}" >
+          <div v-show="nav.config.type===1" class="cover" :style="{backgroundImage:'url('+domainFunc(item.img)+')'}" >
           </div>
           <div  class="title">{{item.title||'标题'}}</div>
         </li>
@@ -35,7 +35,7 @@ import { deepCopyStrict, deepCopy,domain } from '@/common/utils';
       },
       computed: {
         className(){
-            return 'style'+this.nav.config.style
+            return 'style1';//+this.nav.config.style
         },
         style() {
           // return deepCopyStrict(this.coupon.styleDefault, this.coupon.style);
@@ -107,10 +107,12 @@ ul,li{
 
     .item{
       margin-right: 10px;
+      text-align: center;
       .cover{
         .cover-full-bg(cover,0,white);
         width: 60px;
         height: 60px;
+        margin: 0 auto;
       }
       .title{
         height: 30px;
