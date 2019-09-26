@@ -67,6 +67,30 @@
               </div>
             </div>
 
+            <div class="row-container flex" v-if="['nav'].indexOf(item.row_type)!==-1">
+              <upload-img-components
+
+                :cropperOption="{aspectRatio:1/1}"
+                class="myUploadImg"
+                :onSuccess='item.imgCB'
+                :mini="true"
+                type='avatar'
+                :idx2="idx"
+                :imgUrl='item.value[idx].img' />
+              <div>
+                <div class="line10 flex">
+                  <div class="graytext" style="width: 50px;padding-left: 10px;">标题</div>
+                  <div><el-input  autosize v-model="item.value[idx].title" class="input" @input='item.inputCB'/></div>
+                </div>
+                <div class="flex">
+                  <div class="graytext" style="width: 50px;padding-left: 10px;">链接</div>
+                  <el-button :title="item.value[idx].tooltip"  size="small" @click="openSwiperBindLink(item,idx,item.bindCB)"    >绑定链接</el-button>
+                  <span class="padding10-c font12">{{item.value[idx].tooltip}}</span>
+                </div>
+
+              </div>
+            </div>
+
             <i class="el-icon-circle-close del-icon" @click="item.removeCB(idx)"></i>
 
           </div>

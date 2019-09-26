@@ -1,5 +1,5 @@
 <template>
-  <div class="uploadImg flex">
+  <div class="uploadImg flex" :class="{miniwrap:mini}">
     <el-upload
       class="upload avatar-uploader"
       :class="{mini:mini}"
@@ -111,7 +111,7 @@ export default {
     },
     cropperOption:{
       type: Object,
-      default: () => ({aspectRatio:0.5})
+      default: () => ({aspectRatio:1})
     },
     cropper:{
       type: Boolean,
@@ -182,6 +182,11 @@ export default {
       }
     }
   }
+
+.miniwrap .tip{
+  margin-top 0;
+  line-height 80px;
+}
   .tip{
     margin-top 110px
     margin-left 10px

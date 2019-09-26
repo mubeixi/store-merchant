@@ -167,6 +167,15 @@
             :data="templateData[templateEditIndex][index]"
             :index="index"
           />
+
+          <nav-component
+            ref="plugin"
+            v-if="item.indexOf('nav') !== -1"
+            @setData="setDataEv"
+            :draggable="true"
+            :data="templateData[templateEditIndex][index]"
+            :index="index"
+          />
 <!--              <space-component-->
 <!--                ref="plugin"-->
 <!--                v-if="item.indexOf('space') !== -1"-->
@@ -253,6 +262,7 @@ import SwiperComponent from '@/components/diy/SwiperComponent.vue';
 import NoticeComponent from '@/components/diy/NoticeComponent.vue';
 import BaseComponent from '@/components/diy/BaseComponent.vue';
 import GoodsComponent from '@/components/diy/GoodsComponent';
+import NavComponent from "@/components/diy/NavComponent.vue";
 
 import { deepCopy, getStyle, pageMove } from '@/common/utils';
 import Hr from '@/assets/js/diy/hr';
@@ -266,6 +276,8 @@ import Swiper from '@/assets/js/diy/swiper';
 import Notice from '@/assets/js/diy/notice';
 import Base from '@/assets/js/diy/base';
 import Goods from '@/assets/js/diy/goods';
+import Nav from '@/assets/js/diy/nav';
+
 
 
 
@@ -294,6 +306,7 @@ import Goods from '@/assets/js/diy/goods';
     },
   },
   components: {
+      NavComponent,
       GoodsComponent,
       NoticeComponent,
       CouponComponent,
@@ -515,9 +528,9 @@ export default class PreviewComponent extends Vue {
             newClass = new Goods();
             break;
 
-          // case 'nav':
-          //     newClass = new NavJS()
-          //     break
+          case 'nav':
+              newClass = new Nav()
+          break;
           case 'swiper':
               newClass = new Swiper()
               break;
