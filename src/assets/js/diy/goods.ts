@@ -200,7 +200,7 @@ function setAttrData() {
         model: this.config.attr.title.show,
         editCB:(item)=>{
 
-          console.log(item.model)
+
 
           Vue.set(this.config.attr.title,'show',item.model);//传递值
 
@@ -261,7 +261,8 @@ function setAttrData() {
         row_type:'buybtn',
         label: '购买按钮',
         editType: 'config',
-        model: this.config.attr.buybtn,
+        model: this.config.attr.buybtn.show,
+        data:this.config.attr.buybtn,
         checkboxCB:(val)=>{
 
           Vue.set(this.config.attr.buybtn,'show',val);//传递值
@@ -289,6 +290,7 @@ function setAttrData() {
           this.vm.$store.state.activeAttr.config = this.config;
           this.setIndex(0, { config: false, value: false });
           //都是改写vuex里面的数据，两种写法都可以
+
           this.vm.$store.commit('attrData', this.attrData);// 传出去
         },
       },
@@ -297,10 +299,30 @@ function setAttrData() {
         row_type:'tag',
         label: '标签',
         editType: 'config',
-        model: this.config.attr.tag,
-        checkboxCB:(item)=>{},//勾选的回调
-        radioImgCB:()=>{
-          console.log(arguments)
+        model: this.config.attr.tag.show,
+
+        data:this.config.attr.tag,
+        checkboxCB:(val)=>{
+
+          Vue.set(this.config.attr.tag,'show',val);//传递值
+          Vue.set(this.config.attr.tag,'style','diy');
+          this.vm.$store.state.activeAttr.config = this.config;
+          this.setIndex(0, { config: false, value: false });
+          //都是改写vuex里面的数据，两种写法都可以
+          this.vm.$store.commit('attrData', this.attrData);// 传出去
+
+        },//勾选的回调
+        radioImgCB:(img,idx2)=>{
+
+
+          Vue.set(this.config.attr.tag,'img',img.data.path);
+          Vue.set(this.config.attr.tag,'style','diy');
+          //
+          this.setIndex(0, { config: false, value: false });
+          // // 都是改写vuex里面的数据，两种写法都可以
+          this.vm.$store.commit('attrData', this.attrData);// 传出去
+          this.vm.$store.state.activeAttr.config = this.config;
+
         },
         radioCB:(item)=>{},//后面的radio回调
       },
@@ -354,11 +376,11 @@ class Goods extends Common {
     showmode:'noborder-bgwhite',//'border-bgwhite','noborder-nobg'  无边框白底 有边框白底 无边框透明底
     radius:'round',//圆角 none直角
     attr:{
-      title:{show:true},
-      desc:{show:true},
-      price:{show:true},
-      buybtn:{show:true,text:'立即购买',style:1}, //样式1 样式2
-      tag:{show:true,style:'hot',img:''} //hot new diy 第三个是图片。 都是放在商品左上角
+      title:{show:false},
+      desc:{show:false},
+      price:{show:false},
+      buybtn:{show:false,text:'立即购买',style:null}, //样式1 样式2
+      tag:{show:false,style:'',img:''} //hot new diy 第三个是图片。 都是放在商品左上角
     }
     // loop:false,//是否循环
     // interval:5000,//切换时间

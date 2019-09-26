@@ -93,16 +93,17 @@
         <el-checkbox @change="change(item)" v-if="item.type === 'checkbox'" v-model="item.model">{{item.label}}</el-checkbox>
 
         <div v-if="item.type === 'diy'" class="flex">
-          <el-checkbox @change="checkboxCB(item)"  v-model="item.model.show">{{item.label}}</el-checkbox>
+<!--          @change="checkboxCB(item)"-->
+          <el-checkbox @change="item.checkboxCB"   v-model="item.model">{{item.label}}</el-checkbox>
 
           <template v-if="item.row_type === 'buybtn'">
 
-            <el-radio-group style="margin-left: 20px;padding-top: 14px" v-model="item.model.style" @change="item.radioCB(item.model.style)">
+            <el-radio-group style="margin-left: 20px;padding-top: 14px" v-model="item.data.style" @change="item.radioCB">
               <el-radio :label="1">样式一</el-radio>
               <el-radio :label="2">样式二</el-radio>
             </el-radio-group>
 
-           <el-input style="width: 140px;margin-left: 20px;" v-model="item.model.text" @input="item.inputCB(item.model.text)" />
+           <el-input style="width: 140px;margin-left: 20px;" v-model="item.data.text" @input="item.inputCB" />
             <el-tooltip class="item" effect="dark" content="自定义按钮的文本" placement="right">
               <i class="el-icon-question" ></i>
             </el-tooltip>
@@ -111,18 +112,18 @@
           </template>
 
           <template v-if="item.row_type === 'tag'">
-            <el-radio-group style="margin-left: 20px;padding-top: 14px" v-model="item.model.style" @change="item.radioCB(item.model.style)">
+            <el-radio-group style="margin-left: 20px;padding-top: 14px" v-model="item.data.style" @change="item.radioCB">
               <el-radio label="new">新品</el-radio>
               <el-radio label="hot">热卖</el-radio>
               <el-radio label="diy">自定义</el-radio>
             </el-radio-group>
             <!--非新品和热卖才-->
-            <upload-img-components style="margin-left: 20px;" v-if="item.model.style === 'diy'"
+            <upload-img-components style="margin-left: 20px;" v-if="item.data.style === 'diy'"
                                    class="myUploadImg"
                                    :onSuccess='item.radioImgCB'
                                    type='avatar'
                                    :mini="true"
-                                   :imgUrl='item.model.img'></upload-img-components>
+                                   :imgUrl='item.data.img'></upload-img-components>
           </template>
 
         </div>

@@ -164,7 +164,7 @@ export default {
       this.activeAttr.isSendAjax = true;
     },
     success(...params) {
-
+      console.log(params)
       this.onSuccess.call(this,params[0],this.idx2);
     },
   },
