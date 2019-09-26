@@ -20,11 +20,19 @@
       </div>
     </div>
 
+    <div style="position: absolute;right: 20px;top: 20px;">
+      <upload-img-components class="myUploadImg" :onSuccess='uploadImgCB'
+                             type='avatar'
+      ></upload-img-components>
+    </div>
+
   </div>
 </template>
 
 <script >
 import MagicCube from "@/assets/js/diy/tool/MagicCube";
+import uploadImgComponents from '@/components/common/uploadImgComponents';
+
 function isNum(value) {
   return typeof value === 'number' && !isNaN(value);
 }
@@ -32,6 +40,8 @@ function isNum(value) {
 function getAreaPoint(row_idx,col_idx,row_idx1,col_idx1,scale) {
   return {x:row_idx*scale,y:col_idx*scale,x1:row_idx1*scale,y1:col_idx1*scale}
 }
+
+
 
 export default {
   name:'Hello',
@@ -46,6 +56,9 @@ export default {
       col_idx1:null//竖直序列2
     }
   },
+  components:{
+    uploadImgComponents
+  },
   computed:{
     W(){
       return this.CTX.width
@@ -55,6 +68,9 @@ export default {
     }
   },
   methods:{
+    uploadImgCB(){
+      console.log(arguments)
+    },
     activeArea(idx){
       this.areaActiveIndxx = idx;
     },
