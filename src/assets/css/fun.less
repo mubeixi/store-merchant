@@ -1,0 +1,33 @@
+.cover-full-bg (@size: 'cover', @top:40%,@bgcolor: #999) {
+  background-size: @size;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: @bgcolor;
+  padding-top:@top;
+}
+
+.rest{
+  padding: 0;
+  margin: 0;
+}
+
+.border-top(@size:1px,@color:#e7e7e7,@type:solid){
+  border-top: @size @color @type;
+}
+.border-left(@size:1px,@color:#e7e7e7,@type:solid){
+  border-left: @size @color @type;
+}
+.border-right(@size:1px,@color:#e7e7e7,@type:solid){
+  border-right: @size @color @type;
+}
+.border-bottom(@size:1px,@color:#e7e7e7,@type:solid){
+  border-bottom: @size @color @type;
+}
+
+.border(@size:1px,@color:#e7e7e7,@type:solid){
+  .border-top(@size,@color,@type);
+  .border-left(@size,@color,@type);
+  .border-right(@size,@color,@type);
+  .border-bottom(@size,@color,@type);
+}
+
