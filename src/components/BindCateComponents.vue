@@ -1,7 +1,7 @@
 <template>
   <div class="selectPage">
     <el-dialog
-      :visible.sync="innerVisible"
+      :visible.sync="show"
       title="选择商品类别"
       append-to-body
       class="innerDislog"
@@ -57,7 +57,7 @@
       </div>
 
       <span slot="footer" class="dialog-footer">
-                <el-button @click="innerVisible = false">取 消</el-button>
+                <el-button @click="closeFun">取 消</el-button>
                 <el-button type="primary" @click="selectPage">确 定</el-button>
             </span>
     </el-dialog>
@@ -302,6 +302,9 @@ export default {
         }
     },
     methods: {
+      closeFun(){
+        this.$emit('cancel');
+      },
         getDataKeyArr(data, key, value, childname = 'childlist') {
             let obj = {};
             for (let i in data) {
