@@ -185,6 +185,15 @@
             :data="templateData[templateEditIndex][index]"
             :index="index"
           />
+
+          <tab-component
+            ref="plugin"
+            v-if="item.indexOf('tab') !== -1"
+            @setData="setDataEv"
+            :draggable="true"
+            :data="templateData[templateEditIndex][index]"
+            :index="index"
+          />
 <!--              <space-component-->
 <!--                ref="plugin"-->
 <!--                v-if="item.indexOf('space') !== -1"-->
@@ -273,6 +282,7 @@ import BaseComponent from '@/components/diy/BaseComponent.vue';
 import GoodsComponent from '@/components/diy/GoodsComponent';
 import NavComponent from "@/components/diy/NavComponent.vue";
 import CubeComponent from '@/components/diy/CubeComponent.vue';
+import TabComponent from '@/components/diy/TabComponent';
 
 import { deepCopy, getStyle, pageMove } from '@/common/utils';
 import Hr from '@/assets/js/diy/hr';
@@ -288,6 +298,8 @@ import Base from '@/assets/js/diy/base';
 import Goods from '@/assets/js/diy/goods';
 import Nav from '@/assets/js/diy/nav';
 import Cube from '@/assets/js/diy/cube';
+import Tab from '../assets/js/diy/tab';
+
 
 
 
@@ -317,6 +329,7 @@ import Cube from '@/assets/js/diy/cube';
     },
   },
   components: {
+      TabComponent,
       NavComponent,
       GoodsComponent,
       NoticeComponent,
@@ -544,7 +557,10 @@ export default class PreviewComponent extends Vue {
             break;
         case 'nav':
             newClass = new Nav()
-        break;
+            break;
+        case 'tab':
+            newClass = new Tab()
+            break;
         case 'swiper':
             newClass = new Swiper()
             break;
@@ -559,6 +575,8 @@ export default class PreviewComponent extends Vue {
           break;
       }
 
+
+      console.log(newClass)
       //
       // //这里面的数据，会跟踪吗
       //

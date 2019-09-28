@@ -91,6 +91,29 @@
               </div>
             </div>
 
+
+            <div class="row-container" v-if="['cate'].indexOf(item.row_type)!==-1">
+
+
+              <div class="flex line10">
+                <div class="graytext" style="padding: 0 10px;">商品分类</div>
+                <el-button :title="item.value[idx].tooltip"  size="small" @click="openGoodsBindCate(item,item.bindCB,idx)"    >绑定分类</el-button>
+                <span class="padding10-c font12">{{item.value[idx].tooltip}}</span>
+              </div>
+              <div class="flex line10">
+                <div class="graytext" style="padding:0 10px;">显示名称</div>
+                <div><el-input  autosize v-model="item.value[idx].title" class="input" @input='item.inputCB'/></div>
+              </div>
+              <div class="flex">
+                <div class="graytext" style="padding: 0 10px;">显示数量</div>
+                <el-radio-group style="margin-left: 20px;padding-top: 14px" v-model="item.arr[idx].type" @change="item.radioCB">
+                  <el-radio label="all">全部</el-radio>
+                  <el-radio label="diy">自定义</el-radio>
+                </el-radio-group>
+                <el-input type="number" v-if="item.arr[idx].type==='diy'" style="width: 140px;margin-left: 20px;" v-model="item.arr[idx].limit"  />
+              </div>
+            </div>
+
             <i class="el-icon-circle-close del-icon" @click="item.removeCB(idx)"></i>
 
           </div>
@@ -191,7 +214,7 @@
 
         <!--魔方-->
         <div v-if="item.type==='MagicCube'">
-          <magic-cube-component />
+          <magic-cube-component :row.sync="item.row" @mouseenter.native="bindBindLinkDiaCall(item.bindCB)" @selectChange="bingSelectChange" @openBindLink="openMagicCubeBindLink"     />
         </div>
 
       </el-form-item>
@@ -203,7 +226,7 @@
 
     <select-goods-component @cancel="bindListCancel" :onSuccess="bindListSuccessCall"    :pageEl="pageEl"   :show="bindListDialogShow" />
 
-    <bind-cate-components @cancel="bindCateCancel" :onSuccess="bindCateSuccessCall"    :pageEl="pageEl"   :show="bindCateDialogShow" />
+    <bind-cate-components @cancel="bindCateCancel" :onSuccess="bindCateSuccessCall" :idx2="bindCateIdx2"    :pageEl="pageEl"   :show="bindCateDialogShow" />
 
     <bind-link-components @cancel="bindLinkCancel" :onSuccess="bindLinkSuccessCall" :idx2="bindLinkIdx2"   :pageEl="pageEl"   :show="bindLinkDialogShow" />
 
@@ -238,6 +261,7 @@ import MagicCubeComponent from '@/components/diy/tool/MagicCubeComponent';
         bindListSuccessCall:null,
         bindCateDialogShow:false,
         bindCateSuccessCall:null,
+        bindCateIdx2:null,
         bindLinkDialogShow:false,
         bindLinkIdx2:null,
         bindLinkSuccessCall:null,
@@ -258,6 +282,7 @@ import MagicCubeComponent from '@/components/diy/tool/MagicCubeComponent';
     },
   },
   computed: {
+
     eTitle() {
       return this.$store.state.tmplData.length > 0 && this.$store.state.activeAttr.attrData.title ? this.$store.state.activeAttr.attrData.title : '';
     },
@@ -276,13 +301,29 @@ import MagicCubeComponent from '@/components/diy/tool/MagicCubeComponent';
       this.pageEl = this
     },
   methods: {
+      bingSelectChange(arr){
+          console.log('选中区域变化',arr)
+          this.currentData.seclectChangeCB && this.currentData.seclectChangeCB(arr)
+
+      },
+      //用两个来
+      bindBindLinkDiaCall(bindCB){
+          this.bindLinkSuccessCall = bindCB;
+      },
+      openMagicCubeBindLink(idx2){
+
+          this.bindLinkDialogShow = true;
+          this.bindLinkIdx2 = idx2;
+          //
+      },
       openGoodsBindList(item,success){
           this.bindListDialogShow = true
           this.bindListSuccessCall = success
       },
-      openGoodsBindCate(item,success){
+      openGoodsBindCate(item,success,idx2){
           this.bindCateDialogShow = true
           this.bindCateSuccessCall = success
+          this.bindCateIdx2 = idx2
       },
       openSwiperBindLink(item,idx2,success){
           this.bindLinkDialogShow = true
