@@ -34,6 +34,7 @@
                   @node-click="nodeClick"
                   @check='nodeClick'
                   node-key='id'
+                  :check-strictly="strictly"
                   :expand-on-click-node='false'
                   default-expand-all
                   check-on-click-node
@@ -90,6 +91,10 @@ function noop() {
 export default {
     name :'BindCateComponents',
     props: {
+      strictly:{
+        type:Boolean,
+        default:true,
+      },
       pageEl:{
           type:Object
         },

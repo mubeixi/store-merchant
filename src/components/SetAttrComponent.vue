@@ -52,18 +52,23 @@
               <span class="padding10-c">{{item.label}} : {{item.value[idx].Coupon_Title}}</span>
             </div>
 
-            <div class="row-container" v-if="['swiper'].indexOf(item.row_type)!==-1">
+            <div class="row-container flex" v-if="['swiper'].indexOf(item.row_type)!==-1">
               <upload-img-components
-                tip="（建议图片尺寸700px*380px）"
                 :cropperOption="{aspectRatio:1/1}"
                 class="myUploadImg"
                 :onSuccess='item.imgCB'
+                :mini="true"
                 type='avatar'
                 :idx2="idx"
                 :imgUrl='item.value[idx].img_src' />
               <div>
-                <el-button :title="item.value[idx].tooltip"  size="small" @click="openSwiperBindLink(item,idx,item.bindCB)"    >绑定链接</el-button>
-                <span class="padding10-c font12">{{item.value[idx].tooltip}}</span>
+                <div class="padding10-c">
+                  <el-button :title="item.value[idx].tooltip"  size="small" @click="openSwiperBindLink(item,idx,item.bindCB)"    >绑定链接</el-button>
+                  <span class="padding10-c font12">{{item.value[idx].tooltip}}</span>
+                  <div class="graytext2 font12" style="line-height: 22px;">
+                    建议图片尺寸700px*380px
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -546,15 +551,15 @@ export default class SetAttrComponent extends Vue {
 .arr-box{
   .arr-row{
     position:relative;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     span{
       color: #666;
     }
     .del-icon{
       position: absolute;
-      right: -14px;
-      top: -14px;
-      font-size: 28px;
+      right: -12px;
+      top: -12px;
+      font-size: 24px;
       color: #999;
       cursor: pointer;
       &:hover{
