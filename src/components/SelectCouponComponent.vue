@@ -34,6 +34,7 @@
           ref="multipleTable"
           @selection-change="handleSelectionChange"
           @row-click="handleRowChange"
+          row-class-name="fun-table-row"
           style="width: 100%">
           <el-table-column type="selection">
           </el-table-column>
@@ -134,6 +135,7 @@ export default {
       innerVisible:false,
       multipleSelection:[],
       list: [],
+      finish:false,
       //分页
       paginate:{
         page:1,
@@ -147,6 +149,15 @@ export default {
       immediate: true,
       handler(val){
         this.innerVisible = val
+
+        if(val && !this.finish){
+
+          this.loadCouponInfo((arr)=>{
+            this.finish = true
+            this.list = arr;
+          })
+
+        }
       }
     },
   },
@@ -163,9 +174,7 @@ export default {
 
   created(){
 
-    this.loadCouponInfo((arr)=>{
-      this.list = arr;
-    })
+
 
   },
   methods:{
@@ -232,3 +241,7 @@ export default {
   }
 }
 </script>
+
+<style lang="less" scoped>
+
+</style>

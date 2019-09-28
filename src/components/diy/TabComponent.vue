@@ -104,12 +104,14 @@ import de from 'element-ui/src/locale/lang/de';
         }
       },
       watch: {
-        'tab.value.list':{
-          handler(val){
-              this.loadGoodsList()
-          }
-        },
+        // 'tab.value.list':{
+        //   handler(val){
+        //       this.loadGoodsList()
+        //   }
+        // },
         currentTab:{
+          deep:true,
+          immediate:true,
           handler(val){
 
               this.loadGoodsList()

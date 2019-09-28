@@ -67,361 +67,391 @@
 </template>
 
 <script>
-import {getProductList,getProductCategory} from '@/common/fetch';
-import {deepCopy} from '@/common/utils';
-function refreshCateData(arr){
+  import { getProductCategory, getProductList } from '@/common/fetch';
+  import { deepCopy } from '@/common/utils';
 
-  if(!arr)return arr;
-  for(var v of arr){
-    v.id = v.Category_ID;
-    v.label = v.Category_Name;
-    v.path = `/product/list?cate_id=${v.Category_ID}`;
-    v.type = 'default';
+  function refreshCateData(arr) {
 
-    if(v.child){
-      v.children = refreshCateData(v.child);
+    if (!arr) return arr;
+    for (var v of arr) {
+      v.id = v.Category_ID;
+      v.label = v.Category_Name;
+      v.path = `/product/list?cate_id=${v.Category_ID}`;
+      v.type = 'default';
+
+      if (v.child) {
+        v.children = refreshCateData(v.child);
+      }
+
     }
+
+    return arr;
 
   }
 
-  return arr;
+  function noop() {
+  }
 
-}
-
-function noop() {
-}
-export default {
-    name :'BindLinkComponents',
+  export default {
+    name: 'BindLinkComponents',
     props: {
-      strictly:{
-        type:Boolean,
-        default:true,
+      strictly: {
+        type: Boolean,
+        default: true,
       },
-      pageEl:{
-          type:Object
-        },
-        idx2: {
-          default: -1,
-        },
-        show: {
-            type: Boolean,
-            default: false
-        },
-        data: {
-            type: Object,
-            default: () => ({})
-        },
-        checkedIndex: {
-            type: Object,
-            default: undefined
-        },
-        onSuccess: {
-          type: Function,
-          default: noop,
-        },
+      pageEl: {
+        type: Object
+      },
+      idx2: {
+        default: -1,
+      },
+      show: {
+        type: Boolean,
+        default: false
+      },
+      data: {
+        type: Object,
+        default: () => ({})
+      },
+      checkedIndex: {
+        type: Object,
+        default: undefined
+      },
+      onSuccess: {
+        type: Function,
+        default: noop,
+      },
     },
     watch: {
-        data(val) {
-            this.config = deepCopy(this.config, val)
-        },
-        checkedIndex: function (val) {
-            if (typeof val === 'undefined' || typeof val.type === 'undefined') {
-                this.innerDialog.system.checked = '';
-                try {
-                    this.$refs.treeForm.setCheckedNodes([])
-                } catch (err) {
-                    try {
-                        setTimeout(() => this.$refs.treeForm && this.$refs.treeForm.setCheckedNodes([]), 0)
-                    } catch (err) {
-                        console.log(err)
-                    }
-                }
-                // this.$refs.treeForm.setCheckedNodes([])
-                this.innerDialog.product.checked = '';
-                return
+      data(val) {
+        this.config = deepCopy(this.config, val);
+      },
+      checkedIndex: function (val) {
+        if (typeof val === 'undefined' || typeof val.type === 'undefined') {
+          this.innerDialog.system.checked = '';
+          try {
+            this.$refs.treeForm.setCheckedNodes([]);
+          } catch (err) {
+            try {
+              setTimeout(() => this.$refs.treeForm && this.$refs.treeForm.setCheckedNodes([]), 0);
+            } catch (err) {
+              console.log(err);
             }
-            let {type, id} = val;
-            let data = type.split('&&');
-            this.innerDialog.index = data[0];
-            if (data[0] === 'page' && data.length >= 2) {
-                this.innerDialog.customizeIndex = data[1];
-                if (id) {
-                    switch (this.innerDialog.customizeIndex) {
-                        case '1':
-                            this.innerDialog.system.data.map(v => {
-                                let checkedId = parseInt(v.id);
-                                id = parseInt(id);
-                                if (checkedId === id) {
-                                    this.innerDialog.system.checked = v.path
-                                }
-                            });
-                            break;
-                        case '2':
-                            var checkItem = this.getDataKeyArr(this.innerDialog.classify.data, 'id', id);
-                            this.$refs.treeForm && this.$refs.treeForm.setCheckedNodes([checkItem]);
-                            break;
-                        case '3':
-                            if (data[2]) {
-                                this.innerDialog.product.data.map(v => {
-                                    let checkedId = parseInt(v.id);
-                                    if (data[2] === v.type) { // 专栏与课程的区分
-                                        id = parseInt(id);
-                                        if (checkedId === id) {
-                                            this.innerDialog.product.checked = v.path
-                                        }
-                                    }
-                                })
-                            } else {
-                                this.innerDialog.product.data.map(v => {
-                                    let checkedId = parseInt(v.id);
-                                    id = parseInt(id);
-                                    if (checkedId === id) {
-                                        this.innerDialog.product.checked = v.path
-                                    }
-                                })
-                            }
-                            break
-                    }
-                } else {
-                    this.innerDialog.system.checked = '';
-                    try {
-                        this.$refs.treeForm.setCheckedNodes([])
-                    } catch (err) {
-                        console.log(err)
-                    }
-                    this.innerDialog.product.checked = ''
-                }
-            }
-        },
-        innerVisible(val) {
-            this.$emit('input', val)
-
-          //关闭页面的时候
-          if(val)return;
-
-          let $ref = this.$refs.treeForm;
-
-          //获取已经选中的节点
-          let keys = $ref.getCheckedKeys();
-
-          //初始化的时候清空
-          for(var key of keys){
-            $ref.setChecked(key,false,true)
           }
-
-        },
-        show: {
-            immediate: true,
-            handler(val) {
-                this.innerVisible = val
-
-
-            }
-        },
-        'innerDialog.customizeIndex'(val) {
-            if (val === '2' && !this.innerDialog.classify.isHasData) {
-              getProductCategory().then(res => {
-                    this.innerDialog.classify.isHasData = true;
-                    let data = refreshCateData(res.data);
-                    this.innerDialog.classify.data.push(...data)
-
-                })
-            }
-            if (val === '3' && !this.innerDialog.product.isHasData) {
-                getProductList({pageSize:999}).then(res => {
-                    this.innerDialog.product.isHasData = true;
-                    let data = res.data.map(v => {
-                        v.text = `[商品] ${v.Products_Name}`;
-                        v.path = `/product/detail?id=${v.Products_ID}`;
-                        v.type = 'default';
-                        return v
-                    });
-                    this.innerDialog.product.data.push(...data)
-                });
-
-            }
+          // this.$refs.treeForm.setCheckedNodes([])
+          this.innerDialog.product.checked = '';
+          return;
         }
+        let { type, id } = val;
+        let data = type.split('&&');
+        this.innerDialog.index = data[0];
+        if (data[0] === 'page' && data.length >= 2) {
+          this.innerDialog.customizeIndex = data[1];
+          if (id) {
+            switch (this.innerDialog.customizeIndex) {
+              case '1':
+                this.innerDialog.system.data.map(v => {
+                  let checkedId = parseInt(v.id);
+                  id = parseInt(id);
+                  if (checkedId === id) {
+                    this.innerDialog.system.checked = v.path;
+                  }
+                });
+                break;
+              case '2':
+                var checkItem = this.getDataKeyArr(this.innerDialog.classify.data, 'id', id);
+                this.$refs.treeForm && this.$refs.treeForm.setCheckedNodes([checkItem]);
+                break;
+              case '3':
+                if (data[2]) {
+                  this.innerDialog.product.data.map(v => {
+                    let checkedId = parseInt(v.id);
+                    if (data[2] === v.type) { // 专栏与课程的区分
+                      id = parseInt(id);
+                      if (checkedId === id) {
+                        this.innerDialog.product.checked = v.path;
+                      }
+                    }
+                  });
+                } else {
+                  this.innerDialog.product.data.map(v => {
+                    let checkedId = parseInt(v.id);
+                    id = parseInt(id);
+                    if (checkedId === id) {
+                      this.innerDialog.product.checked = v.path;
+                    }
+                  });
+                }
+                break;
+            }
+          } else {
+            this.innerDialog.system.checked = '';
+            try {
+              this.$refs.treeForm.setCheckedNodes([]);
+            } catch (err) {
+              console.log(err);
+            }
+            this.innerDialog.product.checked = '';
+          }
+        }
+      },
+      innerVisible(val) {
+        this.$emit('input', val);
+
+        //关闭页面的时候
+        if (val) return;
+
+        let $ref = this.$refs.treeForm;
+
+        //获取已经选中的节点
+        let keys = $ref.getCheckedKeys();
+
+        //初始化的时候清空
+        for (var key of keys) {
+          $ref.setChecked(key, false, true);
+        }
+
+      },
+      show: {
+        immediate: true,
+        handler(val) {
+          this.innerVisible = val;
+
+
+        }
+      },
+      'innerDialog.customizeIndex'(val) {
+
+        if(!this.innerVisible)return;
+
+        if (val === '2' && !this.innerDialog.classify.isHasData) {
+          getProductCategory()
+            .then(res => {
+              this.innerDialog.classify.isHasData = true;
+              let data = refreshCateData(res.data);
+              this.innerDialog.classify.data.push(...data);
+
+            });
+        }
+        if (val === '3' && !this.innerDialog.product.isHasData) {
+          getProductList({ pageSize: 999 })
+            .then(res => {
+              this.innerDialog.product.isHasData = true;
+              let data = res.data.map(v => {
+                v.text = `[商品] ${v.Products_Name}`;
+                v.path = `/product/detail?id=${v.Products_ID}`;
+                v.type = 'default';
+                return v;
+              });
+              this.innerDialog.product.data.push(...data);
+            });
+
+        }
+      }
     },
     data() {
-        return {
-            innerVisible: false,
-            innerDialog: {
-                data: ['自定义链接', '选择页面'],
-                index: 'customize',
-                customizeLink: '',
-                customizeStart: 'http://',
-                customizeIndex: '1',
-                system: {
-                    data: [
-                        {id: 1, text: '个人中心', path: 'personal'},
-                        {id: 2, text: '分销中心', path: 'personal/distribution'},
-                        {id: 3, text: '我的团队', path: 'personal/distribution/team'},
-                        {id: 4, text: '提现', path: 'personal/distribution/withDraw'},
-                        {id: 5, text: '消息通知', path: 'notice'},
-                        {id: 6, text: '分享海报', path: 'Share'}
-                    ],
-                    checked: '',
-                    checkedObj: {}
-                },
-                product: {
-                    data: [],
-                    checked: '',
-                    isHasData: false,
-                    checkedObj: {}
-                },
-                classify: {
-                    data: [],
-                    index: 0,
-                    i: 0,
-                    defaultProps: {
-                        children: 'children',
-                        label: 'label'
-                    },
-                    isHasData: false
-                }
+      return {
+        innerVisible: false,
+        innerDialog: {
+          data: ['自定义链接', '选择页面'],
+          index: 'customize',
+          customizeLink: '',
+          customizeStart: 'http://',
+          customizeIndex: '1',
+          system: {
+            data: [
+              {
+                id: 1,
+                text: '个人中心',
+                path: 'personal'
+              },
+              {
+                id: 2,
+                text: '分销中心',
+                path: 'personal/distribution'
+              },
+              {
+                id: 3,
+                text: '我的团队',
+                path: 'personal/distribution/team'
+              },
+              {
+                id: 4,
+                text: '提现',
+                path: 'personal/distribution/withDraw'
+              },
+              {
+                id: 5,
+                text: '消息通知',
+                path: 'notice'
+              },
+              {
+                id: 6,
+                text: '分享海报',
+                path: 'Share'
+              }
+            ],
+            checked: '',
+            checkedObj: {}
+          },
+          product: {
+            data: [],
+            checked: '',
+            isHasData: false,
+            checkedObj: {}
+          },
+          classify: {
+            data: [],
+            index: 0,
+            i: 0,
+            defaultProps: {
+              children: 'children',
+              label: 'label'
             },
-            config: {
-                customize: {
-                    show: true
-                },
-                page: {
-                    show: true,
-                    system: {
-                        show: true
-                    },
-                    classify: {
-                        show: true
-                    },
-                    product: {
-                        show: true
-                    }
-                }
+            isHasData: false
+          }
+        },
+        config: {
+          customize: {
+            show: true
+          },
+          page: {
+            show: true,
+            system: {
+              show: true
+            },
+            classify: {
+              show: true
+            },
+            product: {
+              show: true
             }
-
+          }
         }
+
+      };
     },
     computed: {
-        leftMenuData() {
-            let data = [];
-            if (this.config.customize) {
-                if (this.config.customize.show !== false) {
-                    data.push('自定义链接')
-                }
-                if (this.config.page.show !== false) {
-                    data.push('选择页面')
-                }
-            }
-            return data
+      leftMenuData() {
+        let data = [];
+        if (this.config.customize) {
+          if (this.config.customize.show !== false) {
+            data.push('自定义链接');
+          }
+          if (this.config.page.show !== false) {
+            data.push('选择页面');
+          }
         }
+        return data;
+      }
     },
     methods: {
-      closeFun(){
-        console.log("触发关闭BindLinkComponents")
+      closeFun() {
+        console.log('触发关闭BindLinkComponents');
         this.$emit('cancel');
       },
-        getDataKeyArr(data, key, value, childname = 'childlist') {
-            let obj = {};
-            for (let i in data) {
-                let item = data[i];
-                if (item[key] === value) {
-                    obj = item;
-                    break
-                } else {
-                    if (item[childname]) {
-                        obj = this.getDataKeyArr(item[childname], key, value, childname);
-                        if (JSON.stringify(obj) !== '{}') {
-                            break
-                        }
-                    }
-                }
+      getDataKeyArr(data, key, value, childname = 'childlist') {
+        let obj = {};
+        for (let i in data) {
+          let item = data[i];
+          if (item[key] === value) {
+            obj = item;
+            break;
+          } else {
+            if (item[childname]) {
+              obj = this.getDataKeyArr(item[childname], key, value, childname);
+              if (JSON.stringify(obj) !== '{}') {
+                break;
+              }
             }
-            return obj
-        },
-        saveSystem(item) {
-            this.innerDialog.system.checkedObj = item
-        },
-        saveProduct(item) {
-            this.innerDialog.product.checkedObj = item
-        },
-        nodeClick(data, checked, node) {
-            this.$refs.treeForm.setCheckedNodes([data])
-        },
-        selectPage() {
-            let path = '';
-            let tooltip = '';
-            let dataItem = {};
-            let type = '';
-            if (this.innerDialog.index === 'customize') {
-                path = this.innerDialog.customizeStart + this.innerDialog.customizeLink;
-                tooltip = `自定义链接：${path}`
-            } else if (this.innerDialog.index === 'page') {
-                switch (this.innerDialog.customizeIndex) {
-                    case '1':
-                        path = this.innerDialog.system.checked;
-                        if (path === '') return this.$message('请先选择系统页面');
-                        tooltip = `系统页面：${this.innerDialog.system.checkedObj.text}`;
-                        dataItem = this.innerDialog.system.checkedObj;
-                        type = 'page';
-                        break;
-                    case '2':
-                        var data = this.$refs.treeForm.getCheckedNodes()[0];
-                        if (!data) return this.$message('请先选择分类');
-                        path = data.path;
-                        tooltip = `分类：${data.label}`;
-                        dataItem = data;
-                        type = 'cate';
-                        break;
-                    case '3':
-                        path = this.innerDialog.product.checked;
-                        if (path === '') return this.$message('请先选择产品');
-                        tooltip = `产品：${this.innerDialog.product.checkedObj.text}`;
-                        dataItem = this.innerDialog.product.checkedObj;
-                        type = 'product';
-                        break
-                }
-            }
-
-
-            //this.innerVisible = false;
-
-
-
-            // let type = this.innerDialog.index;
-            // if (type === 'page') {
-            //     type += '&&' + this.innerDialog.customizeIndex + '&&' + dataItem.type
-            // }
-
-            let dataType = '';
-            // if (dataItem.type === 'topic') {
-            //     dataType = dataItem.type
-            // } else if (dataItem.type === 'subject') {
-            //     dataType = dataItem.media_type
-            // }
-            // console.log({
-            //   dataType,
-            //   type,
-            //   path,
-            //   tooltip,
-            //   dataItem
-            // })
-
-            this.onSuccess.call(this,dataType,
-              type,
-              path,
-              tooltip,
-              dataItem,this.pageEl,this.idx2)
-            // this.$emit('change', {
-            //     dataType,
-            //     type,
-            //     path,
-            //     tooltip,
-            //     dataItem
-            // })
+          }
+        }
+        return obj;
+      },
+      saveSystem(item) {
+        this.innerDialog.system.checkedObj = item;
+      },
+      saveProduct(item) {
+        this.innerDialog.product.checkedObj = item;
+      },
+      nodeClick(data, checked, node) {
+        this.$refs.treeForm.setCheckedNodes([data]);
+      },
+      selectPage() {
+        let path = '';
+        let tooltip = '';
+        let dataItem = {};
+        let type = '';
+        if (this.innerDialog.index === 'customize') {
+          path = this.innerDialog.customizeStart + this.innerDialog.customizeLink;
+          tooltip = `自定义链接：${path}`;
+        } else if (this.innerDialog.index === 'page') {
+          switch (this.innerDialog.customizeIndex) {
+            case '1':
+              path = this.innerDialog.system.checked;
+              if (path === '') return this.$message('请先选择系统页面');
+              tooltip = `系统页面：${this.innerDialog.system.checkedObj.text}`;
+              dataItem = this.innerDialog.system.checkedObj;
+              type = 'page';
+              break;
+            case '2':
+              var data = this.$refs.treeForm.getCheckedNodes()[0];
+              if (!data) return this.$message('请先选择分类');
+              path = data.path;
+              tooltip = `分类：${data.label}`;
+              dataItem = data;
+              type = 'cate';
+              break;
+            case '3':
+              path = this.innerDialog.product.checked;
+              if (path === '') return this.$message('请先选择产品');
+              tooltip = `产品：${this.innerDialog.product.checkedObj.text}`;
+              dataItem = this.innerDialog.product.checkedObj;
+              type = 'product';
+              break;
+          }
         }
 
+
+        //this.innerVisible = false;
+
+
+        // let type = this.innerDialog.index;
+        // if (type === 'page') {
+        //     type += '&&' + this.innerDialog.customizeIndex + '&&' + dataItem.type
+        // }
+
+        let dataType = '';
+        // if (dataItem.type === 'topic') {
+        //     dataType = dataItem.type
+        // } else if (dataItem.type === 'subject') {
+        //     dataType = dataItem.media_type
+        // }
+        // console.log({
+        //   dataType,
+        //   type,
+        //   path,
+        //   tooltip,
+        //   dataItem
+        // })
+
+        this.onSuccess.call(this, dataType,
+          type,
+          path,
+          tooltip,
+          dataItem, this.pageEl, this.idx2);
+        // this.$emit('change', {
+        //     dataType,
+        //     type,
+        //     path,
+        //     tooltip,
+        //     dataItem
+        // })
+      }
+
     }
-}
+  };
 </script>
-<style lang="less" >
+<style lang="less">
 
 </style>

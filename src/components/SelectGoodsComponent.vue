@@ -34,6 +34,7 @@
           ref="multipleTable"
           @selection-change="handleSelectionChange"
           @row-click="handleRowChange"
+          row-class-name="fun-table-row"
           style="width: 100%">
           <el-table-column type="selection">
           </el-table-column>
@@ -128,12 +129,22 @@ export default {
       immediate: true,
       handler(val){
         this.innerVisible = val
+
+        if(val && !this.finish){
+
+          this.loadGoodsInfo((arr)=>{
+            this.finish = true;
+            this.list = arr;
+          })
+
+        }
+
       }
     },
   },
   computed:{
     page_total(){
-      return parseInt(this.total/this.pageSize)
+      return parseInt(this.paginate.total/this.paginate.pageSize)
     },
     //已经选择的ids_arr不要重复选择了
     ids_arr(){
@@ -144,9 +155,7 @@ export default {
 
   created(){
 
-    this.loadCouponInfo((arr)=>{
-      this.list = arr;
-    })
+
 
   },
   methods:{
@@ -164,12 +173,12 @@ export default {
     filterTag(value, row) {
       return row.tag === value;
     },
-    loadCouponInfo(call){
+    loadGoodsInfo(call){
       //停止
       if(this.paginate.total>0 && this.page>=this.paginate.total)return;
       this.loading = true;
       let _self = this
-      getProductList(this.paginate).then(res=>{
+      getProductList(JSON.parse(JSON.stringify(this.paginate))).then(res=>{
         setTimeout(function(){
           _self.loading = false;
         },600)
@@ -221,3 +230,6 @@ export default {
   }
 }
 </script>
+<style lang="less" scoped>
+
+</style>

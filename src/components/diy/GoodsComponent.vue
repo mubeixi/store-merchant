@@ -96,6 +96,7 @@ import de from 'element-ui/src/locale/lang/de';
           immediate:true,
           deep:true,
           handler(val){
+
               if(!val)return;
               let {list=[],cate_id,limit} = val;
 
