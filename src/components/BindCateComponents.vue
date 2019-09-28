@@ -194,6 +194,20 @@ export default {
         },
         innerVisible(val) {
             this.$emit('input', val)
+
+          //关闭页面的时候
+          if(val)return;
+
+          let $ref = this.$refs.treeForm;
+
+          //获取已经选中的节点
+          let keys = $ref.getCheckedKeys();
+
+          //初始化的时候清空
+          for(var key of keys){
+            $ref.setChecked(key,false,true)
+          }
+
         },
         show: {
             immediate: true,
@@ -303,6 +317,7 @@ export default {
         }
     },
     methods: {
+
       closeFun(){
         console.log("触发关闭BindCateComponents")
         this.$emit('cancel');
