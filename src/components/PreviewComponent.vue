@@ -428,25 +428,37 @@ import Tab from '../assets/js/diy/tab';
 
       this.removePosition.show = false;
 
-      this.$emit('setData', []);
+
+      //this.$emit('setData', []);
       // console.log(this)
     },
     deleteItem(index, name) {
+
+      console.log(index)
       this.templateList[this.templateEditIndex].splice(index, 1);
       this.templateData[this.templateEditIndex].splice(index, 1);
 
+
+      this.$store.commit('templateEditIndex',0)
+
       // 用心良苦啊,删除的时候还要保留这个页面，确实比较符合需要
-      if (name.substring(0, 9) === 'switchNav') {
-        // 删除导航及其他页面
-        this.templateData = [this.templateData[this.templateEditIndex]];
-        this.templateList = [this.templateList[this.templateEditIndex]];
-        ActiveAttrObj.tabIndex = 0;
-      }
-      this.$fun.info({ msg: '删除成功！' });
+      // if (name.substring(0, 9) === 'switchNav') {
+      //   // 删除导航及其他页面
+      //   this.templateData = [this.templateData[this.templateEditIndex]];
+      //   this.templateList = [this.templateList[this.templateEditIndex]];
+      //   ActiveAttrObj.tabIndex = 0;
+      // }
+      this.$fun.info({ title:'操作反馈',msg: '删除成功！' });
       this.editData.display = 'none';
+    },
+    showRemovePrompt() {
+        this.removePosition.show = true
+        this.$refs.removeModal.style.left = this.removePosition.x + 'px'
+        this.$refs.removeModal.style.top = this.removePosition.y + 'px'
     },
     hideRightMenu(e) {
       const type = e.target.getAttribute('type');
+      console.log(type)
       this.$refs.rightMenu.style.display = 'none';
       this[type]();
     },
@@ -659,4 +671,49 @@ export default class PreviewComponent extends Vue {
     background-color: #e6e6e6;
   }
 }
+
+
+
+.removeModal {
+  position: fixed;
+  right: 30px;
+  top: 250px;
+  z-index: 21;
+  background-color: white;
+  padding: 10px;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  width: 200px;
+
+  h4 {
+    font-weight: normal;
+    font-size: 14px;
+  }
+
+  p {
+    overflow: hidden;
+    margin-top: 20px;
+
+    input {
+      float: right;
+      box-sizing: border-box;
+      font-size: 12px;
+      background-color: #f0f0f0;
+      border: none;
+      width: 50px;
+      height: 26px;
+      cursor: pointer;
+    }
+
+    .ok {
+      background-color: #418ef6;
+      color: white;
+    }
+
+    .on {
+      margin-right: 10px;
+    }
+  }
+}
+
 </style>

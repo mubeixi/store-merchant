@@ -71,6 +71,7 @@ import {getProductList,getProductCategory} from '@/common/fetch';
 import {deepCopy} from '@/common/utils';
 function refreshCateData(arr){
 
+  if(!arr)return arr;
   for(var v of arr){
     v.id = v.Category_ID;
     v.label = v.Category_Name;
