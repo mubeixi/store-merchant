@@ -224,6 +224,7 @@
 <!--      </el-form-item>-->
     </el-form>
 
+
     <select-goods-component @cancel="bindListCancel" :onSuccess="bindListSuccessCall"    :pageEl="pageEl"   :show="bindListDialogShow" />
 
     <bind-cate-components @cancel="bindCateCancel" :onSuccess="bindCateSuccessCall" :idx2="bindCateIdx2"    :pageEl="pageEl"   :show="bindCateDialogShow" />

@@ -1,7 +1,8 @@
 <template>
   <div class="selectPage">
     <el-dialog
-      :visible.sync="innerVisible"
+
+      :visible.sync="show"
       title="设置点击跳转的页面"
       append-to-body
       class="innerDislog"
@@ -34,6 +35,7 @@
                   @node-click="nodeClick"
                   @check='nodeClick'
                   node-key='id'
+                  check-strictly
                   :expand-on-click-node='false'
                   default-expand-all
                   check-on-click-node
@@ -56,7 +58,7 @@
       </div>
 
       <span slot="footer" class="dialog-footer">
-                <el-button @click="innerVisible = false">取 消</el-button>
+                <el-button @click="closeFun">取 消</el-button>
                 <el-button type="primary" @click="selectPage">确 定</el-button>
             </span>
     </el-dialog>
@@ -292,6 +294,9 @@ export default {
         }
     },
     methods: {
+      closeFun(){
+        this.$emit('cancel');
+      },
         getDataKeyArr(data, key, value, childname = 'childlist') {
             let obj = {};
             for (let i in data) {
