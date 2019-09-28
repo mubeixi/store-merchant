@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Common from './commonClass';
 import { deepCopy } from '@/common/utils';
 import {ls} from "@/common/tool/ls";
+import {fun} from "../../../common";
 
 const shopInfo = ls.get('Shop_Info')
 
@@ -44,7 +45,7 @@ function setConfig() {
 
 function setAttrData() {
   const data = {
-    title: '店铺信息设置',
+    title: '分类商品设置',
     content: [
       // {
       //   type: 'origin',
@@ -122,9 +123,11 @@ function setAttrData() {
         // openBindLink:(pageEl,item,idx)=>{
         //   pageEl.bindLinkDialogShow = true
         // },
-        dialogCB:(coupon_list)=>{
+        dialogCB:(list)=>{
 
-          this.value.list = [...coupon_list];
+
+
+          this.value.list = [...list];
           this.setIndex(0, { config: false, value: false });
           //
           // // 都是改写vuex里面的数据，两种写法都可以
@@ -135,12 +138,19 @@ function setAttrData() {
         //这个按钮的功能，主要是新增元素
         editCB: (pageEl) => {
 
+          if(this.value.list.length>=10){
+            fun.info({msg:'最多允许十个'});
+            return;
+          }
+
           this.value.list.push({
             type:'all',
             cate_id:null,
             title:'分类名称',
             limit:10,//显示的个数
           });//新增一个空元素
+
+
           this.setIndex(0, { config: false, value: false });
 
           //都是改写vuex里面的数据，两种写法都可以
@@ -167,8 +177,13 @@ function setAttrData() {
           console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
           pageEl.bindCateDialogShow = false;
 
+          let tabItemEl = document.getElementById('tab-item'+idx2);
+          if(tabItemEl){
+            tabItemEl.click();
+          }
           //console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
           Vue.set(this.value.list[idx2],'cate_id',dataItem.Category_ID);
+          Vue.set(this.value.list[idx2],'title',dataItem.Category_Name);
           // Vue.set(this.value.list[idx2],'linkType',type);
           // Vue.set(this.value.list[idx2],'tooltip',tooltip);
           //

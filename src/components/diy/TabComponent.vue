@@ -1,27 +1,33 @@
 <template>
-  <div @click.stop="setData({}, 0)"  class="tab wrap" id="tab" >
-<!--    <div class="box"  :class="[className]" >-->
-<!--      <ul class="list" :style="{margin:goods.style.wrapmargin+'px'}">-->
-<!--        <li v-for="(item,idx) in goodsList" class="item"-->
-<!--            :class="[idx%2==0?'even':'odd',goods.config.radius=='round'?'round':'']"-->
-<!--            :style="[itemMarginObj(idx)]"-->
-<!--        >-->
-<!--          <div class="cover" :style="{width:itemw,height:itemw,backgroundImage:'url('+domainFunc(item.ImgPath)+')'}" >-->
-<!--            <div v-show="goods.config.attr.tag.show" :class="goods.config.attr.tag.style"-->
-<!--                 v-if="['new','hot'].indexOf(goods.config.attr.tag.style)!=-1" class="tag">{{goods.config.attr.tag.style=='hot'?'hot':'new'}}</div>-->
-<!--            <div v-show="goods.config.attr.tag.show" v-else class="tag img"><img :src="goods.config.attr.tag.img|domain" /></div>-->
-<!--          </div>-->
-<!--          <div class="info" :style="{width:itemw}" :class="{empyInfo:isEmpeyInfo}">-->
-<!--            <div class="left">-->
-<!--              <div v-show="goods.config.attr.title.show" class="title">{{item.Products_Name}}</div>-->
-<!--              <div v-show="goods.config.attr.desc.show" class="font12 graytext desc">{{item.Products_BriefDescription||'暂无介绍'}}</div>-->
-<!--              <div v-show="goods.config.attr.price.show" class="price"><span class="sign">￥</span>{{item.Products_PriceX}}</div>-->
-<!--            </div>-->
-<!--            <div  v-show="goods.config.attr.buybtn.show" class="buybtn">{{goods.config.attr.buybtn.text||'购买'}}</div>-->
-<!--          </div>-->
-<!--        </li>-->
-<!--      </ul>-->
-<!--    </div>-->
+  <div @click.stop="setData({}, 0)"  class="tab wrap" id="tabwrap" :class="tab.config.position" :style="{margin:tab.config.position === 'left'?tab.style.wrapmargin:0+'px'}" >
+    <div class="tabs" id="tabs">
+      <li :class="{active:tabActive===idx}" :id="'tab-item'+idx" @click="clickTab(item,idx)" v-for="(item,idx) in tab.value.list"><span>{{item.title}}</span></li>
+    </div>
+    <div class="tabs-panel" >
+      <div class="box"  :class="[className]" >
+        <ul class="list" :style="{margin:tab.config.position === 'top'?tab.style.wrapmargin:0+'px'}">
+          <li v-for="(item,idx) in goodsList" class="item"
+              :class="[idx%2==0?'even':'odd',tab.config.radius=='round'?'round':'']"
+              :style="[itemMarginObj(idx)]"
+          >
+            <div class="cover" :style="{width:itemw,height:itemw,backgroundImage:'url('+domainFunc(item.ImgPath)+')'}" >
+              <div v-show="tab.config.attr.tag.show" :class="tab.config.attr.tag.style"
+                   v-if="['new','hot'].indexOf(tab.config.attr.tag.style)!=-1" class="tag">{{tab.config.attr.tag.style=='hot'?'hot':'new'}}</div>
+              <div v-show="tab.config.attr.tag.show" v-else class="tag img"><img :src="tab.config.attr.tag.img|domain" /></div>
+            </div>
+            <div class="info" :style="{width:itemw}" :class="{empyInfo:isEmpeyInfo}">
+              <div class="left">
+                <div v-show="tab.config.attr.title.show" class="title">{{item.Products_Name}}</div>
+                <div v-show="tab.config.attr.desc.show" class="font12 graytext desc">{{item.Products_BriefDescription||'暂无介绍'}}</div>
+                <div v-show="tab.config.attr.price.show" class="price"><span class="sign">￥</span>{{item.Products_PriceX}}</div>
+              </div>
+              <div  v-show="tab.config.attr.buybtn.show" class="buybtn">{{tab.config.attr.buybtn.text||'购买'}}</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
 
   </div>
 </template>
@@ -46,8 +52,10 @@ import de from 'element-ui/src/locale/lang/de';
       },
       data() {
         return {
+            tabActive:0,
+            currentTab:null,
             goodsList:[],
-            tab: {},
+            tab: {style:{},value:{list:[]},config:{}},
             fullWidth:0
         };
       },
@@ -56,7 +64,7 @@ import de from 'element-ui/src/locale/lang/de';
               return {}
           },
           isEmpeyInfo(){
-              return 1;// !this.goods.config.attr.title.show && !this.goods.config.attr.desc.show && !this.goods.config.attr.price.show && !this.goods.config.attr.buybtn.show
+              return this.tab.config.attr.title.show && !this.tab.config.attr.desc.show && !this.tab.config.attr.price.show && !this.tab.config.attr.buybtn.show
           },
           w(){
             return this.fullWidth;
@@ -64,18 +72,18 @@ import de from 'element-ui/src/locale/lang/de';
           itemw(){
               let full = this.fullWidth;
 
-              // if(this.goods.config.style===2){
-              //     return (full-this.goods.style.wrapmargin*2-this.goods.style.margin*3)/2+'px';
-              // }
-              //
-              // if(this.goods.config.style===4){
-              //     return full/3+'px';
-              // }
+              if(this.tab.config.style===2){
+                  return (full-this.goods.style.wrapmargin*2-this.goods.style.margin*3)/2+'px';
+              }
+
+              if(this.tab.config.style===4){
+                  return full/3+'px';
+              }
               return 'auto';
 
           },
           className(){
-            return 1;//'style'+this.goods.config.style
+            return 'style'+this.tab.config.style
           },
         style() {
           // return deepCopyStrict(this.coupon.styleDefault, this.coupon.style);
@@ -96,26 +104,18 @@ import de from 'element-ui/src/locale/lang/de';
         }
       },
       watch: {
-        // 'goods.value':{
-        //   immediate:true,
-        //   deep:true,
-        //   handler(val){
-        //       if(!val)return;
-        //       let {list=[],cate_id,limit} = val;
-        //
-        //       let param = {pageSize:limit?limit:6}
-        //       if(cate_id){
-        //           param.Cate_ID = cate_id
-        //       }else{
-        //           param.Products_ID = list.join(',')
-        //       }
-        //
-        //       getProductList(param).then(res=>{
-        //           this.goodsList = res.data
-        //       })
-        //
-        //   }
-        // },
+        'tab.value.list':{
+          handler(val){
+              this.loadGoodsList()
+          }
+        },
+        currentTab:{
+          handler(val){
+
+              this.loadGoodsList()
+
+          }
+        },
         // 属性变化
         activeAttr: {
           deep: true,
@@ -128,12 +128,37 @@ import de from 'element-ui/src/locale/lang/de';
 
       },
       methods: {
+        clickTab(item,idx){
+
+            if(this.tabActive===idx){
+                this.loadGoodsList();
+                return;
+            }
+            this.tabActive=idx
+            this.currentTab = item;
+        },
+        loadGoodsList(){
+            let val = this. currentTab;
+            if(!val)return;
+            let {cate_id,title,limit} = val,param = {};
+
+            if(limit){
+                param.limit = limit
+            }
+            if(cate_id){
+                param.Cate_ID = this.tab.value.list[this.tabActive].cate_id
+            }
+
+            getProductList(param).then(res=>{
+                this.goodsList = res.data
+            })
+        },
         itemMarginObj(idx){
 
-            let conf = this.goods.style.margin;
+            let conf = this.tab.style.margin;
             let {left=conf,top=conf,bottom=conf,right=conf} = {}
             // {marginBottom:tool.style.margin+'px',marginLeft:idx%2==0?tool.style.margin:tool.style.margin/2+'px',marginRight:idx%2==0?tool.style.margin/2:tool.style.margin+'px'}
-            switch (this.goods.config.style) {
+            switch (this.tab.config.style) {
                 case 1:
                     top=0;
                     left=0;
@@ -209,9 +234,90 @@ export default class TabComponent extends Vue {
 <style scoped lang="less">
 @import "~@/assets/css/fun.less";
 
-*::-webkit-scrollbar {
-  display: none !important;
+.wrap{
+  position: relative;
 }
+
+.wrap.left{
+
+  min-height: 500px;
+  .tabs{
+    color: #444;
+    width: 90px;
+
+    overflow-x: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-right: 1px solid #e7e7e7;
+
+    li{
+      font-size: 16px;
+      display: block;
+
+      /*text-align: center;*/
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      font-size: 14px;
+      height: 44px;
+      cursor: pointer;
+      text-align: center;
+      color: #666;
+      border-bottom: 1px solid #e7e7e7;
+      &.active{
+        border-left: 2px solid #f56c6c;
+        color: #333;
+      }
+      span{
+
+
+        line-height: 44px;
+
+
+      }
+    }
+  }
+  .tabs-panel{
+    margin-left: 100px;
+    margin-right: 10px;
+    margin-top: 10px;
+  }
+
+}
+
+.wrap.top{
+
+  .tabs{
+    color: #444;
+    white-space: nowrap;
+    padding: 0 10px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    li{
+      display: inline-block;
+      margin-right: 10px;
+      height: 36px;
+      cursor: pointer;
+      &.active{
+        span{
+          border-bottom: 2px solid #f56c6c;
+        }
+
+      }
+      span{
+
+        line-height: 32px;
+        padding-bottom: 8px;
+
+      }
+    }
+  }
+
+}
+
+
+
 
 .cover{
   .cover-full-bg(cover,0);

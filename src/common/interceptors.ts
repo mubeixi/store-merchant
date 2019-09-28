@@ -23,6 +23,15 @@ export default function (request, next) {
       switch (+response.body.errorCode) {
         case 0:
           break;
+
+        //空数组
+        case 2:
+          console.log("请求数据为空数组")
+          if(!response.body.data){
+            response.body.data = [];
+          }
+
+          break;
         case 20005:
           // if (window.location.href.indexOf('login') < 0) {
           //   sessionStorage.setItem('forward', window.location.href);

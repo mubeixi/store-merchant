@@ -1,11 +1,13 @@
 <template>
   <div @click.stop="setData({}, 0)"  class="base wrap" >
     <div class="cover" :class="[className]" :style="{backgroundImage:'url('+domainFunc(base.config.cover)+')'}">
-      <img class="logo" :src="base.config.logo|domain" />
-      <div class="title">{{base.config.title}}</div>
-      <div class="desc">{{base.config.desc}}</div>
-      <div class="total">商品 {{base.config.total}}</div>
-      <div class="new">新品 {{base.config.new}}</div>
+      <div class="logotitle">
+        <img class="logo" :src="base.config.logo|domain" />
+        <div class="title">{{base.config.title}}</div>
+      </div>
+<!--      <div class="desc">{{base.config.desc}}</div>-->
+<!--      <div class="total">商品 {{base.config.total}}</div>-->
+<!--      <div class="new">新品 {{base.config.new}}</div>-->
     </div>
   </div>
 </template>
@@ -103,18 +105,54 @@ export default class BaseComponent extends Vue {
 }
 
 .style1{
+  height: 160px;
   color: white;
-  .logo{}
-  .title{}
+  position: relative;
+  background-color: #d2dee7;
+  .logotitle{
+    position: absolute;
+    left: 30px;
+    bottom: 20px;
+    display: flex;
+  }
+  .logo{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  .title{
+    line-height: 40px;
+    margin-left: 10px;
+  }
   .desc{}
   .total{}
   .new{}
 }
 
 .style2{
-  color: red;
-  .logo{}
-  .title{}
+  height: 185px;
+  color: white;
+  position: relative;
+  background-color: #d2dee7;
+  border: 1px solid black;
+  //border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  border-top: none;
+  overflow: hidden;
+  .logotitle{
+    position: absolute;
+    left: 30px;
+    bottom: 50px;
+    display: flex;
+  }
+  .logo{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  .title{
+    line-height: 40px;
+    margin-left: 10px;
+  }
   .desc{}
   .total{}
   .new{}
