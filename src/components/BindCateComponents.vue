@@ -1,9 +1,10 @@
 <template>
   <div class="selectPage">
     <el-dialog
-      :visible.sync="show"
+      :visible.sync="innerVisible"
       title="选择商品类别"
       append-to-body
+      @close="closeFun"
       class="innerDislog"
     >
       <div class="container">
@@ -303,6 +304,7 @@ export default {
     },
     methods: {
       closeFun(){
+        console.log("触发关闭BindCateComponents")
         this.$emit('cancel');
       },
         getDataKeyArr(data, key, value, childname = 'childlist') {

@@ -1,8 +1,8 @@
 <template>
   <div class="selectPage">
     <el-dialog
-
-      :visible.sync="show"
+      :visible.sync="innerVisible"
+      @close="closeFun"
       title="设置点击跳转的页面"
       append-to-body
       class="innerDislog"
@@ -299,6 +299,7 @@ export default {
     },
     methods: {
       closeFun(){
+        console.log("触发关闭BindLinkComponents")
         this.$emit('cancel');
       },
         getDataKeyArr(data, key, value, childname = 'childlist') {
