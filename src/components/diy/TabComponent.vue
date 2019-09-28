@@ -239,7 +239,7 @@ export default class TabComponent extends Vue {
 }
 
 .wrap.left{
-
+  border-bottom: 1px solid #e7e7e7;
   min-height: 500px;
   .tabs{
     color: #444;
@@ -281,7 +281,7 @@ export default class TabComponent extends Vue {
   .tabs-panel{
     margin-left: 100px;
     margin-right: 10px;
-    margin-top: 10px;
+    padding-top: 10px;
   }
 
 }
@@ -430,6 +430,7 @@ ul,li{
 }
 
 .style2{
+
   .list{
     display: flex;
     flex-wrap: wrap;

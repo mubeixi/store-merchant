@@ -87,7 +87,11 @@ export default class Home extends Vue {
     width 377px
     margin-right 90px
   .setattr
+    height calc(100vh - 200px)
+    /*overflow-y scroll*/
+    overflow-x hidden
     width 540px
+    padding-right 20px
 .right
   position fixed
   right 0px
@@ -98,4 +102,11 @@ export default class Home extends Vue {
   max-height 80%
   /*overflow-y scroll*/
   border 1px solid #e7e7e7
+
+
+/*webkit内核*/
+//.setattr::-webkit-scrollbar {
+//  width:0px;
+//  height:0px;
+//}
 </style>

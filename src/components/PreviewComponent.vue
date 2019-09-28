@@ -7,7 +7,7 @@
           v-for="(item, index) in templateList[templateEditIndex]"
           :key="index"
           class="section"
-          :class="setClass(item)"
+          :class="setClass(item,index)"
           :data-name="item"
           :data-tag="templateData[templateEditIndex][index].tag"
           @mousedown="activeStatus($event, index, item)"
@@ -244,16 +244,18 @@
             返回
           </li> -->
         </ul>
-        <div class="editActiveStatus" :style="editData" ref="editActiveEl">
-          <div class="arc topleft"></div>
-          <div class="arc topmiddle"></div>
-          <div class="arc topright"></div>
-          <div class="arc middleleft"></div>
-          <div class="arc middleright"></div>
-          <div class="arc bottomleft"></div>
-          <div class="arc bottommiddle"></div>
-          <div class="arc bottomright"></div>
-        </div>
+
+<!--        用边框替代-->
+<!--        <div class="editActiveStatus" :style="editData" ref="editActiveEl">-->
+<!--          <div class="arc topleft"></div>-->
+<!--          <div class="arc topmiddle"></div>-->
+<!--          <div class="arc topright"></div>-->
+<!--          <div class="arc middleleft"></div>-->
+<!--          <div class="arc middleright"></div>-->
+<!--          <div class="arc bottomleft"></div>-->
+<!--          <div class="arc bottommiddle"></div>-->
+<!--          <div class="arc bottomright"></div>-->
+<!--        </div>-->
       </div>
 
     </div>
@@ -408,7 +410,7 @@ import Tab from '../assets/js/diy/tab';
       // 方便删除的
       this.currentData.index = index;
       this.currentData.name = item;
-      this.editData = config;
+      //this.editData = config;
     },
     contextmenuRightEv(e, item, index) {
       this.$refs.rightMenu.style.display = 'block';
@@ -512,15 +514,20 @@ export default class PreviewComponent extends Vue {
         })
     }
 
-    setClass(className) {
+    setClass(className,idx) {
       if (typeof className === 'undefined') return '';
       className = className.replace(/[0-9]?/g, '');
-      return this.dragMove.map((v) => {
+      let rt = this.dragMove.map((v) => {
         if (v === className) {
           return `dragMove ${className}`;
         }
         return className;
       });
+
+      if(this.currentData.index === idx){
+          rt.push('active')
+      }
+      return rt;
     }
 
 
@@ -623,7 +630,7 @@ export default class PreviewComponent extends Vue {
         // 模拟点击
         dragEl.click();
 
-        pageMove.init('sort', this, () => console.log(22222));
+        // pageMove.init('sort', this, () => console.log(22222));
 
         // 每次页面都会重排一次，可能是因为这里导致拖拽切换导航的时候，页面其他元素不显示了。
         // 始终把 tabbar 放到最后
@@ -639,14 +646,39 @@ export default class PreviewComponent extends Vue {
 <style scoped lang="stylus">
 .canvasBox
   height 667px
-  background #f2f2f2
+  /*background #f2f2f2*/
   overflow-x hidden
   overflow-y auto
-  border 1px dashed #bcbcbc
+  border 1px solid #e5e5e5
+
 .canvas
   height 100%
+  padding 0
+  position relative
 .handle
   margin-top 80px
+.section
+  position relative
+.section:before{
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  pointer-events: none;
+  display: none;
+
+}
+
+.section.active:before{
+  z-index: 2;
+  display: block;
+  border: 1px dashed #298df8;
+}
 
 
 .contextmenuRight {
@@ -716,4 +748,9 @@ export default class PreviewComponent extends Vue {
   }
 }
 
+
+.canvasBox::-webkit-scrollbar{
+  width:0px;
+  height:0px;
+}
 </style>
