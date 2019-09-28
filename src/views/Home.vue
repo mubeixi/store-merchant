@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div class="right" >
+    <div class="right" v-if="isDev">
       <right-component></right-component>
     </div>
 
@@ -30,12 +30,20 @@ import RightComponent from '@/components/RightComponent.vue';
 import { moveEl } from '@/common/utils';
 import {getSkinConfig,chooseShopSkin,getShopSkinList,setSkinConfig} from '@/common/fetch';
 
+import {isDev} from '../common/env';
+
+
 @Component({
   components: {
     PluginsComponent,
     SetAttrComponent,
     PreviewComponent,
     RightComponent,
+  },
+  data(){
+    return {
+        isDev:isDev
+    }
   },
   methods: {
     // 这个数据一直往上传，这么辛苦
@@ -53,6 +61,8 @@ import {getSkinConfig,chooseShopSkin,getShopSkinList,setSkinConfig} from '@/comm
 })
 export default class Home extends Vue {
   created() {
+
+      console.log(this)
       //模拟设置一下
       // getShopSkinList().then(res=>{
       //
