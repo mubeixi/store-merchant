@@ -17,12 +17,13 @@
       :on-remove="onRemove"
       :before-upload='beforeUpload'
       :on-change='change'>
-      <div v-if="imgUrl">
-        <img class="avatar" :style="{height:parseInt(this.cropperOption.aspectRatio*100)+'%'}"  :src="imgUrl | domain"/>
-
-      </div>
+      <template v-if="imgUrl">
+<!--        :style="{height:parseInt(this.cropperOption.aspectRatio*100)+'%'}"-->
+        <img class="avatar"   :src="imgUrl | domain"/>
+      </template>
 
       <i v-else class="el-icon-plus"></i>
+      <div slot="tip" class="el-upload__tip ">{{tip}}</div>
     </el-upload>
     <!--/api/frontend/ajax/upload-->
     <el-upload
@@ -42,9 +43,9 @@
       :on-error="error"
       :on-remove="onRemove">
       <i class="el-icon-plus"></i>
+      <div slot="tip" class="el-upload__tip ">{{tip}}</div>
     </el-upload>
 
-    <span class="graytext font12 tip" >{{tip}}</span>
   </div>
 </template>
 
@@ -178,7 +179,7 @@ export default {
     .upload {
       .avatar {
         width: 100%;
-        /*height: 100%;*/
+        height: 100%;
       }
     }
   }
