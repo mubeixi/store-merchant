@@ -14,17 +14,23 @@
     </div>
 
     <!--所有热区用绝对定位实现-->
-    <div class="active"  @click="activeArea(aidx,area)" :class="areaActiveIndxx===aidx?'act':''" :style="[getAreaStyle(area)]" v-for="(area,aidx) in CTX.selects">
-      <div class="mask" :style="{backgroundImage:'url('+area.bgimg||''+')'}"></div>
-      <i class="el-icon-error delicon" @click="delArea(area)" />
+    <div class="active" :data-idx="area.IDX"  @click="activeArea(aidx,area)" :class="areaActiveIndex===aidx?'act':''" :style="[getAreaStyle(area)]" v-for="(area,aidx) in CTX.selects">
+      <div class="mask" :style="{backgroundImage:'url('+domainFunc(area.bgimg)||''+')'}"></div>
+      <i class="el-icon-error delicon" @click.stop="delArea(area)" />
     </div>
   </div>
 
-<!--  <div style="position: absolute;right: 20px;top: 20px;" v-show="currentArea">-->
-<!--    <upload-img-components class="myUploadImg" :onSuccess='uploadImgCB'-->
-<!--                           type='avatar'-->
-<!--    ></upload-img-components>-->
-<!--  </div>-->
+  <div  v-if="areaActiveIndex>0 || areaActiveIndex === 0 ">
+    <upload-img-components :img-url="currentArea.bgimg" class="myUploadImg" :onSuccess='uploadImgCB'
+                           type='avatar'
+    ></upload-img-components>
+  </div>
+
+  <div  v-if="areaActiveIndex>0 || areaActiveIndex === 0 ">
+    <el-tooltip class="item rightBtn" effect="dark" content="2222222" placement="right">
+      <el-button @click="bindLink"  type="primary"  size="small">绑定链接</el-button>
+    </el-tooltip>
+  </div>
 
 </div>
 </template>
@@ -34,15 +40,24 @@
 import MagicCube from "@/assets/js/diy/tool/MagicCube";
 
 import {domain} from '@/common/utils';
+import uploadImgComponents from '@/components/common/uploadImgComponents';
+import BindLinkComponents from '@/components/BindLinkComponents';
 
 
 export default {
   name:'MagicCubeComponent',
+  props:{
+    row:{
+      type:Number,
+      default:5
+    }
+  },
   data(){
     return {
       CTX:null,
       currentArea:null,
-      areaActiveIndxx:null,
+      areaActiveIndex:null,
+      showConfig:false,
       isDrag:false,//标记是否点击了一次
       row_idx:null,//行序列1
       col_idx:null,//竖直序列1
@@ -51,7 +66,7 @@ export default {
     }
   },
   components:{
-    // uploadImgComponents
+    uploadImgComponents,BindLinkComponents
   },
   computed:{
     W(){
@@ -61,30 +76,71 @@ export default {
       return this.CTX.width/this.CTX.row
     }
   },
+  watch:{
+    row:{
+      immediate:true,
+      handler(val){
+
+
+        this.rest()
+        this.INIT()
+      }
+    },
+    //传上去
+    'CTX.selects':{
+      immediate:true,
+      deep:true,
+      handler(val){
+        this.$emit('selectChange',val)
+      }
+    }
+  },
   methods:{
+    rest(){
+      this.CTX=null;
+      this.currentArea=null;
+      this.areaActiveIndex=null;
+      this.showConfig=false;
+      this.isDrag=false;//标记是否点击了一次
+      this.row_idx=null;//行序列1
+      this.col_idx=null;//竖直序列1
+      this.row_idx1=null;//行序列2
+      this.col_idx1=null;//竖直序列2
+    },
+    bindLink(){
+      console.log(this.areaActiveIndex);
+      this.$emit('openBindLink',this.areaActiveIndex)
+    },
     domainFunc(url){
       console.log(url)
       return domain(url)
+    },
+    bindLinkCB(res){
+      console.log(res)
     },
     uploadImgCB(res){
       console.log(res.data.path)
       if(!res.data.path)return;
       if(!this.currentArea)return;
 
-      this.$set(this.currentArea,'bgimg',domain(res.data.path))//不这样数据装死不动
-
+      this.$set(this.currentArea,'bgimg',res.data.path)//不这样数据装死不动
+      this.activeArea(null,null)
 
     },
     activeArea(idx,area){
-      this.areaActiveIndxx = idx;
+      console.log(idx,area)
+      this.areaActiveIndex = idx;
       this.currentArea = area;
     },
     dragSelect(){
 
     },
     delArea(area){
-      this.CTX.del_selects(area)
+      this.activeArea(null,null)
       this.clearIdx()
+      this.CTX.del_selects(area)
+
+
     },
     getAreaStyle(area){
       let styleObj = {
@@ -145,6 +201,7 @@ export default {
 
         this.currentArea = this.CTX.selects[this.CTX.selects.length-1];//新增的话，就把最新的给他
 
+        this.clearIdx()
 
       }
 
@@ -173,12 +230,16 @@ export default {
       this.col_idx = null;
       this.row_idx1 = null;
       this.col_idx1 = null;
+      this.isDrag = false;
     },
+    INIT(){
+      this.CTX = new MagicCube(this.row,375);//还有label。。真牛
+      window.CTX = this.CTX;
+    }
   },
   created() {
+    this.INIT()
 
-    this.CTX = new MagicCube(7,540);
-    window.CTX = this.CTX;
   }
 }
 </script>
@@ -232,7 +293,7 @@ export default {
   }
 
   .box{
-    margin: 20px;
+    margin-bottom: 15px;
     position: relative;
     .border();
     /*box-sizing: border-box;*/

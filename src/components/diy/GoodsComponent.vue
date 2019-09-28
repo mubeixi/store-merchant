@@ -48,6 +48,7 @@ import de from 'element-ui/src/locale/lang/de';
         return {
             goodsList:[],
             goods: {},
+            fullWidth:0
         };
       },
       computed: {
@@ -55,10 +56,10 @@ import de from 'element-ui/src/locale/lang/de';
               return !this.goods.config.attr.title.show && !this.goods.config.attr.desc.show && !this.goods.config.attr.price.show && !this.goods.config.attr.buybtn.show
           },
           w(){
-            return document.getElementById('tool').offsetWidth;
+            return this.fullWidth;
           },
           itemw(){
-              let full = document.getElementById('tool').offsetWidth;
+              let full = this.fullWidth;
               if(this.goods.config.style===2){
                   return (full-this.goods.style.wrapmargin*2-this.goods.style.margin*3)/2+'px';
               }
@@ -190,6 +191,10 @@ import de from 'element-ui/src/locale/lang/de';
     })
 export default class GoodsComponent extends Vue {
   created() {
+      let _self = this;
+    this.$nextTick().then(res=>{
+        _self.fullWidth = document.getElementById('canvas').offsetWidth;
+    })
     Goods.prototype.vm = this;
     this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
     this.goods = deepCopy(new Goods(), this.data);

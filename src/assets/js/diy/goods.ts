@@ -345,7 +345,7 @@ function attrData(options = {}) {
 class Goods extends Common {
 
   tag = 'goods';
-  // activeIndex = 0;
+  activeIndex = 0;
 
   style = {
     wrapmargin:15,//页面边距

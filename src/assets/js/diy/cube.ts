@@ -26,19 +26,54 @@ function setAttrData() {
     title: '图片混排',
     content: [
       {
+        type: 'slider',
+        text: '页面边距',
+        editType: 'style',
+        editKey: 'wrapmargin',
+        model: this.style.wrapmargin,
+      },
+      {
+        type: 'slider',
+        text: '图片间距',
+        editType: 'style',
+        editKey: 'margin',
+        model: this.style.margin,
+      },
+      {
         type: 'radio',
-        text: '显示模式',
+        text: '行列数',
         editType: 'config',
-        editKey: 'type',
-        model: this.config.type,
+        editKey: 'row',
+        model: this.config.row,
+        editCB:(item)=>{
+          console.log(item)
+
+
+          Vue.set(this.config,'row',item.model);
+
+          this.setIndex(0, { config: false, value: false });
+          this.vm.$store.state.activeAttr.config = this.config;
+
+          this.vm.$store.commit('attrData', this.attrData);// 传出去
+
+
+          return item.model;
+
+
+
+        },
         value: [
           {
-            label: '图片导航',
-            value: 1,
+            label: '5',
+            value: 5,
           },
           {
-            label: '文字导航',
-            value: 2,
+            label: '7',
+            value: 7,
+          },
+          {
+            label: '10',
+            value: 10,
           },
 
         ],
@@ -88,11 +123,96 @@ function setAttrData() {
       // },
       {
         type: 'MagicCube',
-        text: '区域设置',
+        text: '内容设置',
+        row:this.config.row,
         value: this.value.list,
-        bindCB:()=>{
+        //数据变化放进来的
+        seclectChangeCB:(arr)=>{
+
+          //如果是数组的长度变小了
+          if(arr.length<this.value.list.length){
+
+            var ids = []
+            for(var i in this.value.list){
 
 
+
+              var j = 0 ;
+              for(var area of arr){
+                //如果都存在，则没有什么
+                console.log(area.IDX,this.value.list[i].IDX)
+                if(area.IDX === this.value.list[i].IDX){
+                  j++;
+                }
+              }
+
+              //记录要删除的多个
+              if(!j){
+                ids.push(parseInt(i))
+              }
+
+            }
+            console.log('需要删除',ids)
+
+            //倒序，索引从大到小 删除不受影响
+            ids.reverse()
+            for(var idx of ids){
+              this.value.list.splice(idx,1)
+            }
+
+          }else{
+
+
+            for(var i in arr){
+
+              if(this.value.list[i]){
+
+                Vue.set(this.value.list,i,arr[i]);//强制触发数据和视图绑定
+
+              }else{
+
+                Vue.set(this.value.list,i,{
+                  link:'',
+                  linkType:'',
+                  tooltip:'',
+                  ...arr[i]
+                });//强制触发数据和视图绑定
+
+              }
+
+            }
+
+          }
+
+
+          this.vm.$store.state.activeAttr.value.list = this.value.list;
+
+
+          //this.setIndex(0, { config: false, value: false });
+          // // // 都是改写vuex里面的数据，两种写法都可以
+          //this.vm.$store.commit('attrData', this.attrData);// 传出去
+
+          //传递一下
+          //this.vm.$store.state.activeAttr.value.list = [...list];
+
+
+
+        },
+        bindCB:(dataType, type, path, tooltip, dataItem,pageEl,idx2)=>{
+
+          console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
+          pageEl.bindLinkDialogShow = false;
+
+          console.log(this.value.list)
+          // console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
+          Vue.set(this.value.list[idx2],'link',path);
+          Vue.set(this.value.list[idx2],'linkType',type);
+          Vue.set(this.value.list[idx2],'tooltip',tooltip);
+          // //
+          this.setIndex(0, { config: false, value: false });
+          // // // 都是改写vuex里面的数据，两种写法都可以
+          //this.vm.$store.commit('attrData', this.attrData);// 传出去
+          this.vm.$store.state.activeAttr.value.list = this.value.list;
 
         },
         // 之类是输入的回调，可以根据需要决定写什么
@@ -115,6 +235,7 @@ function setAttrData() {
 }
 
 function attrData(options = {}) {
+  console.log(this.config)
   const { value, config, attrData } = options;
   console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
@@ -130,6 +251,8 @@ class Cube extends Common {
   // activeIndex = 0;
 
   style = {
+    wrapmargin:15,//页面边距
+    margin:10,//商品距离
     // bgColor: '',
     // height: 30,
     // color: '',
@@ -151,6 +274,7 @@ class Cube extends Common {
 
   config = {
     type:1,
+    row:10
     // loop:false,//是否循环
     // interval:5000,//切换时间
     // autoplay:false,//自动播放
