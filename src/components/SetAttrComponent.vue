@@ -63,7 +63,9 @@
                 :imgUrl='item.value[idx].img_src' />
               <div>
                 <div class="padding10-c">
-                  <el-button :title="item.value[idx].tooltip"  size="small" @click="openSwiperBindLink(item,idx,item.bindCB)"    >绑定链接</el-button>
+                  <el-tooltip class="item" effect="dark" :content="item.value[idx].tooltip||'未绑定'" placement="right">
+                    <el-button :title="item.value[idx].tooltip"  size="small" @click="openSwiperBindLink(item,idx,item.bindCB)"    >绑定链接</el-button>
+                  </el-tooltip>
                   <span class="padding10-c font12">{{item.value[idx].tooltip}}</span>
                   <div class="graytext2 font12" style="line-height: 22px;">
                     建议图片尺寸700px*380px
@@ -89,7 +91,9 @@
                 </div>
                 <div class="flex">
                   <div class="graytext" style="width: 50px;padding-left: 10px;">链接</div>
-                  <el-button :title="item.value[idx].tooltip"  size="small" @click="openSwiperBindLink(item,idx,item.bindCB)"    >绑定链接</el-button>
+                  <el-tooltip class="item" effect="dark" :content="item.value[idx].tooltip||'未绑定'" placement="right">
+                    <el-button :title="item.value[idx].tooltip"  size="small" @click="openSwiperBindLink(item,idx,item.bindCB)"    >绑定链接</el-button>
+                  </el-tooltip>
                   <span class="padding10-c font12">{{item.value[idx].tooltip}}</span>
                 </div>
 
@@ -99,15 +103,16 @@
 
             <div class="row-container" v-if="['cate'].indexOf(item.row_type)!==-1">
 
-
-              <div class="flex line10">
-                <div class="graytext" style="padding: 0 10px;">商品分类</div>
-                <el-button :title="item.value[idx].tooltip"  size="small" @click="openGoodsBindCate(item,item.bindCB,idx)"    >绑定分类</el-button>
+              <div class="line10">
+                <div class="graytext" style="padding: 0 10px;display: inline-block">商品分类</div>
+                <el-tooltip class="item" effect="dark" :content="item.value[idx].tooltip||'未绑定'" placement="right">
+                  <el-button  :title="item.value[idx].tooltip"  size="small" @click="openGoodsBindCate(item,item.bindCB,idx)">绑定分类</el-button>
+                </el-tooltip>
                 <span class="padding10-c font12">{{item.value[idx].tooltip}}</span>
               </div>
               <div class="flex line10">
                 <div class="graytext" style="padding:0 10px;">显示名称</div>
-                <div><el-input  autosize v-model="item.value[idx].title" class="input" @input='item.inputCB'/></div>
+                <div><el-input size="small"  autosize v-model="item.value[idx].title" class="input" @input='item.inputCB'/></div>
               </div>
               <div class="flex">
                 <div class="graytext" style="padding: 0 10px;">显示数量</div>
@@ -155,7 +160,7 @@
               <el-radio :label="2">样式二</el-radio>
             </el-radio-group>
 
-           <el-input style="width: 140px;margin-left: 20px;" v-model="item.data.text" @input="item.inputCB" />
+           <el-input size="small" style="width: 140px;margin-left: 20px;" v-model="item.data.text" @input="item.inputCB" />
             <el-tooltip class="item" effect="dark" content="自定义按钮的文本" placement="right">
               <i class="el-icon-question" ></i>
             </el-tooltip>

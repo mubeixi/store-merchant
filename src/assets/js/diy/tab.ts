@@ -185,7 +185,7 @@ function setAttrData() {
           Vue.set(this.value.list[idx2],'cate_id',dataItem.Category_ID);
           Vue.set(this.value.list[idx2],'title',dataItem.Category_Name);
           // Vue.set(this.value.list[idx2],'linkType',type);
-          // Vue.set(this.value.list[idx2],'tooltip',tooltip);
+          Vue.set(this.value.list[idx2],'tooltip',tooltip);
           //
           this.setIndex(0, { config: false, value: false });
           // // 都是改写vuex里面的数据，两种写法都可以
