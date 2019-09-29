@@ -26,6 +26,7 @@ function setAttrData() {
       {
         type: 'input',
         text: '视频地址',
+
         inputType: 'text',
         patternFunc(val) {
           const reg = /(http|https):\/\/([\w.]+\/?)\S*/;
@@ -39,6 +40,7 @@ function setAttrData() {
       {
         type: 'uploadImg',
         text: '封面图',
+        tip:'建议上传尺寸16:9的图片',
         uploadType: 'avatar',
         model: this.config.cover,
         editType: 'config',

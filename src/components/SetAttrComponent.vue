@@ -10,7 +10,7 @@
                     v-for="(item, index) in activeAttr.attrData.content"
                     :key="index">
 
-        <upload-img-components v-if="item.type === 'uploadImg'" class="myUploadImg" :onSuccess='uploadImg'
+        <upload-img-components v-if="item.type === 'uploadImg'" :tip="item.tip" class="myUploadImg" :onSuccess='uploadImg'
                                :type='item.uploadType'
                                :imgUrl='item.model'></upload-img-components>
 

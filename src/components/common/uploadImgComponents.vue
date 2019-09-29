@@ -1,11 +1,12 @@
 <template>
   <div class="uploadImg flex" :class="{miniwrap:mini}">
+<!--    :limit="limit"-->
     <el-upload
+      ref="upload"
       class="upload avatar-uploader"
       :class="{mini:mini}"
       v-if="type === 'avatar'"
       :multiple="multiple"
-      :limit="limit"
       :name="name"
       :data.sync='ajaxData'
       :action="baseURL+'/api/little_program/shopconfig.php'"
@@ -14,25 +15,26 @@
       :on-preview="onPreview"
       :on-success='success'
       :on-error="error"
+      :on-exceed="exceedFunc"
       :on-remove="onRemove"
       :before-upload='beforeUpload'
       :on-change='change'>
+      <!--        :style="{height:parseInt(this.cropperOption.aspectRatio*100)+'%'}"-->
       <template v-if="imgUrl">
-<!--        :style="{height:parseInt(this.cropperOption.aspectRatio*100)+'%'}"-->
         <img class="avatar"   :src="imgUrl | domain"/>
       </template>
-
       <i v-else class="el-icon-plus"></i>
       <div slot="tip" class="el-upload__tip ">{{tip}}</div>
     </el-upload>
     <!--/api/frontend/ajax/upload-->
     <el-upload
       v-else
+
+      ref="upload"
       :multiple="multiple"
       :limit="limit"
       :name="name"
       class="upload avatar-uploader"
-
       :class="{mini:mini}"
       :data.sync='ajaxData'
       :action="baseURL+'/api/little_program/shopconfig.php'"
@@ -121,6 +123,7 @@ export default {
   },
   data() {
     return {
+      fileList:[],
       baseURL: baseApiUrl,
       // ajaxData: {
       //   act:'upload_image',
@@ -143,6 +146,9 @@ export default {
 
   },
   methods: {
+    exceedFunc(){
+      this.$fun.error({msg:'最多上传'+this.limit+'个文件'});
+    },
     error(err, file, fileList) {
       this.$fun.error({
         msg: JSON.stringify(err),
@@ -157,15 +163,19 @@ export default {
       this.onSuccess.apply(this, mock);
     },
     change() {
+      console.log(22222222)
       this.activeAttr.isSendAjax = false;
     },
     beforeUpload() {
 
+      console.log(33)
 
       this.activeAttr.isSendAjax = true;
     },
     success(...params) {
       console.log(params)
+
+      //this.$refs.upload.clearFiles()
       this.onSuccess.call(this,params[0],this.idx2);
     },
   },

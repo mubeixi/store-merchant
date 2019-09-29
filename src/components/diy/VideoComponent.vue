@@ -1,6 +1,12 @@
 <template>
   <div @click.stop="setData({}, 0)" :title="'播放地址'+video.config.src"   class="video">
-    <img :src="video.config.cover|domain" />
+
+    <img v-if="video.config.cover" :src="video.config.cover|domain" />
+    <div v-else>
+      <video width="100%" height="100%" style="vertical-align: top" controls="controls">
+        您的浏览器不支持 video 标签。
+      </video>
+    </div>
   </div>
 </template>
 
@@ -77,6 +83,18 @@ export default class VideoComponent extends Vue {
 <style scoped lang="stylus">
   .video
     width 100%
+    height 0
+    padding-top 55.6%
+    position relative
     img
+      position absolute
       width 100%
+      height 100%
+      top 0
+    video
+      position absolute
+      width 100%
+      top 0
+      bottom 0
+
 </style>
