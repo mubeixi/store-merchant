@@ -450,9 +450,11 @@
             uploadSwiperImg(response) {
 
             },
-            uploadImg(response) {
 
+            uploadImg(response) {
+                //先修改Preview中的预览组件实例值
                 this.currentData.model = response.data.path;// response.data.url;
+                //再修改VUEX中的值
                 this.change(this.currentData);
             },
             bindCateCancel() {
@@ -486,6 +488,7 @@
 
                 if (item.editType && (item.editType === 'style' || item.editType === 'config' || item.editType === 'value')) {
 
+                    //这里怎么直接这样写上vuex的数据了。。
                     if (!this.activeAttr[item.editType]) {
                         this.activeAttr.activeAttr[item.editType] = {};
                     }
@@ -502,6 +505,10 @@
                     //         editObj = editObj[key]
                     //     })
                     // }
+
+
+                    //这个地方,只需要修改vuex中的vuex的组件即可。因为实例类中的简单值属性，已经通过数据双向绑定机制完成修改了
+                    // 比如 item.model.text 然后通过el-input 的v-model双向绑定修改了，所以PreView中的实例组件对应的值已经修改，只需要修改vuex即可
 
                     // 有回调函数的,可以去函数里面做各种关联操作和格式化操作。比如像素加px，颜色值的转换之类，json转换之类。简单值的就直接走下面赋值了
                     //反正会跑一次回调的

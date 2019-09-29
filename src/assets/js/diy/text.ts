@@ -106,11 +106,10 @@ function setAttrData() {
           Vue.set(this.value, 'link', path);
           Vue.set(this.value, 'linkType', type);
           Vue.set(this.value, 'tooltip', tooltip);
-          //
-          this.setIndex(0, {config: false, value: false});
-          // // 都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
-          this.vm.$store.state.activeAttr.value = this.value;
+
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
         },
       },
@@ -159,10 +158,10 @@ class Hr extends Common {
   }
 
 
-  constructor(vm) {
+  constructor() {
     super();
 
-    this.vmObj = vm;
+
 
     // 统一这样来初始化
     attrData.call(this);
@@ -171,7 +170,7 @@ class Hr extends Common {
   // value = []
 
 
-  setIndex(index: Number, options: Object) {
+  setIndex(index: number, options: object) {
     this.activeIndex = index;
     attrData.call(this, options);
   }

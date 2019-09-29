@@ -8,24 +8,6 @@
       class="innerDislog"
     >
       <div class="container">
-        <!--        `Users_ID` varchar(10) NOT NULL,-->
-        <!--        `Coupon_ID` int(11) unsigned NOT NULL AUTO_INCREMENT,-->
-        <!--        `Coupon_Keywords` varchar(50) DEFAULT NULL,-->
-        <!--        `Coupon_Title` varchar(50) DEFAULT NULL,-->
-        <!--        `Coupon_Subject` varchar(50) DEFAULT NULL,-->
-        <!--        `Coupon_PhotoPath` varchar(100) DEFAULT NULL,-->
-        <!--        `Coupon_UsedTimes` tinyint(3) DEFAULT '-1',-->
-        <!--        `Coupon_UserLevel` tinyint(1) DEFAULT '0' COMMENT '设定领取优惠券所需要的最小会员等级,-1是不限定等级,其余需要指定的会员等级领取优惠券.但需要大于0',-->
-        <!--        `Coupon_StartTime` int(10) DEFAULT NULL,-->
-        <!--        `Coupon_EndTime` int(10) DEFAULT NULL,-->
-        <!--        `Coupon_Description` text,-->
-        <!--        `Coupon_CreateTime` int(10) DEFAULT NULL,-->
-        <!--        `Coupon_UseArea` tinyint(1) DEFAULT '0' COMMENT '使用范围  0 实体店  1 微商城',-->
-        <!--        `Coupon_UseType` tinyint(1) DEFAULT '0' COMMENT '优惠方式 0 折扣  1 抵现金',-->
-        <!--        `Coupon_Condition` int(10) DEFAULT '0' COMMENT '使用条件 如 满300才可使用',-->
-        <!--        `Coupon_Discount` decimal(10,2) DEFAULT '0.00' COMMENT '折扣',-->
-        <!--        `Coupon_Cash` int(10) DEFAULT '0' COMMENT '现金',-->
-        <!--        `Biz_ID` int(10) DEFAULT '0' COMMENT '微商圈商家',-->
         <el-table
           :data="list"
           v-loading="loading"

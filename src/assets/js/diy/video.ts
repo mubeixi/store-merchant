@@ -24,7 +24,6 @@ function setAttrData() {
       {
         type: 'input',
         text: '视频地址',
-
         inputType: 'text',
         patternFunc(val) {
           const reg = /(http|https):\/\/([\w.]+\/?)\S*/;
@@ -53,6 +52,7 @@ function setAttrData() {
 }
 
 function attrData(options = {}) {
+  // @ts-ignore
   const {value, config, attrData} = options;
   console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
@@ -91,7 +91,7 @@ class Video extends Common {
   // value = []
 
 
-  setIndex(index: Number, options: Object) {
+  setIndex(index: number, options: object) {
     this.activeIndex = index;
     attrData.call(this, options);
   }

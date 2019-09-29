@@ -31,12 +31,10 @@ function setAttrData() {
         dialogCB: (coupon_list) => {
 
           this.value.list = [...coupon_list];
-          this.setIndex(0, {config: false, value: false});
-          //
-          // // 都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
 
-          this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
         },
         //这个按钮的功能，主要是新增页面吧
         editCB: (pageEl) => {
@@ -44,12 +42,9 @@ function setAttrData() {
 
           this.value.list.push('');
 
-          // // 设置一下
-          this.setIndex(0, {config: false, value: false});
-
-          // 都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
-          this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
         },
       },
       {
@@ -71,33 +66,9 @@ function setAttrData() {
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           this.vm.$store.state.activeAttr.value.list = this.value.list;
         }
-        // 用函数来包容万象，返回数组
-        // getFunc:()=>{
-        //   let arr = this.config.hot,rt = [];
-        //   for(var i in  arr){
-        //     rt[i] = {label:'热词名称',val:arr[i]}
-        //   }
-        //   return rt;
-        // },
 
       },
-      // {
-      //   type: 'radio',
-      //   text: '样式',
-      //   editType: 'config',
-      //   editKey: 'type',
-      //   model: this.config.type,
-      //   value: [
-      //     {
-      //       label: '样式1',
-      //       value: 1,
-      //     },
-      //     {
-      //       label: '样式2',
-      //       value: 2,
-      //     },
-      //   ],
-      // },
+
     ],
   };
 
@@ -106,6 +77,7 @@ function setAttrData() {
 }
 
 function attrData(options = {}) {
+  // @ts-ignore
   const {value, config, attrData} = options;
   console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
@@ -158,7 +130,7 @@ class Notice extends Common {
   // value = []
 
 
-  setIndex(index: Number, options: Object) {
+  setIndex(index: number, options: object) {
     this.activeIndex = index;
     attrData.call(this, options);
   }

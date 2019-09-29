@@ -6,6 +6,7 @@ const plane_contact_plane = (check: { x: number; y: number, x1: number, y1: numb
   var {x: left, y1: bottom, x1: right, y: top} = check;
   let domA = {left, bottom, right, top};
 
+  // @ts-ignore
   var {x: left, y1: bottom, x1: right, y: top} = plane;
   let domB = {left, bottom, right, top};
 
@@ -31,6 +32,7 @@ const plane_in_plane = (check: { x: number; y: number, x1: number, y1: number },
   var {x: left, y1: bottom, x1: right, y: top} = check;
   let domA = {left, bottom, right, top};
 
+  // @ts-ignore
   var {x: left, y1: bottom, x1: right, y: top} = plane;
   let domB = {left, bottom, right, top};
 

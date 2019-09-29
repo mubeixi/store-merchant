@@ -39,11 +39,10 @@ function setAttrData() {
           Vue.set(this.value.list[idx2], 'link', path);
           Vue.set(this.value.list[idx2], 'linkType', type);
           Vue.set(this.value.list[idx2], 'tooltip', tooltip);
-          //
-          this.setIndex(0, {config: false, value: false});
-          // // 都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
-          this.vm.$store.state.activeAttr.value.list = this.value.list;
+
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
         },
         // 之类是输入的回调，可以根据需要决定写什么
@@ -51,32 +50,17 @@ function setAttrData() {
           console.log(item.data.path, idx2)
           Vue.set(this.value.list[idx2], 'img_src', item.data.path);
 
-          this.setIndex(0, {config: false, value: false});
-          // // 都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
-          this.vm.$store.state.activeAttr.value.list = this.value.list;
-
-          // this.value.list = [...item.value];
-          //
-          // this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
         },
         removeCB: (idx) => {
           this.value.list.splice(idx, 1);
-
-          this.setIndex(0, {config: false, value: false});
-          // // 都是改写vuex里面的数据，两种写法都可以
-          //this.vm.$store.commit('attrData', this.attrData);// 传出去
-
-          this.vm.$store.state.activeAttr.value.list = this.value.list;
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
         }
-        // 用函数来包容万象，返回数组
-        // getFunc:()=>{
-        //   let arr = this.config.hot,rt = [];
-        //   for(var i in  arr){
-        //     rt[i] = {label:'热词名称',val:arr[i]}
-        //   }
-        //   return rt;
-        // },
+
       },
       {
         type: 'addbtn',
@@ -99,18 +83,10 @@ function setAttrData() {
         editCB: (pageEl) => {
 
           this.value.list.push({img_src: '', link: '', linkType: null});//新增一个空元素
-          this.setIndex(0, {config: false, value: false});
 
-          //都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
-          this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
-
-          // // 设置一下
-          // this.setIndex(0, { config: false, value: false });
-          //
-          // // 都是改写vuex里面的数据，两种写法都可以
-          // this.vm.$store.commit('attrData', this.attrData);// 传出去
-          // this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
         },
       },
       {
@@ -164,6 +140,7 @@ function setAttrData() {
 }
 
 function attrData(options = {}) {
+  // @ts-ignore
   const {value, config, attrData} = options;
   console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
@@ -219,7 +196,7 @@ class Swiper extends Common {
   // value = []
 
 
-  setIndex(index: Number, options: Object) {
+  setIndex(index: number, options: object) {
     this.activeIndex = index;
     attrData.call(this, options);
   }

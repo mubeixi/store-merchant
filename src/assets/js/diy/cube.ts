@@ -46,17 +46,13 @@ function setAttrData() {
         editCB: (item) => {
           console.log(item)
 
-
           Vue.set(this.config, 'row', item.model);
 
-          this.setIndex(0, {config: false, value: false});
-          this.vm.$store.state.activeAttr.config = this.config;
-
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
-
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
           return item.model;
-
 
         },
         value: [
@@ -75,49 +71,6 @@ function setAttrData() {
 
         ],
       },
-      // {
-      //   type: 'addbtn',
-      //   text: '数据设置',
-      //   label: '新增',
-      //   // openBindLink:(pageEl,item,idx)=>{
-      //   //   pageEl.bindLinkDialogShow = true
-      //   // },
-      //   dialogCB:(coupon_list)=>{
-      //
-      //     this.value.list = [...coupon_list];
-      //     this.setIndex(0, { config: false, value: false });
-      //     //
-      //     // // 都是改写vuex里面的数据，两种写法都可以
-      //     this.vm.$store.commit('attrData', this.attrData);// 传出去
-      //
-      //     this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
-      //   },
-      //   //这个按钮的功能，主要是新增元素
-      //   editCB: (pageEl) => {
-      //     if(this.value.list.length>=10){
-      //       fun.info({msg:'最多允许十个'});
-      //       return;
-      //     }
-      //     this.value.list.push({
-      //       title:'',
-      //       img:'',
-      //       link:'',
-      //       linkType:''
-      //     });//新增一个空元素
-      //     this.setIndex(0, { config: false, value: false });
-      //
-      //     //都是改写vuex里面的数据，两种写法都可以
-      //     this.vm.$store.commit('attrData', this.attrData);// 传出去
-      //     this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
-      //
-      //     // // 设置一下
-      //     // this.setIndex(0, { config: false, value: false });
-      //     //
-      //     // // 都是改写vuex里面的数据，两种写法都可以
-      //     // this.vm.$store.commit('attrData', this.attrData);// 传出去
-      //     // this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
-      //   },
-      // },
       {
         type: 'MagicCube',
         text: '内容设置',
@@ -125,14 +78,10 @@ function setAttrData() {
         value: this.value.list,
         //数据变化放进来的
         seclectChangeCB: (arr) => {
-
           //如果是数组的长度变小了
           if (arr.length < this.value.list.length) {
-
             var ids = []
             for (var i in this.value.list) {
-
-
               var j = 0;
               for (var area of arr) {
                 //如果都存在，则没有什么
@@ -149,47 +98,31 @@ function setAttrData() {
 
             }
             console.log('需要删除', ids)
-
             //倒序，索引从大到小 删除不受影响
             ids.reverse()
             for (var idx of ids) {
               this.value.list.splice(idx, 1)
             }
-
           } else {
-
-
             for (var i in arr) {
-
               if (this.value.list[i]) {
-
                 Vue.set(this.value.list, i, arr[i]);//强制触发数据和视图绑定
-
               } else {
-
                 Vue.set(this.value.list, i, {
                   link: '',
                   linkType: '',
                   tooltip: '',
                   ...arr[i]
                 });//强制触发数据和视图绑定
-
               }
-
             }
-
           }
 
 
-          this.vm.$store.state.activeAttr.value.list = this.value.list;
 
-
-          //this.setIndex(0, { config: false, value: false });
-          // // // 都是改写vuex里面的数据，两种写法都可以
-          //this.vm.$store.commit('attrData', this.attrData);// 传出去
-
-          //传递一下
-          //this.vm.$store.state.activeAttr.value.list = [...list];
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
 
         },
@@ -198,16 +131,14 @@ function setAttrData() {
           console.log(dataType, type, path, tooltip, dataItem, pageEl, idx2)
           pageEl.bindLinkDialogShow = false;
 
-          console.log(this.value.list)
           // console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
           Vue.set(this.value.list[idx2], 'link', path);
           Vue.set(this.value.list[idx2], 'linkType', type);
           Vue.set(this.value.list[idx2], 'tooltip', tooltip);
-          // //
-          this.setIndex(0, {config: false, value: false});
-          // // // 都是改写vuex里面的数据，两种写法都可以
-          //this.vm.$store.commit('attrData', this.attrData);// 传出去
-          this.vm.$store.state.activeAttr.value.list = this.value.list;
+
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
         },
         // 之类是输入的回调，可以根据需要决定写什么
@@ -231,6 +162,7 @@ function setAttrData() {
 
 function attrData(options = {}) {
   console.log(this.config)
+  // @ts-ignore
   const {value, config, attrData} = options;
   console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
@@ -296,7 +228,7 @@ class Cube extends Common {
   // value = []
 
 
-  setIndex(index: Number, options: Object) {
+  setIndex(index: number, options: object) {
     this.activeIndex = index;
     attrData.call(this, options);
   }

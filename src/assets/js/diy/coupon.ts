@@ -31,12 +31,10 @@ function setAttrData() {
         dialogCB: (coupon_list) => {
 
           this.value.list = [...coupon_list];
-          this.setIndex(0, {config: false, value: false});
-          //
-          // // 都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
 
-          this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
         },
         //这个按钮的功能，主要是新增页面吧
         editCB: (pageEl) => {
@@ -49,13 +47,6 @@ function setAttrData() {
           pageEl.coupon_ids = tempArr.join(',');
           pageEl.couponDialogShow = true;
 
-
-          // // 设置一下
-          // this.setIndex(0, { config: false, value: false });
-          //
-          // // 都是改写vuex里面的数据，两种写法都可以
-          // this.vm.$store.commit('attrData', this.attrData);// 传出去
-          // this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
         },
       },
       {
@@ -72,20 +63,10 @@ function setAttrData() {
         removeCB: (idx) => {
           this.value.list.splice(idx, 1);
 
-          this.setIndex(0, {config: false, value: false});
-          // // 都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
-          this.vm.$store.state.activeAttr.value.list = this.value.list;
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
         }
-        // 用函数来包容万象，返回数组
-        // getFunc:()=>{
-        //   let arr = this.config.hot,rt = [];
-        //   for(var i in  arr){
-        //     rt[i] = {label:'热词名称',val:arr[i]}
-        //   }
-        //   return rt;
-        // },
-
       },
       {
         type: 'radio',
@@ -112,6 +93,7 @@ function setAttrData() {
 }
 
 function attrData(options = {}) {
+  // @ts-ignore
   const {value, config, attrData} = options;
   console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
@@ -164,7 +146,7 @@ class Coupon extends Common {
   // value = []
 
 
-  setIndex(index: Number, options: Object) {
+  setIndex(index: number, options: object) {
     this.activeIndex = index;
     attrData.call(this, options);
   }

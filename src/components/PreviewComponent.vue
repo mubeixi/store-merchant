@@ -16,62 +16,6 @@
           @contextmenu.stop.prevent="contextmenuRightEv($event, item, index)"
         >
 
-
-          <!--          <div class="sortStatus" v-show="sort.sortIndex === index || index === templateList[templateEditIndex].length"></div>-->
-
-          <!--          <my-scale-->
-          <!--            ref="plugin"-->
-          <!--            class="scale"-->
-          <!--            v-if="item.indexOf('scale') !== -1"-->
-          <!--            @setData="setDataEv"-->
-          <!--            :index="index"-->
-          <!--            :data="templateData[templateEditIndex][index]"-->
-          <!--            draggable="true"-->
-          <!--          />-->
-
-
-          <!--          <my-img-->
-          <!--            ref="plugin"-->
-          <!--            class="image"-->
-          <!--            v-if="item.indexOf('img') !== -1"-->
-          <!--            @setData="setDataEv"-->
-          <!--            :data="templateData[templateEditIndex][index]"-->
-          <!--            :index="index"-->
-          <!--            draggable="true"-->
-          <!--          />-->
-          <!--          <my-input-->
-          <!--            ref="plugin"-->
-          <!--            v-if="item.indexOf('input') !== -1"-->
-          <!--            @setData="setDataEv"-->
-          <!--            :data="templateData[templateEditIndex][index]"-->
-          <!--            :index="index"-->
-          <!--            draggable="true"-->
-          <!--          />-->
-
-          <!--          <menu-nav-->
-          <!--            ref="plugin"-->
-          <!--            v-if="item.indexOf('nav') !== -1"-->
-          <!--            @setData="setDataEv"-->
-          <!--            draggable="true"-->
-          <!--            :data="templateData[templateEditIndex][index]"-->
-          <!--            :index="index"-->
-          <!--          />-->
-          <!--          <list-->
-          <!--            ref="plugin"-->
-          <!--            v-if="item.indexOf('list') !== -1"-->
-          <!--            @setData="setDataEv"-->
-          <!--            draggable="true"-->
-          <!--            :data="templateData[templateEditIndex][index]"-->
-          <!--            :index="index"-->
-          <!--          />-->
-          <!--          <swiper-->
-          <!--            ref="plugin"-->
-          <!--            v-if="item.indexOf('swiper') !== -1"-->
-          <!--            @setData="setDataEv"-->
-          <!--            :draggable="true"-->
-          <!--            :data="templateData[templateEditIndex][index]"-->
-          <!--            :index="index"-->
-          <!--          />-->
           <text-component
             ref="plugin"
             v-if="item.indexOf('text') !== -1"
@@ -195,15 +139,6 @@
             :data="templateData[templateEditIndex][index]"
             :index="index"
           />
-          <!--              <space-component-->
-          <!--                ref="plugin"-->
-          <!--                v-if="item.indexOf('space') !== -1"-->
-          <!--                @setData="setDataEv"-->
-          <!--                :draggable="true"-->
-          <!--                :data="templateData[templateEditIndex][index]"-->
-          <!--                :index="index"-->
-          <!--              />-->
-
 
           <div class="sortStatus"
                v-show="sort.sortIndex === templateList[templateEditIndex].length && index + 1 === templateList[templateEditIndex].length"></div>
@@ -214,18 +149,8 @@
           <!-- <h4>您确定要删除 {{ currentData.name }} 组件吗？</h4> -->
           <h4>您确定要删除这个组件吗？</h4>
           <p>
-            <input
-              type="button"
-              value="确定"
-              class="ok"
-              @click="removeTemplate"
-            />
-            <input
-              type="button"
-              value="取消"
-              class="on"
-              @click="removePosition.show = false"
-            />
+            <input type="button" value="确定" class="ok" @click="removeTemplate"/>
+            <input type="button" value="取消" class="on" @click="removePosition.show = false"/>
           </p>
         </div>
         <ul
@@ -236,28 +161,9 @@
           <li class="menuList" type="showRemovePrompt">
             删除
           </li>
-          <!-- <li class="menuList" type="reload">
-            重新加载
-          </li>
-          <li class="menuList" type="go">
-            前进
-          </li>
-          <li class="menuList" type="back">
-            返回
-          </li> -->
+
         </ul>
 
-        <!--        用边框替代-->
-        <!--        <div class="editActiveStatus" :style="editData" ref="editActiveEl">-->
-        <!--          <div class="arc topleft"></div>-->
-        <!--          <div class="arc topmiddle"></div>-->
-        <!--          <div class="arc topright"></div>-->
-        <!--          <div class="arc middleleft"></div>-->
-        <!--          <div class="arc middleright"></div>-->
-        <!--          <div class="arc bottomleft"></div>-->
-        <!--          <div class="arc bottommiddle"></div>-->
-        <!--          <div class="arc bottomright"></div>-->
-        <!--        </div>-->
       </div>
 
     </div>
@@ -304,7 +210,6 @@
     import Cube from '@/assets/js/diy/cube';
     import Tab from '../assets/js/diy/tab';
 
-
     @Component({
         name: 'PreviewComponent',
         props: {},
@@ -316,12 +221,20 @@
                     this.setTmplData(val);
                 },
             },
+            //修改activeAttr就可以修改组件中对应的数据
             activeAttr: {
                 deep: true,
                 handler(val) {
                     // 去修改准备提交到线上的数据对象
                     // 等于右边有变动，中间预览马上就跟着变了
-                    this.$set(this.templateData[this.templateEditIndex], this.tabIndex, val);
+
+
+                    // let tempVal = {}
+                    // deepCopy(tempVal,val)
+                    //
+                    // tempVal.aaaaaaaaaaaaaa=444;//监测下是不是data会影响this.search
+
+                    this.$set(this.templateData[this.templateEditIndex], this.tabIndex,val);
                 },
             },
         },

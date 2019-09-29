@@ -30,17 +30,17 @@ function setAttrData() {
         editType: 'style',
         editKey: 'color',
         editCB: item => item.model,
-        editCB2: (item) => {
-          const val = item.model;
-          if (!val || val.indexOf(',') == -1) return;
-          const color = val.split(',');
-
-          color[3] = `${this.style.transparent.backgroundTransparent / 100})`;
-
-          // 颜色要修改下，后面透明度会用到
-          // this.style.classInput.default['background-color'] = color.join()
-          return color.join();
-        },
+        // editCB2: (item) => {
+        //   const val = item.model;
+        //   if (!val || val.indexOf(',') == -1) return;
+        //   const color = val.split(',');
+        //
+        //   color[3] = `${this.style.transparent.backgroundTransparent / 100})`;
+        //
+        //   // 颜色要修改下，后面透明度会用到
+        //   // this.style.classInput.default['background-color'] = color.join()
+        //   return color.join();
+        // },
       },
       {
         type: 'radio',
@@ -85,6 +85,7 @@ function setAttrData() {
 }
 
 function attrData(options = {}) {
+  // @ts-ignore
   const {value, config, attrData} = options;
   console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
@@ -114,10 +115,9 @@ class Hr extends Common {
   }
 
 
-  constructor(vm) {
+  constructor() {
     super();
 
-    this.vmObj = vm;
 
     // 统一这样来初始化
     attrData.call(this);
@@ -126,7 +126,7 @@ class Hr extends Common {
   // value = []
 
 
-  setIndex(index: Number, options: Object) {
+  setIndex(index: number, options: object) {
     this.activeIndex = index;
     attrData.call(this, options);
   }

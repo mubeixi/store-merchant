@@ -33,19 +33,16 @@ function setAttrData() {
           const temp = [...this.value.hot];
 
           temp.push('热词');
-          // console.log(this, temp);
+          //这个value也会作用在Preview中的SearchComponents组件
           Vue.set(this.value, 'hot', temp);
 
-          // 设置一下
-          this.setIndex(0, {});
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
-          // 都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
+          return;
 
-          //避免牵一发而动全身
-          // this.vm.$store.state.activeAttr.attrData.content[1] = this.attrData.content[1]
 
-          this.vm.$store.state.activeAttr.value.hot = this.value.hot;// 传出去
         },
       },
       {
@@ -56,19 +53,15 @@ function setAttrData() {
         // 之类是输入的回调，可以根据需要决定写什么
         inputCB: (item) => {
           this.value.hot = [...item.value];
-
-          this.vm.$store.state.activeAttr.value.hot = this.value.hot;// 传出去
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.vm.$store.commit('activeAttr', this);// 传出去
         },
         removeCB: (idx) => {
 
-
           this.value.hot.splice(idx, 1);
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
-          this.setIndex(0, {config: false, value: false});
-
-          // // 都是改写vuex里面的数据，两种写法都可以
-          //this.vm.$store.commit('attrData', this.attrData);// 传出去
-          this.vm.$store.state.activeAttr.value.hot = this.value.hot;
         }
         // 用函数来包容万象，返回数组
         // getFunc:()=>{
@@ -132,11 +125,11 @@ function setAttrData() {
     ],
   };
 
-
   Vue.set(this, 'attrData', data);
 }
 
 function attrData(options = {}) {
+  // @ts-ignore
   const {value, config, attrData} = options;
   console.log(value, config, attrData, JSON.parse(JSON.stringify(this)));
   if (value !== false) setValue.call(this);
@@ -180,6 +173,7 @@ class Search extends Common {
   }
 
 
+
   constructor() {
     super();
 
@@ -191,7 +185,7 @@ class Search extends Common {
   // value = []
 
 
-  setIndex(index: Number, options: Object) {
+  setIndex(index: number, options: object) {
     this.activeIndex = index;
     attrData.call(this, options);
   }

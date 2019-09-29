@@ -23,22 +23,6 @@ function setConfig() {
   // let config = {}
 }
 
-// cover:'',
-//   style:1,
-//   showmode:'noborder-bgwhite',//'border-bgwhite','noborder-nobg'  无边框白底 有边框白底 无边框透明底
-//   radius:'round',//圆角 none直角
-//   attr:{
-//   title:{show:true},
-//   desc:{show:true},
-//   pirce:{show:true},
-//   buybtn:{show:true,text:'购买',style:1}, //样式1 样式2
-//   tag:{show:true,style:'hot'} //hot new imgPath 第三个是图片。 都是放在商品左上角
-// }
-
-//
-// wrapmargin:15,//页面边距
-//   margin:10,//商品距离
-//   // bgColor: '',
 
 function setAttrData() {
   const data = {
@@ -67,12 +51,10 @@ function setAttrData() {
 
           pageEl.bindListDialogShow = false;
 
-          this.setIndex(0, {config: false, value: false});
-          // // 都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
-          this.vm.$store.state.activeAttr.value = this.value;
-          this.vm.$store.state.activeAttr.config = this.config;
 
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
         },
         bindCateCB: (dataType, type, path, tooltip, dataItem, pageEl, idx2) => {
@@ -82,22 +64,20 @@ function setAttrData() {
           Vue.set(this.config, 'origin', 'cate');
           Vue.set(this.value, 'cate_id', dataItem.id);
           Vue.set(this.config, 'origintooltip', tooltip);
-          //
-          this.setIndex(0, {config: false, value: false});
-          // // 都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
-          this.vm.$store.state.activeAttr.value = this.value;
-          this.vm.$store.state.activeAttr.config = this.config;
+
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
         },
         inputCB: (val) => {
 
           Vue.set(this.value, 'limit', parseInt(val));
           Vue.set(this.config, 'origin', 'cate');
-          this.setIndex(0, {config: false, value: false});
-          // // 都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
-          this.vm.$store.state.activeAttr.value = this.value;
+
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
         },
         value: [
@@ -200,12 +180,10 @@ function setAttrData() {
 
           Vue.set(this.config.attr.title, 'show', item.model);//传递值
 
-          this.vm.$store.state.activeAttr.config = this.config;
 
-          this.setIndex(0, {config: false, value: false});
-          //都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
-          //this.vm.$store.state.activeAttr.value.list = this.value.list;
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
 
         }
@@ -221,12 +199,10 @@ function setAttrData() {
 
           Vue.set(this.config.attr.desc, 'show', item.model);//传递值
 
-          this.vm.$store.state.activeAttr.config = this.config;
 
-          this.setIndex(0, {config: false, value: false});
-          //都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
-          //this.vm.$store.state.activeAttr.value.list = this.value.list;
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
 
         }
@@ -242,12 +218,9 @@ function setAttrData() {
 
           Vue.set(this.config.attr.price, 'show', item.model);//传递值
 
-          this.vm.$store.state.activeAttr.config = this.config;
-
-          this.setIndex(0, {config: false, value: false});
-          //都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
-          //this.vm.$store.state.activeAttr.value.list = this.value.list;
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
 
         }
@@ -263,10 +236,9 @@ function setAttrData() {
 
           Vue.set(this.config.attr.buybtn, 'show', val);//传递值
 
-          this.vm.$store.state.activeAttr.config = this.config;
-          this.setIndex(0, {config: false, value: false});
-          //都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
         },
         inputCB: (val) => {
@@ -274,20 +246,17 @@ function setAttrData() {
 
           Vue.set(this.config.attr.buybtn, 'text', val);//传递值
 
-          this.vm.$store.state.activeAttr.config = this.config;
-          this.setIndex(0, {config: false, value: false});
-          //都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
         },
         radioCB: (val) => {
           Vue.set(this.config.attr.buybtn, 'style', val);//传递值
 
-          this.vm.$store.state.activeAttr.config = this.config;
-          this.setIndex(0, {config: false, value: false});
-          //都是改写vuex里面的数据，两种写法都可以
-
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
         },
       },
       {
@@ -302,10 +271,10 @@ function setAttrData() {
 
           Vue.set(this.config.attr.tag, 'show', val);//传递值
           Vue.set(this.config.attr.tag, 'style', 'diy');
-          this.vm.$store.state.activeAttr.config = this.config;
-          this.setIndex(0, {config: false, value: false});
-          //都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
+
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
         },//勾选的回调
         radioImgCB: (img, idx2) => {
@@ -313,11 +282,10 @@ function setAttrData() {
 
           Vue.set(this.config.attr.tag, 'img', img.data.path);
           Vue.set(this.config.attr.tag, 'style', 'diy');
-          //
-          this.setIndex(0, {config: false, value: false});
-          // // 都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
-          this.vm.$store.state.activeAttr.config = this.config;
+
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
 
         },
         radioCB: (item) => {
@@ -331,6 +299,7 @@ function setAttrData() {
 }
 
 function attrData(options = {}) {
+  // @ts-ignore
   const {value, config, attrData} = options;
   console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
@@ -403,7 +372,7 @@ class Goods extends Common {
   // value = []
 
 
-  setIndex(index: Number, options: Object) {
+  setIndex(index: number, options: object) {
     this.activeIndex = index;
     attrData.call(this, options);
   }

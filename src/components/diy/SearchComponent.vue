@@ -4,9 +4,7 @@
     <div class="box" :class="{'round':search.config.type==='round'}">
       <i class="el-icon-search icon"></i>
       <!--      :placeholder="search.value.hot|placeholderStr"-->
-      <input class="input" readonly
-             :style="{height:search.style.height+'px',backgroundColor:search.style.inputBgColor,color:search.style.color}"
-      />
+      <input class="input" readonly :style="{height:search.style.height+'px',backgroundColor:search.style.inputBgColor,color:search.style.color}" />
       <!--      <el-input  clearable size="small"  prefix-icon="el-icon-search" :placeholder="search.config.hot|placeholderStr" />-->
     </div>
   </div>
@@ -56,9 +54,10 @@
             },
         },
         watch: {
-            data() {
-                console.log("搜索data变化")
-                //this.search = this.data
+            data(val) {
+
+                console.log("搜索data变化",val)
+
             },
             // 属性变化
             activeAttr: {
@@ -72,10 +71,10 @@
         methods: {
             setData(item, index) {
 
-
+                // @ts-ignore
                 this.$store.commit('activeAttr', this.search);// 这里点击之后，setAttr马上就有响应。
+                // @ts-ignore
                 this.$store.commit('tabIndex', this.index);
-
 
             },
             // ...mapActions(),
@@ -86,14 +85,21 @@
         created() {
             //用这个来搞事啊
             //funvm也是vue实例，而且不是根实例，是这个组件的实例，可以快捷的调用组件中的对象或者方法以及$ref
+
+            // @ts-ignore
             Search.prototype.funvm = this;
             //Search.prototype.vm = this;
+
+            // @ts-ignore
             this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
 
             //之类会修改等于把
-            let searchObj = new Search(this);
+            let searchObj = new Search();
+
             //这里后面实际上把this.search和searchObj指向同一个引用了。不过由于searchObj和this.data是浅拷贝，所以没有什么关系。
             //核心想法应该是mergeObj，混合多个对象，而且后面对象的东西会覆盖前面的
+
+            // @ts-ignore
             this.search = deepCopy(searchObj, this.data);
 
         }

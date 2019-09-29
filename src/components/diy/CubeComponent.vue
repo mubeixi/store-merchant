@@ -111,8 +111,10 @@
             },
             setData(item, index) {
                 // console.log('hehe',this.search)
+                // @ts-ignore
                 this.$store.commit('activeAttr', this.cube);// 这里点击之后，setAttr马上就有响应。
 
+                // @ts-ignore
                 this.$store.commit('tabIndex', this.index);
 
                 // 用vuex就不要一层层传递了，头都晕了

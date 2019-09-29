@@ -74,41 +74,18 @@ function mergeDate(current, newObj, strict) {
  * 深拷贝，解决引用的问题。
  * @param currentObj
  * @param newObject
+ *
+ * 不过很奇怪之前的人为什么要复制两遍
  */
 export function deepCopy(currentObj, newObject) {
   addFun(currentObj, newObject);//方法则是保留本地的新建实例  new Search()这样
-  //mergeDate(currentObj, newObject);//数据采取的融合策略，后者优先。而且只在初始化的时候调用一次这个方法，所以全部都是服务器上的数据经历了JSON.string处理的/本地同样用new Search创建的初始化对象
+  //mergeDate(currentObj, newObject);
   return currentObj;
 }
 
-// function deepObjectMerge(FirstOBJ, SecondOBJ) { // 深度合并对象
-//   for (var key in SecondOBJ) {
-//     FirstOBJ[key] = FirstOBJ[key] !== null && typeof FirstOBJ[key] ==='object' ? deepObjectMerge(FirstOBJ[key], SecondOBJ[key]) : FirstOBJ[key] = SecondOBJ[key];
-//   }
-//   console.log(FirstOBJ)
-//   return FirstOBJ;
-// }
-//
-//
-// export const deepCopy = deepObjectMerge;//对象合并
-
-
-// export function deepCopy(newObj, tempObj){
-//   var newobj = {};
-//   for(var idx in tempObj){
-//     if (typeof tempObj[idx]==='object' && tempObj[idx] !== null) {
-//       newobj[idx] = deepCopy(tempObj[idx]); //递归，核心代码
-//     } else {
-//       newobj[idx] = tempObj[idx];
-//     }
-//   }
-//   return newobj;
-// }
-
-
 export function deepCopyStrict(currentObj, newObject) {
   addFun(currentObj, newObject, 1);
-  mergeDate(currentObj, newObject, 1);
+  // mergeDate(currentObj, newObject, 1);
   return currentObj;
 }
 

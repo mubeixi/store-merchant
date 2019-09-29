@@ -3,8 +3,7 @@
     <div class="list style1" v-if="coupon.config.type===1">
       <div class="item" v-for="(item,idx) in coupon.value.list">
         <p class="title">满{{item.Coupon_Condition}}享</p>
-        <p class="info"> {{item.Coupon_UseType == 0?item.Coupon_Discount+'折扣':'￥'+item.Coupon_Cash+'
-          减免'}}</p>
+        <p class="info"> {{item.Coupon_UseType == 0?item.Coupon_Discount+'折扣':'￥'+item.Coupon_Cash+'减免'}}</p>
         <p class="area">({{item.Coupon_UseArea==0?'实体店':'微商城'}})</p>
       </div>
     </div>
@@ -79,8 +78,10 @@
         methods: {
             setData(item, index) {
                 // console.log('hehe',this.search)
+                // @ts-ignore
                 this.$store.commit('activeAttr', this.coupon);// 这里点击之后，setAttr马上就有响应。
 
+                // @ts-ignore
                 this.$store.commit('tabIndex', this.index);
 
                 // 用vuex就不要一层层传递了，头都晕了

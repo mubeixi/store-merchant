@@ -64,6 +64,7 @@ function setAttrData() {
 
 function attrData(options = {}) {
 
+  // @ts-ignore
   let {value, config, attrData} = options;
   if (value !== false) setValue.call(this);
   if (config !== false) setConfig.call(this);
@@ -81,9 +82,9 @@ function attrData(options = {}) {
 
 }
 
-class tmpl extends Common {
+class Tmpl extends Common {
 
-  constructor(vm) {
+  constructor() {
     super()
   }
 
@@ -102,15 +103,12 @@ class tmpl extends Common {
 
   value = {}
 
-  attrData
-.
 
-  call(this)
 
-  setIndex(index: Number, options: Object) {
+  setIndex(index: number, options: object) {
     this.activeIndex = index;
     attrData.call(this, options)
   }
 }
 
-export default Hr
+export default Tmpl
