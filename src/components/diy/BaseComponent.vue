@@ -86,7 +86,7 @@ import { deepCopyStrict, deepCopy,domain } from '@/common/utils';
     })
 export default class BaseComponent extends Vue {
   created() {
-    Base.prototype.vm = this;
+    //Base.prototype.vm = this;
     this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
     this.base = deepCopy(new Base(), this.data);
   }

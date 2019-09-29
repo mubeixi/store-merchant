@@ -130,7 +130,7 @@ import MagicCube from '@/assets/js/diy/tool/MagicCube';
 })
 export default class CubeComponent extends Vue {
   created() {
-    Cube.prototype.vm = this;
+    //Cube.prototype.vm = this;
     this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
     this.cube = deepCopy(new Cube(), this.data);
 

@@ -131,7 +131,9 @@ function setAttrData() {
           this.setIndex(0, { config: false, value: false });
           //
           // // 都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
+          //避免牵一发而动全身
+          this.vm.$store.state.activeAttr.attrData.content[1] = this.attrData.content[1]
+          //this.vm.$store.commit('attrData', this.attrData);// 传出去
 
           this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
         },

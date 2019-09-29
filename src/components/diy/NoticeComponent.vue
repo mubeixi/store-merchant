@@ -94,7 +94,7 @@ import { deepCopyStrict, deepCopy } from '@/common/utils';
 })
 export default class NoticeComponent extends Vue {
   created() {
-      Notice.prototype.vm = this;
+      //Notice.prototype.vm = this;
     this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
     this.notice = deepCopy(new Notice(), this.data);
   }

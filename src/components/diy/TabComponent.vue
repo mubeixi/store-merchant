@@ -226,7 +226,7 @@ export default class TabComponent extends Vue {
     this.$nextTick().then(res=>{
         _self.fullWidth = document.getElementById('canvas').offsetWidth;
     })
-    Tab.prototype.vm = this;
+    //Tab.prototype.vm = this;
     this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
     this.tab = deepCopy(new Tab(), this.data);
   }

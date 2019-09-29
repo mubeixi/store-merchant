@@ -196,7 +196,7 @@ export default class GoodsComponent extends Vue {
     this.$nextTick().then(res=>{
         _self.fullWidth = document.getElementById('canvas').offsetWidth;
     })
-    Goods.prototype.vm = this;
+    //Goods.prototype.vm = this;
     this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
     this.goods = deepCopy(new Goods(), this.data);
   }

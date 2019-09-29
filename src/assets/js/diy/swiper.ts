@@ -36,7 +36,7 @@ function setAttrData() {
           console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
           pageEl.bindLinkDialogShow = false;
 
-          console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
+          //console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
           Vue.set(this.value.list[idx2],'link',path);
           Vue.set(this.value.list[idx2],'linkType',type);
           Vue.set(this.value.list[idx2],'tooltip',tooltip);
@@ -66,7 +66,8 @@ function setAttrData() {
 
           this.setIndex(0, { config: false, value: false });
           // // 都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
+          //this.vm.$store.commit('attrData', this.attrData);// 传出去
+
           this.vm.$store.state.activeAttr.value.list = this.value.list;
         }
         // 用函数来包容万象，返回数组

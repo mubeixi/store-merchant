@@ -87,7 +87,7 @@ import { deepCopyStrict, deepCopy,domain } from '@/common/utils';
     })
 export default class SwiperComponent extends Vue {
   created() {
-    Swiper.prototype.vm = this;
+    //Swiper.prototype.vm = this;
     this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
     this.swiper = deepCopy(new Swiper(), this.data);
   }

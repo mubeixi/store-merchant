@@ -93,7 +93,7 @@ import { deepCopyStrict, deepCopy } from '@/common/utils';
     })
 export default class CouponComponent extends Vue {
   created() {
-    Coupon.prototype.vm = this;
+    //Coupon.prototype.vm = this;
     this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
     this.coupon = deepCopy(new Coupon(), this.data);
   }

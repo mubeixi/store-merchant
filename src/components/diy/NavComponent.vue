@@ -86,7 +86,7 @@ import { deepCopyStrict, deepCopy,domain } from '@/common/utils';
     })
 export default class NavComponent extends Vue {
   created() {
-      Nav.prototype.vm = this;
+      //Nav.prototype.vm = this;
     this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
     this.nav = deepCopy(new Nav(), this.data);
   }

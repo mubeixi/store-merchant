@@ -27,7 +27,6 @@ function setAttrData() {
   const data = {
     title: '店铺信息设置',
     content: [
-
       {
         type: 'uploadImg',
         text: '背景图',

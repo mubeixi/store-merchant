@@ -68,7 +68,7 @@ import { deepCopyStrict, deepCopy } from '@/common/utils';
     })
 export default class SpaceComponent extends Vue {
   created() {
-    console.log(4444);
+    //console.log(4444);
     this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
     this.space = deepCopy(new Space(this), this.data);
   }

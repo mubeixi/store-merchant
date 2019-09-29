@@ -15,7 +15,7 @@ export const domain = (url)=>{
   return url;
 }
 
-// 会修改原数据
+// 会修改模板对象，将他没有的属性加上
 function addFun(object, newobj) {
   for (const key in object) {
     if (!object.hasOwnProperty(key)) continue;
@@ -45,7 +45,9 @@ function mergeDate(current, newObj, strict) {
     if (!newObj.hasOwnProperty(key)) continue;
     if (strict && !newObj[key]) continue;
 
-    if (typeof newObj[key] === 'object') {
+    if (typeof newObj[key] === 'object' && newObj[key]!==null) {
+
+      //current[key] 可能是null或者undefined
       if (!current[key]) {
         Vue.set(current, key, newObj[key]);
         continue;
@@ -56,22 +58,52 @@ function mergeDate(current, newObj, strict) {
         current = newObj;
         continue;
       }
-      if (!current[key]) {
-        Vue.set(current, key, newObj[key]);
-        continue;
-      }
+
+
+      // if (!current[key]) {
+      //   Vue.set(current, key, newObj[key]);
+      //   continue;
+      // }
 
       Vue.set(current, key, newObj[key]);
     }
   }
 }
 
-
+/**
+ * 深拷贝，解决引用的问题。
+ * @param currentObj
+ * @param newObject
+ */
 export function deepCopy(currentObj, newObject) {
-  addFun(currentObj, newObject);
-  mergeDate(currentObj, newObject);
+  addFun(currentObj, newObject);//方法则是保留本地的新建实例  new Search()这样
+  mergeDate(currentObj, newObject);//数据采取的融合策略，后者优先。而且只在初始化的时候调用一次这个方法，所以全部都是服务器上的数据经历了JSON.string处理的/本地同样用new Search创建的初始化对象
   return currentObj;
 }
+
+// function deepObjectMerge(FirstOBJ, SecondOBJ) { // 深度合并对象
+//   for (var key in SecondOBJ) {
+//     FirstOBJ[key] = FirstOBJ[key] !== null && typeof FirstOBJ[key] ==='object' ? deepObjectMerge(FirstOBJ[key], SecondOBJ[key]) : FirstOBJ[key] = SecondOBJ[key];
+//   }
+//   console.log(FirstOBJ)
+//   return FirstOBJ;
+// }
+//
+//
+// export const deepCopy = deepObjectMerge;//对象合并
+
+
+// export function deepCopy(newObj, tempObj){
+//   var newobj = {};
+//   for(var idx in tempObj){
+//     if (typeof tempObj[idx]==='object' && tempObj[idx] !== null) {
+//       newobj[idx] = deepCopy(tempObj[idx]); //递归，核心代码
+//     } else {
+//       newobj[idx] = tempObj[idx];
+//     }
+//   }
+//   return newobj;
+// }
 
 
 export function deepCopyStrict(currentObj, newObject) {

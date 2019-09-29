@@ -22,25 +22,30 @@ function setConfig() {
 }
 
 function setAttrData() {
+  console.log(JSON.parse(JSON.stringify(this)))
   const data = {
     title: '辅助间隙设置',
     content: [
       {
         type: 'addbtn',
-        text: '',
+        text: '热词管理',
         label: '添加热词',
         editCB: (item) => {
           const temp = [...this.value.hot];
 
           temp.push('热词');
-          console.log(this, temp);
+          // console.log(this, temp);
           Vue.set(this.value, 'hot', temp);
 
           // 设置一下
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0,{});
 
           // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
+
+          //避免牵一发而动全身
+          // this.vm.$store.state.activeAttr.attrData.content[1] = this.attrData.content[1]
+
           this.vm.$store.state.activeAttr.value.hot = this.value.hot;// 传出去
         },
       },
@@ -55,6 +60,17 @@ function setAttrData() {
 
           this.vm.$store.state.activeAttr.value.hot = this.value.hot;// 传出去
         },
+        removeCB:(idx)=>{
+
+
+          this.value.hot.splice(idx,1);
+
+          this.setIndex(0, { config: false, value: false });
+
+          // // 都是改写vuex里面的数据，两种写法都可以
+          //this.vm.$store.commit('attrData', this.attrData);// 传出去
+          this.vm.$store.state.activeAttr.value.hot = this.value.hot;
+        }
         // 用函数来包容万象，返回数组
         // getFunc:()=>{
         //   let arr = this.config.hot,rt = [];
@@ -123,14 +139,16 @@ function setAttrData() {
 
 function attrData(options = {}) {
   const { value, config, attrData } = options;
-  console.log(value, config, attrData);
+  console.log(value, config, attrData,JSON.parse(JSON.stringify(this)));
   if (value !== false) setValue.call(this);
   if (config !== false) setConfig.call(this);
   if (attrData !== false) setAttrData.call(this);
+  console.log(JSON.parse(JSON.stringify(this)));
 }
 
 
 class Search extends Common {
+
   tag = 'search';
   // activeIndex = 0;
 
@@ -155,7 +173,6 @@ class Search extends Common {
   }
 
   config = {
-
     type: 'round', // quare
   }
 
