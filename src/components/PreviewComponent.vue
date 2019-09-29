@@ -6,6 +6,7 @@
           :ref="item | dragSorts"
           v-for="(item, index) in templateList[templateEditIndex]"
           :key="index"
+          :id="'section'+index"
           class="section"
           :class="setClass(item,index)"
           :data-name="item"
@@ -527,6 +528,8 @@ export default class PreviewComponent extends Vue {
       if(this.currentData.index === idx){
           rt.push('active')
       }
+
+
       return rt;
     }
 
@@ -620,6 +623,7 @@ export default class PreviewComponent extends Vue {
       //
       // //这里是用来模拟点击的
       setTimeout(() => {
+
         const lastIndex = this.templateList[this.templateEditIndex].length - 1;
         console.log(lastIndex);
         const dragEl = document.querySelectorAll('.canvas > section')[lastIndex].getElementsByClassName(`${templateName}`)[0];
@@ -630,6 +634,12 @@ export default class PreviewComponent extends Vue {
         // 模拟点击
         dragEl.click();
 
+
+        const dragSection = document.getElementById('section'+lastIndex);
+
+        if(!dragSection)return;
+        console.log(dragSection);
+        dragSection.click()
         // pageMove.init('sort', this, () => console.log(22222));
 
         // 每次页面都会重排一次，可能是因为这里导致拖拽切换导航的时候，页面其他元素不显示了。
