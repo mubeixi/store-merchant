@@ -4,7 +4,7 @@
     <el-upload
       ref="upload"
       class="upload avatar-uploader"
-      :class="{mini:mini}"
+      :class="{mini:mini,isHas:imgUrl}"
       v-if="type === 'avatar'"
       :multiple="multiple"
       :name="name"
@@ -21,7 +21,8 @@
       :on-change='change'>
       <!--        :style="{height:parseInt(this.cropperOption.aspectRatio*100)+'%'}"-->
       <template v-if="imgUrl">
-        <img class="avatar"   :src="imgUrl | domain"/>
+        <div class="avatar" :style="{backgroundImage:'url('+domainFunc(imgUrl)+')'}"></div>
+<!--        <img class="avatar"   :src="imgUrl | domain"/>-->
       </template>
       <i v-else class="el-icon-plus"></i>
       <div slot="tip" class="el-upload__tip ">{{tip}}</div>
@@ -55,6 +56,7 @@
 import { mapState, mapActions } from 'vuex';
 import { baseApiUrl } from '@/common/env';
 import {get_Users_ID,createToken} from '@/common/fetch';
+import { domain } from '@/common/utils';
 
 function noop() {
 }
@@ -146,6 +148,9 @@ export default {
 
   },
   methods: {
+    domainFunc(url){
+      return domain(url)
+    },
     exceedFunc(){
       this.$fun.error({msg:'最多上传'+this.limit+'个文件'});
     },
@@ -174,7 +179,7 @@ export default {
     },
     success(...params) {
       console.log(params)
-
+      //这里其实等于，上传了很多图片。但是只是不显示而已，如果后续有必要可以考虑每次上传成功清空文件列表。
       //this.$refs.upload.clearFiles()
       this.onSuccess.call(this,params[0],this.idx2);
     },
@@ -190,6 +195,10 @@ export default {
       .avatar {
         width: 100%;
         height: 100%;
+        background-size contain
+        background-repeat no-repeat
+        background-position center
+        background-color #f2f2f2
       }
     }
   }
@@ -198,10 +207,10 @@ export default {
   margin-top 0;
   line-height 80px;
 }
-  .tip{
-    margin-top 110px
-    margin-left 10px
-  }
+.tip{
+  margin-top 110px
+  margin-left 10px
+}
 
 
 

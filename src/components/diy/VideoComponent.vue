@@ -3,7 +3,7 @@
 
     <img v-if="video.config.cover" :src="video.config.cover|domain" />
     <div v-else>
-      <video width="100%" height="100%" style="vertical-align: top" controls="controls">
+      <video width="100%" height="100%"  controls="controls">
         您的浏览器不支持 video 标签。
       </video>
     </div>
@@ -91,10 +91,12 @@ export default class VideoComponent extends Vue {
       width 100%
       height 100%
       top 0
+      vertical-align top
     video
       position absolute
       width 100%
       top 0
       bottom 0
+      vertical-align: top
 
 </style>

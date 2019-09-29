@@ -26,7 +26,7 @@ function setAttrData() {
     content: [
       {
         type: 'color',
-        text: '背景颜色',
+        text: '线条颜色',
         model: this.style.color,
         editType: 'style',
         editKey: 'color',
@@ -45,7 +45,7 @@ function setAttrData() {
       },
       {
         type: 'radio',
-        text: '样式',
+        text: '线条样式',
         editType: 'config',
         editKey: 'type',
         model: this.config.type,
@@ -62,7 +62,7 @@ function setAttrData() {
       },
       {
         type: 'input',
-        text: '线高度',
+        text: '线条高度',
         inputType: 'number',
         editType: 'style',
         editKey: 'height',
