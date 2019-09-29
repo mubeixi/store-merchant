@@ -28,12 +28,14 @@
 
 <!--        activeItem[item.index].tooltip | pageTooltip-->
         <el-tooltip v-if="item.type === 'setlink'" class="item rightBtn" effect="dark"
-                    :content="''| pageTooltip" placement="right">
+                    :content="item.model.tooltip| pageTooltip" placement="right">
 <!--          v-if="0&&!activeItem[item.index].tooltip"-->
-          <el-button v-if="0"  @click.prevent="selectPageShow = true">选择页面
-          </el-button>
-          <el-button v-else icon="el-icon-check" @click.prevent="selectPageShow = true">选择页面</el-button>
+          <el-button size="small" v-if="item.model.link==''"  @click="openBindLinkBase(item)">选择页面</el-button>
+          <el-button size="small" v-else icon="el-icon-check" @click="openBindLinkBase(item)">选择页面</el-button>
+
+
         </el-tooltip>
+        <span v-if="item.type === 'setlink'" class="font12 graytext2 padding10-c">{{item.model.tooltip}}</span>
 
 <!--        <bind-link v-model="selectPageShow" :checkedIndex='pageChecked' :data='currentData.customizeObject' @change='selectPagePath' />-->
 
@@ -72,6 +74,27 @@
                   </div>
                 </div>
               </div>
+            </div>
+
+            <div class="row-container" v-if="['title'].indexOf(item.row_type)!==-1">
+
+              <div class="line10 flex">
+                <div class="graytext" style="width: 70px;padding-left: 10px;">导航标题</div>
+                <div><el-input v-model="item.value[idx].title" /></div>
+              </div>
+
+
+                <div class="line10 flex">
+                  <div class="graytext" style="width: 70px;padding-left: 10px;">设置链接</div>
+                  <div>
+                    <el-tooltip class="item" effect="dark" :content="item.value[idx].tooltip||'未绑定'" placement="right">
+                      <el-button :title="item.value[idx].tooltip"  size="small" @click="openSwiperBindLink(item,idx,item.bindCB)"    >绑定链接</el-button>
+                    </el-tooltip>
+                    <span class="padding10-c font12">{{item.value[idx].tooltip}}</span>
+                  </div>
+                </div>
+
+
             </div>
 
             <div class="row-container flex" v-if="['nav'].indexOf(item.row_type)!==-1">
@@ -312,6 +335,10 @@ import MagicCubeComponent from '@/components/diy/tool/MagicCubeComponent';
       this.pageEl = this
     },
   methods: {
+      openBindLinkBase(item){
+          this.bindLinkDialogShow = true
+          this.bindLinkSuccessCall = item.bindLinkCB
+      },
       bingSelectChange(arr){
           console.log('选中区域变化',arr)
           this.currentData.seclectChangeCB && this.currentData.seclectChangeCB(arr)

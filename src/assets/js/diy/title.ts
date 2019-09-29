@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Common from './commonClass';
 import { deepCopy } from '@/common/utils';
+import {fun} from "@/common";
 
 
 function setValue() {
@@ -63,8 +64,107 @@ function setAttrData() {
         text: '跳转链接',
         editType: 'value',
         editKey: 'link',
-        model: this.value.link,
-        editCB: item => item.model,
+        model: this.value,
+        bindLinkCB:(dataType, type, path, tooltip, dataItem,pageEl,idx2)=>{
+
+          console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
+          pageEl.bindLinkDialogShow = false;
+
+          Vue.set(this.value,'link',path);
+          Vue.set(this.value,'linkType',type);
+          Vue.set(this.value,'tooltip',tooltip);
+          //
+          this.setIndex(0, { config: false, value: false });
+          // // 都是改写vuex里面的数据，两种写法都可以
+          this.vm.$store.commit('attrData', this.attrData);// 传出去
+          this.vm.$store.state.activeAttr.value = this.value;
+
+        },
+      },
+      {
+        type: 'addbtn',
+        text: '文本导航',
+        label: '新增',
+        // openBindLink:(pageEl,item,idx)=>{
+        //   pageEl.bindLinkDialogShow = true
+        // },
+        // dialogCB:(list)=>{
+        //
+        //   this.value.more = [...list];
+        //   this.setIndex(0, { config: false, value: false });
+        //   //
+        //   // // 都是改写vuex里面的数据，两种写法都可以
+        //   this.vm.$store.commit('attrData', this.attrData);// 传出去
+        //
+        //   this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
+        // },
+        //这个按钮的功能，主要是新增元素
+        editCB: (pageEl) => {
+
+          if(this.value.more.length>=1){
+            fun.info({msg:'最多允许添加一个'});
+            return;
+          }
+
+          this.value.more.push({title:'查看更多>',link:'',linkType:null,tooltip:''});//新增一个空元素
+          this.setIndex(0, { config: false, value: false });
+
+          //都是改写vuex里面的数据，两种写法都可以
+          this.vm.$store.commit('attrData', this.attrData);// 传出去
+          this.vm.$store.state.activeAttr.value.more = this.value.more;// 传出去
+
+        },
+      },
+      {
+        type: 'arr',
+        row_type: 'title', // text/num这些代表简单的值，可以直接设置。
+        label: '',
+        value: this.value.more,
+        bindCB:(dataType, type, path, tooltip, dataItem,pageEl,idx2)=>{
+
+          console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
+          pageEl.bindLinkDialogShow = false;
+
+          Vue.set(this.value.more[idx2],'link',path);
+          Vue.set(this.value.more[idx2],'linkType',type);
+          Vue.set(this.value.more[idx2],'tooltip',tooltip);
+          //
+          this.setIndex(0, { config: false, value: false });
+          // // 都是改写vuex里面的数据，两种写法都可以
+          this.vm.$store.commit('attrData', this.attrData);// 传出去
+          this.vm.$store.state.activeAttr.value.list = this.value.list;
+
+        },
+        // 之类是输入的回调，可以根据需要决定写什么
+        imgCB: (item,idx2) => {
+          console.log(item.data.path,idx2)
+          Vue.set(this.value.list[idx2],'img_src',item.data.path);
+
+          this.setIndex(0, { config: false, value: false });
+          // // 都是改写vuex里面的数据，两种写法都可以
+          this.vm.$store.commit('attrData', this.attrData);// 传出去
+          this.vm.$store.state.activeAttr.value.list = this.value.list;
+
+          // this.value.list = [...item.value];
+          //
+          // this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
+        },
+        removeCB:(idx)=>{
+          this.value.list.splice(idx,1);
+
+          this.setIndex(0, { config: false, value: false });
+          // // 都是改写vuex里面的数据，两种写法都可以
+          this.vm.$store.commit('attrData', this.attrData);// 传出去
+          this.vm.$store.state.activeAttr.value.list = this.value.list;
+        }
+        // 用函数来包容万象，返回数组
+        // getFunc:()=>{
+        //   let arr = this.config.hot,rt = [];
+        //   for(var i in  arr){
+        //     rt[i] = {label:'热词名称',val:arr[i]}
+        //   }
+        //   return rt;
+        // },
       },
 
     ],
@@ -101,7 +201,10 @@ class Title extends Common {
 
 
   value ={
+    more:[],
     link: '',
+    linkType:'',
+    tooltip:'',
     title: '大标题',
     small: '小标题',
   }

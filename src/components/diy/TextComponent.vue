@@ -68,6 +68,7 @@ import { deepCopyStrict, deepCopy } from '@/common/utils';
 })
 export default class TextComponent extends Vue {
   created() {
+    Text.prototype.vm = this;
     this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
     this.text = deepCopy(new Text(this), this.data);
   }
