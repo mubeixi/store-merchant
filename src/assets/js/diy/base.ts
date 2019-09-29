@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Common from './commonClass';
-import { deepCopy } from '@/common/utils';
 import {ls} from "@/common/tool/ls";
 
 const shopInfo = ls.get('Shop_Info')
@@ -61,7 +60,7 @@ function setAttrData() {
 }
 
 function attrData(options = {}) {
-  const { value, config, attrData } = options;
+  const {value, config, attrData} = options;
   console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
   if (config !== false) setConfig.call(this);
@@ -95,13 +94,13 @@ class Base extends Common {
   }
 
   config = {
-    cover:'',
-    logo:shopInfo.ShopLogo,
-    title:shopInfo.ShopName,
-    desc:shopInfo.description,
-    total:223,
-    new:22,
-    style:1
+    cover: '',
+    logo: shopInfo.ShopLogo,
+    title: shopInfo.ShopName,
+    desc: shopInfo.description,
+    total: 223,
+    new: 22,
+    style: 1
 
     // loop:false,//是否循环
     // interval:5000,//切换时间
@@ -110,7 +109,7 @@ class Base extends Common {
   }
 
   value = {
-    list:[],//存优惠券数组
+    list: [],//存优惠券数组
   }
 
 

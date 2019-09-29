@@ -1,16 +1,16 @@
 import Vue from 'vue';
-import { baseApiUrl,apiKey } from './env';
+import {baseApiUrl} from './env';
 import {hexMD5} from "@/common/tool/md5";
-require('./tool/base64');
-import {fun} from "@/common/index";
 import {Loading} from "element-ui";
 import {ls} from "@/common/tool/ls";
 
+require('./tool/base64');
+
 window.funLoading = false
 
-const fetch = function (act:String, param:Object={},options = false,url:String='/api/little_program/shopconfig.php',  method:String = 'post') {
+const fetch = function (act: String, param: Object = {}, options = false, url: String = '/api/little_program/shopconfig.php', method: String = 'post') {
 
-  if(!act) Vue.$fun.warning('获取信息失败');
+  if (!act) Vue.$fun.warning('获取信息失败');
 
   param.act = act;
   // param.Users_Account = get_Users_Account();
@@ -20,10 +20,10 @@ const fetch = function (act:String, param:Object={},options = false,url:String='
   // 数据加密
   let data = createToken(param);
 
-  url = (process.env.NODE_ENV === 'production'?baseApiUrl:'') + url;
-  console.log(url,param);
+  url = (process.env.NODE_ENV === 'production' ? baseApiUrl : '') + url;
+  console.log(url, param);
 
-  if(options){
+  if (options) {
     window.funLoading = Loading.service(options)
   }
 
@@ -32,44 +32,34 @@ const fetch = function (act:String, param:Object={},options = false,url:String='
 };
 
 
-export const login = (data:Object,options) => fetch('users_login', data,options)
+export const login = (data: Object, options) => fetch('users_login', data, options)
 
-export const getCouponList = (data,options) => fetch('get_unaccalimed_coupon',data,options)
+export const getCouponList = (data, options) => fetch('get_unaccalimed_coupon', data, options)
 
-export const getProductList = (data,options) => fetch('get_prod',data,options)
+export const getProductList = (data, options) => fetch('get_prod', data, options)
 
-export const getShopSkinList = (data,options) => fetch('get_shopskin',data,options)
+export const getShopSkinList = (data, options) => fetch('get_shopskin', data, options)
 
-export const chooseShopSkin = (data,options) => fetch('choose_shopskin',data,options)
+export const chooseShopSkin = (data, options) => fetch('choose_shopskin', data, options)
 
 //获取商城的配置
-export const getSkinConfig = (data,options) => fetch('get_shophome',data,options)
+export const getSkinConfig = (data, options) => fetch('get_shophome', data, options)
 
 //更新商城的配置
-export const setSkinConfig = (data,options) => fetch('update_shophome',data,options)
+export const setSkinConfig = (data, options) => fetch('update_shophome', data, options)
 
-export const getProductCategory = (data,options) => fetch('pro_cate',data,options)
-
-
-
-
-
-
-
-
-
-
+export const getProductCategory = (data, options) => fetch('pro_cate', data, options)
 
 
 function get_Appid() {
   return 'xhh';
 }
 
-export const get_Users_ID = ()=>ls.get('Users_ID')
+export const get_Users_ID = () => ls.get('Users_ID')
 
-export const get_Users_Account= ()=>ls.get('Users_Account')
+export const get_Users_Account = () => ls.get('Users_Account')
 
-export const createToken = function(object) {
+export const createToken = function (object) {
   object = ObjectToArr(object);
   var signString = ObjectToString(object);
   signString = signString.slice(0, -1);

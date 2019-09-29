@@ -1,5 +1,5 @@
 import { PLUGINSLIST } from './data';
-import {baseApiUrl} from '@/common/env';
+import { baseApiUrl } from '@/common/env';
 
 export default [
   {
@@ -10,10 +10,10 @@ export default [
     },
   },
   {
-    name:'domain',
-    methods:(url) => {
-      if(!url)return '';
-      if (url.indexOf('http') == -1) return baseApiUrl+url;
+    name: 'domain',
+    methods: (url) => {
+      if (!url) return '';
+      if (url.indexOf('http') == -1) return baseApiUrl + url;
       return url;
     }
   },

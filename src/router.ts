@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Hello from './views/Hello.vue';
 import Empty from './views/Empty.vue';
+
 Vue.use(Router);
 
 export default new Router({

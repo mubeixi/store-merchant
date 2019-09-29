@@ -9,19 +9,18 @@
 // };
 
 // @ts-ignore
-import state from '@/store/state';
 
-export const setActiveAttr = ({ commit }, data) => {
+export const setActiveAttr = ({commit}, data) => {
   // 这里除了修改之外，还需要去修改templDate的对应数据
   console.log('activeAttr data is change', data);
   commit('activeAttr', data);
 };
 
-export const setTemplateEditIndex = ({ commit }, data) => {
+export const setTemplateEditIndex = ({commit}, data) => {
   commit('templateEditIndex', data);
 };
 
 
-export const setTmplData = ({ commit }, data) => {
+export const setTmplData = ({commit}, data) => {
   commit('tmplData', data);
 };

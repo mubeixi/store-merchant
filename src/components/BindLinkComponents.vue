@@ -222,7 +222,7 @@
       },
       'innerDialog.customizeIndex'(val) {
 
-        if(!this.innerVisible)return;
+        if (!this.innerVisible) return;
 
         if (val === '2' && !this.innerDialog.classify.isHasData) {
           getProductCategory()
@@ -434,7 +434,6 @@
         //   tooltip,
         //   dataItem
         // })
-
 
 
         this.onSuccess.call(this, dataType,

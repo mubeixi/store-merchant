@@ -9,9 +9,9 @@ export const getStyle = function (el, name) {
   return window.getComputedStyle(el, null)[name];
 };
 
-export const domain = (url)=>{
-  if(!url) return '';
-  if (url.indexOf('http') == -1) return baseApiUrl+url;
+export const domain = (url) => {
+  if (!url) return '';
+  if (url.indexOf('http') == -1) return baseApiUrl + url;
   return url;
 }
 
@@ -45,7 +45,7 @@ function mergeDate(current, newObj, strict) {
     if (!newObj.hasOwnProperty(key)) continue;
     if (strict && !newObj[key]) continue;
 
-    if (typeof newObj[key] === 'object' && newObj[key]!==null) {
+    if (typeof newObj[key] === 'object' && newObj[key] !== null) {
 
       //current[key] 可能是null或者undefined
       if (!current[key]) {
@@ -77,7 +77,7 @@ function mergeDate(current, newObj, strict) {
  */
 export function deepCopy(currentObj, newObject) {
   addFun(currentObj, newObject);//方法则是保留本地的新建实例  new Search()这样
-  mergeDate(currentObj, newObject);//数据采取的融合策略，后者优先。而且只在初始化的时候调用一次这个方法，所以全部都是服务器上的数据经历了JSON.string处理的/本地同样用new Search创建的初始化对象
+  //mergeDate(currentObj, newObject);//数据采取的融合策略，后者优先。而且只在初始化的时候调用一次这个方法，所以全部都是服务器上的数据经历了JSON.string处理的/本地同样用new Search创建的初始化对象
   return currentObj;
 }
 
@@ -138,6 +138,7 @@ export const moveEl = function (el) {
 
     window.addEventListener('mousemove', move, false);
   }
+
   function move(e) {
     el.style.left = `${e.clientX - x}px`;
     el.style.top = `${e.clientY - y}px`;
@@ -256,7 +257,7 @@ export class pageMove {
       pageMoveArr.input.cb && pageMoveArr.input.cb(that.x, that.y);
     } catch (err) {
       if (globalVal.dragClassName) {
-        const { cb } = pageMoveArr[globalVal.dragClassName];
+        const {cb} = pageMoveArr[globalVal.dragClassName];
         cb && cb(that.x, that.y);
       }
     }
@@ -324,8 +325,8 @@ export class pageMove {
     e.preventDefault();
     e.stopPropagation();
 
-    const { downIndex } = that.vm.$data.sort;// 原来在的位置
-    const { sortIndex } = that.vm.$data.sort;// 需要被拖动到的位置
+    const {downIndex} = that.vm.$data.sort;// 原来在的位置
+    const {sortIndex} = that.vm.$data.sort;// 需要被拖动到的位置
 
     if (downIndex == sortIndex) {
       // console.log('不替换')
@@ -394,12 +395,10 @@ export class pageMove {
 }
 
 
-
-
 function isNum(value) {
   return typeof value === 'number' && !isNaN(value);
 }
 
-function getAreaPoint(row_idx,col_idx,row_idx1,col_idx1,scale) {
-  return {x:row_idx*scale,y:col_idx*scale,x1:row_idx1*scale,y1:col_idx1*scale}
+function getAreaPoint(row_idx, col_idx, row_idx1, col_idx1, scale) {
+  return {x: row_idx * scale, y: col_idx * scale, x1: row_idx1 * scale, y1: col_idx1 * scale}
 }

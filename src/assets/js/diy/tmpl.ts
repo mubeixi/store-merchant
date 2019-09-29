@@ -27,7 +27,7 @@ function setAttrData() {
           editCB: (item: { model: any; }) => {
 
             let val = item.model
-            if (!val || val.indexOf(',')==-1) return
+            if (!val || val.indexOf(',') == -1) return
             let color = val.split(',')
 
             color[3] = this.style.transparent.backgroundTransparent / 100 + ')'
@@ -90,10 +90,10 @@ class tmpl extends Common {
   tag = 'space';
   //activeIndex = 0;
 
-  style={
+  style = {
     color: '#e7e7e7',
-    margin:'4',
-    height:'1'
+    margin: '4',
+    height: '1'
   }
 
   config = {
@@ -102,7 +102,10 @@ class tmpl extends Common {
 
   value = {}
 
-  attrData.call(this)
+  attrData
+.
+
+  call(this)
 
   setIndex(index: Number, options: Object) {
     this.activeIndex = index;

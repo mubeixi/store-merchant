@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Common from './commonClass';
-import { deepCopy } from '@/common/utils';
 
 
 function setValue() {
@@ -29,10 +28,10 @@ function setAttrData() {
         type: 'addbtn',
         text: '',
         label: '新增内容',
-        dialogCB:(coupon_list)=>{
+        dialogCB: (coupon_list) => {
 
           this.value.list = [...coupon_list];
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           //
           // // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
@@ -46,7 +45,7 @@ function setAttrData() {
           this.value.list.push('');
 
           // // 设置一下
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
 
           // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
@@ -64,10 +63,10 @@ function setAttrData() {
           //
           // this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
         },
-        removeCB:(idx)=>{
-          this.value.list.splice(idx,1);
+        removeCB: (idx) => {
+          this.value.list.splice(idx, 1);
 
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           // // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           this.vm.$store.state.activeAttr.value.list = this.value.list;
@@ -107,7 +106,7 @@ function setAttrData() {
 }
 
 function attrData(options = {}) {
-  const { value, config, attrData } = options;
+  const {value, config, attrData} = options;
   console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
   if (config !== false) setConfig.call(this);
@@ -144,7 +143,7 @@ class Notice extends Common {
   }
 
   value = {
-    list:['通知公告1','通知公告2','通知公告3','通知公告4'],//存优惠券数组
+    list: ['通知公告1', '通知公告2', '通知公告3', '通知公告4'],//存优惠券数组
   }
 
 

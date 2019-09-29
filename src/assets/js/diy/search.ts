@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Common from './commonClass';
-import { deepCopy } from '@/common/utils';
 
 
 function setValue() {
@@ -38,7 +37,7 @@ function setAttrData() {
           Vue.set(this.value, 'hot', temp);
 
           // 设置一下
-          this.setIndex(0,{});
+          this.setIndex(0, {});
 
           // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
@@ -60,12 +59,12 @@ function setAttrData() {
 
           this.vm.$store.state.activeAttr.value.hot = this.value.hot;// 传出去
         },
-        removeCB:(idx)=>{
+        removeCB: (idx) => {
 
 
-          this.value.hot.splice(idx,1);
+          this.value.hot.splice(idx, 1);
 
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
 
           // // 都是改写vuex里面的数据，两种写法都可以
           //this.vm.$store.commit('attrData', this.attrData);// 传出去
@@ -138,8 +137,8 @@ function setAttrData() {
 }
 
 function attrData(options = {}) {
-  const { value, config, attrData } = options;
-  console.log(value, config, attrData,JSON.parse(JSON.stringify(this)));
+  const {value, config, attrData} = options;
+  console.log(value, config, attrData, JSON.parse(JSON.stringify(this)));
   if (value !== false) setValue.call(this);
   if (config !== false) setConfig.call(this);
   if (attrData !== false) setAttrData.call(this);

@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Common from './commonClass';
-import { deepCopy } from '@/common/utils';
 
 
 function setValue() {
@@ -47,12 +46,13 @@ function setAttrData() {
 }
 
 function attrData(options = {}) {
-  const { value, config, attrData } = options;
+  const {value, config, attrData} = options;
   console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
   if (config !== false) setConfig.call(this);
   if (attrData !== false) setAttrData.call(this);
 }
+
 //
 class Space extends Common {
   tag = 'space';
@@ -68,9 +68,7 @@ class Space extends Common {
     height: '10', // 默认是10吧
   }
 
-  config = {
-
-  }
+  config = {}
 
 
   constructor() {

@@ -1,5 +1,3 @@
-import Vue from 'vue';
-
 export const activeAttr = function (state: { activeAttr: any; }, value: any) {
   // window.ActiveAttrObj = value;
   state.activeAttr = value;

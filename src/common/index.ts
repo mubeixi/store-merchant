@@ -7,6 +7,11 @@ import {
   Button,
   Carousel,
   CarouselItem,
+  Checkbox,
+  CheckboxGroup,
+  Col,
+  ColorPicker,
+  DatePicker,
   Dialog,
   Form,
   FormItem,
@@ -21,25 +26,18 @@ import {
   RadioButton,
   RadioGroup,
   Select,
+  Slider,
   Switch,
+  Table,
+  TableColumn,
   TabPane,
   Tabs,
+  TimePicker,
   Tooltip,
   Tree,
-  Table,
-  Upload,
-  TimePicker,
-  Col,
-  DatePicker,
-  CheckboxGroup,
-  Checkbox,
-  ColorPicker,
-  Slider,
-  TableColumn
+  Upload
 } from 'element-ui';
 import interceptorsConfig from './interceptors';
-
-import Uploadimg from '@/components/common/uploadImgComponents';
 
 import filter from './filter.js';
 
@@ -79,22 +77,22 @@ Vue.use(Table)
 
 
 export const fun = {
-  success: ({ msg = '操作成功', title = '成功' }) => Notification({
+  success: ({msg = '操作成功', title = '成功'}) => Notification({
     title,
     message: msg,
     type: 'success',
   }),
-  warning: ({ msg = '', title = '警告' }) => Notification({
+  warning: ({msg = '', title = '警告'}) => Notification({
     title,
     message: msg,
     type: 'warning',
   }),
-  info: ({ msg = '', title = '消息' }) => Notification({
+  info: ({msg = '', title = '消息'}) => Notification({
     title,
     message: msg,
     type: 'info',
   }),
-  error: ({ msg = '错误', title = '错误' }) => Notification({
+  error: ({msg = '错误', title = '错误'}) => Notification({
     title,
     message: msg,
     type: 'error',

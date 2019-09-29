@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Common from './commonClass';
-import { deepCopy } from '@/common/utils';
 
 
 function setValue() {
@@ -29,10 +28,10 @@ function setAttrData() {
         type: 'addbtn',
         text: '',
         label: '选择优惠券',
-        dialogCB:(coupon_list)=>{
+        dialogCB: (coupon_list) => {
 
           this.value.list = [...coupon_list];
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           //
           // // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
@@ -43,7 +42,7 @@ function setAttrData() {
         editCB: (pageEl) => {
 
           let tempArr = []
-          for(var i in this.value.list){
+          for (var i in this.value.list) {
             tempArr.push(this.value.list[i].Coupon_ID)
           }
 
@@ -70,10 +69,10 @@ function setAttrData() {
           //
           // this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
         },
-        removeCB:(idx)=>{
-          this.value.list.splice(idx,1);
+        removeCB: (idx) => {
+          this.value.list.splice(idx, 1);
 
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           // // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           this.vm.$store.state.activeAttr.value.list = this.value.list;
@@ -113,7 +112,7 @@ function setAttrData() {
 }
 
 function attrData(options = {}) {
-  const { value, config, attrData } = options;
+  const {value, config, attrData} = options;
   console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
   if (config !== false) setConfig.call(this);
@@ -150,7 +149,7 @@ class Coupon extends Common {
   }
 
   value = {
-    list:[],//存优惠券数组
+    list: [],//存优惠券数组
   }
 
 

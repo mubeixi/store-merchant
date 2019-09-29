@@ -108,7 +108,7 @@ var uTF8Encode = function (string) {
   return output;
 };
 
-export const hexMD5 = function(string) {
+export const hexMD5 = function (string) {
   var x = Array();
   var k, AA, BB, CC, DD, a, b, c, d;
   var S11 = 7,

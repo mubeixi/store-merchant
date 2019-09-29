@@ -1,7 +1,5 @@
 import Vue from 'vue';
 import Common from './commonClass';
-import { deepCopy } from '@/common/utils';
-
 
 function setValue() {
   // let value = {}
@@ -40,7 +38,7 @@ function setAttrData() {
       {
         type: 'uploadImg',
         text: '封面图',
-        tip:'建议上传尺寸16:9的图片',
+        tip: '建议上传尺寸16:9的图片',
         uploadType: 'avatar',
         model: this.config.cover,
         editType: 'config',
@@ -55,12 +53,13 @@ function setAttrData() {
 }
 
 function attrData(options = {}) {
-  const { value, config, attrData } = options;
+  const {value, config, attrData} = options;
   console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
   if (config !== false) setConfig.call(this);
   if (attrData !== false) setAttrData.call(this);
 }
+
 //
 class Video extends Common {
   tag = 'video';

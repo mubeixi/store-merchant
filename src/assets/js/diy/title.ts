@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Common from './commonClass';
-import { deepCopy } from '@/common/utils';
 import {fun} from "@/common";
 
 
@@ -65,16 +64,16 @@ function setAttrData() {
         editType: 'value',
         editKey: 'link',
         model: this.value,
-        bindLinkCB:(dataType, type, path, tooltip, dataItem,pageEl,idx2)=>{
+        bindLinkCB: (dataType, type, path, tooltip, dataItem, pageEl, idx2) => {
 
-          console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
+          console.log(dataType, type, path, tooltip, dataItem, pageEl, idx2)
           pageEl.bindLinkDialogShow = false;
 
-          Vue.set(this.value,'link',path);
-          Vue.set(this.value,'linkType',type);
-          Vue.set(this.value,'tooltip',tooltip);
+          Vue.set(this.value, 'link', path);
+          Vue.set(this.value, 'linkType', type);
+          Vue.set(this.value, 'tooltip', tooltip);
           //
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           // // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           this.vm.$store.state.activeAttr.value = this.value;
@@ -101,13 +100,13 @@ function setAttrData() {
         //这个按钮的功能，主要是新增元素
         editCB: (pageEl) => {
 
-          if(this.value.more.length>=1){
-            fun.info({msg:'最多允许添加一个'});
+          if (this.value.more.length >= 1) {
+            fun.info({msg: '最多允许添加一个'});
             return;
           }
 
-          this.value.more.push({title:'查看更多>',link:'',linkType:null,tooltip:''});//新增一个空元素
-          this.setIndex(0, { config: false, value: false });
+          this.value.more.push({title: '查看更多>', link: '', linkType: null, tooltip: ''});//新增一个空元素
+          this.setIndex(0, {config: false, value: false});
 
           //都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
@@ -120,27 +119,27 @@ function setAttrData() {
         row_type: 'title', // text/num这些代表简单的值，可以直接设置。
         label: '',
         value: this.value.more,
-        bindCB:(dataType, type, path, tooltip, dataItem,pageEl,idx2)=>{
+        bindCB: (dataType, type, path, tooltip, dataItem, pageEl, idx2) => {
 
-          console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
+          console.log(dataType, type, path, tooltip, dataItem, pageEl, idx2)
           pageEl.bindLinkDialogShow = false;
 
-          Vue.set(this.value.more[idx2],'link',path);
-          Vue.set(this.value.more[idx2],'linkType',type);
-          Vue.set(this.value.more[idx2],'tooltip',tooltip);
+          Vue.set(this.value.more[idx2], 'link', path);
+          Vue.set(this.value.more[idx2], 'linkType', type);
+          Vue.set(this.value.more[idx2], 'tooltip', tooltip);
           //
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           // // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           this.vm.$store.state.activeAttr.value.list = this.value.list;
 
         },
         // 之类是输入的回调，可以根据需要决定写什么
-        imgCB: (item,idx2) => {
-          console.log(item.data.path,idx2)
-          Vue.set(this.value.list[idx2],'img_src',item.data.path);
+        imgCB: (item, idx2) => {
+          console.log(item.data.path, idx2)
+          Vue.set(this.value.list[idx2], 'img_src', item.data.path);
 
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           // // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           this.vm.$store.state.activeAttr.value.list = this.value.list;
@@ -149,10 +148,10 @@ function setAttrData() {
           //
           // this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
         },
-        removeCB:(idx)=>{
-          this.value.list.splice(idx,1);
+        removeCB: (idx) => {
+          this.value.list.splice(idx, 1);
 
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           // // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           this.vm.$store.state.activeAttr.value.list = this.value.list;
@@ -175,11 +174,12 @@ function setAttrData() {
 }
 
 function attrData(options = {}) {
-  const { value, config, attrData } = options;
+  const {value, config, attrData} = options;
   if (value !== false) setValue.call(this);
   if (config !== false) setConfig.call(this);
   if (attrData !== false) setAttrData.call(this);
 }
+
 //
 class Title extends Common {
   tag = 'title';
@@ -195,16 +195,14 @@ class Title extends Common {
     bgColor: '#e6e6e6',
   }
 
-  config = {
-
-  }
+  config = {}
 
 
-  value ={
-    more:[],
+  value = {
+    more: [],
     link: '',
-    linkType:'',
-    tooltip:'',
+    linkType: '',
+    tooltip: '',
     title: '大标题',
     small: '小标题',
   }

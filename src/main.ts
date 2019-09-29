@@ -5,6 +5,10 @@ import store from './store';
 import './registerServiceWorker';
 
 import VueResource from 'vue-resource';
+import Common from './common/index';
+//各种方法?
+import {doLoginMixin} from "@/common/mixin";
+
 Vue.use(VueResource);
 
 // @ts-ignore
@@ -12,15 +16,10 @@ Vue.http.options.emulateJSON = true;
 // @ts-ignore
 Vue.http.options.emulateHTTP = true;
 
-import Common from './common/index';
 Vue.use(Common);
 
 
-
 Vue.config.productionTip = false;
-
-//各种方法?
-import {doLoginMixin} from "@/common/mixin";
 
 new Vue({
   mixins: [doLoginMixin],

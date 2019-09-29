@@ -67,7 +67,7 @@
 </template>
 
 <script>
-  import { getProductCategory, getProductList } from '@/common/fetch';
+  import { getProductCategory } from '@/common/fetch';
   import { deepCopy } from '@/common/utils';
 
   function refreshCateData(arr) {
@@ -216,7 +216,7 @@
         handler(val) {
           this.innerVisible = val;
 
-          if(!val)return;
+          if (!val) return;
 
           if (this.innerDialog.customizeIndex === '2' && !this.innerDialog.classify.isHasData) {
             getProductCategory()
@@ -227,7 +227,6 @@
 
               });
           }
-
 
 
         }

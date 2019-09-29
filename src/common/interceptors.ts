@@ -7,8 +7,6 @@
  */
 
 
-import { router } from '../router';
-
 import {fun} from "@/common/index";
 
 export default function (request, next) {
@@ -27,7 +25,7 @@ export default function (request, next) {
         //空数组
         case 2:
           console.log("请求数据为空数组")
-          if(!response.body.data){
+          if (!response.body.data) {
             response.body.data = [];
           }
 
@@ -107,8 +105,8 @@ export default function (request, next) {
 
           break;
         default:
-          fun.error({msg:response.body.msg||'服务器去旅行了'})
-          // vant.showMsg(response.body.msg || '请求数据为空或者有误');
+          fun.error({msg: response.body.msg || '服务器去旅行了'})
+        // vant.showMsg(response.body.msg || '请求数据为空或者有误');
       }
     }
   });

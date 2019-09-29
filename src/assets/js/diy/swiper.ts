@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Common from './commonClass';
-import { deepCopy } from '@/common/utils';
 
 
 function setValue() {
@@ -31,28 +30,28 @@ function setAttrData() {
         row_type: 'swiper', // text/num这些代表简单的值，可以直接设置。
         label: '',
         value: this.value.list,
-        bindCB:(dataType, type, path, tooltip, dataItem,pageEl,idx2)=>{
+        bindCB: (dataType, type, path, tooltip, dataItem, pageEl, idx2) => {
 
-          console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
+          console.log(dataType, type, path, tooltip, dataItem, pageEl, idx2)
           pageEl.bindLinkDialogShow = false;
 
           //console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
-          Vue.set(this.value.list[idx2],'link',path);
-          Vue.set(this.value.list[idx2],'linkType',type);
-          Vue.set(this.value.list[idx2],'tooltip',tooltip);
+          Vue.set(this.value.list[idx2], 'link', path);
+          Vue.set(this.value.list[idx2], 'linkType', type);
+          Vue.set(this.value.list[idx2], 'tooltip', tooltip);
           //
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           // // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           this.vm.$store.state.activeAttr.value.list = this.value.list;
 
         },
         // 之类是输入的回调，可以根据需要决定写什么
-        imgCB: (item,idx2) => {
-          console.log(item.data.path,idx2)
-          Vue.set(this.value.list[idx2],'img_src',item.data.path);
+        imgCB: (item, idx2) => {
+          console.log(item.data.path, idx2)
+          Vue.set(this.value.list[idx2], 'img_src', item.data.path);
 
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           // // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           this.vm.$store.state.activeAttr.value.list = this.value.list;
@@ -61,10 +60,10 @@ function setAttrData() {
           //
           // this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
         },
-        removeCB:(idx)=>{
-          this.value.list.splice(idx,1);
+        removeCB: (idx) => {
+          this.value.list.splice(idx, 1);
 
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           // // 都是改写vuex里面的数据，两种写法都可以
           //this.vm.$store.commit('attrData', this.attrData);// 传出去
 
@@ -86,10 +85,10 @@ function setAttrData() {
         // openBindLink:(pageEl,item,idx)=>{
         //   pageEl.bindLinkDialogShow = true
         // },
-        dialogCB:(coupon_list)=>{
+        dialogCB: (coupon_list) => {
 
           this.value.list = [...coupon_list];
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           //
           // // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
@@ -99,8 +98,8 @@ function setAttrData() {
         //这个按钮的功能，主要是新增元素
         editCB: (pageEl) => {
 
-          this.value.list.push({img_src:'',link:'',linkType:null});//新增一个空元素
-          this.setIndex(0, { config: false, value: false });
+          this.value.list.push({img_src: '', link: '', linkType: null});//新增一个空元素
+          this.setIndex(0, {config: false, value: false});
 
           //都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
@@ -121,7 +120,7 @@ function setAttrData() {
         editType: 'config',
         editKey: 'interval',
         model: this.config.interval,
-        inputCB:(item)=>item.model
+        inputCB: (item) => item.model
       },
       {
         type: 'switch',
@@ -165,7 +164,7 @@ function setAttrData() {
 }
 
 function attrData(options = {}) {
-  const { value, config, attrData } = options;
+  const {value, config, attrData} = options;
   console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
   if (config !== false) setConfig.call(this);
@@ -198,14 +197,14 @@ class Swiper extends Common {
   }
 
   config = {
-    loop:false,//是否循环
-    interval:5000,//切换时间
-    autoplay:false,//自动播放
+    loop: false,//是否循环
+    interval: 5000,//切换时间
+    autoplay: false,//自动播放
     //type: 1, //两种风格
   }
 
   value = {
-    list:[],//存优惠券数组
+    list: [],//存优惠券数组
   }
 
 

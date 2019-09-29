@@ -30,7 +30,10 @@ export const PLUGINSLIST = [
     label: 'video', tip: '好用的工具', value: '视频', icon: require('@/assets/img/plugin-icon/10.png'),
   },
   {
-    label: 'space', tip: '让区块指间保持一定距离可以更有美感', value: '辅助间隙', icon: require('@/assets/img/plugin-icon/11.png'),
+    label: 'space',
+    tip: '让区块指间保持一定距离可以更有美感',
+    value: '辅助间隙',
+    icon: require('@/assets/img/plugin-icon/11.png'),
   },
   {
     label: 'title', tip: '让页面结构一目了然', value: '标题', icon: require('@/assets/img/plugin-icon/12.png'),

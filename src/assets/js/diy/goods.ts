@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Common from './commonClass';
-import { deepCopy } from '@/common/utils';
 import {ls} from "@/common/tool/ls";
 
 const shopInfo = ls.get('Shop_Info')
@@ -9,7 +8,6 @@ function setValue() {
   // let value = {}
   // Vue.set(this, 'value', value)
 }
-
 
 
 function setConfig() {
@@ -52,25 +50,24 @@ function setAttrData() {
         editType: 'config',
         editKey: 'origin',
         model: this.config.origin,
-        origintooltip:this.config.origintooltip,
-        limit:this.value.limit,
-        cate_id:this.value.cate_id,
-        bindListCB:(list,pageEl)=>{
+        origintooltip: this.config.origintooltip,
+        limit: this.value.limit,
+        cate_id: this.value.cate_id,
+        bindListCB: (list, pageEl) => {
           console.log(list)
 
-          let tempArr = list.map(goods=>{
+          let tempArr = list.map(goods => {
             return goods.Products_ID
           })
 
 
-
-          Vue.set(this.config,'origin','filter');
-          Vue.set(this.value,'list',tempArr);
-          Vue.set(this.value,'cate_id',null);
+          Vue.set(this.config, 'origin', 'filter');
+          Vue.set(this.value, 'list', tempArr);
+          Vue.set(this.value, 'cate_id', null);
 
           pageEl.bindListDialogShow = false;
 
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           // // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           this.vm.$store.state.activeAttr.value = this.value;
@@ -78,26 +75,26 @@ function setAttrData() {
 
 
         },
-        bindCateCB:(dataType, type, path, tooltip, dataItem,pageEl,idx2)=>{
+        bindCateCB: (dataType, type, path, tooltip, dataItem, pageEl, idx2) => {
 
           console.log(dataItem)
           pageEl.bindCateDialogShow = false;
-          Vue.set(this.config,'origin','cate');
-          Vue.set(this.value,'cate_id',dataItem.id);
-          Vue.set(this.config,'origintooltip',tooltip);
+          Vue.set(this.config, 'origin', 'cate');
+          Vue.set(this.value, 'cate_id', dataItem.id);
+          Vue.set(this.config, 'origintooltip', tooltip);
           //
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           // // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           this.vm.$store.state.activeAttr.value = this.value;
           this.vm.$store.state.activeAttr.config = this.config;
 
         },
-        inputCB:(val)=>{
+        inputCB: (val) => {
 
-          Vue.set(this.value,'limit',parseInt(val));
-          Vue.set(this.config,'origin','cate');
-          this.setIndex(0, { config: false, value: false });
+          Vue.set(this.value, 'limit', parseInt(val));
+          Vue.set(this.config, 'origin', 'cate');
+          this.setIndex(0, {config: false, value: false});
           // // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           this.vm.$store.state.activeAttr.value = this.value;
@@ -194,19 +191,18 @@ function setAttrData() {
 
       {
         type: 'checkbox',
-        text:'显示内容',
+        text: '显示内容',
         label: '商品名称',
         editType: 'config',
         model: this.config.attr.title.show,
-        editCB:(item)=>{
+        editCB: (item) => {
 
 
-
-          Vue.set(this.config.attr.title,'show',item.model);//传递值
+          Vue.set(this.config.attr.title, 'show', item.model);//传递值
 
           this.vm.$store.state.activeAttr.config = this.config;
 
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           //都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           //this.vm.$store.state.activeAttr.value.list = this.value.list;
@@ -219,15 +215,15 @@ function setAttrData() {
         label: '商品描述',
         editType: 'config',
         model: this.config.attr.desc.show,
-        editCB:(item)=>{
+        editCB: (item) => {
 
           console.log(item.model)
 
-          Vue.set(this.config.attr.desc,'show',item.model);//传递值
+          Vue.set(this.config.attr.desc, 'show', item.model);//传递值
 
           this.vm.$store.state.activeAttr.config = this.config;
 
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           //都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           //this.vm.$store.state.activeAttr.value.list = this.value.list;
@@ -240,15 +236,15 @@ function setAttrData() {
         label: '商品价格',
         editType: 'config',
         model: this.config.attr.price.show,
-        editCB:(item)=>{
+        editCB: (item) => {
 
           console.log(item.model)
 
-          Vue.set(this.config.attr.price,'show',item.model);//传递值
+          Vue.set(this.config.attr.price, 'show', item.model);//传递值
 
           this.vm.$store.state.activeAttr.config = this.config;
 
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           //都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           //this.vm.$store.state.activeAttr.value.list = this.value.list;
@@ -258,37 +254,37 @@ function setAttrData() {
       },
       {
         type: 'diy',
-        row_type:'buybtn',
+        row_type: 'buybtn',
         label: '购买按钮',
         editType: 'config',
         model: this.config.attr.buybtn.show,
-        data:this.config.attr.buybtn,
-        checkboxCB:(val)=>{
+        data: this.config.attr.buybtn,
+        checkboxCB: (val) => {
 
-          Vue.set(this.config.attr.buybtn,'show',val);//传递值
+          Vue.set(this.config.attr.buybtn, 'show', val);//传递值
 
           this.vm.$store.state.activeAttr.config = this.config;
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           //都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
 
         },
-        inputCB:(val)=>{
+        inputCB: (val) => {
 
 
-          Vue.set(this.config.attr.buybtn,'text',val);//传递值
+          Vue.set(this.config.attr.buybtn, 'text', val);//传递值
 
           this.vm.$store.state.activeAttr.config = this.config;
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           //都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
 
         },
-        radioCB:(val)=>{
-          Vue.set(this.config.attr.buybtn,'style',val);//传递值
+        radioCB: (val) => {
+          Vue.set(this.config.attr.buybtn, 'style', val);//传递值
 
           this.vm.$store.state.activeAttr.config = this.config;
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           //都是改写vuex里面的数据，两种写法都可以
 
           this.vm.$store.commit('attrData', this.attrData);// 传出去
@@ -296,35 +292,36 @@ function setAttrData() {
       },
       {
         type: 'diy',
-        row_type:'tag',
+        row_type: 'tag',
         label: '标签',
         editType: 'config',
         model: this.config.attr.tag.show,
 
-        data:this.config.attr.tag,
-        checkboxCB:(val)=>{
+        data: this.config.attr.tag,
+        checkboxCB: (val) => {
 
-          Vue.set(this.config.attr.tag,'show',val);//传递值
-          Vue.set(this.config.attr.tag,'style','diy');
+          Vue.set(this.config.attr.tag, 'show', val);//传递值
+          Vue.set(this.config.attr.tag, 'style', 'diy');
           this.vm.$store.state.activeAttr.config = this.config;
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           //都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
 
         },//勾选的回调
-        radioImgCB:(img,idx2)=>{
+        radioImgCB: (img, idx2) => {
 
 
-          Vue.set(this.config.attr.tag,'img',img.data.path);
-          Vue.set(this.config.attr.tag,'style','diy');
+          Vue.set(this.config.attr.tag, 'img', img.data.path);
+          Vue.set(this.config.attr.tag, 'style', 'diy');
           //
-          this.setIndex(0, { config: false, value: false });
+          this.setIndex(0, {config: false, value: false});
           // // 都是改写vuex里面的数据，两种写法都可以
           this.vm.$store.commit('attrData', this.attrData);// 传出去
           this.vm.$store.state.activeAttr.config = this.config;
 
         },
-        radioCB:(item)=>{},//后面的radio回调
+        radioCB: (item) => {
+        },//后面的radio回调
       },
     ],
   };
@@ -334,7 +331,7 @@ function setAttrData() {
 }
 
 function attrData(options = {}) {
-  const { value, config, attrData } = options;
+  const {value, config, attrData} = options;
   console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
   if (config !== false) setConfig.call(this);
@@ -348,8 +345,8 @@ class Goods extends Common {
   activeIndex = 0;
 
   style = {
-    wrapmargin:15,//页面边距
-    margin:10,//商品距离
+    wrapmargin: 15,//页面边距
+    margin: 10,//商品距离
     // bgColor: '',
     // height: 30,
     // color: '',
@@ -370,17 +367,17 @@ class Goods extends Common {
   }
 
   config = {
-    origin:'filter',
-    origintooltip:'请绑定',//提示语
-    style:1,
-    showmode:'noborder-bgwhite',//'border-bgwhite','noborder-nobg'  无边框白底 有边框白底 无边框透明底
-    radius:'round',//圆角 none直角
-    attr:{
-      title:{show:false},
-      desc:{show:false},
-      price:{show:false},
-      buybtn:{show:false,text:'立即购买',style:null}, //样式1 样式2
-      tag:{show:false,style:'',img:''} //hot new diy 第三个是图片。 都是放在商品左上角
+    origin: 'filter',
+    origintooltip: '请绑定',//提示语
+    style: 1,
+    showmode: 'noborder-bgwhite',//'border-bgwhite','noborder-nobg'  无边框白底 有边框白底 无边框透明底
+    radius: 'round',//圆角 none直角
+    attr: {
+      title: {show: false},
+      desc: {show: false},
+      price: {show: false},
+      buybtn: {show: false, text: '立即购买', style: null}, //样式1 样式2
+      tag: {show: false, style: '', img: ''} //hot new diy 第三个是图片。 都是放在商品左上角
     }
     // loop:false,//是否循环
     // interval:5000,//切换时间
@@ -389,9 +386,9 @@ class Goods extends Common {
   }
 
   value = {
-    cate_id:null,
-    limit:20,
-    list:[]
+    cate_id: null,
+    limit: 20,
+    list: []
   }
 
 
