@@ -98,8 +98,22 @@ function setAttrData() {
         text: '跳转链接',
         editType: 'value',
         editKey: 'link',
-        model: this.value.link,
-        editCB: item => item.model,
+        model: this.value,
+        bindLinkCB:(dataType, type, path, tooltip, dataItem,pageEl,idx2)=>{
+
+          console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
+          pageEl.bindLinkDialogShow = false;
+
+          Vue.set(this.value,'link',path);
+          Vue.set(this.value,'linkType',type);
+          Vue.set(this.value,'tooltip',tooltip);
+          //
+          this.setIndex(0, { config: false, value: false });
+          // // 都是改写vuex里面的数据，两种写法都可以
+          this.vm.$store.commit('attrData', this.attrData);// 传出去
+          this.vm.$store.state.activeAttr.value = this.value;
+
+        },
       },
 
     ],
@@ -141,6 +155,8 @@ class Hr extends Common {
 
   value ={
     link: '',
+    linkType:'',
+    tooltip:'',
     content: '这是一行文字',
   }
 

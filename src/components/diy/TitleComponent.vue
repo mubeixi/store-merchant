@@ -3,6 +3,8 @@
 <!--    :class="{islink:title.value.link?1:0}"-->
     <div class="text">{{title.value.title}}</div>
     <div class="small">{{title.value.small}}</div>
+
+    <span class="more">{{moreData.title}}</span>
   </div>
 </template>
 
@@ -28,6 +30,12 @@ import { deepCopyStrict, deepCopy } from '@/common/utils';
     };
   },
   computed: {
+    moreData(){
+
+        return this.title.value.more[0] || {};
+      // if(!this.title || !this.title.value || !this.title.value.more)return {};
+      // return this.title.value.more[0];//this.title.value?this.title.value.more[0]:{}
+    },
     style() {
       return deepCopyStrict(this.title.styleDefault, this.title.style);
     },
@@ -68,6 +76,7 @@ import { deepCopyStrict, deepCopy } from '@/common/utils';
 })
 export default class TitleComponent extends Vue {
   created() {
+    Title.prototype.vm = this;
     this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
     this.title = deepCopy(new Title(this), this.data);
   }
@@ -75,8 +84,9 @@ export default class TitleComponent extends Vue {
 </script>
 
 <style scoped lang="stylus">
-.title
 
+.title
+  position relative
   width 100%
   .text
     font-size 18px
@@ -84,4 +94,11 @@ export default class TitleComponent extends Vue {
   .small
     font-size 14px
     /*color #666*/
+  .more
+    position absolute
+    right 10px
+    top 10px
+    font-size 12px
+    color #66b1ff
+
 </style>
