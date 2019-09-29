@@ -517,6 +517,8 @@
                     } else {
                         editObj[item.editKey] = item.model;
                     }
+
+
                 } else if (item.editType === 'sort') {
                     item.editCB(item);
                 } else {
@@ -548,6 +550,8 @@
             colorEv(val) {
                 // this.color1 = val
                 // this.clickObj.model = val
+                // this.currentData.model = val
+
                 // 用这个代替是一样的
                 this.change(this.currentData);
             },

@@ -1,13 +1,13 @@
 <template>
   <div @click.stop="setData({}, 0)" class="notice wrap">
-    <div class="inner-container">
-      <transition class="inner-container2" name="slide" mode="out-in">
-        <div class="text2" :key="text.id"><span class="tip"><i class="el-icon-bell"/></span>
-          <div class="content">{{text.val}}</div>
-        </div>
-      </transition>
-      <!--      <p class="text" v-for="(text, index) in notice.value.list" :key="index">{{text}}</p>-->
-    </div>
+<!--    <div class="inner-container">-->
+<!--      <transition class="inner-container2" name="slide" mode="out-in">-->
+<!--        <div class="text2" :key="text.id"><span class="tip"><i class="el-icon-bell"/></span>-->
+<!--          <div class="content">{{text.val}}</div>-->
+<!--        </div>-->
+<!--      </transition>-->
+<!--    </div>-->
+    <div :style="{color:style.color,background:style.bgColor}">{{notice.value.content}}</div>
   </div>
 </template>
 
@@ -61,6 +61,12 @@
 
                 },
             },
+            notice:{
+                deep:true,
+                handler(val){
+                    console.log(342423)
+                }
+            }
         },
         components: {},
         methods: {
