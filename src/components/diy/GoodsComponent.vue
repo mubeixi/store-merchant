@@ -108,7 +108,8 @@
             itemw() {
                 let full = this.fullWidth;
                 if (this.goods.config.style === 2) {
-                    return (full - this.goods.style.wrapmargin * 2 - this.goods.style.margin * 3) / 2 + 'px';
+                    //内边不是乘以3 而是1
+                    return (full - this.goods.style.wrapmargin * 2 - this.goods.style.margin * 1) / 2 + 'px';
                 }
 
                 if (this.goods.config.style === 4) {
@@ -201,8 +202,8 @@
                     case 2:
                         console.log(idx)
                         top = 0;
-                        left = idx % 2 == 0 ? conf : conf / 2;
-                        right = idx % 2 == 0 ? conf / 2 : conf;
+                        left = idx % 2 == 0 ? 0 : conf / 2;
+                        right = idx % 2 == 0 ? conf / 2 : 0;
                         break;
                 }
                 console.log({
@@ -227,7 +228,10 @@
                 return domain(obj.ImgPath[0])
             },
             domainFunc(url) {
-                return 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20190930095641111.png';//展位图替换掉吧。。
+                if(!url){
+                    return 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20190930095641111.png';//展位图替换掉吧。。
+                }
+
                 return domain(url)
             },
             setData(item, index) {
