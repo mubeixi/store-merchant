@@ -169,10 +169,11 @@ export default {
       if(this.isDrag){
 
         //同一个区块点两次，也取消掉
-        if(this.row_idx === idx1 && this.col_idx === idx2){
-          this.isDrag = false;
-          return;
-        }
+        //老大牛逼，说一个点也可以创建 2019.9.30
+        // if(this.row_idx === idx1 && this.col_idx === idx2){
+        //   this.isDrag = false;
+        //   return;
+        // }
 
         console.log('赋值给第二个')
         this.row_idx1 = idx1;
