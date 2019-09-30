@@ -150,7 +150,7 @@
 
                     console.log(list,cate_id,limit)
                     //如果值还没有设置的话
-                    if(list.length===0 && !cate_id.length===0){
+                    if(list.length===0 && cate_id.length===0){
                         return;
                     }
 

@@ -155,10 +155,10 @@
                 <el-tooltip class="item" effect="dark" :content="item.value[idx].tooltip||'未绑定'"
                             placement="right">
                   <el-button :title="item.value[idx].tooltip" size="small"
-                             @click="openGoodsBindCate(item,item.bindCB,idx)">绑定分类
+                             @click="openGoodsBindCate(item,item.bindCB,idx,true)">绑定分类
                   </el-button>
                 </el-tooltip>
-                <span class="padding10-c font12">{{item.value[idx].tooltip}}</span>
+                <span class="padding10-c font12 graytext.graytext2">{{item.value[idx].tooltip}}</span>
               </div>
               <div class="flex line10">
                 <div class="graytext" style="padding:0 10px;">显示名称</div>

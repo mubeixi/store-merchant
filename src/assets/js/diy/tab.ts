@@ -73,7 +73,7 @@ function setAttrData() {
 
           this.value.list.push({
             type: 'all',
-            cate_id: null,
+            cate_id: [],
             title: '分类名称',
             limit: 10,//显示的个数
           });//新增一个空元素
@@ -93,9 +93,9 @@ function setAttrData() {
         arr: this.value.list,
         radioCB: (item) => {
         },//后面的radio回调
-        bindCB: (dataType, type, path, tooltip, dataItem, pageEl, idx2) => {
+        bindCB: (dataType, type, path, tooltip, dataArr, pageEl, idx2) => {
 
-          console.log(dataType, type, path, tooltip, dataItem, pageEl, idx2)
+          console.log(dataType, type, path, tooltip, dataArr, pageEl, idx2)
           pageEl.bindCateDialogShow = false;
 
           let tabItemEl = document.getElementById('tab-item' + idx2);
@@ -103,9 +103,10 @@ function setAttrData() {
             tabItemEl.click();
           }
 
-          Vue.set(this.value.list[idx2], 'cate_id', dataItem.Category_ID);
-          Vue.set(this.value.list[idx2], 'title', dataItem.Category_Name);
-          // Vue.set(this.value.list[idx2],'linkType',type);
+          let ids = dataArr.map(item=>item.id)
+
+          Vue.set(this.value.list[idx2], 'cate_id', ids);
+          //Vue.set(this.value.list[idx2], 'title', tooltip);
           Vue.set(this.value.list[idx2], 'tooltip', tooltip);
 
 
@@ -232,6 +233,7 @@ function setAttrData() {
         text: '显示内容',
         label: '商品名称',
         editType: 'config',
+        disabled:this.config.attr.title.readOnly,
         model: this.config.attr.title.show,
         editCB: (item) => {
 
@@ -400,10 +402,10 @@ class Tab extends Common {
     showmode: 'noborder-bgwhite',//'border-bgwhite','noborder-nobg'  无边框白底 有边框白底 无边框透明底
     radius: 'round',//圆角 none直角
     attr: {
-      title: {show: false},
+      title: {show: true,readOnly:true},
       desc: {show: false},
-      price: {show: false},
-      buybtn: {show: false, text: '立即购买', style: null}, //样式1 样式2
+      price: {show: true},
+      buybtn: {show: true, text: '购买', style: ''}, //样式1 样式2
       tag: {show: false, style: '', img: ''} //hot new diy 第三个是图片。 都是放在商品左上角
     }
     // loop:false,//是否循环
@@ -418,7 +420,7 @@ class Tab extends Common {
     list: [
       {
         type: 'all',
-        cate_id: null,
+        cate_id: [],
         title: '分类名称',
         limit: 10,//显示的个数
       }

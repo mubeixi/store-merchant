@@ -5,12 +5,11 @@
       <li :class="{active:tabActive===idx}" :id="'tab-item'+idx" @click="clickTab(item,idx)"
           v-for="(item,idx) in tab.value.list"><span>{{item.title}}</span></li>
     </div>
-    <div class="tabs-panel">
-      <div class="box" :class="[className]">
-        <ul class="list"
-            :style="{margin:tab.config.position === 'top'?tab.style.wrapmargin:0+'px'}">
+    <div class="tabs-panel" >
+      <div class="box" :class="[className]" :style="{padding:tab.style.wrapmargin+'px'}">
+        <ul class="list" >
           <li v-for="(item,idx) in goodsList" class="item"
-              :class="[idx%2==0?'even':'odd',tab.config.radius=='round'?'round':'']"
+              :class="[idx%2==0?'even':'odd',tab.config.radius=='round'?'round':'',tabconfig.showmode]"
               :style="[itemMarginObj(idx)]"
           >
             <div class="cover"
@@ -31,12 +30,42 @@
                 <div v-show="tab.config.attr.price.show" class="price"><span class="sign">￥</span>{{item.Products_PriceX}}
                 </div>
               </div>
-              <div v-show="tab.config.attr.buybtn.show" class="buybtn">
+              <div v-show="tab.config.attr.buybtn.show" class="buybtn" :class="'theme'+tab.config.attr.buybtn.style">
+                {{tab.config.attr.buybtn.text||'购买'}}
+              </div>
+            </div>
+          </li>
+
+          <!--因为参数是带了limit,所以这里不会为负数-->
+          <li v-for="(item,idx) in (limit-goodsList.length)" class="item"
+              :class="[idx%2==0?'even':'odd',tab.config.radius=='round'?'round':'',tab.config.showmode]"
+              :style="[itemMarginObj(idx)]"
+          >
+            <div class="cover"
+                 :style="{width:itemw,height:itemw,backgroundImage:'url('+domainFunc(infoTmpl.ImgPath)+')'}">
+              <div v-show="tab.config.attr.tag.show" :class="tab.config.attr.tag.style"
+                   v-if="['new','hot'].indexOf(tab.config.attr.tag.style)!=-1" class="tag">
+                {{tab.config.attr.tag.style=='hot'?'hot':'new'}}
+              </div>
+              <div v-show="tab.config.attr.tag.show" v-else class="tag img"><img
+                :src="tab.config.attr.tag.img|domain"/></div>
+            </div>
+            <div class="info" :style="{width:itemw}" :class="{empyInfo:isEmpeyInfo}">
+              <div class="left">
+                <div v-show="tab.config.attr.title.show" class="title">{{infoTmpl.Products_Name}}</div>
+                <div v-show="tab.config.attr.desc.show" class="font12 graytext desc">
+                  {{infoTmpl.Products_BriefDescription||'暂无介绍'}}
+                </div>
+                <div v-show="tab.config.attr.price.show" class="price"><span class="sign">￥</span>{{infoTmpl.Products_PriceX}}
+                </div>
+              </div>
+              <div v-show="tab.config.attr.buybtn.show" class="buybtn" :class="'theme'+tab.config.attr.buybtn.style">
                 {{tab.config.attr.buybtn.text||'购买'}}
               </div>
             </div>
           </li>
         </ul>
+
       </div>
     </div>
 
@@ -63,6 +92,14 @@
         },
         data() {
             return {
+                infoTmpl:{
+                    Products_ID:33,
+                    Products_Name:'商品名称',
+                    Products_PriceX:99.99,
+                    Products_BriefDescription:'商品简介',
+                    ImgPath:''
+                },
+                fullHeight:0,
                 tabActive: 0,
                 currentTab: null,
                 goodsList: [],
@@ -71,6 +108,9 @@
             };
         },
         computed: {
+            limit(){
+                return this.tab.value.list[this.tabActive].cate_id ? this.tab.value.list[this.tabActive].limit :6
+            },
             goods() {
                 return {}
             },
@@ -80,15 +120,26 @@
             w() {
                 return this.fullWidth;
             },
+            h(){
+                return this.fullHeight;
+            },
             itemw() {
                 let full = this.fullWidth;
 
+                //内边不是乘以3 而是1
+                //375-90-30-10 = 245px
                 if (this.tab.config.style === 2) {
-                    return (full - this.goods.style.wrapmargin * 2 - this.goods.style.margin * 3) / 2 + 'px';
+
+                    if(this.tab.config.position === 'left'){
+                        return (full - 90 - this.tab.style.wrapmargin * 2 - this.tab.style.margin * 1) / 2 + 'px';
+                    }
+
+                    return (full -  this.tab.style.wrapmargin * 2 - this.tab.style.margin * 1) / 2 + 'px';
+
                 }
 
                 if (this.tab.config.style === 4) {
-                    return full / 3 + 'px';
+                      return full / 3 + 'px';
                 }
                 return 'auto';
 
@@ -129,6 +180,15 @@
 
                 }
             },
+            tabActive: {
+                deep: true,
+                immediate: true,
+                handler(val) {
+
+                    this.currentTab = this.tab.value.list[this.tabActive];
+
+                }
+            },
             // 属性变化
             activeAttr: {
                 deep: true,
@@ -142,26 +202,34 @@
             clickTab(item, idx) {
 
                 if (this.tabActive === idx) {
-                    this.loadGoodsList();
                     return;
                 }
                 this.tabActive = idx
                 this.currentTab = item;
             },
             loadGoodsList() {
+
+
                 let val = this.currentTab;
                 if (!val) return;
-                let {cate_id, title, limit} = val, param = {};
+                let {list = [], cate_id=[], limit} = val;
 
-                if (limit) {
-                    param.limit = limit
+                console.log(list,cate_id,limit)
+                //如果值还没有设置的话
+                if(cate_id.length===0){
+                    return;
                 }
-                if (cate_id) {
-                    param.Cate_ID = this.tab.value.list[this.tabActive].cate_id
+
+                let param = {pageSize: cate_id.length===0 && limit ? limit : 6}
+                if (cate_id.length>0) {
+                    param.Cate_ID = cate_id.join(',')
+                } else {
+                    //param.Products_ID = list.join(',')
                 }
 
                 getProductList(param).then(res => {
                     this.goodsList = res.data
+
                 })
             },
             itemMarginObj(idx) {
@@ -188,8 +256,8 @@
                     case 2:
                         console.log(idx)
                         top = 0;
-                        left = idx % 2 == 0 ? conf : conf / 2;
-                        right = idx % 2 == 0 ? conf / 2 : conf;
+                        left = idx % 2 == 0 ? 0 : conf / 2;
+                        right = idx % 2 == 0 ? conf / 2 : 0;
                         break;
                 }
                 console.log({
@@ -214,6 +282,10 @@
                 return domain(obj.ImgPath[0])
             },
             domainFunc(url) {
+                if(!url){
+                    return 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20190930095641111.png';//展位图替换掉吧。。
+                }
+
                 return domain(url)
             },
             setData(item, index) {
@@ -236,6 +308,7 @@
             let _self = this;
             this.$nextTick().then(res => {
                 _self.fullWidth = document.getElementById('canvas').offsetWidth;
+                _self.fullHeight = document.getElementById('canvas').offsetHeight;
             })
             //用这个来搞事啊
             //funvm也是vue实例，而且不是根实例，是这个组件的实例，可以快捷的调用组件中的对象或者方法以及$ref
@@ -250,23 +323,44 @@
 <style scoped lang="less">
   @import "~@/assets/css/fun.less";
 
-  .wrap {
+
+  .wrap{
+    background: #f8f8f8;
     position: relative;
+
+
   }
+  //无边框白底 有边框白底 无边框透明底
+  /*'noborder-bgwhite','border-bgwhite','noborder-nobg'*/
+  .noborder-bgwhite{
+
+  }
+
+  .border-bgwhite{
+
+    border: 1px solid #e3e3e3;
+  }
+
+  .noborder-nobg{
+    .info{
+      background: none !important;
+    }
+  }
+
 
   .wrap.left {
     border-bottom: 1px solid #e7e7e7;
-    min-height: 500px;
-
+    height: 667px;
+    position: relative;
     .tabs {
       color: #444;
       width: 90px;
-
       overflow-x: hidden;
+      /*overflow-y: scroll;*/
       position: absolute;
       left: 0;
       top: 0;
-      bottom: 0;
+      /*bottom: 0;*/
       border-right: 1px solid #e7e7e7;
 
       li {
@@ -299,9 +393,16 @@
     }
 
     .tabs-panel {
-      margin-left: 100px;
-      margin-right: 10px;
-      padding-top: 10px;
+      /*margin-left: 90px;*/
+      position: absolute;
+      left: 90px;
+      top: 0;
+      right: 0;
+      height: 667px;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      /*margin-right: 10px;*/
+      /*padding-top: 10px;*/
     }
 
   }
@@ -315,13 +416,16 @@
       overflow-x: scroll;
       overflow-y: hidden;
 
+
       li {
         display: inline-block;
         margin-right: 10px;
         height: 36px;
         cursor: pointer;
+        color: #666;
 
         &.active {
+          color: #444;
           span {
             border-bottom: 2px solid #f56c6c;
           }
@@ -357,13 +461,25 @@
 
   .buybtn {
     color: #444;
-    padding: 0px 16px;
+    padding: 2px 14px;
     font-size: 14px;
-    height: 32px;
-    line-height: 32px;
-    background: #409EFF;
+    height: 24px;
+    line-height: 24px;
+    background: #ff4444;
     color: white;
-    border: 1px solid #409EFF;
+    /*border: 1px solid #409EFF;*/
+
+    &.theme1{
+      background: #ff4444;
+      color: white;
+      border-radius: 1px;
+    }
+
+    &.theme2{
+      color: #ff4444;
+      background: white;
+      border: 1px solid #ffacac;
+    }
   }
 
   .tag {
@@ -500,8 +616,9 @@
 
           .left {
             flex: 1;
-
+            margin-right: 6px;
             .title {
+              white-space: nowrap;
               width: 100%;
               overflow-x: hidden;
               height: 21px;
