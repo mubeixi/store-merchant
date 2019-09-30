@@ -18,7 +18,7 @@
             </el-input>
           </el-tab-pane>
           <el-tab-pane label="选择页面" name="page" :disabled="!config.page.show">
-            <el-tabs v-model="innerDialog.customizeIndex">
+            <el-tabs class="tabs-child" v-model="innerDialog.customizeIndex">
               <el-tab-pane label="系统页面" name="1" :disabled="!config.page.system.show">
                 <el-radio-group v-model="innerDialog.system.checked" class="systemPage">
                   <el-radio class="pageBlock" :label="item.path"

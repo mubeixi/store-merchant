@@ -1,10 +1,10 @@
 <template>
-  <div @click.stop="setData({}, 0)" class="swiper wrap">
+  <div @click.stop="setData({}, 0)" class="swiper wrap fun-preview-swiper">
     <el-carousel
       :autoplay="swiper.config.autoplay"
       :interval="swiper.config.interval|str2num"
       trigger="click"
-      :loop="swiper.config.loop" height="150px">
+      :loop="swiper.config.loop" height="175px">
       <!--      <el-carousel-item v-for="item in 4" :key="item" v-if="swiper.value.list.length<1">-->
       <!--        <h3 class="small text-center">{{ item }}</h3>-->
       <!--      </el-carousel-item>-->
@@ -53,8 +53,9 @@
             ...mapState(['editStatus']),
         },
         filters: {
+            //保存的是秒
             str2num(val) {
-                return parseInt(val)
+                return parseInt(val)*1000
             }
         },
         watch: {

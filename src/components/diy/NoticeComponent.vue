@@ -7,7 +7,12 @@
 <!--        </div>-->
 <!--      </transition>-->
 <!--    </div>-->
-    <div :style="{color:style.color,background:style.bgColor}">{{notice.value.content}}</div>
+    <div class="flex padding10" :style="{background:notice.style.bgColor}">
+      <svg class="fun-icon icon" :style="{color:notice.style.color}" aria-hidden="true">
+        <use xlink:href="#icon-gonggao"></use>
+      </svg>
+      <div class="flex1 title" :style="{color:notice.style.color}">{{notice.value.content}}</div>
+    </div>
   </div>
 </template>
 
@@ -16,6 +21,7 @@
     import {mapState} from 'vuex';
     import Notice from '@/assets/js/diy/notice';
     import {deepCopy, deepCopyStrict} from '@/common/utils';
+    import {noticeIcon} from '@/assets/js/imgs';
 
     @Component({
         props: {
@@ -155,6 +161,17 @@
 
   .wrap {
     background: white;
+  }
+
+
+  .icon{
+    font-size: 24px;
+    margin-right: 10px;
+  }
+
+  .title{
+    color: #666;
+    font-size: 16px;
   }
 
 

@@ -107,9 +107,9 @@ class Notice extends Common {
   // activeIndex = 0;
 
   style = {
-    // bgColor: '',
+    bgColor: '',
     // height: 30,
-    // color: '',
+    color: '',
     // inputBgColor: '',
   }
 
@@ -134,7 +134,7 @@ class Notice extends Common {
   }
 
   value = {
-    content:'',
+    content:'公告内容',
     list: ['通知公告1', '通知公告2', '通知公告3', '通知公告4'],//存优惠券数组
   }
 

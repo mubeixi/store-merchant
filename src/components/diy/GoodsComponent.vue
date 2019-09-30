@@ -1,9 +1,9 @@
 <template>
-  <div @click.stop="setData({}, 0)" class="goods wrap" id="goods">
+  <div @click.stop="setData({}, 0)" class="goods wrap" id="goods" :style="{padding:goods.style.wrapmargin+'px'}">
     <div class="box" :class="[className]">
-      <ul class="list" :style="{margin:goods.style.wrapmargin+'px'}">
+      <ul class="list" >
         <li v-for="(item,idx) in goodsList" class="item"
-            :class="[idx%2==0?'even':'odd',goods.config.radius=='round'?'round':'']"
+            :class="[idx%2==0?'even':'odd',goods.config.radius=='round'?'round':'',goods.config.showmode]"
             :style="[itemMarginObj(idx)]"
         >
           <div class="cover"
@@ -24,7 +24,36 @@
               <div v-show="goods.config.attr.price.show" class="price"><span class="sign">￥</span>{{item.Products_PriceX}}
               </div>
             </div>
-            <div v-show="goods.config.attr.buybtn.show" class="buybtn">
+            <div v-show="goods.config.attr.buybtn.show" class="buybtn" :class="'theme'+goods.config.attr.buybtn.style">
+              {{goods.config.attr.buybtn.text||'购买'}}
+            </div>
+          </div>
+        </li>
+
+        <!--因为参数是带了limit,所以这里不会为负数-->
+        <li v-for="(item,idx) in (limit-goodsList.length)" class="item"
+            :class="[idx%2==0?'even':'odd',goods.config.radius=='round'?'round':'',goods.config.showmode]"
+            :style="[itemMarginObj(idx)]"
+        >
+          <div class="cover"
+               :style="{width:itemw,height:itemw,backgroundImage:'url('+domainFunc(infoTmpl.ImgPath)+')'}">
+            <div v-show="goods.config.attr.tag.show" :class="goods.config.attr.tag.style"
+                 v-if="['new','hot'].indexOf(goods.config.attr.tag.style)!=-1" class="tag">
+              {{goods.config.attr.tag.style=='hot'?'hot':'new'}}
+            </div>
+            <div v-show="goods.config.attr.tag.show" v-else class="tag img"><img
+              :src="goods.config.attr.tag.img|domain"/></div>
+          </div>
+          <div class="info" :style="{width:itemw}" :class="{empyInfo:isEmpeyInfo}">
+            <div class="left">
+              <div v-show="goods.config.attr.title.show" class="title">{{infoTmpl.Products_Name}}</div>
+              <div v-show="goods.config.attr.desc.show" class="font12 graytext desc">
+                {{infoTmpl.Products_BriefDescription||'暂无介绍'}}
+              </div>
+              <div v-show="goods.config.attr.price.show" class="price"><span class="sign">￥</span>{{infoTmpl.Products_PriceX}}
+              </div>
+            </div>
+            <div v-show="goods.config.attr.buybtn.show" class="buybtn" :class="'theme'+goods.config.attr.buybtn.style">
               {{goods.config.attr.buybtn.text||'购买'}}
             </div>
           </div>
@@ -55,11 +84,21 @@
         data() {
             return {
                 goodsList: [],
+                infoTmpl:{
+                    Products_ID:33,
+                    Products_Name:'商品名称',
+                    Products_PriceX:99.99,
+                    Products_BriefDescription:'商品简介',
+                    ImgPath:''
+                },
                 goods: {},
                 fullWidth: 0
             };
         },
         computed: {
+            limit(){
+              return this.goods.value.cate_id ? this.goods.value.limit :6
+            },
             isEmpeyInfo() {
                 return !this.goods.config.attr.title.show && !this.goods.config.attr.desc.show && !this.goods.config.attr.price.show && !this.goods.config.attr.buybtn.show
             },
@@ -106,17 +145,24 @@
                 handler(val) {
 
                     if (!val) return;
-                    let {list = [], cate_id, limit} = val;
+                    let {list = [], cate_id=[], limit} = val;
 
-                    let param = {pageSize: limit ? limit : 6}
-                    if (cate_id) {
-                        param.Cate_ID = cate_id
+                    console.log(list,cate_id,limit)
+                    //如果值还没有设置的话
+                    if(list.length===0 && !cate_id.length===0){
+                        return;
+                    }
+
+                    let param = {pageSize: cate_id.length===0 && limit ? limit : 6}
+                    if (cate_id.length>0) {
+                        param.Cate_ID = cate_id.join(',')
                     } else {
                         param.Products_ID = list.join(',')
                     }
 
                     getProductList(param).then(res => {
                         this.goodsList = res.data
+
                     })
 
                 }
@@ -181,6 +227,7 @@
                 return domain(obj.ImgPath[0])
             },
             domainFunc(url) {
+                return 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20190930095641111.png';//展位图替换掉吧。。
                 return domain(url)
             },
             setData(item, index) {
@@ -218,6 +265,29 @@
 <style scoped lang="less">
   @import "~@/assets/css/fun.less";
 
+  .wrap{
+    background: #f8f8f8;
+  }
+  //无边框白底 有边框白底 无边框透明底
+  /*'noborder-bgwhite','border-bgwhite','noborder-nobg'*/
+  .noborder-bgwhite{
+
+  }
+
+  .border-bgwhite{
+
+    border: 1px solid #e3e3e3;
+  }
+
+  .noborder-nobg{
+    .info{
+      background: none !important;
+    }
+  }
+
+
+
+
   *::-webkit-scrollbar {
     display: none !important;
   }
@@ -239,13 +309,25 @@
 
   .buybtn {
     color: #444;
-    padding: 0px 16px;
+    padding: 2px 14px;
     font-size: 14px;
-    height: 32px;
-    line-height: 32px;
-    background: #409EFF;
+    height: 24px;
+    line-height: 24px;
+    background: #ff4444;
     color: white;
-    border: 1px solid #409EFF;
+    /*border: 1px solid #409EFF;*/
+
+    &.theme1{
+      background: #ff4444;
+      color: white;
+      border-radius: 1px;
+    }
+
+    &.theme2{
+      color: #ff4444;
+      background: white;
+      border: 1px solid #ffacac;
+    }
   }
 
   .tag {
@@ -267,8 +349,8 @@
 
       img {
         position: absolute;
-        width: 32px;
-        height: 20px;
+        width: 16px;
+        height: 16px;
         left: 0;
         top: 0;
       }

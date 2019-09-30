@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Common from './commonClass';
-
+import {fun} from "@/common";
 
 function setValue() {
   // let value = {}
@@ -22,9 +22,41 @@ function setConfig() {
 
 function setAttrData() {
   const data = {
-    title: '图片广告设置',
+    title: '图片Banner',
+    labelSize:'L',
     content: [
+      {
+        type: 'addbtn',
+        text: '图片管理',
+        label: '新增图片',
+        // openBindLink:(pageEl,item,idx)=>{
+        //   pageEl.bindLinkDialogShow = true
+        // },
+        dialogCB: (coupon_list) => {
 
+
+
+          this.value.list = [...coupon_list];
+
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
+        },
+        //这个按钮的功能，主要是新增元素
+        editCB: (pageEl) => {
+
+          if(this.value.list.length > 9){
+            fun.info({msg:'最多只允许十张图片'})
+            return;
+          }
+
+          this.value.list.push({img_src: '', link: '', linkType: null});//新增一个空元素
+
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
+        },
+      },
       {
         type: 'arr',
         row_type: 'swiper', // text/num这些代表简单的值，可以直接设置。
@@ -62,76 +94,50 @@ function setAttrData() {
         }
 
       },
-      {
-        type: 'addbtn',
-        text: '',
-        label: '新增图片',
-        // openBindLink:(pageEl,item,idx)=>{
-        //   pageEl.bindLinkDialogShow = true
-        // },
-        dialogCB: (coupon_list) => {
 
-          this.value.list = [...coupon_list];
-          this.setIndex(0, {config: false, value: false});
-          //
-          // // 都是改写vuex里面的数据，两种写法都可以
-          this.vm.$store.commit('attrData', this.attrData);// 传出去
-
-          this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
-        },
-        //这个按钮的功能，主要是新增元素
-        editCB: (pageEl) => {
-
-          this.value.list.push({img_src: '', link: '', linkType: null});//新增一个空元素
-
-          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
-          this.setIndex(0, {value:false,config:false});
-          this.vm.$store.commit('activeAttr', this);// 传出去
-        },
-      },
       {
         type: 'input',
         // inputType: 'number',
-        text: '滚动间隔',
+        text: '滚动间隔(s)',
         editType: 'config',
         editKey: 'interval',
         model: this.config.interval,
         inputCB: (item) => item.model
       },
-      {
-        type: 'switch',
-        text: '循环播放',
-        editType: 'config',
-        editKey: 'loop',
-        model: this.config.loop,
-        value: [
-          {
-            label: '关闭',
-            value: false,
-          },
-          {
-            label: '开启',
-            value: true,
-          },
-        ],
-      },
-      {
-        type: 'switch',
-        text: '自动滚动',
-        editType: 'config',
-        editKey: 'autoplay',
-        model: this.config.autoplay,
-        value: [
-          {
-            label: '关闭',
-            value: false,
-          },
-          {
-            label: '开启',
-            value: true,
-          },
-        ],
-      },
+      // {
+      //   type: 'switch',
+      //   text: '循环播放',
+      //   editType: 'config',
+      //   editKey: 'loop',
+      //   model: this.config.loop,
+      //   value: [
+      //     {
+      //       label: '关闭',
+      //       value: false,
+      //     },
+      //     {
+      //       label: '开启',
+      //       value: true,
+      //     },
+      //   ],
+      // },
+      // {
+      //   type: 'switch',
+      //   text: '自动滚动',
+      //   editType: 'config',
+      //   editKey: 'autoplay',
+      //   model: this.config.autoplay,
+      //   value: [
+      //     {
+      //       label: '关闭',
+      //       value: false,
+      //     },
+      //     {
+      //       label: '开启',
+      //       value: true,
+      //     },
+      //   ],
+      // },
     ],
   };
 
@@ -175,8 +181,8 @@ class Swiper extends Common {
 
   config = {
     loop: false,//是否循环
-    interval: 5000,//切换时间
-    autoplay: false,//自动播放
+    interval: 5,//切换时间
+    autoplay: true,//自动播放
     //type: 1, //两种风格
   }
 

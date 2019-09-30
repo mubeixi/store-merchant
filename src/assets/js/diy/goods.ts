@@ -57,12 +57,14 @@ function setAttrData() {
           this.vm.$store.commit('activeAttr', this);// 传出去
 
         },
-        bindCateCB: (dataType, type, path, tooltip, dataItem, pageEl, idx2) => {
+        bindCateCB: (dataType, type, path, tooltip, dataArr, pageEl, idx2) => {
 
-          console.log(dataItem)
+          console.log(dataArr)
           pageEl.bindCateDialogShow = false;
+
+          let ids = dataArr.map(item=>item.id)
           Vue.set(this.config, 'origin', 'cate');
-          Vue.set(this.value, 'cate_id', dataItem.id);
+          Vue.set(this.value, 'cate_id', ids);
           Vue.set(this.config, 'origintooltip', tooltip);
 
           //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
@@ -74,6 +76,15 @@ function setAttrData() {
 
           Vue.set(this.value, 'limit', parseInt(val));
           Vue.set(this.config, 'origin', 'cate');
+
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
+
+        },
+        editCB: (item) => {
+
+          this.config.origin = item.model;//手动赋值一下
 
           //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
           this.setIndex(0, {value:false,config:false});
@@ -174,6 +185,7 @@ function setAttrData() {
         text: '显示内容',
         label: '商品名称',
         editType: 'config',
+        disabled:this.config.origin === 'filter' && this.config.attr.title.readOnly,
         model: this.config.attr.title.show,
         editCB: (item) => {
 
@@ -342,10 +354,10 @@ class Goods extends Common {
     showmode: 'noborder-bgwhite',//'border-bgwhite','noborder-nobg'  无边框白底 有边框白底 无边框透明底
     radius: 'round',//圆角 none直角
     attr: {
-      title: {show: false},
+      title: {show: true,readOnly:true},
       desc: {show: false},
-      price: {show: false},
-      buybtn: {show: false, text: '立即购买', style: null}, //样式1 样式2
+      price: {show: true},
+      buybtn: {show: true, text: '购买', style: ''}, //样式1 样式2
       tag: {show: false, style: '', img: ''} //hot new diy 第三个是图片。 都是放在商品左上角
     }
     // loop:false,//是否循环
@@ -355,7 +367,7 @@ class Goods extends Common {
   }
 
   value = {
-    cate_id: null,
+    cate_id: [],
     limit: 20,
     list: []
   }

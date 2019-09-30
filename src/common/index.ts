@@ -87,7 +87,7 @@ export const fun = {
     message: msg,
     type: 'warning',
   }),
-  info: ({msg = '', title = '消息'}) => Notification({
+  info: ({msg = '', title = '提示'}) => Notification({
     title,
     message: msg,
     type: 'info',

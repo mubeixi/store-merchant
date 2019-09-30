@@ -18,6 +18,9 @@ Vue.http.options.emulateHTTP = true;
 
 Vue.use(Common);
 
+//symbol icon
+require('./assets/js/icon');
+
 
 Vue.config.productionTip = false;
 

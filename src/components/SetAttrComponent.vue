@@ -3,7 +3,7 @@
     <div class="title" style="" v-show="eTitle">
       <div class="leftText">{{eTitle}}</div>
     </div>
-    <el-form ref="form" :model="form" label-width="80px">
+    <el-form ref="form" :model="form" :label-width="activeAttr.attrData.labelSize==='L'?'100px':'80px'">
       <el-form-item inline-message
                     class="formitem"
                     :label="item.text"
@@ -70,6 +70,7 @@
                 :onSuccess='item.imgCB'
                 :mini="true"
                 type='avatar'
+
                 :idx2="idx"
                 :imgUrl='item.value[idx].img_src'/>
               <div>
@@ -82,7 +83,7 @@
                   </el-tooltip>
                   <span class="padding10-c font12">{{item.value[idx].tooltip}}</span>
                   <div class="graytext2 font12" style="line-height: 22px;">
-                    建议图片尺寸700px*380px
+                    建议尺寸为750*350
                   </div>
                 </div>
               </div>
@@ -203,7 +204,7 @@
           </el-radio>
         </el-radio-group>
 
-        <el-checkbox @change="change(item)" v-if="item.type === 'checkbox'" v-model="item.model">
+        <el-checkbox :disabled="item.disabled" @change="change(item)" v-if="item.type === 'checkbox'" v-model="item.model">
           {{item.label}}
         </el-checkbox>
 
@@ -219,7 +220,7 @@
               <el-radio :label="2">样式二</el-radio>
             </el-radio-group>
 
-            <el-input size="small" style="width: 140px;margin-left: 20px;" v-model="item.data.text"
+            <el-input size="small" style="width: 90px;margin-left: 20px;" v-model="item.data.text"
                       @input="item.inputCB"/>
             <el-tooltip class="item" effect="dark" content="自定义按钮的文本" placement="right">
               <i class="el-icon-question"></i>
@@ -241,6 +242,7 @@
                                    :onSuccess='item.radioImgCB'
                                    type='avatar'
                                    :mini="true"
+                                   tip="推荐100*100png图片"
                                    :imgUrl='item.data.img'></upload-img-components>
           </template>
 
@@ -265,19 +267,21 @@
 
           </div>
 
-          <div v-if="item.model!='filter'">
+          <div v-if="item.model!='filter'" class="line10">
             <el-tooltip class="item rightBtn" effect="dark" :content="item.origintooltip"
                         placement="right">
-              <el-button @click="openGoodsBindCate(item,item.bindCateCB)" type="primary"
+              <el-button @click="openGoodsBindCate(item,item.bindCateCB,null,true)" type="primary"
                          size="small">绑定分类
               </el-button>
+
             </el-tooltip>
+            <span class="padding10-c font12 graytext">{{item.origintooltip}}</span>
 
           </div>
 
           <div v-if="item.model!='filter'">
             <span>产品数量</span>
-            <el-input style="width: 140px;margin-left: 20px;" type="number" v-model="item.limit"
+            <el-input style="width: 140px;margin-left: 20px;" type="number" max="30" min="1" v-model="item.limit"
                       @input="item.inputCB(item.limit)"/>
             <span class="padding10-c font14 graytext">(最多显示30个)</span>
           </div>
@@ -313,7 +317,7 @@
     <select-goods-component @cancel="bindListCancel" :onSuccess="bindListSuccessCall"
                             :pageEl="pageEl" :show="bindListDialogShow"/>
 
-    <bind-cate-components @cancel="bindCateCancel" :onSuccess="bindCateSuccessCall"
+    <bind-cate-components :multiple="bindCateMultiple" @cancel="bindCateCancel" :onSuccess="bindCateSuccessCall"
                           :idx2="bindCateIdx2" :pageEl="pageEl" :show="bindCateDialogShow"/>
 
     <bind-link-components @cancel="bindLinkCancel" :onSuccess="bindLinkSuccessCall"
@@ -351,6 +355,7 @@
         },
         data() {
             return {
+                bindCateMultiple:false,
                 bindListDialogShow: false,
                 bindListSuccessCall: null,
                 bindCateDialogShow: false,
@@ -418,10 +423,11 @@
                 this.bindListDialogShow = true
                 this.bindListSuccessCall = success
             },
-            openGoodsBindCate(item, success, idx2) {
+            openGoodsBindCate(item, success, idx2,bindCateMultiple) {
                 this.bindCateDialogShow = true
                 this.bindCateSuccessCall = success
                 this.bindCateIdx2 = idx2
+                this.bindCateMultiple = bindCateMultiple
             },
             openSwiperBindLink(item, idx2, success) {
                 this.bindLinkDialogShow = true

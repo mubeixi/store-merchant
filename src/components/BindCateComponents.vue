@@ -18,7 +18,7 @@
           <!--            </el-input>-->
           <!--          </el-tab-pane>-->
           <el-tab-pane label="选择页面" name="page" :disabled="!config.page.show">
-            <el-tabs v-model="innerDialog.customizeIndex">
+            <el-tabs class="tabs-child" v-model="innerDialog.customizeIndex">
               <!--              <el-tab-pane label="系统页面" name="1" :disabled="!config.page.system.show">-->
               <!--                <el-radio-group v-model="innerDialog.system.checked" class="systemPage">-->
               <!--                  <el-radio class="pageBlock" :label="item.path"-->
@@ -94,6 +94,10 @@
   export default {
     name: 'BindCateComponents',
     props: {
+      multiple: {
+        type: Boolean,
+        default: false,
+      },
       strictly: {
         type: Boolean,
         default: true,
@@ -391,9 +395,11 @@
         this.innerDialog.product.checkedObj = item;
       },
       nodeClick(data, checked, node) {
+        if(this.multiple)return;//如果是多选的，就先不管
         this.$refs.treeForm.setCheckedNodes([data]);
       },
       selectPage() {
+
         let path = '';
         let tooltip = '';
         let dataItem = {};
@@ -411,12 +417,27 @@
               type = 'page';
               break;
             case '2':
-              var data = this.$refs.treeForm.getCheckedNodes()[0];
-              if (!data) return this.$message('请先选择分类');
-              path = data.path;
-              tooltip = `分类：${data.label}`;
-              dataItem = data;
-              type = 'cate';
+              if(this.multiple){
+                var arr = this.$refs.treeForm.getCheckedNodes();
+                console.log(arr)
+                if (arr.length<1) return this.$message('请先选择分类');
+                let nameArr = arr.map(item=>item.label)
+                let idArr = arr.map(item=>item.id)
+                path = idArr.join(';');
+                tooltip = `多个分类：`+nameArr.join(';');
+                dataItem = arr;
+                type = 'multiple_cate';
+
+              }else{
+                var data = this.$refs.treeForm.getCheckedNodes()[0];
+                if (!data) return this.$message('请先选择分类');
+                path = data.path;
+                tooltip = `分类：${data.label}`;
+                dataItem = data;
+                type = 'cate';
+              }
+
+
               break;
             case '3':
               path = this.innerDialog.product.checked;
@@ -469,5 +490,8 @@
   };
 </script>
 <style lang="less">
-
+/*.container{*/
+/*  max-height: calc(100vh - 300px);*/
+/*  overflow-y: scroll;*/
+/*}*/
 </style>

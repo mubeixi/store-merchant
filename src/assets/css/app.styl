@@ -1,3 +1,12 @@
+
+
+.fun-icon {
+  width: 1em; height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+
 ul,li{
   list-style:none
 }
@@ -8,7 +17,7 @@ $rest = {
 html,body
   margin 0
   padding 0
-  font-family Arial,sans-serif;
+  font-family "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif
 
 
 
@@ -53,6 +62,9 @@ p{
   flex 1
 
 
+.padding10
+  padding 10px
+
 .padding10-c
   padding 0 10px
 .padding10-r
@@ -95,3 +107,37 @@ p{
 .fun-table-row{
   cursor: pointer;
 }
+
+//覆盖组件自带样式
+.fun-preview-swiper
+  color white
+  .el-carousel__arrow
+    //z-index -1
+  .el-carousel__indicators--horizontal
+    bottom 8px
+    .el-carousel__indicator--horizontal
+      padding 0
+      margin 0
+      width 8px
+      height 8px
+      box-sizing border-box
+      overflow hidden
+      border-radius 50%
+      border 1px solid #409EFF
+      margin-right 8px
+      .el-carousel__button
+        width 8px
+        height 8px
+
+
+
+.el-carousel__indicator.is-active .el-carousel__button
+  background-color #409EFF
+
+
+.innerDislog
+  .container
+    .tabs-child
+      .el-tabs__content
+        max-height calc(100vh - 500px)
+        overflow-y scroll
