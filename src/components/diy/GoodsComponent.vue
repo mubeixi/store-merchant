@@ -339,13 +339,12 @@
     left: 0px;
     top: 0px;
     background: red;
-
-    height: 24px;
-    line-height: 24px;
+    height: 20px;
+    line-height: 20px;
     color: white;
     text-align: center;
     padding: 0 8px;
-    border-radius: 0 0 6px 0;
+    border-radius: 0 0 4px 0;
     font-size: 12px;
 
     &.img {
