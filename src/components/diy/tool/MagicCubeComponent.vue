@@ -49,6 +49,11 @@ export default {
     row:{
       type:Number,
       default:5
+    },
+
+    width:{
+      type:Number,
+      default:375
     }
   },
   data(){
@@ -233,7 +238,7 @@ export default {
       this.isDrag = false;
     },
     INIT(){
-      this.CTX = new MagicCube(this.row,375);//还有label。。真牛
+      this.CTX = new MagicCube(this.row,this.width);//还有label。。真牛
       window.CTX = this.CTX;
     }
   },
@@ -295,6 +300,7 @@ export default {
   .box{
     margin-bottom: 15px;
     position: relative;
+    cursor: pointer;
     .border();
     /*box-sizing: border-box;*/
     .row{

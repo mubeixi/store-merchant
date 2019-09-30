@@ -75,6 +75,7 @@ function setAttrData() {
         type: 'MagicCube',
         text: '内容设置',
         row: this.config.row,
+        width:375-2*this.style.wrapmargin,
         value: this.value.list,
         //数据变化放进来的
         seclectChangeCB: (arr) => {
@@ -178,8 +179,8 @@ class Cube extends Common {
   // activeIndex = 0;
 
   style = {
-    wrapmargin: 15,//页面边距
-    margin: 10,//商品距离
+    wrapmargin: 0,//页面边距
+    margin: 0,//商品距离
     // bgColor: '',
     // height: 30,
     // color: '',

@@ -1,6 +1,7 @@
 <template>
   <div class="wrap">
-    <div class="box" :style="{width:W+'px',height:W+'px'}" @mouseleave="leaveBox" @mouseenter="enterBox">
+    <div class="box" :style="{width:W+'px',height:W+'px'}" @mouseleave="leaveBox"
+         @mouseenter="enterBox">
       <div v-for="(row,idx1) in CTX.row" class="row" :style="{height:colWH+'px'}">
         <div
           @click="colClick(idx1,idx2)"
@@ -14,19 +15,19 @@
       </div>
 
       <!--所有热区用绝对定位实现-->
-      <div  class="active" @click="activeArea(aidx,area)" :class="areaActiveIndxx===aidx?'act':''"
+      <div class="active" @click="activeArea(aidx,area)" :class="areaActiveIndxx===aidx?'act':''"
            :style="[getAreaStyle(area)]" v-for="(area,aidx) in CTX.selects">
         <div class="mask" :style="{backgroundImage:'url('+area.bgimg||''+')'}"></div>
         <span class="tip" v-show="!area.bgimg">{{getTip(area)}}</span>
-<!--        <img src="@/assets/img/icon-del.png" class="delicon" />-->
+        <!--        <img src="@/assets/img/icon-del.png" class="delicon" />-->
         <i class="el-icon-error delicon" @click="delArea(area)"/>
-<!--        <svg class="fun-icon icon delicon" @click="delArea(area)" aria-hidden="true">-->
-<!--          <use xlink:href="#icon-del"></use>-->
-<!--        </svg>-->
+        <!--        <svg class="fun-icon icon delicon" @click="delArea(area)" aria-hidden="true">-->
+        <!--          <use xlink:href="#icon-del"></use>-->
+        <!--        </svg>-->
       </div>
 
-      <div v-show="mouseInBox" class="hover"  :style="[getAreaStyle(tempAreaObj)]" >
-        <div class="mask" ></div>
+      <div v-show="mouseInBox" class="hover" :style="[getAreaStyle(tempAreaObj)]">
+        <div class="mask"></div>
       </div>
     </div>
 
@@ -63,16 +64,21 @@
     data() {
       return {
         CTX: null,
-        mouseInBox:false,
+        mouseInBox: false,
         currentArea: null,
-        tempAreaObj:{x:null,y:null,x1:null,y1:null},
-        tempArea:{
+        tempAreaObj: {
+          x: null,
+          y: null,
+          x1: null,
+          y1: null
+        },
+        tempArea: {
           row_idx: null,//行序列1
           col_idx: null,//竖直序列1
           row_idx1: null,//行序列2
           col_idx1: null//竖直序列2
         },
-        isTempDrag:false,
+        isTempDrag: false,
         areaActiveIndxx: null,
         isDrag: false,//标记是否点击了一次
         row_idx: null,//行序列1
@@ -92,40 +98,45 @@
         return this.CTX.width / this.CTX.row;
       }
     },
-    watch:{
-      tempArea:{
-        immediate:true,
-        deep:true,
-        handler(val){
-          console.log(val)
+    watch: {
+      tempArea: {
+        immediate: true,
+        deep: true,
+        handler(val) {
+          console.log(val);
         }
       }
     },
     methods: {
-      enterBox(){
-        this.mouseInBox = true
+      enterBox() {
+        this.mouseInBox = true;
       },
-      leaveBox(){
+      leaveBox() {
         // this.clearTempArea()
-        this.mouseInBox =false
+        this.mouseInBox = false;
 
       },
       /**
        * 清理
        */
-      clearTempArea(){
+      clearTempArea() {
         this.tempArea = {
           row_idx: null,//行序列1
           col_idx: null,//竖直序列1
           row_idx1: null,//行序列2
           col_idx1: null//竖直序列2
-        }
+        };
 
-        this.tempAreaObj = {x:null,y:null,x1:null,y1:null}
+        this.tempAreaObj = {
+          x: null,
+          y: null,
+          x1: null,
+          y1: null
+        };
 
         this.isTempDrag = false;
       },
-      leave(){
+      leave() {
 
       },
       /**
@@ -133,12 +144,12 @@
        * @param idx1
        * @param idx2
        */
-      enter(idx1,idx2){
+      enter(idx1, idx2) {
 
-        console.log(idx1,idx2)
+        console.log(idx1, idx2);
 
         //没有进入编辑模式则不算
-        if(!this.isTempDrag)return;
+        if (!this.isTempDrag) return;
 
         this.tempArea.row_idx1 = idx1;
         this.tempArea.col_idx1 = idx2;
@@ -157,12 +168,19 @@
 
 
         //碰撞检测来一下
-        if(!this.CTX.is_conflict({x,y,x1,y1})){
-          this.tempAreaObj = {x,y,x1,y1}
+        if (!this.CTX.is_conflict({
+          x,
+          y,
+          x1,
+          y1
+        })) {
+          this.tempAreaObj = {
+            x,
+            y,
+            x1,
+            y1
+          };
         }
-
-
-
 
 
       },
@@ -190,22 +208,22 @@
         this.CTX.del_selects(area);
         this.clearIdx();
       },
-      getTip(area){
-        let width =  (area.x1 - area.x) * this.colWH;
-        let height =  (area.y1 - area.y) * this.colWH;
+      getTip(area) {
+        let width = (area.x1 - area.x) * this.colWH;
+        let height = (area.y1 - area.y) * this.colWH;
 
         return `${width}x${height}像素或同等比例`;
 
       },
       getAreaStyle(area) {
-        console.log(area)
+        console.log(area);
         let styleObj = {
           left: area.x * this.colWH + 'px',
           top: area.y * this.colWH + 'px',
           width: (area.x1 - area.x) * this.colWH + 'px',
           height: (area.y1 - area.y) * this.colWH + 'px',
         };
-        console.log(styleObj)
+        console.log(styleObj);
         // if(area.bgimg){
         //   console.log(333)
         //   styleObj.backgroundImage = 'url('+domain(area.bgimg)+')';
@@ -231,7 +249,7 @@
 
         if (this.isDrag) {
 
-          this.clearTempArea()
+          this.clearTempArea();
 
           //同一个区块点两次，也取消掉
           //老大牛逼，说一个点也可以创建 2019.9.30
@@ -308,7 +326,7 @@
   @import "~@/assets/css/fun.less";
 
 
-  .active{
+  .active {
     position: absolute;
     z-index: 2;
     box-sizing: border-box;
@@ -317,15 +335,17 @@
     /*background: #e8f7fd;*/
     box-sizing: border-box;
     /*z-index: 2;*/
-    &:hover{
+
+    &:hover {
       z-index: 333;
-      .delicon{
+
+      .delicon {
         visibility: visible;
       }
     }
 
 
-    .tip{
+    .tip {
       position: absolute;
       width: 50%;
       left: 25%;
@@ -336,30 +356,32 @@
       color: #155bd4;
       transform: translateY(-50%);
     }
-    .mask{
-      .cover-full-bg(cover,0,white);
+
+    .mask {
+      .cover-full-bg(cover, 0, white);
       position: absolute;
-      left:1px;
-      bottom:1px;
+      left: 1px;
+      bottom: 1px;
       right: 1px;
-      top:1px;
+      top: 1px;
       background-color: #e8f7fd;
     }
 
-    &.act{
+    &.act {
       border: 1px #409EFF solid;
-      .delicon{
+
+      .delicon {
         visibility: visible;
       }
     }
 
 
-    .delicon{
+    .delicon {
       visibility: hidden;
       position: absolute;
       z-index: 33;
       font-size: 20px;
-     width: 20px;
+      width: 20px;
       height: 20px;
       right: -10px;
       top: -10px;
@@ -376,11 +398,10 @@
   }
 
 
-
-
   .hover {
     position: absolute;
     z-index: 1;
+
     .mask {
 
       position: absolute;
@@ -428,21 +449,24 @@
     /*}*/
   }
 
-  .wrap{
+  .wrap {
     background: #f2f2f2;
   }
+
   .box {
     margin: 20px;
     position: relative;
     background: white;
+    cursor: pointer;
 
     .border();
     /*box-sizing: border-box;*/
 
     .row {
       /*box-sizing: border-box;*/
-        position: relative;
-        z-index: 2;
+      position: relative;
+      z-index: 2;
+
       .column {
         display: inline-block;
         box-sizing: border-box;

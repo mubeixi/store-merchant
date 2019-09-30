@@ -1,6 +1,6 @@
 <template>
   <div @click.stop="setData({}, 0)" class="cube wrap">
-    <div class="box" :style="{width:W+'px',height:W+'px'}">
+    <div class="box" :style="{width:fullW+'px',height:fullW+'px'}">
       <!--      <div v-for="(row,idx1) in cube.value.list" class="row" :style="{height:colWH+'px'}">-->
       <!--        <div-->
       <!--          @click="colClick(idx1,idx2)"-->
@@ -13,13 +13,18 @@
       <!--        </div>-->
       <!--      </div>-->
 
-      <!--所有热区用绝对定位实现-->
-      <div class="active" :data-idx="area.IDX" :style="[getAreaStyle(area)]"
-           v-for="(area,aidx) in cube.value.list">
-        <div class="mask" :style="{backgroundImage:'url('+domainFunc(area.bgimg)||''+')'}"></div>
-        <!--        <pre>{{area}}</pre>-->
-        <!--        <i class="el-icon-error delicon" @click.stop="delArea(area)" />-->
+      <div class="postion-wrap" :style="{marginLeft:cube.style.wrapmargin+'px',height:fullW+'px',marginRight:cube.style.wrapmargin+'px'}">
+        <!--所有热区用绝对定位实现-->
+        <div class="active" :data-idx="area.IDX" :style="[getAreaStyle(area)]"
+             v-for="(area,aidx) in cube.value.list">
+          <div class="mask" :style="{backgroundImage:'url('+domainFunc(area.bgimg)||''+')'}"></div>
+          <!--        <pre>{{area}}</pre>-->
+          <!--        <i class="el-icon-error delicon" @click.stop="delArea(area)" />-->
+        </div>
+
       </div>
+
+
     </div>
 
 
@@ -49,12 +54,20 @@
             };
         },
         computed: {
-            W() {
+            fullW(){
                 let ele = document.getElementById('canvas');
                 if (ele) {
                     return ele.offsetWidth;
                 } else {
                     return 375;
+                }
+            },
+            W() {
+                let ele = document.getElementById('canvas');
+                if (ele) {
+                    return ele.offsetWidth-2*this.cube.style.wrapmargin;
+                } else {
+                    return 375-2*this.cube.style.wrapmargin;
                 }
             },
             colWH() {
@@ -95,10 +108,11 @@
         methods: {
             getAreaStyle(area) {
                 let styleObj = {
-                    left: area.x * this.colWH + 'px',
-                    top: area.y * this.colWH + 'px',
+                    left: area.x * this.colWH + this.cube.style.wrapmargin + 'px',
+                    top: area.y * this.colWH + this.cube.style.wrapmargin + 'px',
                     width: (area.x1 - area.x) * this.colWH + 'px',
                     height: (area.y1 - area.y) * this.colWH + 'px',
+                    borderWidth: this.cube.style.margin+'px'
                 };
                 // if(area.bgimg){
                 //   console.log(333)
@@ -142,6 +156,12 @@
 <style scoped lang="less">
   @import "~@/assets/css/fun.less";
   @import "~@/assets/css/fun.less";
+
+  .postion-wrap{
+    /*position: relative;*/
+    overflow: hidden;
+  }
+
 
   .active {
     position: absolute;
