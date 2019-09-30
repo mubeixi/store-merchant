@@ -7,7 +7,6 @@
         v-on:mouseenter="changeActive(idx1,idx2)"
         v-for="(row,idx2) in CTX.row"
         class="column text-center"
-
         :style="{width:colWH+'px',height:colWH+'px',lineHeight:colWH+'px'}">
         <!--          {{idx1+'—'+idx2}}-->
       </div>
