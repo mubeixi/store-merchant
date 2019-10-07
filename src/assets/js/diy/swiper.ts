@@ -187,7 +187,7 @@ class Swiper extends Common {
   }
 
   value = {
-    list: [],//存优惠券数组
+    list: [{img_src: '', link: '', linkType: null},{img_src: '', link: '', linkType: null},{img_src: '', link: '', linkType: null}],//存优惠券数组
   }
 
 
