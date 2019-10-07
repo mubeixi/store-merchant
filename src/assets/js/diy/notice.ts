@@ -9,14 +9,13 @@ function setValue() {
 
 function setConfig() {
   // 如果新对象，那么可以考虑用默认值替换掉。
-  if (JSON.stringify(this.style) === JSON.stringify({
-    bgColor: '',
-    height: 30,
-    color: '',
-    inputBgColor: '',
-  })) {
-    Vue.set(this, 'style', JSON.parse(JSON.stringify(this.styleDefault)));
-  }
+  // if (JSON.stringify(this.style) === JSON.stringify({
+  //   bgColor: '',
+  //   color: '',
+  //   iconColor: '',
+  // })) {
+  //   Vue.set(this, 'style', JSON.parse(JSON.stringify(this.styleDefault)));
+  // }
   // let config = {}
 }
 
@@ -39,6 +38,14 @@ function setAttrData() {
         model: this.style.bgColor,
         editType: 'style',
         editKey: 'bgColor',
+        editCB: item => item.model,
+      },
+      {
+        type: 'color',
+        text: '图标颜色',
+        model: this.style.iconColor,
+        editType: 'style',
+        editKey: 'iconColor',
         editCB: item => item.model,
       },
       {
@@ -110,6 +117,7 @@ class Notice extends Common {
     bgColor: '',
     // height: 30,
     color: '',
+    iconColor: '',
     // inputBgColor: '',
   }
 
@@ -127,10 +135,10 @@ class Notice extends Common {
   }
 
   config = {
-    bgColor: '#fff',
+    // bgColor: '#fff',
     // height: 30,
-    color: '#444',
-    type: 1, // quare
+    // color: '#444',
+    // type: 1, // quare
   }
 
   value = {
