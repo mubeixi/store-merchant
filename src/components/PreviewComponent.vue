@@ -420,10 +420,75 @@
         skinInfo = null
 
         created() {
-            getSkinConfig().then(res => {
-                console.log(res)
-                this.skinInfo = res.data
+
+            let _self = this;
+            new Promise(resolve => {
+
+
+                getSkinConfig().then(res => {
+                    console.log(res)
+                    _self.skinInfo = res.data
+
+                    resolve(JSON.parse(res.data.Home_Json))
+
+                })
+
             })
+            .then(templateData => {
+
+
+                //存储页面数据
+                this.templateData = [] //页面数据的二维数组。
+                this.templateList = [] //页面组件的二维数组。
+                // console.log(templateData)
+                if (templateData && Array.isArray(templateData[0])) {
+                    //多个页面，每个页面是一个数组
+                    templateData.map(item => {
+                        this.templateData.push(item)
+                        this.templateList.push([])
+                    })
+                } else if (
+                    templateData &&
+                    !Array.isArray(templateData[0]) &&
+                    templateData.length > 0
+                ) {
+                    //单纯是一个对象的时候？？
+                    this.templateData = [templateData]
+                    this.templateList = [[]]
+                } else {
+                    this.templateData = [[]]
+                    this.templateList = [[]]
+                }
+                // this.templateData = templateData
+                //存储页面组件templateList
+                for (let i = 0; i < this.templateData.length; i++) {
+                    if (
+                        this.templateData[i] &&
+                        this.templateData[i] !== []
+                    ) {
+                        this.templateData[i].map(m => {
+                            this.templateList[i].push(m.tag)
+                        })
+                    }
+                }
+
+                //setTimeout(() => pageMove.init('sort', this), 500)
+            })
+            .catch(err => {
+                throw new Error(err)
+            })
+            .then(() => {
+                //拖拽
+                var isDraggable = ['div', 'nav']
+                Array.from(
+                    document.querySelectorAll('[draggable=true]')
+                ).filter(el => {
+                    let tagName = el.tagName.toLowerCase()
+                    return isDraggable.some(elName => elName === tagName)
+                })
+            })
+
+
         }
 
         setClass(className, idx) {

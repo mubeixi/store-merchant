@@ -24,6 +24,7 @@ function setAttrData() {
   console.log(JSON.parse(JSON.stringify(this)))
   const data = {
     title: '辅助间隙设置',
+    labelSize:'L',
     content: [
       {
         type: 'addbtn',
