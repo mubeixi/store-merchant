@@ -1,10 +1,11 @@
 <template>
   <div>
-    <div class="canvasBox" @drop="dropEv" @dragover.prevent @keyup.8="removeTemplateByKeyCode" @keyup.46="removeTemplateByKeyCode">
+    <div class="canvasBox" @drop="dropEv" @dragover.prevent >
       <div class="canvas" id="canvas" @setData="setDataEv" >
         <section
           :ref="item | dragSorts"
           v-for="(item, index) in templateList[templateEditIndex]"
+
           :key="index"
           :id="'section'+index"
           class="section"
@@ -389,7 +390,7 @@
                 //   this.templateList = [this.templateList[this.templateEditIndex]];
                 //   ActiveAttrObj.tabIndex = 0;
                 // }
-                this.$fun.info({title: '操作反馈', msg: '删除成功！'});
+                this.$fun.info({title: '操作提示', msg: '删除成功！'});
                 this.editData.display = 'none';
             },
             showRemovePrompt() {
@@ -406,6 +407,23 @@
             // 修改当前活跃的index,以及
             ...mapActions(['setTemplateEditIndex', 'setTmplData']),
         },
+        mounted(){
+            let _self = this;
+            this.$nextTick().then(res=>{
+                document.onkeydown = function(event){
+                    var e = event || arguments.callee.caller.arguments[0];
+                    console.log(e)
+                    switch (e.keyCode) {
+                        case 8:
+                        case 46:
+                            _self.removeTemplateByKeyCode()
+                            break;
+                    }
+
+
+                }
+            })
+        }
     })
 
     export default class PreviewComponent extends Vue {
