@@ -63,11 +63,12 @@ function setAttrData() {
             fun.info({msg: '最多允许十个'});
             return;
           }
-          this.value.list.push({
-            title: '',
-            img: '',
+          this.value.list.push( {
+            title: '标题',
+            img: 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20191007114805119.png',
             link: '',
-            linkType: ''
+            linkType: '',
+            tooltip: ''
           });//新增一个空元素
 
           //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
@@ -170,33 +171,34 @@ class Nav extends Common {
   value = {
     list: [
       {
-        title: '',
-        img: '',
+        title: '标题',
+        img: 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20191007114805119.png',
         link: '',
         linkType: '',
         tooltip: ''
       },
       {
-        title: '',
-        img: '',
+        title: '标题',
+        img: 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20191007114805119.png',
         link: '',
         linkType: '',
         tooltip: ''
       },
       {
-        title: '',
-        img: '',
+        title: '标题',
+        img: 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20191007114805119.png',
         link: '',
         linkType: '',
         tooltip: ''
       },
       {
-        title: '',
-        img: '',
+        title: '标题',
+        img: 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20191007114805119.png',
         link: '',
         linkType: '',
         tooltip: ''
       },
+
     ],//存优惠券数组
   }
 

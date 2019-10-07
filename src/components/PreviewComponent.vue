@@ -392,7 +392,7 @@
                 //   this.templateList = [this.templateList[this.templateEditIndex]];
                 //   ActiveAttrObj.tabIndex = 0;
                 // }
-                this.$fun.info({title: '操作提示', msg: '删除成功！'});
+                // this.$fun.info({title: '操作提示', msg: '删除成功！'});
                 this.editData.display = 'none';
             },
             showRemovePrompt() {

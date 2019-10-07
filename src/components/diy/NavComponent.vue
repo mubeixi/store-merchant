@@ -7,7 +7,7 @@
           <div v-show="nav.config.type===1" class="cover"
                :style="{backgroundImage:'url('+domainFunc(item.img)+')'}">
           </div>
-          <div class="title">{{item.title||'标题'}}</div>
+          <div class="title">{{item.title}}</div>
         </li>
       </ul>
     </div>
@@ -106,24 +106,28 @@
 
   }
 
+.wrap{
 
+  padding: 0 10px;
+}
   .box {
     .list {
 
       .item {
-        margin-right: 10px;
+        margin-right: 15px;
         text-align: center;
-
+        cursor: pointer;
         .cover {
-          .cover-full-bg(cover, 0, white);
-          width: 60px;
-          height: 60px;
-          margin: 0 auto;
+          .cover-full-bg(cover, 0, none);
+
+          width: 36px;
+          height: 36px;
+          margin: 6px auto;
         }
 
         .title {
-          height: 30px;
-          line-height: 30px;
+          height: 22px;
+          line-height: 22px;
           text-align: center;
           font-size: 14px;
           color: #444;
@@ -135,7 +139,7 @@
   .style1 {
 
     .list {
-      margin: 10px;
+
       white-space: nowrap;
       overflow-x: scroll;
 
@@ -145,7 +149,7 @@
 
       .item {
         display: inline-block;
-        height: 90px;
+        /*height: 70px;*/
         overflow-y: hidden;
       }
     }
