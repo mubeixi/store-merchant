@@ -14,6 +14,9 @@ function setConfig() {
     height: 30,
     color: '',
     inputBgColor: '',
+    position:'inherit',
+    x:0,
+    y:0
   })) {
     Vue.set(this, 'style', JSON.parse(JSON.stringify(this.styleDefault)));
   }
@@ -93,6 +96,24 @@ function setAttrData() {
           },
         ],
       },
+
+      {
+        type: 'radio',
+        text: '定位方式',
+        editType: 'style',
+        editKey: 'position',
+        model: this.style.position,
+        value: [
+          {
+            label: '普通布局',
+            value: 'inherit',
+          },
+          {
+            label: '绝对定位',
+            value: 'absolute',
+          },
+        ],
+      },
       {
         type: 'slider',
         text: '高度',
@@ -152,6 +173,9 @@ class Search extends Common {
     height: 30,
     color: '',
     inputBgColor: '',
+    position:'inherit',
+    x:10,
+    y:10
   }
 
   /**
@@ -165,6 +189,9 @@ class Search extends Common {
     height: 30,
     color: '#444',
     inputBgColor: '#f2f2f2',
+    position:'inherit',
+    x:0,
+    y:0
   }
 
   config = {

@@ -278,6 +278,19 @@ export class pageMove {
   }
 
   static sortDrag(e) {
+
+    console.log(e);
+
+    let TARGET = e.target;
+
+    //在这里插入一下拖动搜索框的逻辑
+    if(TARGET.className.indexOf('search')>-1 && TARGET.className.indexOf('absolute')>-1){
+      console.log(e.clientY)
+      TARGET.style.top = e.clientY-100+'px';
+      return;
+    }
+
+
     const that = pageMove;
     const current = e.clientY - $('.main')[0].offsetTop + pageMove.canvasScrollTop;
 
@@ -297,13 +310,25 @@ export class pageMove {
       }
     }
 
+
+
     that.vm.$data.sort.sortIndex = index;
   }
 
   static sortDragend(e) {
+
+    let TARGET = e.target;
+
+    //在这里插入一下拖动搜索框的逻辑
+    if(TARGET.className.indexOf('search')>-1 && TARGET.className.indexOf('absolute')>-1){
+      return;
+    }
+
     const that = pageMove;
     e.preventDefault();
     e.stopPropagation();
+
+
 
     const {downIndex} = that.vm.$data.sort;// 原来在的位置
     const {sortIndex} = that.vm.$data.sort;// 需要被拖动到的位置
@@ -340,6 +365,7 @@ export class pageMove {
 
     that.vm.$data.sort.sortIndex = -1;
     that.vm.$data.editData.display = 'none';
+
   }
 
   /**
@@ -373,6 +399,119 @@ export class pageMove {
     // console.log('释放')
   }
 }
+
+
+
+function defaultEvent (e) {
+
+  e.preventDefault()
+
+}
+
+
+export const moveanyway = (eleId,isAdd) => {
+
+  if(!isAdd){
+    document.removeEventListener('touchstart', defaultEvent, {passive: false})
+    document.removeEventListener('touchmove', defaultEvent, {passive: false})
+    document.removeEventListener('touchend', defaultEvent, {passive: false})
+  }
+
+  // 获取节点
+
+
+  var block = document.getElementById(eleId)
+
+  console.log(block);
+
+  if (block) {
+
+    var oW, oH
+
+    // 绑定touchstart事件
+
+    block.addEventListener('touchstart', function (e) {
+
+      var touches = e.touches[0]
+
+      oW = touches.clientX - block.offsetLeft
+
+      oH = touches.clientY - block.offsetTop
+
+      // 阻止页面的滑动默认事件
+
+      document.addEventListener('touchmove', defaultEvent, {passive: false})
+
+    }, false)
+
+
+    block.addEventListener('touchmove', function (e) {
+      console.log(touches)
+      var touches = e.touches[0]
+
+      var oLeft = touches.clientX - oW
+
+      var oTop = touches.clientY - oH
+
+      if (oLeft < 10) {
+
+        oLeft = 10
+
+        if (oTop <= 10) {
+
+          oTop = 10
+
+        } else if (oTop >= document.documentElement.clientHeight - block.offsetHeight - 10) {
+
+          oTop = document.documentElement.clientHeight - block.offsetHeight - 10
+
+        }
+
+      } else if (oLeft > document.documentElement.clientWidth - block.offsetWidth - 10) {
+
+        oLeft = (document.documentElement.clientWidth - block.offsetWidth - 10)
+
+        if (oTop <= 10) {
+
+          oTop = 10
+
+        } else if (oTop >= document.documentElement.clientHeight - block.offsetHeight - 10) {
+
+          oTop = document.documentElement.clientHeight - block.offsetHeight - 10
+
+        }
+
+      } else if (oTop < 10) {
+
+        oTop = 10
+
+      } else if (oTop > document.documentElement.clientHeight - block.offsetHeight - 10) {
+
+        oTop = document.documentElement.clientHeight - block.offsetHeight - 10
+
+      }
+
+      console.log(oLeft,oTop)
+
+      block.style.left = oLeft + 'px'
+
+      block.style.top = oTop + 'px'
+
+    }, false)
+
+
+    block.addEventListener('touchend', function () {
+
+      document.removeEventListener('touchmove', defaultEvent, {passive: false})
+
+    }, false)
+
+  }
+
+
+}
+
+
 
 
 function isNum(value) {

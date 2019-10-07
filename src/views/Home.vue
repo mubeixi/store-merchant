@@ -97,6 +97,7 @@
 
   .right
     position fixed
+    z-index 999
     right 0px
     width 100px
     background white

@@ -1,6 +1,6 @@
 <template>
-  <div @click.stop="setData({}, 0)" class="search wrap"
-       :style="{backgroundColor:search.style.bgColor}">
+  <div @click.stop="setData({}, 0)" class="search wrap" :class="[getPostion]" :id="'searchWrap'+index"
+       :style="[getWrapStyle]">
     <div class="box" :class="{'round':search.config.type==='round'}">
       <i class="el-icon-search icon"></i>
       <!--      :placeholder="search.value.hot|placeholderStr"-->
@@ -14,7 +14,8 @@
     import {Component, Vue} from 'vue-property-decorator';
     import {mapState} from 'vuex';
     import Search from '@/assets/js/diy/search';
-    import {deepCopy, deepCopyStrict} from '@/common/utils';
+    import {deepCopy, deepCopyStrict,moveanyway} from '@/common/utils';
+    import {fun} from '@/common';
 
     @Component({
         props: {
@@ -32,7 +33,25 @@
             };
         },
         computed: {
+            getWrapStyle(){
+              if(this.search.style.position==='absolute'){
+                  return {
+                      backgroundColor:this.search.style.bgColor,
+                      // left:this.search.style.x+'px',
+                      top:this.search.style.y+'px',
+                      position:'absolute'
+                  }
+              }
 
+                return {
+                    backgroundColor:this.search.style.bgColor,
+                    position:'inherit'
+                }
+
+            },
+            getPostion(){
+                return this.search.style.position === 'absolute'?'absolute':'inherit';
+            },
             style() {
                 return deepCopyStrict(this.search.styleDefault, this.search.style);
             },
@@ -58,6 +77,38 @@
 
                 console.log("搜索data变化",val)
 
+            },
+            'search.style.position':{
+              deep:true,
+              handler(val){
+
+                  this.$nextTick().then(res=>{
+                      let eleId = 'searchWrap'+this.index
+                      let sectionEle = document.getElementById('section'+this.index);
+
+
+
+                      if(val==='absolute'){
+
+                          //绝对定位就不要外边框了
+                          if(sectionEle.className.indexOf('noborder')<0){
+                              sectionEle.className += ' noborder'
+                          }
+
+                          // moveanyway(eleId,true)
+                      }else{
+
+                          sectionEle.className = sectionEle.className.replace(/noborder/,'')
+
+                          //取消事件绑定
+                          // moveanyway(eleId,false)
+                      }
+                  })
+
+
+
+
+              }
             },
             // 属性变化
             activeAttr: {
@@ -107,9 +158,20 @@
 </script>
 
 <style scoped lang="less">
+
+
+
   .wrap {
     width: 100%;
     padding: 10px 0;
+    &.absolute{
+      &:hover{
+        border: 1px dashed #298df8;
+      }
+
+      box-sizing: border-box;
+      z-index: 999;
+    }
 
     .box {
       margin: 0 15px;

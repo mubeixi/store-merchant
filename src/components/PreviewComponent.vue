@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="canvasBox" @drop="dropEv" @dragover.prevent >
-      <div class="canvas" id="canvas" @setData="setDataEv" >
+      <div class="canvas" id="canvas" @setData="setDataEv" @scroll="canvasScroll($event)" ref="pageTemplageBox" >
         <section
           :ref="item | dragSorts"
           v-for="(item, index) in templateList[templateEditIndex]"
@@ -276,6 +276,13 @@
             ...mapState(['activeAttr', 'tabIndex']),
         },
         methods: {
+            canvasScroll() {
+                this.canvasScrollTop = this.$refs.pageTemplageBox.scrollTop
+                var editEL = document.querySelector('.section.tab-bar')
+                editEL.style.top = `calc(6.67rem - 53px + ${
+                    this.canvasScrollTop
+                }px)`
+            },
             uploadConfig() {
 
                 if(this.isAjax){
@@ -443,6 +450,9 @@
         editData = {
             display: 'none',
         }
+
+
+        canvasScrollTop = 0;
 
 
         currentData = {
@@ -712,6 +722,14 @@
     pointer-events: none;
     display: none;
 
+  }
+
+  .section.active.noborder{
+    position static
+  }
+
+  .section.active.noborder:before{
+    //display:none;
   }
 
   .section.active:before {
