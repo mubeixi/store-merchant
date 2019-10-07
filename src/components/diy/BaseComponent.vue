@@ -9,7 +9,16 @@
       <!--      <div class="desc">{{base.config.desc}}</div>-->
       <!--      <div class="total">商品 {{base.config.total}}</div>-->
       <!--      <div class="new">新品 {{base.config.new}}</div>-->
+<!--      -->
+      <div v-if="base.config.style===2" class="round">
+        <div class="mask" :style="{height:3.5933*W+'px',width:3.5933*W+'px',backgroundSize:W+'px',backgroundImage:'url('+domainFunc(base.config.cover)+')'}"></div>
+      </div>
+
+<!--      <canvas id="myCanvas" class="round">-->
+<!--        浏览器不支持 Canvas-->
+<!--      </canvas>-->
     </div>
+
   </div>
 </template>
 
@@ -37,6 +46,14 @@
         computed: {
             className() {
                 return 'style' + this.base.config.style
+            },
+            W() {
+                let ele = document.getElementById('canvas');
+                if (ele) {
+                    return ele.offsetWidth;
+                } else {
+                    return 375;
+                }
             },
             style() {
                 // return deepCopyStrict(this.coupon.styleDefault, this.coupon.style);
@@ -138,17 +155,41 @@
     height: 185px;
     color: white;
     position: relative;
-    background-color: #d2dee7;
-    border: 1px solid black;
-    //border-radius: 0 0 50% 50% / 0 0 100% 100%;
-    border-top: none;
-    overflow: hidden;
+    background: none !important;
+    /*border: 1px solid black;*/
+    /*border-bottom-right-radius: 50% 15%;*/
+    /*border-bottom-left-radius: 50% 15%;*/
+    /*border-top: none;*/
+    /*overflow: hidden;*/
+
+
+    .round{
+      position: absolute;
+      bottom: 0px;
+      left: 0;
+      right: 0;
+      height: 40px;
+      /*overflow: hidden;*/
+      background: none;
+      /*z-index: 0;*/
+      .mask{
+        position: absolute;
+        background-position: bottom center;
+
+        /*background-repeat: no-repeat;*/
+        border-radius: 50%;
+        left: 50%;
+        bottom: 0px;
+        transform: translateX(-50%)
+      }
+    }
 
     .logotitle {
       position: absolute;
       left: 30px;
       bottom: 50px;
       display: flex;
+      z-index: 3;
     }
 
     .logo {
