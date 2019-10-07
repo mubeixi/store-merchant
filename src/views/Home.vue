@@ -100,9 +100,8 @@
     right 0px
     width 100px
     background white
-    top 10%
-    min-height 30%
-    max-height 80%
+    bottom 0
+    top 35%
     /*overflow-y scroll*/
     border 1px solid #e7e7e7
 

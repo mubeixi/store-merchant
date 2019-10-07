@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="canvasBox" @drop="dropEv" @dragover.prevent>
-      <div class="canvas" id="canvas" @setData="setDataEv">
+    <div class="canvasBox" @drop="dropEv" @dragover.prevent @keyup.8="removeTemplateByKeyCode" @keyup.46="removeTemplateByKeyCode">
+      <div class="canvas" id="canvas" @setData="setDataEv" >
         <section
           :ref="item | dragSorts"
           v-for="(item, index) in templateList[templateEditIndex]"
@@ -174,6 +174,7 @@
 </template>
 
 <script lang="ts">
+    import {pageMove} from '@/common/utils';
     import {Component, Vue} from 'vue-property-decorator';
     import {State} from 'vuex-class';
     import {mapActions, mapState} from 'vuex';
@@ -276,17 +277,26 @@
         methods: {
             uploadConfig() {
 
+                if(this.isAjax){
+                    this.$fun.info({msg:'操作过快'})
+                    return;
+                }
+                this.isAjax = true
                 let postData = {
                     Skin_ID: this.skinInfo.Skin_ID,
                     Home_Json: JSON.stringify(this.templateData)
                 }
                 console.log('保存模板', this.templateData);
+
                 setSkinConfig(postData).then(res => {
+
+                    this.isAjax = false
                     if (res.errorCode === 0) {
                         this.$fun.success('配置保存成功')
                     }
 
                 }).catch(e => {
+                    this.isAjax = false
                     this.$fun.error('配置保存失败')
                 })
             },
@@ -336,18 +346,36 @@
 
                 this.removePosition.show = false;
             },
+            removeTemplateByKeyCode(){
+
+                console.log('监听键盘删除组件事件')
+                if(this.currentData.index<0){
+                    return;
+                }
+
+
+                this.$confirm('确定删除该组件?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.deleteItem(this.currentData.index, this.currentData.name);
+                    this.removePosition.show = false;
+                }).catch(() => {
+
+                });
+
+            },
             removeTemplate() {
+
                 this.deleteItem(this.currentData.index, this.currentData.name);
-
                 this.removePosition.show = false;
-
-
                 //this.$emit('setData', []);
                 // console.log(this)
             },
             deleteItem(index, name) {
 
-                console.log(index)
+
                 this.templateList[this.templateEditIndex].splice(index, 1);
                 this.templateData[this.templateEditIndex].splice(index, 1);
 
@@ -373,7 +401,7 @@
                 const type = e.target.getAttribute('type');
                 console.log(type)
                 this.$refs.rightMenu.style.display = 'none';
-                this[type]();
+                this[type] && this[type]();
             },
             // 修改当前活跃的index,以及
             ...mapActions(['setTemplateEditIndex', 'setTmplData']),
@@ -405,6 +433,8 @@
         removePosition = {
             show: false,
         }
+
+        isAjax = false
 
 
         templateData = []
@@ -472,7 +502,7 @@
                     }
                 }
 
-                //setTimeout(() => pageMove.init('sort', this), 500)
+                setTimeout(() => pageMove.init('sort', this), 500)
             })
             .catch(err => {
                 throw new Error(err)
@@ -616,7 +646,8 @@
                 if (!dragSection) return;
                 console.log(dragSection);
                 dragSection.click()
-                // pageMove.init('sort', this, () => console.log(22222));
+
+                pageMove.init('sort', this, () => console.log(22222));
 
                 // 每次页面都会重排一次，可能是因为这里导致拖拽切换导航的时候，页面其他元素不显示了。
                 // 始终把 tabbar 放到最后
@@ -632,7 +663,7 @@
 <style scoped lang="stylus">
   .canvasBox
     height 667px
-    /*background #f2f2f2*/
+    background #f2f2f2
     overflow-x hidden
     overflow-y auto
     border 1px solid #e5e5e5

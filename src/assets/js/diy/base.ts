@@ -95,7 +95,7 @@ class Base extends Common {
   }
 
   config = {
-    cover: '',
+    cover: 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20191007094401198.png',
     logo: shopInfo.ShopLogo,
     title: shopInfo.ShopName,
     desc: shopInfo.description,
