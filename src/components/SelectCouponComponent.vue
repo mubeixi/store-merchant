@@ -1,10 +1,11 @@
 <template>
   <div class="selectPage">
     <el-dialog
-      :visible.sync="show"
+      :visible.sync="innerVisible"
       title="选择优惠券"
       width="70%"
       append-to-body
+      @close="cancel"
       class="innerDislog"
     >
       <div class="container">
@@ -132,6 +133,12 @@
         handler(val) {
           this.innerVisible = val;
 
+          if(val){
+            this.$nextTick().then(res=>{
+              this.toggleSelection()
+            })
+          }
+
           if (val && !this.finish) {
 
             this.loadCouponInfo((arr) => {
@@ -159,6 +166,15 @@
 
     },
     methods: {
+      toggleSelection(rows) {
+        if (rows) {
+          rows.forEach(row => {
+            this.$refs.multipleTable.toggleRowSelection(row);
+          });
+        } else {
+          this.$refs.multipleTable.clearSelection();
+        }
+      },
       //单击某一行
       handleRowChange(row, column, event) {
         this.$refs.multipleTable.toggleRowSelection(row);

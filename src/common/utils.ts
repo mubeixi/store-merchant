@@ -26,6 +26,7 @@ function addFun(object, newobj) {
     } else if (typeof object[key] === 'function') {
       continue;
     } else {
+
       if (!newobj || !newobj[key]) continue;
       Vue.set(object, key, newobj[key]);
     }
@@ -40,7 +41,7 @@ function addFun(object, newobj) {
  * @param newObj
  * @param strict 开启严格模式，模板值为false不copy
  */
-function mergeDate(current, newObj, strict) {
+function mergeData(current, newObj, strict) {
   for (const key in newObj) {
     if (!newObj.hasOwnProperty(key)) continue;
     if (strict && !newObj[key]) continue;
@@ -52,7 +53,8 @@ function mergeDate(current, newObj, strict) {
         Vue.set(current, key, newObj[key]);
         continue;
       }
-      mergeDate(current[key], newObj[key]);
+      // @ts-ignore
+      mergeData(current[key], newObj[key]);
     } else {
       if (!current) {
         current = newObj;
@@ -79,13 +81,14 @@ function mergeDate(current, newObj, strict) {
  */
 export function deepCopy(currentObj, newObject) {
   addFun(currentObj, newObject);//方法则是保留本地的新建实例  new Search()这样
-  //mergeDate(currentObj, newObject);
+  // @ts-ignore
+  mergeData(currentObj, newObject);
   return currentObj;
 }
 
 export function deepCopyStrict(currentObj, newObject) {
   addFun(currentObj, newObject, 1);
-  // mergeDate(currentObj, newObject, 1);
+  // mergeData(currentObj, newObject, 1);
   return currentObj;
 }
 

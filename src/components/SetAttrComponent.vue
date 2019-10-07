@@ -51,6 +51,7 @@
         </div>
 
         <div v-if="item.type==='arr' && item.value.length>0" class="arr-box">
+
           <div v-for="(arr_item,idx) in item.value" :key="idx" class="arr-row"
                style="background: #f2f2f2;padding: 20px;">
             <!--简单值-->

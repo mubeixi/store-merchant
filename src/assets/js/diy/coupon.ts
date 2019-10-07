@@ -25,6 +25,31 @@ function setAttrData() {
     title: '优惠券设置',
     content: [
       {
+        type: 'radio',
+        text: '样式',
+        editType: 'config',
+        editKey: 'type',
+        model: this.config.type,
+        value: [
+          {
+            label: '样式1',
+            value: 1,
+          },
+          {
+            label: '样式2',
+            value: 2,
+          },
+          {
+            label: '样式3',
+            value: 3,
+          },
+          {
+            label: '样式4',
+            value: 4,
+          },
+        ],
+      },
+      {
         type: 'addbtn',
         text: '',
         label: '选择优惠券',
@@ -61,6 +86,7 @@ function setAttrData() {
           // this.vm.$store.state.activeAttr.value.list = this.value.list;// 传出去
         },
         removeCB: (idx) => {
+
           this.value.list.splice(idx, 1);
 
           //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
@@ -68,23 +94,7 @@ function setAttrData() {
           this.vm.$store.commit('activeAttr', this);// 传出去
         }
       },
-      {
-        type: 'radio',
-        text: '样式',
-        editType: 'config',
-        editKey: 'type',
-        model: this.config.type,
-        value: [
-          {
-            label: '样式1',
-            value: 1,
-          },
-          {
-            label: '样式2',
-            value: 2,
-          },
-        ],
-      },
+
     ],
   };
 
