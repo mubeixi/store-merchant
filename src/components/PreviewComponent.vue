@@ -417,21 +417,21 @@
             ...mapActions(['setTemplateEditIndex', 'setTmplData']),
         },
         mounted(){
-            let _self = this;
-            this.$nextTick().then(res=>{
-                document.onkeydown = function(event){
-                    var e = event || arguments.callee.caller.arguments[0];
-                    console.log(e)
-                    switch (e.keyCode) {
-                        case 8:
-                        case 46:
-                            _self.removeTemplateByKeyCode()
-                            break;
-                    }
-
-
-                }
-            })
+            // let _self = this;
+            // this.$nextTick().then(res=>{
+            //     document.onkeydown = function(event){
+            //         var e = event || arguments.callee.caller.arguments[0];
+            //         console.log(e)
+            //         switch (e.keyCode) {
+            //             case 8:
+            //             case 46:
+            //                 _self.removeTemplateByKeyCode()
+            //                 break;
+            //         }
+            //
+            //
+            //     }
+            // })
         }
     })
 
