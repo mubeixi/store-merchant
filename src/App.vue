@@ -7,3 +7,10 @@
   @import "assets/css/app.styl";
 
 </style>
+<style lang="less">
+  #canvas{
+    *::-webkit-scrollbar{
+      display:none !important;
+    }
+  }
+</style>
