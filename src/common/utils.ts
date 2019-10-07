@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import {baseApiUrl} from "@/common/env";
+import {fun} from "@/common/index";
+import _ from "underscore"
 
 function $(el) {
   return document.querySelectorAll(el);
@@ -73,6 +75,21 @@ function mergeData(current, newObj, strict) {
 }
 
 /**
+ * 深拷贝，将tmplObj的属性和方法，都和targetObJ混合，如目标对象无属性/方法则创建，如有则根据参数cover决定是否强制覆盖。
+ * @param targetObj
+ * @param tmplOjb
+ * @param cover
+ *
+ * 一般来说，无脑深拷贝就行了
+ */
+function mergeObject(targetObj,tmplOjb,cover) {
+  let obj = null;
+
+
+  return obj;
+}
+
+/**
  * 深拷贝，解决引用的问题。
  * @param currentObj
  * @param newObject
@@ -82,7 +99,7 @@ function mergeData(current, newObj, strict) {
 export function deepCopy(currentObj, newObject) {
   addFun(currentObj, newObject);//方法则是保留本地的新建实例  new Search()这样
   // @ts-ignore
-  mergeData(currentObj, newObject);
+  // mergeData(currentObj, newObject);
   return currentObj;
 }
 

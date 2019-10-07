@@ -186,7 +186,7 @@ class Title extends Common {
 
   styleDefault = {
     color: '#333',
-    bgColor: '#e6e6e6',
+    bgColor: '#fff',
   }
 
   config = {}
