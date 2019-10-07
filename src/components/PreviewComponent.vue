@@ -383,6 +383,8 @@
 
                 this.$store.commit('templateEditIndex', 0)
 
+                this.clickPlugin(0);
+
                 // 用心良苦啊,删除的时候还要保留这个页面，确实比较符合需要
                 // if (name.substring(0, 9) === 'switchNav') {
                 //   // 删除导航及其他页面

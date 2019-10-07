@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-show="tmplData[0] && tmplData[0].length>0">
     <div class="title" style="" v-show="eTitle">
       <div class="leftText">{{eTitle}}</div>
     </div>
