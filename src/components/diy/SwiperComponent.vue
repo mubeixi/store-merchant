@@ -1,5 +1,5 @@
 <template>
-  <div @click.stop="setData({}, 0)" class="swiper wrap fun-preview-swiper">
+  <div @click.stop="setData({}, 0)" class="swiper wrap fun-preview-swiper" :class="{single:swiper.value.list.length<2}">
     <el-carousel
       :autoplay="swiper.config.autoplay"
       :interval="swiper.config.interval|str2num"
