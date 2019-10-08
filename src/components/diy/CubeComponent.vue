@@ -95,6 +95,11 @@
             }
         },
         watch: {
+            'cube.config.row':{
+              handler(val){
+
+              }
+            },
             // 属性变化
             activeAttr: {
                 deep: true,
