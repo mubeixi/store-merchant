@@ -26,6 +26,8 @@ function setAttrData() {
       {
         type: 'slider',
         text: '页面边距',
+        max:30,
+        min:0,
         editType: 'style',
         editKey: 'wrapmargin',
         model: this.style.wrapmargin,
@@ -33,6 +35,8 @@ function setAttrData() {
       {
         type: 'slider',
         text: '图片间距',
+        max:30,
+        min:0,
         editType: 'style',
         editKey: 'margin',
         model: this.style.margin,
@@ -60,16 +64,20 @@ function setAttrData() {
         },
         value: [
           {
-            label: '5',
+            label: '4X4',
+            value: 4,
+          },
+          {
+            label: '5X5',
             value: 5,
           },
           {
-            label: '7',
-            value: 7,
+            label: '6X6',
+            value: 6,
           },
           {
-            label: '10',
-            value: 10,
+            label: '7X7',
+            value: 7,
           },
 
         ],

@@ -566,3 +566,17 @@ function isNum(value) {
 function getAreaPoint(row_idx, col_idx, row_idx1, col_idx1, scale) {
   return {x: row_idx * scale, y: col_idx * scale, x1: row_idx1 * scale, y1: col_idx1 * scale}
 }
+
+
+
+export const arrayUnique = (arr)=>{
+  var res=[];
+  for(var i=0,len=arr.length;i<len;i++){
+    var obj = arr[i];
+    for(var j=0,jlen = res.length;j<jlen;j++){
+      if(res[j]===obj) break;
+    }
+    if(jlen===j)res.push(obj);
+  }
+  return res;
+}

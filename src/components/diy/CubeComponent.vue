@@ -1,6 +1,6 @@
 <template>
   <div @click.stop="setData({}, 0)" class="cube wrap">
-    <div class="box" :style="{width:fullW+'px',height:fullW+'px'}">
+    <div class="box" :style="{width:fullW+'px'}">
       <!--      <div v-for="(row,idx1) in cube.value.list" class="row" :style="{height:colWH+'px'}">-->
       <!--        <div-->
       <!--          @click="colClick(idx1,idx2)"-->
@@ -13,11 +13,14 @@
       <!--        </div>-->
       <!--      </div>-->
 
-      <div class="postion-wrap" :style="{marginLeft:cube.style.wrapmargin+'px',height:fullW+'px',marginRight:cube.style.wrapmargin+'px'}">
+
+<!--      :style="{margin:cube.style.wrapmargin+'px',height:fullW*(1-2*cube.style.wrapmargin/fullW)+'px',marginRight:cube.style.wrapmargin+'px'}"-->
+      <div class="postion-wrap" :style="[getWrapStyle()]">
         <!--所有热区用绝对定位实现-->
         <div class="active" :data-idx="area.IDX" :style="[getAreaStyle(area)]"
              v-for="(area,aidx) in cube.value.list">
           <div class="mask" :style="{backgroundImage:'url('+domainFunc(area.bgimg)||''+')'}"></div>
+<!--          <img class="img" :src="domainFunc(area.bgimg)" />-->
           <!--        <pre>{{area}}</pre>-->
           <!--        <i class="el-icon-error delicon" @click.stop="delArea(area)" />-->
         </div>
@@ -36,6 +39,7 @@
     import {mapState} from 'vuex';
     import Cube from '@/assets/js/diy/cube';
     import {deepCopy, domain} from '@/common/utils';
+    import {getRowColSpan} from '@/assets/js/diy/tool/MagicCube';
 
     @Component({
         props: {
@@ -50,7 +54,10 @@
         data() {
             return {
                 cube: {},
-                CTX: {}
+                CTX: {},
+                colH:0,
+                colW:0
+
             };
         },
         computed: {
@@ -70,9 +77,24 @@
                     return 375-2*this.cube.style.wrapmargin;
                 }
             },
+            //这个方法需要调整下
             colWH() {
+
                 return this.W / this.cube.config.row
             },
+            // colW() {
+            //
+            //     //得到横纵的缝隙
+            //     let {rownum,colnum} = getRowColSpan(this.cube.value.list);
+            //
+            //     return (this.W) / colnum+1
+            // },
+            // colH() {
+            //     //得到横纵的缝隙
+            //     let {rownum,colnum} = getRowColSpan(this.cube.value.list);
+            //
+            //     return this.fullW*(1-this.cube.style.wrapmargin/this.fullW*2) / rownum+1
+            // },
             className() {
                 return 'style1';//+this.nav.config.style
             },
@@ -95,6 +117,16 @@
             }
         },
         watch: {
+            'cube.value.list':{
+              deep:true,
+                immediate:true,
+              handler:function(val){
+                  if(!val ||val.length<1)return;
+                  let {rownum,colnum} = getRowColSpan(val);
+                  this.colW = (this.W) / (colnum+1)
+                  this.colH = this.fullW*(1-this.cube.style.wrapmargin/this.fullW*2) / (rownum+1)
+              }
+            },
             'cube.config.row':{
               handler(val){
 
@@ -111,13 +143,26 @@
         },
         components: {},
         methods: {
+            getWrapStyle(){
+                let styleObj = {
+                    margin:-1*this.cube.style.wrapmargin/2+'px',
+                    width:this.fullW*(1-this.cube.style.wrapmargin/this.fullW*2)+'px',
+                    height:this.fullW*(1-this.cube.style.wrapmargin/this.fullW*2)+'px',
+                }
+
+                return styleObj;
+            },
             getAreaStyle(area) {
                 let styleObj = {
-                    left: area.x * this.colWH + this.cube.style.wrapmargin + 'px',
-                    top: area.y * this.colWH + this.cube.style.wrapmargin + 'px',
+                    left: area.x * this.colWH+this.cube.style.wrapmargin+'px',
+                    top: area.y * this.colWH  + 'px',
                     width: (area.x1 - area.x) * this.colWH + 'px',
                     height: (area.y1 - area.y) * this.colWH + 'px',
-                    borderWidth: this.cube.style.margin+'px'
+                    borderTopWidth: area.y==0?0:this.cube.style.margin/2+'px',
+                    borderLeftWidth: area.x==0?0:this.cube.style.margin/2+'px',
+                    borderRightWidth: area.x1==this.cube.config.row?0:this.cube.style.margin/2+'px',
+                    borderBottomWidth: area.y1==this.cube.config.row?0:this.cube.style.margin/2+'px',
+
                 };
                 // if(area.bgimg){
                 //   console.log(333)
@@ -152,6 +197,13 @@
             this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
             this.cube = deepCopy(new Cube(), this.data);
 
+            if(this.data.value && this.data.value.list.length>0){
+                this.cube.value.list = [...this.data.value.list];
+            }
+
+            //利用数据生成一下attrData
+            this.cube.setIndex(0,{value:false,config:false})
+
             this.CTX = this.cube;
 
         }
@@ -172,13 +224,23 @@
     position: absolute;
 
     .mask {
-      .cover-full-bg(cover, 0, white);
+      .cover-full-bg(cover, 0, #f2f2f2);
       position: absolute;
-      left: 1px;
-      bottom: 1px;
-      right: 1px;
-      top: 1px;
-      background-color: white;
+      left: 0px;
+      bottom: 0px;
+      right: 0px;
+      top: 0px;
+
+    }
+
+    .img{
+      /*position: absolute;*/
+      /*left: 0;*/
+      /*top: 0;*/
+      /*width: 100%;*/
+      /*height: 100%;*/
+      /*vertical-align: baseline;*/
+      /*opacity: 0;*/
     }
 
     &.act {
@@ -190,9 +252,9 @@
     }
 
     box-sizing: border-box;
-    border: 1px rgba(40, 95, 165, 0.1) solid;
+    border: 1px #f2f2f2 solid;
 
-    background: rgba(63, 142, 243, 0.1);
+    /*background: rgba(63, 142, 243, 0.1);*/
     box-sizing: border-box;
     /*z-index: 2;*/
 
@@ -219,8 +281,10 @@
   }
 
   .box {
-    margin-bottom: 15px;
+
     position: relative;
+    min-height: 20px;
+    overflow: hidden;
     .border();
     /*box-sizing: border-box;*/
 

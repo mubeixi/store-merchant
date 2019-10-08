@@ -215,6 +215,8 @@
     import Cube from '@/assets/js/diy/cube';
     import Tab from '../assets/js/diy/tab';
 
+    import MagicCube from '@/assets/js/diy/tool/MagicCube';
+
     @Component({
         name: 'PreviewComponent',
         props: {},
@@ -303,7 +305,46 @@
                     this.$fun.info({msg:'操作过快'})
                     return;
                 }
+
+
+
+
+                //各种数据检测
+                for(var i in this.templateList){
+                    for(var j in this.templateList[i]){
+                        let pluginName = this.templateList[i][j]
+
+                        if(pluginName.indexOf('cube')!=-1){
+
+                            let conf = this.templateData[i][j];
+
+                            //检查图片设置
+                            for(var valItem of conf.value.list){
+                                console.log(valItem)
+                                if(!valItem.bgimg){
+                                    this.$fun.error({title:'设置错误',msg:'魔方中有区块未设置图片'})
+                                    //去掉锁
+                                    return;
+                                }
+                            }
+
+                            //用数据创建一个魔方实例
+                            let MagicCubeCTX = new MagicCube(conf.config.row,375)
+                            MagicCubeCTX.selects = [...conf.value.list];
+                            //看是否填充满
+                            if(!MagicCubeCTX.is_full()){
+                                this.$fun.error({title:'设置错误',msg:'魔方需填充满'})
+                                //去掉锁
+                                return;
+                            }
+
+
+                        }
+                    }
+                }
+
                 this.isAjax = true
+
                 let postData = {
                     Skin_ID: this.skinInfo.Skin_ID,
                     Home_Json: JSON.stringify(this.templateData)

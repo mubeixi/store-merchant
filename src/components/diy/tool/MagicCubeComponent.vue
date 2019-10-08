@@ -17,12 +17,12 @@
 
 
       <!--所有热区用绝对定位实现-->
-      <div class="active" :data-idx="area.IDX" @click="activeArea(aidx,area)"  :class="areaActiveIndex===aidx?'act':''"
+      <div class="active" :data-idx="area.IDX" @click.stop="activeArea(aidx,area)"   :class="areaActiveIndex===aidx?'act':''"
            :style="[getAreaStyle(area)]" v-for="(area,aidx) in CTX.selects">
-        <div class="mask" :style="{backgroundImage:'url('+area.bgimg||''+')'}"></div>
+        <div  class="mask" :style="{backgroundImage:'url('+area.bgimg||''+')'}"></div>
         <span class="tip" v-show="!area.bgimg">{{getTip(area)}}</span>
         <!--        <img src="@/assets/img/icon-del.png" class="delicon" />-->
-        <i class="el-icon-error delicon" @click="delArea(area)"/>
+        <i class="el-icon-error delicon" @click.stop="delArea(area)"/>
         <!--        <svg class="fun-icon icon delicon" @click="delArea(area)" aria-hidden="true">-->
         <!--          <use xlink:href="#icon-del"></use>-->
         <!--        </svg>-->
@@ -59,11 +59,15 @@ import MagicCube from "@/assets/js/diy/tool/MagicCube";
 import {domain} from '@/common/utils';
 import uploadImgComponents from '@/components/common/uploadImgComponents';
 import BindLinkComponents from '@/components/BindLinkComponents';
-
+import _ from 'underscore'
 
 export default {
   name:'MagicCubeComponent',
   props:{
+    selecteds:{
+      type:Array,
+      default:function(){return []}
+    },
     row:{
       type:Number,
       default:5
@@ -78,7 +82,7 @@ export default {
     return {
       CTX: null,
       mouseInBox: false,
-      currentArea: null,
+      currentArea: {},
       tempAreaObj: {
         x: null,
         y: null,
@@ -122,7 +126,6 @@ export default {
     },
     //传上去
     'CTX.selects':{
-      immediate:true,
       deep:true,
       handler(val){
         this.$emit('selectChange',val)
@@ -131,13 +134,13 @@ export default {
   },
   methods:{
     bindLink(){
-      console.log(this.areaActiveIndex);
+      // console.log(this.areaActiveIndex);
       this.$emit('openBindLink',this.areaActiveIndex)
     },
     rest(){
 
       this.CTX=null;
-      this.currentArea=null;
+      this.currentArea={};
       this.areaActiveIndex=null;
       this.showConfig=false;
       this.isDrag=false;//标记是否点击了一次
@@ -186,7 +189,7 @@ export default {
      */
     enter(idx1, idx2) {
 
-      console.log(idx1, idx2);
+      // console.log(idx1, idx2);
 
       //没有进入编辑模式则不算
       if (!this.isTempDrag) return;
@@ -225,19 +228,21 @@ export default {
 
     },
     domainFunc(url) {
-      console.log(url);
+      // console.log(url);
       return domain(url);
     },
     uploadImgCB(res) {
-      console.log(res.data.path);
+      // console.log(res.data.path);
       if (!res.data.path) return;
-      if (!this.currentArea) return;
+      if (_.isEmpty(this.currentArea)) return;
 
       this.$set(this.currentArea, 'bgimg', domain(res.data.path));//不这样数据装死不动
 
 
     },
     activeArea(idx, area) {
+
+      // console.log('4444444444444')
       this.areaActiveIndex = idx;
       this.currentArea = area;
     },
@@ -245,6 +250,7 @@ export default {
 
     },
     delArea(area) {
+      // console.log('3333333')
       this.CTX.del_selects(area);
       this.clearIdx();
     },
@@ -256,14 +262,14 @@ export default {
 
     },
     getAreaStyle(area) {
-      console.log(area);
+      // console.log(area);
       let styleObj = {
         left: area.x * this.colWH + 'px',
         top: area.y * this.colWH + 'px',
         width: (area.x1 - area.x) * this.colWH + 'px',
         height: (area.y1 - area.y) * this.colWH + 'px',
       };
-      console.log(styleObj);
+      // console.log(styleObj);
       // if(area.bgimg){
       //   console.log(333)
       //   styleObj.backgroundImage = 'url('+domain(area.bgimg)+')';
@@ -271,9 +277,9 @@ export default {
       return styleObj;
     },
     colClick(idx1, idx2) {
-      console.log(idx1, idx2);
+      // console.log(idx1, idx2);
       if (!this.isDrag) {
-        console.log('赋值给第1个');
+        // console.log('赋值给第1个');
         this.row_idx = idx1;
         this.col_idx = idx2;
 
@@ -298,7 +304,7 @@ export default {
         //   return;
         // }
 
-        console.log('赋值给第二个');
+        // console.log('赋值给第二个');
         this.row_idx1 = idx1;
         this.col_idx1 = idx2;
         this.isDrag = false;
@@ -352,9 +358,15 @@ export default {
       this.col_idx = null;
       this.row_idx1 = null;
       this.col_idx1 = null;
+
+      // console.log(322)
+      this.currentArea = {};
+
+      this.areaActiveIndex = -1;
     },
     INIT(){
       this.CTX = new MagicCube(this.row,this.width);//还有label。。真牛
+      this.CTX.selects = this.CTX.selects.concat(this.selecteds)
       window.CTX = this.CTX;
     }
   },
@@ -390,6 +402,7 @@ export default {
 
     .tip {
       position: absolute;
+      overflow: hidden;
       width: 50%;
       left: 25%;
       text-align: center;

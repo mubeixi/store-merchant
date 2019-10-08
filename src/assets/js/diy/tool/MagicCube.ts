@@ -1,4 +1,5 @@
 //魔方类
+import {arrayUnique} from "@/common/utils";
 
 const plane_contact_plane = (check: { x: number; y: number, x1: number, y1: number }, plane: Object, full: Boolean = false): boolean => {
 
@@ -15,6 +16,32 @@ const plane_contact_plane = (check: { x: number; y: number, x1: number, y1: numb
   } else {
     return true // 碰撞
   }
+
+}
+
+/**
+ * 输入数组和指定矩形，返回这个元素左和上有几个缝隙。
+ * @param areaList 整个界面的数组
+ * @param area 对应的矩形
+ */
+export const getRowColSpan = (areaList:object,area:object)=>{
+  let y1arr = areaList.map(areaItem=>{
+    return areaItem.y1;
+  })
+
+  //得到所有不同y的值
+  let yarr = arrayUnique(y1arr)
+
+  let x1arr = areaList.map(areaItem=>{
+    return areaItem.x1;
+  })
+
+  //得到所有不同y的值
+  let xarr = arrayUnique(x1arr)
+
+  //加入横竖各有有四个方块，则各需要3个缝隙（只计算区块之间的缝隙即可)。
+
+  return {rownum:yarr.length-1>=0?yarr.length-1:0,colnum:xarr.length-1>=0?xarr.length-1:0}
 
 }
 
@@ -57,6 +84,17 @@ const plane_in_plane = (check: { x: number; y: number, x1: number, y1: number },
 
 }
 
+/**
+ * 计算矩形面积
+ * @param area
+ */
+const countArea = (area:object)=>{
+
+  // @ts-ignore
+  let { x, y, x1, y1} = area;
+  return (y1-y) * (x1-x)
+}
+
 
 class MagicCube {
 
@@ -69,9 +107,10 @@ class MagicCube {
 
   //记录已经选择的热区
 
-  constructor(row: number = 5, w: number = 750) {
+  constructor(row: number = 5, w: number = 750,selecteds = []) {
     this.row = row;
     this.width = w;
+    //this.selects = selecteds;//初始化选择的数据
     this.base = {x: 0, y: 0, x1: row, y1: row}
   }
 
@@ -81,6 +120,24 @@ class MagicCube {
 
   get_selects() {
     return this.selects;
+  }
+
+
+  /**
+   * 检查已用面积是不是小于总面积，这样可以检测是否铺满
+   */
+  is_full(){
+    // @ts-ignore
+    let areaCount = 0 ,fullAreaCount = this.row * this.row;
+
+    for(var area of this.selects){
+      areaCount += countArea(area)
+    }
+    console.log(areaCount,fullAreaCount);
+
+    return areaCount === fullAreaCount;
+
+
   }
 
   /**

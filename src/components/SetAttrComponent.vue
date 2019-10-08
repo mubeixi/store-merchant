@@ -301,9 +301,9 @@
 
         <!--魔方-->
         <div v-if="item.type==='MagicCube'">
-          <magic-cube-component :row.sync="item.row"
+          <magic-cube-component :row.sync="item.row" :selecteds.sync="item.value"
                                 @mouseenter.native="bindBindLinkDiaCall(item.bindCB)"
-                                @selectChange="bingSelectChange"
+                                @selectChange="bindSelectChange"
                                 @openBindLink="openMagicCubeBindLink"/>
         </div>
 
@@ -413,7 +413,7 @@
                 this.bindLinkDialogShow = true
                 this.bindLinkSuccessCall = item.bindLinkCB
             },
-            bingSelectChange(arr) {
+            bindSelectChange(arr) {
                 console.log('选中区域变化', arr)
                 this.currentData.seclectChangeCB && this.currentData.seclectChangeCB(arr)
 
