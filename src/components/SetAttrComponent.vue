@@ -142,7 +142,7 @@
                                @click="openSwiperBindLink(item,idx,item.bindCB)">绑定链接
                     </el-button>
                   </el-tooltip>
-                  <span class="padding10-c font12">{{item.value[idx].tooltip|cutstr(20,'..')}}</span>
+                  <span class="padding10-c font12" :title="item.value[idx].tooltip">{{item.value[idx].tooltip|cutstr(14,'..')}}</span>
                 </div>
 
               </div>

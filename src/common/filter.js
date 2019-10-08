@@ -12,6 +12,7 @@ export default [
   {
     name:'cutstr',
     methods: (str,len,tip) => {
+      if(!str)return '';
       console.log(str,len,tip)
       if(str.length<len)return str;
       return str.substring(0,len)+tip

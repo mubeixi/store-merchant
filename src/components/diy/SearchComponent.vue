@@ -80,6 +80,7 @@
             },
             'search.style.position':{
               deep:true,
+                immediate:true,
               handler(val){
 
                   this.$nextTick().then(res=>{
@@ -121,6 +122,39 @@
         components: {},
         methods: {
             setData(item, index) {
+                console.log('点击了一次')
+
+                if(this.search.style.position==='absolute'){
+
+
+
+
+
+
+
+
+                    this.search.style.y = parseInt(document.getElementById('searchWrap'+this.index).style.top);//在这里来修改
+                }
+
+                let sectionEle = document.getElementById('section'+this.index);
+
+                if(this.search.style.position==='absolute'){
+
+                    //绝对定位就不要外边框了
+                    if(sectionEle.className.indexOf('noborder')<0){
+                        sectionEle.className += ' noborder'
+                    }
+
+                    // moveanyway(eleId,true)
+                }else{
+
+                    sectionEle.className = sectionEle.className.replace(/noborder/,'')
+
+                    //取消事件绑定
+                    // moveanyway(eleId,false)
+                }
+
+
 
                 // @ts-ignore
                 this.$store.commit('activeAttr', this.search);// 这里点击之后，setAttr马上就有响应。
@@ -130,6 +164,30 @@
             },
             // ...mapActions(),
         },
+        mounted(){
+            // this.$nextTick().then(res=>{
+            //     let eleId = 'searchWrap'+this.index
+            //     let sectionEle = document.getElementById('section'+this.index);
+            //
+            //
+            //
+            //     if(this.search.style.position==='absolute'){
+            //
+            //         //绝对定位就不要外边框了
+            //         if(sectionEle.className.indexOf('noborder')<0){
+            //             sectionEle.className += ' noborder'
+            //         }
+            //
+            //         // moveanyway(eleId,true)
+            //     }else{
+            //
+            //         sectionEle.className = sectionEle.className.replace(/noborder/,'')
+            //
+            //         //取消事件绑定
+            //         // moveanyway(eleId,false)
+            //     }
+            // })
+        }
 
     })
     export default class SearchComponent extends Vue {
@@ -153,7 +211,11 @@
             // @ts-ignore
             this.search = deepCopy(searchObj, this.data);
 
+
+
         }
+
+
     }
 </script>
 

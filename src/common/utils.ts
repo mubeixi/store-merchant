@@ -287,11 +287,30 @@ export class pageMove {
     });
   }
 
-  static sortStart() {
+  static sortStart(e) {
     pageMove.sortMiddleArr = Array.from(sortEl).map(
       v => v.offsetTop + parseInt(getStyle(v, 'height')) / 2,
     );
     pageMove.canvasScrollTop = pageMove.canvas.scrollTop;
+
+    console.log(e)
+
+    // const that = pageMove;
+    //
+    // const {downIndex} = that.vm.$data.sort;// 原来在的位置
+    //
+    // let TARGET = e.target;
+    //
+    // if(TARGET.className.indexOf('search')>-1 && TARGET.className.indexOf('absolute')>-1){
+    //
+    //   //需要更新一下商品
+    //   if(TARGET.id.indexOf('searchWrap')!==-1){
+    //     that.vm.clickPlugin(downIndex)
+    //   }
+    //   return;
+    // }
+
+
   }
 
   static sortDrag(e) {
@@ -303,7 +322,8 @@ export class pageMove {
     //在这里插入一下拖动搜索框的逻辑
     if(TARGET.className.indexOf('search')>-1 && TARGET.className.indexOf('absolute')>-1){
       console.log(e.clientY)
-      TARGET.style.top = e.clientY-100+'px';
+      //因为绝对定位只能参照上一层，特别麻烦。
+      TARGET.style.top = e.clientY-$('.main')[0].offsetTop+'px';
       return;
     }
 
@@ -334,13 +354,6 @@ export class pageMove {
 
   static sortDragend(e) {
 
-    let TARGET = e.target;
-
-    //在这里插入一下拖动搜索框的逻辑
-    if(TARGET.className.indexOf('search')>-1 && TARGET.className.indexOf('absolute')>-1){
-      return;
-    }
-
     const that = pageMove;
     e.preventDefault();
     e.stopPropagation();
@@ -349,6 +362,21 @@ export class pageMove {
 
     const {downIndex} = that.vm.$data.sort;// 原来在的位置
     const {sortIndex} = that.vm.$data.sort;// 需要被拖动到的位置
+
+
+    let TARGET = e.target;
+
+    //在这里插入一下拖动搜索框的逻辑
+    if(TARGET.className.indexOf('search')>-1 && TARGET.className.indexOf('absolute')>-1){
+
+      //需要更新一下商品
+      if(TARGET.id.indexOf('searchWrap')!==-1){
+        that.vm.clickPlugin(downIndex)
+      }
+      return;
+    }
+
+
 
     if (downIndex == sortIndex) {
       // console.log('不替换')

@@ -9,7 +9,6 @@
         <section
           :ref="item | dragSorts"
           v-for="(item, index) in templateList[templateEditIndex]"
-
           :key="index"
           :id="'section'+index"
           class="section"
@@ -355,7 +354,7 @@
                 this.currentData.index = index;
                 this.currentData.name = item;
 
-                this.setEditStatus(false)
+                // this.setEditStatus(false)
                 //this.editData = config;
             },
             contextmenuRightEv(e, item, index) {
@@ -729,6 +728,9 @@
   .section
     position relative
 
+  .section.search
+    position initial
+
   .section:before {
     content: "";
     position: absolute;
@@ -745,11 +747,11 @@
   }
 
   .section.active.noborder{
-    position static
+    /*position static*/
   }
 
   .section.active.noborder:before{
-    //display:none;
+    display:none;
   }
 
   .section.active:before {
