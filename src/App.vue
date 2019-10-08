@@ -10,7 +10,7 @@
 <style lang="less">
   #canvas{
     *::-webkit-scrollbar{
-      display:none !important;
+      /*display:none !important;*/
     }
   }
 </style>

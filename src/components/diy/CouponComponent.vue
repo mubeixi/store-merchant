@@ -136,9 +136,9 @@
             this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
             this.coupon = deepCopy(new Coupon(), this.data);
 
-            // if(this.data.value && this.data.value.list.length>0){
-            //     this.coupon.value.list = [...this.data.value.list];
-            // }
+            if(this.data.value && this.data.value.list.length>0){
+                this.coupon.value.list = [...this.data.value.list];
+            }
         }
     }
 </script>
@@ -156,22 +156,29 @@
     }
   }
 
-  .coupon-list::-webkit-scrollbar {
-    display: none;
-  }
+  /*.coupon-list::-webkit-scrollbar {*/
+  /*  display: none;*/
+  /*}*/
 
-  .list::-webkit-scrollbar {
-    display: none;
-  }
+  /*.list::-webkit-scrollbar {*/
+  /*  display: none;*/
+  /*}*/
 
   .style4 {
     /*margin: 0 10px 0;*/
     /*padding-top: 10px;*/
+    width: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+
 
     .item {
       /*display: flex;*/
+      display: inline-block;
+      height: 70px;
       position: relative;
-      margin-bottom: 10px;
+      margin-right: 10px;
 
 
 
@@ -198,10 +205,12 @@
         padding: 10px 6px;
         box-sizing: border-box;
         color: white;
-        height: 90px;
-        line-height: 70px;//padding10
+        height: 70px;
+        line-height: 40px;//padding10
         text-align: center;
+        font-size: 14px;
         .cwrap{
+          padding: 5px;
           border:1px solid #c1c1c1;
           /*margin: 10px;*/
         }
@@ -242,10 +251,19 @@
     /*margin: 0 10px 0;*/
     /*padding-top: 10px;*/
 
+    width: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+
     .item {
-      display: flex;
+
+      height: 70px;
+      display: inline-block;
+      margin-right: 20px;
       position: relative;
-      margin-bottom: 10px;
+      padding-right: 100px;
+
       background: white;
 
       &:before{
@@ -253,6 +271,7 @@
         content: "";
         position: absolute;
         top: 0;
+        left: -10px;
         width: 10px;
         height: 100%;
         background-size: 100% 100%;
@@ -261,15 +280,15 @@
 
 
       .c {
-        flex: 1;
-        margin-left: 10px;
-        height: 90px;
 
-        font-size: 16px;
+        /*margin-left: 10px;*/
+        height: 70px;
+        font-size: 14px;
         color: white;
-        line-height: 90px;
+        line-height: 70px;
         text-align: center;
         background-color: #e74c2c;
+        padding: 0 10px;
 
 
         /*.title {*/
@@ -286,8 +305,13 @@
       }
 
       .r {
+        float: right;
+        height: 70px;
         width: 100px;
-        position: relative;
+        position: absolute;
+        right: 0px;
+        top: 0;
+        /*position: relative;*/
         background-size: 100% 100%;
         background-repeat: no-repeat;
         background-position: left center;
@@ -309,12 +333,19 @@
     /*margin: 0 10px 0;*/
     /*padding-top: 10px;*/
 
+    /*height: 72px;*/
+    width: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+
     .item {
+      display: inline-block;
       position: relative;
-      height: 90px;
+      height: 70px;
+      margin-right: 6px;
       /*display: flex;*/
       font-size: 16px;
-      margin-bottom: 10px;
       background: white;
 
       &:before,&:after{
@@ -333,16 +364,17 @@
       }
 
       .c {
-
+        font-size: 14px;
         text-align: center;
-        line-height: 90px;
+        line-height: 70px;
         color: #555;
         background-color: #e74c2c ;
         color: white;
         margin: 0 10px;
+        padding: 0 10px;
+
 
         .title {
-          font-size: 22px;
           font-family: "Microsoft YaHei";
           .money {
             margin-left: 4px;
@@ -356,14 +388,14 @@
   }
 
   .style1block {
-    height: 72px;
+    /*height: 72px;*/
     width: 100%;
     overflow-x: scroll;
     overflow-y: hidden;
     white-space: nowrap;
 
     .item {
-      height: 72px;
+      height: 70px;
       box-sizing: border-box;
       overflow: hidden;
       text-align: center;
