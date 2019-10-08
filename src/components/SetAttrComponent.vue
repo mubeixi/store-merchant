@@ -41,7 +41,7 @@
 
 
         </el-tooltip>
-        <span v-if="item.type === 'setlink'" class="font12 graytext2 padding10-c">{{item.model.tooltip}}</span>
+        <span v-if="item.type === 'setlink'" class="font12 graytext2 padding10-c">{{item.model.tooltip|cutstr(20,'..')}}</span>
 
         <!--        <bind-link v-model="selectPageShow" :checkedIndex='pageChecked' :data='currentData.customizeObject' @change='selectPagePath' />-->
 
@@ -82,7 +82,7 @@
                                @click="openSwiperBindLink(item,idx,item.bindCB)">绑定链接
                     </el-button>
                   </el-tooltip>
-                  <span class="padding10-c font12">{{item.value[idx].tooltip}}</span>
+                  <span class="padding10-c font12">{{item.value[idx].tooltip|cutstr(20,'..')}}</span>
                   <div class="graytext2 font12" style="line-height: 22px;">
                     建议尺寸为750*350
                   </div>
@@ -109,7 +109,7 @@
                                @click="openSwiperBindLink(item,idx,item.bindCB)">绑定链接
                     </el-button>
                   </el-tooltip>
-                  <span class="padding10-c font12">{{item.value[idx].tooltip}}</span>
+                  <span class="padding10-c font12">{{item.value[idx].tooltip|cutstr(20,'..')}}</span>
                 </div>
               </div>
 
@@ -142,7 +142,7 @@
                                @click="openSwiperBindLink(item,idx,item.bindCB)">绑定链接
                     </el-button>
                   </el-tooltip>
-                  <span class="padding10-c font12">{{item.value[idx].tooltip}}</span>
+                  <span class="padding10-c font12">{{item.value[idx].tooltip|cutstr(20,'..')}}</span>
                 </div>
 
               </div>
@@ -159,7 +159,7 @@
                              @click="openGoodsBindCate(item,item.bindCB,idx,true)">绑定分类
                   </el-button>
                 </el-tooltip>
-                <span class="padding10-c font12 graytext.graytext2">{{item.value[idx].tooltip}}</span>
+                <span class="padding10-c font12 graytext.graytext2">{{item.value[idx].tooltip|cutstr(20,'..')}}</span>
               </div>
               <div class="flex line10">
                 <div class="graytext" style="padding:0 10px;">显示名称</div>
@@ -276,7 +276,7 @@
               </el-button>
 
             </el-tooltip>
-            <span class="padding10-c font12 graytext">{{item.origintooltip}}</span>
+            <span class="padding10-c font12 graytext">{{item.origintooltip|cutstr(20,'..')}}</span>
 
           </div>
 

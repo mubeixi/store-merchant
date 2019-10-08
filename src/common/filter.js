@@ -10,6 +10,14 @@ export default [
     },
   },
   {
+    name:'cutstr',
+    methods: (str,len,tip) => {
+      console.log(str,len,tip)
+      if(str.length<len)return str;
+      return str.substring(0,len)+tip
+    },
+  },
+  {
     name: 'domain',
     methods: (url) => {
       if (!url) return '';
