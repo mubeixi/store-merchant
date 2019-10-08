@@ -24,3 +24,7 @@ export const setTemplateEditIndex = ({commit}, data) => {
 export const setTmplData = ({commit}, data) => {
   commit('tmplData', data);
 };
+
+export const setEditStatus = ({commit}, data) => {
+  commit('editStatus', data);
+};

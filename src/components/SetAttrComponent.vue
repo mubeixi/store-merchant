@@ -1,5 +1,5 @@
 <template>
-  <div v-show="tmplData[0] && tmplData[0].length>0">
+  <div v-show="tmplData[0] && tmplData[0].length>0" @click="taggleEditStatus">
     <div class="title" style="" v-show="eTitle">
       <div class="leftText">{{eTitle}}</div>
     </div>
@@ -400,7 +400,15 @@
         created() {
             this.pageEl = this
         },
+
         methods: {
+            taggleEditStatus(){
+
+                // let className = document.getElementById('canvas').className
+                // document.getElementById('canvas').className = className.replace(/isMouseInPreview/,'')
+                // this.setEditStatus(true);
+
+            },
             openBindLinkBase(item) {
                 this.bindLinkDialogShow = true
                 this.bindLinkSuccessCall = item.bindLinkCB
@@ -579,7 +587,7 @@
                 if (this.activeAttr.isSendAjax) return;
                 this.currentData = item;
             },
-            ...mapActions(['setActiveAttr']),
+            ...mapActions(['setActiveAttr','setEditStatus']),
         },
 
     })

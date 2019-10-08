@@ -1,7 +1,11 @@
 <template>
   <div>
     <div class="canvasBox" @drop="dropEv" @dragover.prevent >
-      <div class="canvas" id="canvas" @setData="setDataEv" @scroll="canvasScroll($event)" ref="pageTemplageBox" >
+<!--      @mouseover="selectStyle"-->
+<!--      @mouseout="outStyle"-->
+      <div class="canvas" id="canvas"
+           @setData="setDataEv"
+           @scroll="canvasScroll($event)" ref="pageTemplageBox" >
         <section
           :ref="item | dragSorts"
           v-for="(item, index) in templateList[templateEditIndex]"
@@ -273,9 +277,20 @@
                 set() {
                 },
             },
-            ...mapState(['activeAttr', 'tabIndex']),
+            ...mapState(['activeAttr', 'tabIndex','editStatus']),
         },
         methods: {
+            // selectStyle(){
+            //   let className = document.getElementById('canvas').className
+            //   if(className.indexOf('isMouseInPreview')===-1){
+            //       document.getElementById('canvas').className += ' isMouseInPreview'
+            //   }
+            //   this.setEditStatus(false)
+            // },
+            // outStyle(){
+            //     let className = document.getElementById('canvas').className
+            //     document.getElementById('canvas').className = className.replace(/isMouseInPreview/,'')
+            // },
             canvasScroll() {
                 this.canvasScrollTop = this.$refs.pageTemplageBox.scrollTop
                 var editEL = document.querySelector('.section.tab-bar')
@@ -339,6 +354,8 @@
                 // 方便删除的
                 this.currentData.index = index;
                 this.currentData.name = item;
+
+                this.setEditStatus(false)
                 //this.editData = config;
             },
             contextmenuRightEv(e, item, index) {
@@ -414,12 +431,15 @@
                 this[type] && this[type]();
             },
             // 修改当前活跃的index,以及
-            ...mapActions(['setTemplateEditIndex', 'setTmplData']),
+            ...mapActions(['setTemplateEditIndex', 'setTmplData','setEditStatus']),
         },
         mounted(){
-            // let _self = this;
+            let _self = this;
             // this.$nextTick().then(res=>{
             //     document.onkeydown = function(event){
+            //         let className = document.getElementById('canvas').className
+            //         //鼠标必须在范围内
+            //         if(className.indexOf('isMouseInPreview')===-1 || this.editStatus)return;
             //         var e = event || arguments.callee.caller.arguments[0];
             //         console.log(e)
             //         switch (e.keyCode) {
