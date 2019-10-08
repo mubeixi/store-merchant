@@ -371,12 +371,12 @@
 
                 this.removePosition.show = false;
             },
-            removeTemplateByKeyCode(){
+            removeTemplateByKeyCode(idx){
 
-                console.log('监听键盘删除组件事件')
-                if(this.currentData.index<0){
-                    return;
-                }
+                //console.log('监听键盘删除组件事件')
+                // if(this.currentData.index<0){
+                //     return;
+                // }
 
 
                 this.$confirm('确定删除该组件?', '提示', {
@@ -384,7 +384,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.deleteItem(this.currentData.index, this.currentData.name);
+                    this.deleteItem(idx);
                     this.removePosition.show = false;
                 }).catch(() => {
 

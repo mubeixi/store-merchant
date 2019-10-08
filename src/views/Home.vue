@@ -99,10 +99,10 @@
     position fixed
     z-index 999
     right 0px
-    width 100px
+    width 140px
     background white
     bottom 0
-    top 35%
+    top 100px
     /*overflow-y scroll*/
     border 1px solid #e7e7e7
 

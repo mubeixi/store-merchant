@@ -1,9 +1,15 @@
 <template>
   <div class="right-template">
     <ul>
-      <li @click="emitPreviewPlugin(key)" :data-label="item.label"
+      <li @click.stop="emitPreviewPlugin(key)" :data-label="item.label"
           v-for="(item,key) in tmplData[templateEditIndex]">
+        <svg class="fun-icon icon sorticon"  aria-hidden="true">
+          <use xlink:href="#icon-paixu" ></use>
+        </svg>
         {{item.tag|getTitleByTag}}
+        <div class="right" @click.stop="removePlugin(key)">
+          <i  class="el-icon-delete"></i>
+        </div>
       </li>
     </ul>
   </div>
@@ -18,6 +24,9 @@
             emitPreviewPlugin(idx) {
                 this.$parent.$refs.preview.clickPlugin(idx);
             },
+            removePlugin(idx){
+                this.$parent.$refs.preview.removeTemplateByKeyCode(idx);
+            }
         },
         computed: {
             ...mapState(['tmplData', 'templateEditIndex']),
@@ -40,12 +49,34 @@
       overflow: hidden;
 
       li {
-        padding-left 10px
+        padding 0 0 0 10px
         font-size 14px
-        line-height 28px
+        line-height 38px
         cursor pointer
-
         border-bottom 1px solid #e7e7e7
+        color #444
+        height 38px
+        .sorticon{
+          cursor move
+          color #999
+          font-size 18px
+          line-height 38px
+        }
+        .right{
+          float right
+          width 30px
+          text-align center
+        }
+        .el-icon-delete{
+
+          height 38px
+          line-height 38px
+
+        }
+        .el-icon-delete:hover{
+          color #409eff
+
+        }
       }
 
       li:hover {
