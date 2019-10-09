@@ -76,8 +76,8 @@
     for (var v of arr) {
       v.id = v.Category_ID;
       v.label = v.Category_Name;
-      v.path = `/product/list?cate_id=${v.Category_ID}`;
-      v.type = 'default';
+      v.path = `/pages/result/result?Cate_ID=${v.Category_ID}`;
+      v.type = 'classify';
 
       if (v.child) {
         v.children = refreshCateData(v.child);
@@ -239,7 +239,7 @@
               this.innerDialog.product.isHasData = true;
               let data = res.data.map(v => {
                 v.text = `[商品] ${v.Products_Name}`;
-                v.path = `/product/detail?id=${v.Products_ID}`;
+                v.path = `/pages/detail/detail?Products_ID=${v.Products_ID}`;
                 v.type = 'default';
                 return v;
               });
@@ -263,7 +263,7 @@
               {
                 id: 1,
                 text: '个人中心',
-                path: 'personal'
+                path: 'pages/person/person'
               },
               {
                 id: 2,

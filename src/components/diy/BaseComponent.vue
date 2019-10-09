@@ -111,6 +111,9 @@
 <style scoped lang="less">
   @import "~@/assets/css/fun.less";
 
+.wrap{
+  overflow: hidden;
+}
 
   .cover {
     .cover-full-bg(cover, 0);
