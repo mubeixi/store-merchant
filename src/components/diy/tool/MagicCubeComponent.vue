@@ -122,13 +122,13 @@ export default {
       return this.CTX.height
     },
     colWH(){
-      return parseInt(this.CTX.width/this.CTX.row*10)/10
+      return this.CTX.width/this.CTX.row
     },
     colH(){
-      return parseInt(this.CTX.height/this.CTX.row*10)/10
+      return this.CTX.height/this.CTX.row
     },
     rowW(){
-      return parseInt(this.CTX.width/this.CTX.col*10)/10
+      return this.CTX.width/this.CTX.col
     }
   },
   watch:{
@@ -448,10 +448,10 @@ export default {
     .mask {
       .cover-full-bg(cover, 0, white);
       position: absolute;
-      left: 1px;
-      bottom: 1px;
-      right: 1px;
-      top: 1px;
+      left: 0px;
+      bottom: 0px;
+      right: 0px;
+      top: 0px;
       background-color: #e8f7fd;
     }
 
