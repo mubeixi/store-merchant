@@ -329,7 +329,7 @@
                             }
 
                             //用数据创建一个魔方实例
-                            let MagicCubeCTX = new MagicCube(conf.config.row,375)
+                            let MagicCubeCTX = new MagicCube(conf.config.row,conf.config.col,375,375)
                             MagicCubeCTX.selects = [...conf.value.list];
                             //看是否填充满
                             if(!MagicCubeCTX.is_full()){

@@ -99,7 +99,9 @@ const countArea = (area:object)=>{
 class MagicCube {
 
   row: Number;
-  width: Number = 750;
+  col:Number;
+  width: Number;
+  height:Number;
 
   tmpl = {x: 0, y: 0, x2: 0, y2: 0};//模板，用四个角标来记录每个选中的区域
   selects = [];
@@ -107,11 +109,13 @@ class MagicCube {
 
   //记录已经选择的热区
 
-  constructor(row: number = 5, w: number = 750,selecteds = []) {
+  constructor(row: number = 5,col: number = 5, w: number = 750,h: number = 750,selecteds = []) {
     this.row = row;
+    this.col = col;
+    this.height = h;
     this.width = w;
     //this.selects = selecteds;//初始化选择的数据
-    this.base = {x: 0, y: 0, x1: row, y1: row}
+    this.base = {x: 0, y: 0, x1: col, y1: row}
   }
 
   set_row(row: number) {
@@ -128,7 +132,7 @@ class MagicCube {
    */
   is_full(){
     // @ts-ignore
-    let areaCount = 0 ,fullAreaCount = this.row * this.row;
+    let areaCount = 0 ,fullAreaCount = this.row * this.col;
 
     for(var area of this.selects){
       areaCount += countArea(area)

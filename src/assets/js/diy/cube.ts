@@ -19,6 +19,250 @@ function setConfig() {
   // let config = {}
 }
 
+//一行二个的数据模板
+const cube_select_style1 = {
+  row:1,
+  col:2,
+  list:[
+    {
+      IDX:0,
+      bgimg:"",
+      x:0,
+      y:0,
+      x1:1,
+      y1:1
+    },
+    {
+      IDX:1,
+      bgimg:"",
+      x:1,
+      y:0,
+      x1:2,
+      y1:1
+    }
+  ]
+};
+
+// 一行三个
+const cube_select_style2 = {
+  row:1,
+  col:3,
+  list:[
+    {
+      IDX:0,
+      bgimg:"",
+      x:0,
+      y:0,
+      x1:1,
+      y1:1
+    },
+    {
+      IDX:1,
+      bgimg:"",
+      x:1,
+      y:0,
+      x1:2,
+      y1:1
+    },
+    {
+      IDX:2,
+      bgimg:"",
+      x:2,
+      y:0,
+      x1:3,
+      y1:1
+    }
+  ]
+};
+
+//一行四个
+const cube_select_style3 = {
+  row:1,
+  col:4,
+  list:[
+    {
+      IDX:0,
+      bgimg:"",
+      x:0,
+      y:0,
+      x1:1,
+      y1:1
+    },
+    {
+      IDX:1,
+      bgimg:"",
+      x:1,
+      y:0,
+      x1:2,
+      y1:1
+    },
+    {
+      IDX:2,
+      bgimg:"",
+      x:2,
+      y:0,
+      x1:3,
+      y1:1
+    },
+    {
+      IDX:3,
+      bgimg:"",
+      x:3,
+      y:0,
+      x1:4,
+      y1:1
+    }
+  ]
+};
+
+//两左两右
+const cube_select_style4 = {
+  row:2,
+  col:2,
+  list:[
+    {
+      IDX:0,
+      bgimg:"",
+      x:0,
+      y:0,
+      x1:1,
+      y1:1
+    },
+    {
+      IDX:1,
+      bgimg:"",
+      x:1,
+      y:0,
+      x1:2,
+      y1:1
+    },
+    {
+      IDX:2,
+      bgimg:"",
+      x:0,
+      y:1,
+      x1:1,
+      y1:2
+    },
+    {
+      IDX:3,
+      bgimg:"",
+      x:1,
+      y:1,
+      x1:2,
+      y1:2
+    }
+  ]
+};
+
+//一左两右
+const cube_select_style5 = {
+  row:2,
+  col:2,
+  list:[
+    {
+      IDX:0,
+      bgimg:"",
+      x:0,
+      y:0,
+      x1:1,
+      y1:2
+    },
+    {
+      IDX:1,
+      bgimg:"",
+      x:1,
+      y:0,
+      x1:2,
+      y1:1
+    },
+    {
+      IDX:2,
+      bgimg:"",
+      x:1,
+      y:1,
+      x1:2,
+      y1:2
+    }
+  ]
+};
+
+//一上两下
+const cube_select_style6 = {
+  row:2,
+  col:2,
+  list:[
+    {
+      IDX:0,
+      bgimg:"",
+      x:0,
+      y:0,
+      x1:2,
+      y1:1
+    },
+    {
+      IDX:1,
+      bgimg:"",
+      x:0,
+      y:1,
+      x1:1,
+      y1:2
+    },
+    {
+      IDX:2,
+      bgimg:"",
+      x:1,
+      y:1,
+      x1:2,
+      y1:2
+    }
+  ]
+};
+
+//一左三右
+const cube_select_style7 = {
+  row:4,
+  col:4,
+  list:[
+    {
+      IDX:0,
+      bgimg:"",
+      x:0,
+      y:0,
+      x1:2,
+      y1:4
+    },
+    {
+      IDX:1,
+      bgimg:"",
+      x:2,
+      y:0,
+      x1:4,
+      y1:2
+    },
+    {
+      IDX:2,
+      bgimg:"",
+      x:2,
+      y:2,
+      x1:3,
+      y1:4
+    },
+
+    {
+      IDX:3,
+      bgimg:"",
+      x:3,
+      y:2,
+      x1:4,
+      y1:4
+    }
+  ]
+};
+
+
+const tmplArr = {cube_select_style1,cube_select_style2,cube_select_style3,cube_select_style4,cube_select_style5,cube_select_style6,cube_select_style7}
+
 function setAttrData() {
   const data = {
     title: '图片混排',
@@ -43,16 +287,85 @@ function setAttrData() {
       },
       {
         type: 'radio',
-        text: '行列数',
+        text: '选择模板',
+        editType: 'config',
+        editKey: 'type',
+        model: this.config.type,
+        editCB: (item) => {
+
+          if(item.model!='diy'){
+
+            let tmplData = tmplArr['cube_select_style'+item.model];
+
+            //设置行列
+            Vue.set(this.config, 'row', tmplData.row);
+            Vue.set(this.config, 'col', tmplData.col);
+
+            //根据选择不同初始化数据
+            Vue.set(this.value, 'list',JSON.parse(JSON.stringify(tmplData.list)));
+
+          }
+
+          Vue.set(this.config, 'type', item.model);
+
+          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+          this.setIndex(0, {value:false,config:false});
+          this.vm.$store.commit('activeAttr', this);// 传出去
+
+          return item.model;
+
+        },
+        value: [
+          {
+            label: '一行两个',
+            value: 1,
+          },
+          {
+            label: '一行三个',
+            value: 2,
+          },
+          {
+            label: '一行四个',
+            value: 3,
+          },
+          {
+            label: '二左二右',
+            value: 4,
+          },
+          {
+            label: '一左二右',
+            value: 5,
+          },
+          {
+            label: '一上两下',
+            value: 6,
+          },
+          {
+            label: '一左三右',
+            value: 7,
+          },
+          {
+            label: '自定义',
+            value: 'diy',
+          }
+
+        ],
+      },
+      {
+        type: 'radio',
+        text: '自定义',
+        hide:this.config.type!='diy',
         editType: 'config',
         editKey: 'row',
         model: this.config.row,
         editCB: (item) => {
           console.log(item)
 
+          //设置行列
           Vue.set(this.config, 'row', item.model);
+          Vue.set(this.config, 'col', item.model);
 
-          //清空一下数据
+          //用属性名称来初始化数据
           Vue.set(this.value, 'list', []);
 
           //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
@@ -86,7 +399,9 @@ function setAttrData() {
         type: 'MagicCube',
         text: '内容设置',
         row: this.config.row,
-        width:375-2*this.style.wrapmargin,
+        col: this.config.col,
+        width:375,
+        style_type:this.config.type,
         value: this.value.list,
         //数据变化放进来的
         seclectChangeCB: (arr) => {
@@ -212,18 +527,20 @@ class Cube extends Common {
   }
 
   config = {
-    type: 1,
-    row: 10
+    type: 'diy',//这里是有多种便捷的选择
+    row: 4,
+    col:4
     // loop:false,//是否循环
     // interval:5000,//切换时间
     // autoplay:false,//自动播放
-    //type: 1, //两种风格
+
   }
   // img: "/uploadfiles/wkbq6nc2kc/image/SwiftFox_ZH-CN9413097062_1920x1080.jpg"
   // link: "/product/list?cate_id=194"
   // linkType: "cate"
   // title: "dsadsdadas"
   // tooltip: "分类：男装"
+
   value = {
     list: [],//存优惠券数组
   }

@@ -1,15 +1,15 @@
 <template>
   <div class="wrap">
-    <div class="box" :style="{width:W+'px',height:W+'px'}" @mouseleave="leaveBox"
+    <div class="box" :style="{width:W+'px',height:H+'px'}" @mouseleave="leaveBox"
          @mouseenter="enterBox">
-      <div v-for="(row,idx1) in CTX.row" class="row" :style="{height:colWH+'px'}">
+      <div v-for="(row,idx1) in CTX.row" class="row" :style="{height:colH+'px'}">
         <div
           @click="colClick(idx1,idx2)"
           v-on:mouseenter="changeActive(idx1,idx2)"
           @mouseenter="enter(idx1,idx2)" @mouseleave="leave()"
-          v-for="(row,idx2) in CTX.row"
+          v-for="(row,idx2) in CTX.col"
           class="column text-center"
-          :style="{width:colWH+'px',height:colWH+'px',lineHeight:colWH+'px'}">
+          :style="{width:colH+'px',height:colH+'px',lineHeight:colH+'px'}">
           <!--          {{idx1+'—'+idx2}}-->
         </div>
       </div>
@@ -22,7 +22,7 @@
         <div  class="mask" :style="{backgroundImage:'url('+area.bgimg||''+')'}"></div>
         <span class="tip" v-show="!area.bgimg">{{getTip(area)}}</span>
         <!--        <img src="@/assets/img/icon-del.png" class="delicon" />-->
-        <i class="el-icon-error delicon" @click.stop="delArea(area)"/>
+        <i v-if="type==='diy'" class="el-icon-error delicon" @click.stop="delArea(area)"/>
         <!--        <svg class="fun-icon icon delicon" @click="delArea(area)" aria-hidden="true">-->
         <!--          <use xlink:href="#icon-del"></use>-->
         <!--        </svg>-->
@@ -36,7 +36,7 @@
     <div style="height: 20px"></div>
 
     <div  v-if="areaActiveIndex>=0 && CTX.selects.length>0 ">
-      <upload-img-components :img-url="currentArea.bgimg" class="myUploadImg" :onSuccess='uploadImgCB'
+      <upload-img-components :small="true" :img-url="currentArea.bgimg" class="myUploadImg" :onSuccess='uploadImgCB'
                              type='avatar'
       ></upload-img-components>
     </div>
@@ -69,6 +69,13 @@ export default {
       default:function(){return []}
     },
     row:{
+      type:Number,
+      default:5
+    },
+    type:{
+
+    },
+    col:{
       type:Number,
       default:5
     },
@@ -111,8 +118,17 @@ export default {
     W(){
       return this.CTX.width
     },
+    H(){
+      return this.CTX.height
+    },
     colWH(){
       return parseInt(this.CTX.width/this.CTX.row*10)/10
+    },
+    colH(){
+      return parseInt(this.CTX.height/this.CTX.row*10)/10
+    },
+    rowW(){
+      return parseInt(this.CTX.width/this.CTX.col*10)/10
     }
   },
   watch:{
@@ -120,6 +136,20 @@ export default {
       immediate:true,
       handler(val){
 
+        this.rest()
+        this.INIT()
+      }
+    },
+    type:{
+
+      handler(val){
+        this.rest()
+        this.INIT()
+      }
+    },
+    col:{
+      immediate:true,
+      handler(val){
         this.rest()
         this.INIT()
       }
@@ -255,8 +285,8 @@ export default {
       this.clearIdx();
     },
     getTip(area) {
-      let width = (area.x1 - area.x) * this.colWH;
-      let height = (area.y1 - area.y) * this.colWH;
+      let width = (area.x1 - area.x) * this.rowW*2;
+      let height = (area.y1 - area.y) * this.colH*2;
 
       return `${width}x${height}像素或同等比例`;
 
@@ -264,10 +294,10 @@ export default {
     getAreaStyle(area) {
       // console.log(area);
       let styleObj = {
-        left: area.x * this.colWH + 'px',
-        top: area.y * this.colWH + 'px',
-        width: (area.x1 - area.x) * this.colWH + 'px',
-        height: (area.y1 - area.y) * this.colWH + 'px',
+        left: area.x * this.rowW + 'px',
+        top: area.y * this.colH + 'px',
+        width: (area.x1 - area.x) * this.rowW + 'px',
+        height: (area.y1 - area.y) * this.colH + 'px',
       };
       // console.log(styleObj);
       // if(area.bgimg){
@@ -365,7 +395,7 @@ export default {
       this.areaActiveIndex = -1;
     },
     INIT(){
-      this.CTX = new MagicCube(this.row,this.width);//还有label。。真牛
+      this.CTX = new MagicCube(this.row,this.col,this.width,this.width*this.row/this.col);//还有label。。真牛
       this.CTX.selects = this.CTX.selects.concat(this.selecteds)
       window.CTX = this.CTX;
     }
@@ -385,7 +415,7 @@ export default {
     position: absolute;
     z-index: 2;
     box-sizing: border-box;
-    border: 1px #409EFF solid;
+    border: 1px rgba(64,158,255,.2) solid;
 
     /*background: #e8f7fd;*/
     box-sizing: border-box;
@@ -393,6 +423,7 @@ export default {
 
     &:hover {
       z-index: 333;
+      border: 1px rgba(64,158,255,.4) solid;
 
       .delicon {
         visibility: visible;
@@ -403,8 +434,9 @@ export default {
     .tip {
       position: absolute;
       overflow: hidden;
-      width: 50%;
-      left: 25%;
+      width: 70%;
+      left: 15%;
+      padding: 4px;
       text-align: center;
       line-height: 1.2;
       top: 50%;

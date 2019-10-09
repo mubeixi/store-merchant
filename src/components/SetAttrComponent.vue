@@ -9,6 +9,7 @@
                     :label="item.text"
                     @mouseenter.native="saveCurrentItem(item)"
                     v-if="(item.type==='arr' && item.value.length>0) ||item.type!='arr'"
+                    v-show="!item.hide"
                     v-for="(item, index) in activeAttr.attrData.content"
                     :key="index">
 
@@ -200,7 +201,7 @@
                   :closable='item.propmt.closable'/>
 
         <el-radio-group v-model="item.model" v-if="item.type === 'radio'">
-          <el-radio v-for="(radio, ind) in item.value" :key="ind" :label="radio.value"
+          <el-radio style="margin-bottom: 10px;" v-for="(radio, ind) in item.value" :key="ind" :label="radio.value"
                     @change="radioChange(radio, item)">{{ radio.label }}
           </el-radio>
         </el-radio-group>
@@ -301,7 +302,7 @@
 
         <!--魔方-->
         <div v-if="item.type==='MagicCube'">
-          <magic-cube-component :row.sync="item.row" :selecteds.sync="item.value"
+          <magic-cube-component :row.sync="item.row" :col.sync="item.col" :type.sync="item.style_type" :selecteds.sync="item.value"
                                 @mouseenter.native="bindBindLinkDiaCall(item.bindCB)"
                                 @selectChange="bindSelectChange"
                                 @openBindLink="openMagicCubeBindLink"/>

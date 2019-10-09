@@ -4,7 +4,7 @@
     <el-upload
       ref="upload"
       class="upload avatar-uploader"
-      :class="{mini:mini,isHas:imgUrl}"
+      :class="{mini:mini,small:small,isHas:imgUrl}"
       v-if="type === 'avatar'"
       :multiple="multiple"
       :name="name"
@@ -63,6 +63,9 @@
   export default {
     props: {
       mini: {
+        type: Boolean,
+      },
+      small: {
         type: Boolean,
       },
       idx2: {
