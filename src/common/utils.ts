@@ -144,6 +144,7 @@ export const moveEl = function (el) {
 
 
 export class pageMove {
+
   static init(dragEl, vm, cb) {
     pageMove.x = 0;
     pageMove.y = 0;

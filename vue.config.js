@@ -2,6 +2,7 @@
 
 module.exports = {
   // options...
+  publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   devServer: {
     proxy: {
       '/api': {
@@ -12,7 +13,7 @@ module.exports = {
         pathRewrite: {
           '^/api': ''
         }
-      },
+      }
     }
   }
 

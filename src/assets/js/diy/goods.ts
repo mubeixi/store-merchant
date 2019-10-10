@@ -26,7 +26,7 @@ function setConfig() {
 
 function setAttrData() {
   const data = {
-    title: '店铺信息设置',
+    title: '商品信息设置',
     content: [
       {
         type: 'origin',
