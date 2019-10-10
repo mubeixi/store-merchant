@@ -21,7 +21,7 @@
             <el-tabs class="tabs-child" v-model="innerDialog.customizeIndex">
               <el-tab-pane label="系统页面" name="1" :disabled="!config.page.system.show">
                 <el-radio-group v-model="innerDialog.system.checked" class="systemPage">
-                  <el-radio class="pageBlock" :label="item.path"
+                  <el-radio style="padding-bottom: 4px;" class="pageBlock" :label="item.path"
                             v-for="(item, index) in innerDialog.system.data"
                             :key="index" @change="saveSystem(item)">{{ item.text }}
                   </el-radio>
@@ -46,7 +46,7 @@
 
               <el-tab-pane label="产品" name="3" :disabled="!config.page.product.show">
                 <el-radio-group v-model="innerDialog.product.checked" class="systemPage">
-                  <el-radio class="pageBlock" :label="item.path"
+                  <el-radio style="padding-bottom: 4px;" class="pageBlock" :label="item.path"
                             v-for="(item, index) in innerDialog.product.data"
                             :key="index" @change="saveProduct(item)">{{ item.text }}
                   </el-radio>
@@ -263,32 +263,32 @@
               {
                 id: 1,
                 text: '个人中心',
-                path: 'pages/person/person'
+                path: '/pages/person/person'
               },
               {
                 id: 2,
                 text: '分销中心',
-                path: 'personal/distribution'
+                path: '/personal/distribution'
               },
               {
                 id: 3,
                 text: '我的团队',
-                path: 'personal/distribution/team'
+                path: '/personal/distribution/team'
               },
               {
                 id: 4,
                 text: '提现',
-                path: 'personal/distribution/withDraw'
+                path: '/personal/distribution/withDraw'
               },
               {
                 id: 5,
                 text: '消息通知',
-                path: 'notice'
+                path: '/notice'
               },
               {
                 id: 6,
                 text: '分享海报',
-                path: 'Share'
+                path: '/Share'
               }
             ],
             checked: '',
