@@ -47,7 +47,7 @@ function setAttrData() {
 
           Vue.set(this.config, 'origin', 'filter');
           Vue.set(this.value, 'list', tempArr);
-          Vue.set(this.value, 'cate_id', null);
+          Vue.set(this.value, 'cate_id', []);
 
           pageEl.bindListDialogShow = false;
 
