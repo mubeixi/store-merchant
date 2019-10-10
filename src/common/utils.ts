@@ -82,8 +82,36 @@ function mergeData(current, newObj, strict) {
  *
  * 一般来说，无脑深拷贝就行了
  */
-function mergeObject(targetObj,tmplOjb,cover) {
+function mergeObject(targetObj,tmplOjb) {
+  // console.log(JSON.parse(JSON.stringify(targetObj)),tmplOjb)
   let obj = null;
+  for(var key in tmplOjb){
+
+    // console.log(key,typeof tmplOjb[key],targetObj[key],tmplOjb[key]);
+    if (typeof tmplOjb[key] === 'object' && tmplOjb[key] !== null) {
+
+      //current[key] 可能是null或者undefined
+      if (!targetObj[key]) {
+        Vue.set(targetObj, key, tmplOjb[key]);
+        continue;
+      }
+
+      // console.log(6666666666666)
+      // @ts-ignore
+      mergeObject(targetObj[key], tmplOjb[key]);
+    } else {
+      // console.log(4444444444444)
+      // if (!targetObj) {
+      //   targetObj = tmplOjb;
+      //   continue;
+      // }
+
+      Vue.set(targetObj, key, tmplOjb[key]);
+
+    }
+
+
+  }
 
 
   return obj;
@@ -97,14 +125,17 @@ function mergeObject(targetObj,tmplOjb,cover) {
  * 不过很奇怪之前的人为什么要复制两遍
  */
 export function deepCopy(currentObj, newObject) {
-  addFun(currentObj, newObject);//方法则是保留本地的新建实例  new Search()这样
+  // addFun(currentObj, newObject);//方法则是保留本地的新建实例  new Search()这样
+  mergeObject(currentObj, newObject)
+
   // @ts-ignore
   // mergeData(currentObj, newObject);
   return currentObj;
 }
 
 export function deepCopyStrict(currentObj, newObject) {
-  addFun(currentObj, newObject, 1);
+  mergeObject(currentObj, newObject);
+
   // mergeData(currentObj, newObject, 1);
   return currentObj;
 }

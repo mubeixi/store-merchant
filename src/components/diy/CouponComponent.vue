@@ -129,6 +129,7 @@
     })
     export default class CouponComponent extends Vue {
         created() {
+
             //用这个来搞事啊
             //funvm也是vue实例，而且不是根实例，是这个组件的实例，可以快捷的调用组件中的对象或者方法以及$ref
             Coupon.prototype.funvm = this;
@@ -136,9 +137,10 @@
             this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
             this.coupon = deepCopy(new Coupon(), this.data);
 
-            if(this.data.value && this.data.value.list.length>0){
-                this.coupon.value.list = [...this.data.value.list];
-            }
+            // if(this.data.value && this.data.value.list.length>0){
+            //     this.coupon.value.list = [...this.data.value.list];
+            // }
+
         }
     }
 </script>

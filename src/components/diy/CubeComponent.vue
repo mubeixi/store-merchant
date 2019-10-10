@@ -201,9 +201,9 @@
             this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
             this.cube = deepCopy(new Cube(), this.data);
 
-            if(this.data.value && this.data.value.list.length>0){
-                this.cube.value.list = [...this.data.value.list];
-            }
+            // if(this.data.value && this.data.value.list.length>0){
+            //     this.cube.value.list = [...this.data.value.list];
+            // }
 
             //利用数据生成一下attrData
             this.cube.setIndex(0,{value:false,config:false})
