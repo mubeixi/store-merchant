@@ -1,16 +1,21 @@
 <template>
   <div class="right-template">
     <ul>
-      <li @click.stop="emitPreviewPlugin(key)" :data-label="item.label"
-          v-for="(item,key) in tmplData[templateEditIndex]">
-        <svg class="fun-icon icon sorticon"  aria-hidden="true">
-          <use xlink:href="#icon-paixu" ></use>
-        </svg>
-        {{item.tag|getTitleByTag}}
-        <div class="right" @click.stop="removePlugin(key)">
-          <i  class="el-icon-delete"></i>
-        </div>
-      </li>
+      <draggable v-model="pluginList"  @start="drag=true" @end="drag=false">
+        <transition-group>
+          <li :key="key" @click.stop="emitPreviewPlugin(key)" :data-label="item.label"
+              v-for="(item,key) in pluginList">
+            <svg class="fun-icon icon sorticon"  aria-hidden="true">
+              <use xlink:href="#icon-paixu" ></use>
+            </svg>
+            {{item.tag|getTitleByTag}}
+            <div class="right" @click.stop="removePlugin(key)">
+              <i  class="el-icon-delete"></i>
+            </div>
+          </li>
+        </transition-group>
+      </draggable>
+
     </ul>
   </div>
 </template>
@@ -18,8 +23,12 @@
 <script lang="ts">
     import {Component, Vue} from 'vue-property-decorator';
     import {mapState} from 'vuex';
+    import draggable from 'vuedraggable';
 
     @Component({
+        components:{
+            draggable
+        },
         methods: {
             emitPreviewPlugin(idx) {
                 this.$parent.$refs.preview.clickPlugin(idx);
@@ -29,6 +38,27 @@
             }
         },
         computed: {
+            pluginList:{
+                get() {
+                    return this.tmplData[this.templateEditIndex]
+                },
+                set(val) {
+                    //this.tmplData[this.templateEditIndex] = val
+
+                    //this.$parent.$refs.preview.templateData[this.templateEditIndex] = val;//preview
+
+                    let pluginNameList = val.map(plugin=>{
+                        return plugin.tag
+                    })
+
+                    //this.$parent.$refs.preview.templateList[this.templateEditIndex] = pluginNameList;
+
+                    this.$set(this.$parent.$refs.preview.templateData,this.templateEditIndex,val)
+                    this.$set(this.$parent.$refs.preview.templateList,this.templateEditIndex,pluginNameList)
+                    console.log(val)
+                    //this.$store.commit('tmplData', val)
+                }
+            },
             ...mapState(['tmplData', 'templateEditIndex']),
         },
     })
