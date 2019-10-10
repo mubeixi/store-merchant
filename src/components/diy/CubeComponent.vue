@@ -1,28 +1,11 @@
 <template>
   <div @click.stop="setData({}, 0)" class="cube wrap">
     <div class="box" :style="{width:fullW+'px'}">
-      <!--      <div v-for="(row,idx1) in cube.value.list" class="row" :style="{height:colWH+'px'}">-->
-      <!--        <div-->
-      <!--          @click="colClick(idx1,idx2)"-->
-      <!--          v-on:mouseenter="changeActive(idx1,idx2)"-->
-      <!--          v-for="(row,idx2) in CTX.row"-->
-      <!--          class="column text-center"-->
-
-      <!--          :style="{width:colWH+'px',height:colWH+'px',lineHeight:colWH+'px'}">-->
-      <!--          &lt;!&ndash;          {{idx1+'—'+idx2}}&ndash;&gt;-->
-      <!--        </div>-->
-      <!--      </div>-->
-
-
-<!--      :style="{margin:cube.style.wrapmargin+'px',height:fullW*(1-2*cube.style.wrapmargin/fullW)+'px',marginRight:cube.style.wrapmargin+'px'}"-->
       <div class="postion-wrap" :style="[getWrapStyle()]">
         <!--所有热区用绝对定位实现-->
         <div class="active" :data-idx="area.IDX" :style="[getAreaStyle(area)]"
              v-for="(area,aidx) in cube.value.list">
           <div class="mask" :style="{backgroundImage:'url('+domainFunc(area.bgimg)||''+')'}"></div>
-<!--          <img class="img" :src="domainFunc(area.bgimg)" />-->
-          <!--        <pre>{{area}}</pre>-->
-          <!--        <i class="el-icon-error delicon" @click.stop="delArea(area)" />-->
         </div>
 
       </div>
@@ -55,8 +38,8 @@
             return {
                 cube: {},
                 CTX: {},
-                colH:0,
-                colW:0
+                // colH:0,
+                // colW:0
 
             };
         },
@@ -69,19 +52,19 @@
                     return 375;
                 }
             },
-            W() {
-                let ele = document.getElementById('canvas');
-                if (ele) {
-                    return ele.offsetWidth-2*this.cube.style.wrapmargin;
-                } else {
-                    return 375-2*this.cube.style.wrapmargin;
-                }
-            },
-            //这个方法需要调整下
-            colWH() {
-
-                return this.W / this.cube.config.row
-            },
+            // W() {
+            //     let ele = document.getElementById('canvas');
+            //     if (ele) {
+            //         return ele.offsetWidth-2*this.cube.style.wrapmargin;
+            //     } else {
+            //         return 375-2*this.cube.style.wrapmargin;
+            //     }
+            // },
+            // //这个方法需要调整下
+            // colWH() {
+            //
+            //     return this.W / this.cube.config.row
+            // },
             // colW() {
             //
             //     //得到横纵的缝隙
@@ -95,6 +78,28 @@
             //
             //     return this.fullW*(1-this.cube.style.wrapmargin/this.fullW*2) / rownum+1
             // },
+            W(){
+
+
+                return this.fullW-2*this.cube.style.wrapmargin
+            },
+            H(){
+
+                return this.fullW*this.cube.config.row/this.cube.config.col;
+            },
+            // colWH(){
+            //
+            //   const res = uni.getSystemInfoSync();
+            //   return (res.screenWidth-2*this.cube.style.wrapmargin)/this.cube.config.row
+            // },
+            colH(){
+
+                let Height = this.fullW*this.cube.config.row/this.cube.config.col;
+                return Height/this.cube.config.row
+            },
+            rowW(){
+                return (this.fullW-2*this.cube.style.wrapmargin)/this.cube.config.col
+            },
             className() {
                 return 'style1';//+this.nav.config.style
             },
@@ -119,12 +124,12 @@
         watch: {
             'cube.value.list':{
               deep:true,
-                immediate:true,
+              immediate:true,
               handler:function(val){
-                  if(!val ||val.length<1)return;
-                  let {rownum,colnum} = getRowColSpan(val);
-                  this.colW = (this.W) / (colnum+1)
-                  this.colH = this.fullW*(1-this.cube.style.wrapmargin/this.fullW*2) / (rownum+1)
+                  // if(!val ||val.length<1)return;
+                  // let {rownum,colnum} = getRowColSpan(val);
+                  // this.colW = (this.W) / (colnum+1)
+                  // this.colH = this.fullW*(1-this.cube.style.wrapmargin/this.fullW*2) / (rownum+1)
               }
             },
             'cube.config.row':{
@@ -145,29 +150,28 @@
         methods: {
             getWrapStyle(){
                 let styleObj = {
-                    margin:-1*this.cube.style.wrapmargin/2+'px',
+                    marginLeft:this.cube.style.wrapmargin+'px',
+                    marginRight:this.cube.style.wrapmargin+'px',
                     width:this.fullW*(1-this.cube.style.wrapmargin/this.fullW*2)+'px',
-                    height:this.fullW*(1-this.cube.style.wrapmargin/this.fullW*2)+'px',
+                    height:this.H+'px',//高度不变的
                 }
 
                 return styleObj;
             },
             getAreaStyle(area) {
                 let styleObj = {
-                    left: area.x * this.colWH+this.cube.style.wrapmargin+'px',
-                    top: area.y * this.colWH  + 'px',
-                    width: (area.x1 - area.x) * this.colWH + 'px',
-                    height: (area.y1 - area.y) * this.colWH + 'px',
+                    left: area.x * this.rowW+'px',
+                    top: area.y * this.colH  + 'px',
+                    width: (area.x1 - area.x) * this.rowW + 'px',
+                    height: (area.y1 - area.y) * this.colH + 'px',
+
                     borderTopWidth: area.y==0?0:this.cube.style.margin/2+'px',
                     borderLeftWidth: area.x==0?0:this.cube.style.margin/2+'px',
                     borderRightWidth: area.x1==this.cube.config.row?0:this.cube.style.margin/2+'px',
                     borderBottomWidth: area.y1==this.cube.config.row?0:this.cube.style.margin/2+'px',
 
                 };
-                // if(area.bgimg){
-                //   console.log(333)
-                //   styleObj.backgroundImage = 'url('+domain(area.bgimg)+')';
-                // }
+
                 return styleObj
             },
             domainFunc(url) {
@@ -212,10 +216,10 @@
 
 <style scoped lang="less">
   @import "~@/assets/css/fun.less";
-  @import "~@/assets/css/fun.less";
+
 
   .postion-wrap{
-    /*position: relative;*/
+    position: relative;
     overflow: hidden;
   }
 
