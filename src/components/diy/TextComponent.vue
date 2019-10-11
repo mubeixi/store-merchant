@@ -57,6 +57,7 @@
                 // console.log('hehe',this.hr)
                 // @ts-ignore
                 this.$store.commit('activeAttr', this.text);// 这里点击之后，setAttr马上就有响应。
+
                 // @ts-ignore
                 this.$store.commit('tabIndex', this.index);
 
@@ -75,6 +76,8 @@
             //Text.prototype.vm = this;
             this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
             this.text = deepCopy(new Text(this), this.data);
+            //重新绑定attrData.content，让修改可以同步到其他地方
+            this.text.setIndex(0,{value:false,config:false})
         }
     }
 </script>

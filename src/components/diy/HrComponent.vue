@@ -76,6 +76,8 @@
             Hr.prototype.funvm = this;
             this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
             this.hr = deepCopy(new Hr(this), this.data);
+            //重新绑定attrData.content，让修改可以同步到其他地方
+            this.hr.setIndex(0,{value:false,config:false})
         }
     }
 </script>

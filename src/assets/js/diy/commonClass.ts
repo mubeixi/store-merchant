@@ -8,10 +8,15 @@ class Basis {
   isEdit = true;
   activeIndex:number = 0;
 
+  fn = ()=>1
 
   constructor() {
 
 
+  }
+
+  fun1(){
+    console.log('32223')
   }
 
 

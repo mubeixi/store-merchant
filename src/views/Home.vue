@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div class="right" v-if="isDev">
+    <div class="right">
       <right-component></right-component>
     </div>
 

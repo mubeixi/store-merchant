@@ -19,6 +19,8 @@
     import {mapState} from 'vuex';
     import Nav from '@/assets/js/diy/nav';
     import {deepCopy, domain} from '@/common/utils';
+    import _ from 'underscore'
+    import {objTranslate} from '@/common/utils';
 
     @Component({
         props: {
@@ -30,6 +32,8 @@
                 default: () => ({}),
             },
         },
+        //这个data只用在从数据库获取配置后，初始化的时候用一次。主要是吧config/value/list
+        //或者是组件第一次创建的时候，生成的默认值config/value/list。所以不用担心在created里面data会无脑覆盖new Nav实例的属性值（覆盖也不碍事，因为都是空白对象创建的，本来就是一模一样）。
         data() {
             return {
                 nav: {},
@@ -73,6 +77,13 @@
             },
             setData(item, index) {
                 // console.log('hehe',this.search)
+
+                let _self = this;
+
+                //这里又关联上了。因为这里一边动，那边templData会因为preview的watch事件而改变（关联引用)....所以需要切断
+
+
+                //这里只能是引用传值，因为setAttr里面有需要用到方法
                 // @ts-ignore
                 this.$store.commit('activeAttr', this.nav);// 这里点击之后，setAttr马上就有响应。
 
@@ -88,12 +99,37 @@
     })
     export default class NavComponent extends Vue {
         created() {
+            console.log(111111111)
             //用这个来搞事啊
             //funvm也是vue实例，而且不是根实例，是这个组件的实例，可以快捷的调用组件中的对象或者方法以及$ref
             Nav.prototype.funvm = this;
-            //Nav.prototype.vm = this;
+
             this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
-            this.nav = deepCopy(new Nav(), this.data);
+
+
+            let navObj = new Nav();
+            //因为是直接申请在类里面的，所以不是原型链的传递
+            //方法是通过原型链传递，所以之类不会遍历几类的方法
+
+            // Basis.prototype.vm = Vue; //基类原型链上的属性
+            console.log(navObj, this.data);
+
+            //这里的nav只做展示，所以这里面的值应该是要随着data变化而变化
+
+            //这里虽然不是通过prop机制生效，但是因为引用传递，所以this.data一变化，那么nav也会变化
+
+            //已经剪断了this.data和this.nav的关系。
+
+            //这里只修改了NavObj的value,config.value的值，其他都没做过了。
+            this.nav = deepCopy(navObj, this.data);
+
+            //重新绑定attrData.content，让修改可以同步到其他地方
+            this.nav.setIndex(0,{value:false,config:false})
+
+
+            // this.nav = Object.assign(navObj,this.data)
+            // console.log(this.nav)
+            // console.log(Object.assign({},navObj), Object.assign({},this.data));
         }
     }
 </script>

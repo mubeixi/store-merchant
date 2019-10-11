@@ -210,6 +210,8 @@
 
             // @ts-ignore
             this.search = deepCopy(searchObj, this.data);
+            //重新绑定attrData.content，让修改可以同步到其他地方
+            this.search.setIndex(0,{value:false,config:false})
 
 
 

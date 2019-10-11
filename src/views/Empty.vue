@@ -5,7 +5,9 @@
 </template>
 
 <script>
-  function copy(obj) {
+  import { deepCopy, mergeObject } from '../common/utils';
+
+function copy(obj) {
     var newobj = {};
     for (var arr in obj) {
       newobj[arr] = obj[arr];
@@ -47,9 +49,12 @@
       };
     },
     created() {
-      //eg1 修改a.child 但是b不跟着变动
-      this.$set(this, 'a', this.b);
-      this.a.ccc = 333;
+
+      let a = {value:{list:[]}},b = {value:{list:[{a:1},{a:2},{a:3},{a:4},{a:5},{a:6},{a:7}]}}
+      let c = deepCopy(a,b)
+      console.log(JSON.stringify(c))
+      b.value.list[0].bbbbbbbbbbbbb=3333333333
+      console.log(JSON.stringify(c))
 
     }
   };

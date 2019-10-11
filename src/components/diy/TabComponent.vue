@@ -316,6 +316,8 @@
             //Tab.prototype.vm = this;
             this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
             this.tab = deepCopy(new Tab(), this.data);
+            //重新绑定attrData.content，让修改可以同步到其他地方
+            this.tab.setIndex(0,{value:false,config:false})
         }
     }
 </script>
@@ -527,7 +529,7 @@
         //margin-bottom: 10px;
         .cover {
           position: relative;
-          .cover-full-bg(cover, 49%, #f7f7f7);
+          .cover-full-bg(contain, 100%, white);
 
           .tag {
 
@@ -535,19 +537,20 @@
         }
 
         .info {
-          /*position: relative;*/
+          position: relative;
           background: white;
           padding: 10px;
-          display: flex;
-          justify-content: space-between;
-          flex: 1;
+          /*display: flex;*/
+          /*justify-content: space-between;*/
+          /*flex: 1;*/
 
           .title {
-            height: 22px;
-            line-height: 22px;
+            max-height: 42px;
+            line-height: 21px;
             overflow-x: hidden;
             text-overflow: ellipsis;
             color: #444;
+            font-size: 16px;
             margin-bottom: 6px;
           }
 
@@ -565,7 +568,9 @@
           }
 
           .buybtn {
-            /*position: absolute;*/
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
             /*right: 10px;*/
             /*top:50%;*/
             /*transform: translateY(-50%);*/
@@ -577,7 +582,6 @@
   }
 
   .style2 {
-
     .list {
       display: flex;
       flex-wrap: wrap;
@@ -610,18 +614,18 @@
           background: white;
           padding: 10px;
           box-sizing: border-box;
-          display: flex;
-          justify-content: space-between;
+          /*display: flex;*/
+          /*justify-content: space-between;*/
           overflow: hidden;
+          position: relative;
 
           .left {
-            flex: 1;
-            margin-right: 6px;
+            /*flex: 1;*/
+
             .title {
-              white-space: nowrap;
               width: 100%;
               overflow-x: hidden;
-              height: 21px;
+              max-height: 42px;
               text-overflow: ellipsis;
               line-height: 21px;
               color: #444;
@@ -634,9 +638,12 @@
             }
 
             .price {
+              height: 30px;
+              line-height: 30px;
               .sign {
                 font-size: 12px;
               }
+              color: #f56c6c;
 
               font-size: 14px;
 
@@ -647,6 +654,9 @@
             font-size: 12px;
             height: 24px;
             line-height: 24px;
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
             /*position: absolute;*/
             /*right: 0;*/
             /*top:50%;*/
@@ -680,9 +690,12 @@
 
 
         .cover {
+          width: 140px !important;
+          height: 140px !important;
+
           position: relative;
-          flex: 1;
-          .cover-full-bg(cover, 35%, #f7f7f7);
+
+          .cover-full-bg(contain, 0,white);
 
           .tag {
 
@@ -690,7 +703,8 @@
         }
 
         .info {
-          width: 140px !important;
+          flex: 1;
+
           /*width: 100%;*/
           background: white;
           padding: 10px;
@@ -702,7 +716,8 @@
             .title {
               width: 100%;
               overflow-x: hidden;
-              height: 21px;
+              overflow-y: hidden;
+              max-height: 42px;
               text-overflow: ellipsis;
               line-height: 21px;
               color: #444;
@@ -720,6 +735,7 @@
               .sign {
                 font-size: 12px;
               }
+              color: #f56c6c;
 
               font-size: 14px;
 
@@ -754,7 +770,6 @@
 
         display: inline-block;
         box-sizing: border-box;
-
         overflow: hidden;
         //flex-direction:row-reverse;
 
@@ -788,11 +803,11 @@
           .left {
 
             .title {
-              width: 100%;
-              overflow-x: hidden;
-              height: 21px;
-              text-overflow: ellipsis;
+              white-space: pre-wrap;
+              max-height: 42px;
               line-height: 21px;
+              overflow: hidden;
+              text-overflow: ellipsis;
               color: #444;
               margin-bottom: 6px;
               font-size: 14px;
@@ -808,6 +823,7 @@
               .sign {
                 font-size: 12px;
               }
+              color: #f56c6c;
 
               font-size: 14px;
 

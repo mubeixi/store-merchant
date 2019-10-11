@@ -137,6 +137,9 @@
             this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
             this.coupon = deepCopy(new Coupon(), this.data);
 
+            //重新绑定attrData.content，让修改可以同步到其他地方
+            this.coupon.setIndex(0,{value:false,config:false})
+
             // if(this.data.value && this.data.value.list.length>0){
             //     this.coupon.value.list = [...this.data.value.list];
             // }

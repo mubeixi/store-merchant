@@ -104,6 +104,8 @@
             Base.prototype.funvm = this;
             this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
             this.base = deepCopy(new Base(), this.data);
+            //重新绑定attrData.content，让修改可以同步到其他地方
+            this.base.setIndex(0,{value:false,config:false})
         }
     }
 </script>

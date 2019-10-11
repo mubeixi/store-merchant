@@ -17,126 +17,178 @@ export const domain = (url) => {
   return url;
 }
 
-// 会修改模板对象，将他没有的属性加上
-function addFun(object, newobj) {
-  for (const key in object) {
-    if (!object.hasOwnProperty(key)) continue;
 
-    if (typeof object[key] === 'object') {
-      if (!newobj) continue;
-      addFun(object[key], newobj[key]);
-    } else if (typeof object[key] === 'function') {
-      continue;
-    } else {
-
-      if (!newobj || !newobj[key]) continue;
-      Vue.set(object, key, newobj[key]);
-    }
+function copyFn(obj) {
+  if (obj == null) {
+    return null
   }
-
-  for (const key in newobj) {
-
-    if (typeof newobj[key] === 'object' && newobj[key] !== null) {
-
-      //current[key] 可能是null或者undefined
-      if (!object[key]) {
-        Vue.set(object, key, object[key]);
-        continue;
+  var result = Array.isArray(obj) ? [] : {};
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      if (typeof obj[key] === 'object') {
+        result[key] = copyFn(obj[key]);  // 如果是对象，再次调用该方法自身
+      } else {
+        result[key] = obj[key];
       }
-
-      // @ts-ignore
-      mergeObject(object[key], newobj[key]);
-
-    } else {
-      Vue.set(object, key, newobj[key]);
     }
-
   }
-
-
+  return result;
 }
 
-// 会修改原数据
-// 浅拷贝对象。。
-/**
- *
- * @param current
- * @param newObj
- * @param strict 开启严格模式，模板值为false不copy
- */
-function mergeData(current, newObj, strict) {
-  for (const key in newObj) {
-    if (!newObj.hasOwnProperty(key)) continue;
-    if (strict && !newObj[key]) continue;
-
-    if (typeof newObj[key] === 'object' && newObj[key] !== null) {
-
-      //current[key] 可能是null或者undefined
-      if (!current[key]) {
-        Vue.set(current, key, newObj[key]);
-        continue;
-      }
-      // @ts-ignore
-      mergeData(current[key], newObj[key]);
-    } else {
-      if (!current) {
-        current = newObj;
-        continue;
-      }
-
-
-      // if (!current[key]) {
-      //   Vue.set(current, key, newObj[key]);
-      //   continue;
-      // }
-
-      Vue.set(current, key, newObj[key]);
-    }
-  }
-}
 
 /**
- * 深拷贝，将tmplObj的属性和方法，都和targetObJ混合，如目标对象无属性/方法则创建，如有则根据参数cover决定是否强制覆盖。
+ * 深拷贝.
  * @param targetObj
- * @param tmplOjb
+ * @param tmplObj
  * @param cover
  *
  * 一般来说，无脑深拷贝就行了
+ *
+ * 有几个特殊情况
+ * 1.如果targetObj有的属性，但是tempObj没有（是没有，即该属性为undefined，而不是值为false/或者0和null之类，则什么都不用做
+ * 2.无脑复制，仅限于value中的list属性
+ *
+ *
+ *
  */
-function mergeObject(targetObj,tmplOjb) {
 
-  let obj = null;
-  for(var key in tmplOjb){
+// Undefined	"undefined"
+// Null	"object" (见下文)
+// Boolean	"boolean"
+// Number	"number"
+// BigInt	"bigint"
+// String	"string"
+// Symbol (ECMAScript 2015 新增)	"symbol"
+// 宿主对象（由 JS 环境提供）	取决于具体实现
+// Function 对象 (按照 ECMA-262 规范实现 [[Call]])	"function"
+// 其他任何对象 	"object"
+export const mergeObject = function (targetObj,tmplObj) {
 
-    // console.log(key,typeof tmplOjb[key],targetObj[key],tmplOjb[key]);
-    if (typeof tmplOjb[key] === 'object' && tmplOjb[key] !== null) {
+  //第一遍，搞定targetObj不存在的变量
+  // for(var key in tmplObj){
+  //
+  //   if(!tmplObj.hasOwnProperty(key))continue;
+  //
+  //   if(_.isUndefined(targetObj[key])){
+  //
+  //     if(_.isObject(tmplObj[key])){
+  //       targetObj[key] = {}
+  //     }
+  //
+  //     if(_.isArray(tmplObj[key])){
+  //       targetObj[key] = []
+  //     }
+  //
+  //     //简单值直接复制
+  //     targetObj[key] = tmplObj[key];
+  //   }
+  //
+  // }
 
-      //current[key] 可能是null或者undefined
-      if (!targetObj[key]) {
-        Vue.set(targetObj, key, tmplOjb[key]);
-        continue;
-      }
+  for(var key in tmplObj){
+    if(!tmplObj.hasOwnProperty(key))continue;
 
-      // console.log(6666666666666)
-      // @ts-ignore
-      mergeObject(targetObj[key], tmplOjb[key]);
-    } else {
-      // console.log(4444444444444)
-      // if (!targetObj) {
-      //   targetObj = tmplOjb;
-      //   continue;
-      // }
 
-      Vue.set(targetObj, key, tmplOjb[key]);
-
+    //只覆盖着和么多
+    if(['value','style','config'].indexOf(key)!=-1){
+      Vue.set(targetObj,key,objTranslate(tmplObj[key]))
     }
-
 
   }
 
+  // for(var key in tmplObj){
+  //   if(!tmplObj.hasOwnProperty(key))continue;
+  //
+  // }
 
-  return obj;
+
+  // return;
+  // console.log(targetObj,tmplObj)
+
+
+  //第一遍，先是覆盖属性。这里如果list是空数组，是不会进循环的
+  // for(var key in targetObj){
+  //
+  //   console.log(key)
+  //   //过滤掉属于原型链的方法和属性
+  //   if(!targetObj.hasOwnProperty(key))continue;
+  //   console.log(key)
+  //
+  //   console.log(typeof targetObj[key])
+  //   //对象、数组，需要过滤null
+  //   if (typeof targetObj[key] === 'object' && !_.isNull(targetObj[key])) {
+  //
+  //     //到这里的不是对象就是数组
+  //     if (!tmplObj) continue
+  //
+  //     //特殊情况，如果是acitveAttr.value.list的话，就无脑覆盖吧.
+  //     if(key==='list' && _.isArray(tmplObj[key])){
+  //
+  //       //数组里面的都是简单值对象，要切断关系。
+  //       Vue.set(targetObj, key, tmplObj[key].concat([]));
+  //       continue;
+  //     }
+  //
+  //     mergeObject(targetObj[key], tmplObj[key])
+  //
+  //
+  //   } else if (typeof targetObj[key] === 'function') {
+  //     continue
+  //   } else {
+  //
+  //     //自己为undefined或者属性为undefined。其他的为0、false/或者空字符串都要继续走
+  //     if (_.isUndefined(tmplObj) || _.isUndefined(tmplObj[key])) continue
+  //     Vue.set(targetObj, key, tmplObj[key])
+  //
+  //   }
+  //
+  //
+  // }
+
+
+
+  // for(var key in tmplObj){
+  //   if(key==='value'){
+  //     Vue.set(targetObj,key,tmplObj)
+  //   }
+  //
+  // }
+
+  // _.extend(targetObj,tmplObj);
+  // return targetObj
+  // for(var key in tmplObj){
+  //
+  //   // console.log(key,typeof tmplObj[key],targetObj[key],tmplObj[key]);
+  //   if (typeof tmplObj[key] === 'object' && tmplObj[key] !== null) {
+  //
+  //     //current[key] 可能是null或者undefined
+  //     if (!targetObj[key]) {
+  //       Vue.set(targetObj, key, tmplObj[key]);
+  //       continue;
+  //     }
+  //
+  //     // console.log(6666666666666)
+  //     // @ts-ignore
+  //     mergeObject(targetObj[key], tmplObj[key]);
+  //   } else {
+  //     // console.log(4444444444444)
+  //     // if (!targetObj) {
+  //     //   targetObj = tmplObj;
+  //     //   continue;
+  //     // }
+  //
+  //     Vue.set(targetObj, key, tmplObj[key]);
+  //
+  //   }
+  //
+  //
+  // }
+  //
+  //
+  // return obj;
 }
+
+export const objTranslate = obj=>JSON.parse(JSON.stringify(obj))
 
 /**
  * 深拷贝，解决引用的问题。
@@ -146,10 +198,10 @@ function mergeObject(targetObj,tmplOjb) {
  * 不过很奇怪之前的人为什么要复制两遍
  */
 export function deepCopy(currentObj, newObject) {
-  addFun_base(currentObj, newObject)
-  mergeDate_base(currentObj, newObject)
-  // addFun(currentObj, newObject);//方法则是保留本地的新建实例  new Search()这样
-  //mergeObject(currentObj, newObject)
+  // addFun_base(currentObj, newObject)
+  // mergeDate_base(currentObj, newObject)
+  mergeObject(currentObj, newObject);//方法则是保留本地的新建实例  new Search()这样
+  // mergeObject(currentObj, newObject)
 
   // @ts-ignore
   // mergeData(currentObj, newObject);
@@ -157,9 +209,8 @@ export function deepCopy(currentObj, newObject) {
 }
 
 export function deepCopyStrict(currentObj, newObject) {
-  addFun(currentObj, newObject);
-
-  // mergeData(currentObj, newObject, 1);
+  addFun_base(currentObj, newObject);
+  mergeDate_base(currentObj, newObject);
   return currentObj;
 }
 

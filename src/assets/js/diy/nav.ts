@@ -205,8 +205,6 @@ class Nav extends Common {
 
   constructor() {
     super();
-
-
     // 统一这样来初始化
     attrData.call(this, {});
   }

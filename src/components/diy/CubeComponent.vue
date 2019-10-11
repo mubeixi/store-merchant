@@ -206,6 +206,8 @@
             // }
 
             //利用数据生成一下attrData
+
+            //重新绑定attrData.content，让修改可以同步到其他地方
             this.cube.setIndex(0,{value:false,config:false})
 
             this.CTX = this.cube;

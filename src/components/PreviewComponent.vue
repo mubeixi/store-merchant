@@ -178,7 +178,7 @@
 </template>
 
 <script lang="ts">
-    import {pageMove} from '@/common/utils';
+    import {pageMove,objTranslate} from '@/common/utils';
     import {Component, Vue} from 'vue-property-decorator';
     import {State} from 'vuex-class';
     import {mapActions, mapState} from 'vuex';
@@ -235,10 +235,13 @@
                     console.log('activeAttr对象有改变111111111')
                     // 去修改准备提交到线上的数据对象
                     // 等于右边有变动，中间预览马上就跟着变了
-                    if(this.isChangeData){
-                        //这里只是解除了依赖而已
-                      this.$set(this.templateData[this.templateEditIndex], this.tabIndex,JSON.parse(JSON.stringify(val)));
-                    }
+
+                    //这里只是存一个值而已，所以不需要搞什么
+                    this.$set(this.templateData[this.templateEditIndex], this.tabIndex,objTranslate(val));
+                    // if(!this.isChangeData){
+                    //     //这里只是解除了依赖而已
+                    //   this.$set(this.templateData[this.templateEditIndex], this.tabIndex,val);
+                    // }
 
                 },
             },
@@ -335,7 +338,10 @@
                         _self.show_preview = false
                         setTimeout(function () {
                             _self.show_preview = true;
+                            _self.isChangeData = false
                         },200)
+
+
 
 
                         //this.tabbarLast()
@@ -633,7 +639,7 @@
 
 
                 getSkinConfig().then(res => {
-                    console.log(res)
+                    console.log(JSON.parse(res.data.Home_Json))
                     _self.skinInfo = res.data
 
                     resolve(JSON.parse(res.data.Home_Json))
@@ -797,7 +803,7 @@
             }
 
             this.templateData[this.templateEditIndex].push(
-                Object.assign(newClass,{})
+                Object.assign({},newClass)
                 // deepCopy({}, newClass),
             );
 
@@ -815,11 +821,14 @@
             // //这里是用来模拟点击的
             setTimeout(() => {
 
+                //上面是先执行各个组件的created
                 const lastIndex = this.templateList[this.templateEditIndex].length - 1;
                 console.log(lastIndex,templateName);
-                const dragEl = document.querySelectorAll('.canvas > section')[lastIndex].getElementsByClassName(`${templateName}`)[0];
 
+                //用的延时，来确保点击的时候。created函数已经实现完毕（各个组件的created函数都是本地，而且没有异步操作)
+                const dragEl = document.querySelectorAll('.canvas > section')[lastIndex].getElementsByClassName(`${templateName}`)[0];
                 console.log(dragEl);
+
                 if (!dragEl) return;
 
                 // 模拟点击
@@ -837,7 +846,7 @@
                 // 每次页面都会重排一次，可能是因为这里导致拖拽切换导航的时候，页面其他元素不显示了。
                 // 始终把 tabbar 放到最后
                 // this.tabbarLast()
-            }, 0);
+            }, 10);
         }
     }
 
