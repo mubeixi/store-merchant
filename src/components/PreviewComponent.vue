@@ -5,7 +5,7 @@
 <!--      @mouseout="outStyle"-->
       <div class="canvas" id="canvas"
            @setData="setDataEv"
-           @scroll="canvasScroll($event)" ref="pageTemplageBox" >
+           @scroll="canvasScroll($event)" ref="pageTemplageBox" v-if="show_preview" >
         <section
           :ref="item | dragSorts"
           v-for="(item, index) in templateList[templateEditIndex]"
@@ -232,16 +232,14 @@
             activeAttr: {
                 deep: true,
                 handler(val) {
+                    console.log('activeAttr对象有改变111111111')
                     // 去修改准备提交到线上的数据对象
                     // 等于右边有变动，中间预览马上就跟着变了
+                    if(this.isChangeData){
+                        //这里只是解除了依赖而已
+                      this.$set(this.templateData[this.templateEditIndex], this.tabIndex,JSON.parse(JSON.stringify(val)));
+                    }
 
-
-                    // let tempVal = {}
-                    // deepCopy(tempVal,val)
-                    //
-                    // tempVal.aaaaaaaaaaaaaa=444;//监测下是不是data会影响this.search
-
-                    this.$set(this.templateData[this.templateEditIndex], this.tabIndex,val);
                 },
             },
         },
@@ -281,6 +279,89 @@
             ...mapState(['activeAttr', 'tabIndex','editStatus']),
         },
         methods: {
+            restTmplFun(defaultData){
+
+
+                if(!defaultData)return;
+
+                new Promise((resolve,reject) => {
+
+                    this.isChangeData = true
+                    //初始化这个
+                    this.$store.commit('activeAttr',{attrData: {}})
+
+
+                    resolve(defaultData)
+
+
+                })
+                    .then(templateData => {
+
+                        //存储页面数据
+                        this.templateData = [] //页面数据的二维数组。
+                        this.templateList = [] //页面组件的二维数组。
+
+                        //console.log(templateData)
+                        if (templateData && Array.isArray(templateData[0])) {
+                            //多个页面，每个页面是一个数组
+                            templateData.map(item => {
+                                this.templateData.push(item)
+                                this.templateList.push([])
+                            })
+                        } else if (templateData && !Array.isArray(templateData[0]) && templateData.length > 0) {
+                            //单纯是一个对象的时候？？
+                            this.templateData = [templateData]
+                            this.templateList = [[]]
+                        } else {
+                            this.templateData = [[]]
+                            this.templateList = [[]]
+                        }
+
+
+                        //存储页面组件templateList
+                        for (let i = 0; i < this.templateData.length; i++) {
+                            if (this.templateData[i] && this.templateData[i] !== []) {
+                                this.templateData[i].map(m => {
+                                    this.templateList[i].push(m.tag)
+                                })
+                            }
+                        }
+
+
+
+
+
+                        var _self = this
+                        _self.show_preview = false
+                        setTimeout(function () {
+                            _self.show_preview = true;
+                        },200)
+
+
+                        //this.tabbarLast()
+                        setTimeout(() => pageMove.init('sort', this), 500)
+
+
+                    })
+                    .catch(err => {
+                        throw new Error(err)
+                    })
+                    .then(() => {
+                        //拖拽
+                        var isDraggable = ['div', 'nav']
+                        Array.from(
+                            document.querySelectorAll('[draggable=true]')
+                        ).filter(el => {
+                            let tagName = el.tagName.toLowerCase()
+                            return isDraggable.some(elName => elName === tagName)
+                        })
+                    })
+
+
+
+
+
+            },
             // selectStyle(){
             //   let className = document.getElementById('canvas').className
             //   if(className.indexOf('isMouseInPreview')===-1){
@@ -502,6 +583,9 @@
 
         dragMove = ['input']
 
+
+        isChangeData = false
+
         sort = {
             downIndex: -1,
             sortIndex: -1,
@@ -510,6 +594,9 @@
         editData = {
             display: 'none',
         }
+
+
+        show_preview = true
 
 
         canvasScrollTop = 0;
@@ -612,14 +699,21 @@
         }
 
         setClass(className, idx) {
+            console.log(className)
             if (typeof className === 'undefined') return '';
+
+            if(typeof className !='string')return'';
+
+
             className = className.replace(/[0-9]?/g, '');
-            let rt = this.dragMove.map((v) => {
-                if (v === className) {
-                    return `dragMove ${className}`;
-                }
-                return className;
-            });
+
+            let rt = []
+            // let rt = this.dragMove.map((v) => {
+            //     if (v === className) {
+            //         return `dragMove ${className}`;
+            //     }
+            //     return className;
+            // });
 
             if (this.currentData.index === idx) {
                 rt.push('active')
@@ -703,7 +797,8 @@
             }
 
             this.templateData[this.templateEditIndex].push(
-                deepCopy({}, newClass),
+                Object.assign(newClass,{})
+                // deepCopy({}, newClass),
             );
 
             if (!Array.isArray(this.templateList[this.templateEditIndex])) {
@@ -721,7 +816,7 @@
             setTimeout(() => {
 
                 const lastIndex = this.templateList[this.templateEditIndex].length - 1;
-                console.log(lastIndex);
+                console.log(lastIndex,templateName);
                 const dragEl = document.querySelectorAll('.canvas > section')[lastIndex].getElementsByClassName(`${templateName}`)[0];
 
                 console.log(dragEl);

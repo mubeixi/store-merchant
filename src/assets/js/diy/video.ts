@@ -54,7 +54,7 @@ function setAttrData() {
 function attrData(options = {}) {
   // @ts-ignore
   const {value, config, attrData} = options;
-  console.log(value, config, attrData);
+  // console.log(value, config, attrData);
   if (value !== false) setValue.call(this);
   if (config !== false) setConfig.call(this);
   if (attrData !== false) setAttrData.call(this);

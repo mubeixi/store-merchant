@@ -43,20 +43,27 @@
                     return this.tmplData[this.templateEditIndex]
                 },
                 set(val) {
-                    //this.tmplData[this.templateEditIndex] = val
 
-                    //this.$parent.$refs.preview.templateData[this.templateEditIndex] = val;//preview
+                    // this.$store.commit('tabIndex',-1)
+                    // this.$store.commit('activeAttr',{attrData: {}})
 
-                    let pluginNameList = val.map(plugin=>{
-                        return plugin.tag
-                    })
+                    // let pluginNameList = val.map(plugin=>{
+                    //     return plugin.tag
+                    // })
 
-                    //this.$parent.$refs.preview.templateList[this.templateEditIndex] = pluginNameList;
+                    // this.$set(this.$parent.$refs.preview.templateList,this.templateEditIndex,[])
+                    // this.$set(this.$parent.$refs.preview.templateData,this.templateEditIndex,[])
 
-                    this.$set(this.$parent.$refs.preview.templateData,this.templateEditIndex,val)
-                    this.$set(this.$parent.$refs.preview.templateList,this.templateEditIndex,pluginNameList)
-                    console.log(val)
-                    //this.$store.commit('tmplData', val)
+
+
+                    // this.$set(this.$parent.$refs.preview.templateList,this.templateEditIndex,pluginNameList)
+                    // this.$set(this.$parent.$refs.preview.templateData,this.templateEditIndex,val)
+
+                    this.$parent.$refs.preview.restTmplFun(val);
+
+
+                    // console.log(val)
+
                 }
             },
             ...mapState(['tmplData', 'templateEditIndex']),

@@ -24,9 +24,9 @@
         plugins = PLUGINSLIST
 
         sourceDrag(e: Object): Object {
-            console.log(e.target);
+            // console.log(e.target);
             const templateName = e.target.getAttribute('data-label');
-            console.log(templateName);
+            // console.log(templateName);
             e.dataTransfer.setData('text/plain', templateName);
         }
     }

@@ -33,6 +33,27 @@ function addFun(object, newobj) {
       Vue.set(object, key, newobj[key]);
     }
   }
+
+  for (const key in newobj) {
+
+    if (typeof newobj[key] === 'object' && newobj[key] !== null) {
+
+      //current[key] 可能是null或者undefined
+      if (!object[key]) {
+        Vue.set(object, key, object[key]);
+        continue;
+      }
+
+      // @ts-ignore
+      mergeObject(object[key], newobj[key]);
+
+    } else {
+      Vue.set(object, key, newobj[key]);
+    }
+
+  }
+
+
 }
 
 // 会修改原数据
@@ -83,7 +104,7 @@ function mergeData(current, newObj, strict) {
  * 一般来说，无脑深拷贝就行了
  */
 function mergeObject(targetObj,tmplOjb) {
-  // console.log(JSON.parse(JSON.stringify(targetObj)),tmplOjb)
+
   let obj = null;
   for(var key in tmplOjb){
 
@@ -125,8 +146,10 @@ function mergeObject(targetObj,tmplOjb) {
  * 不过很奇怪之前的人为什么要复制两遍
  */
 export function deepCopy(currentObj, newObject) {
+  addFun_base(currentObj, newObject)
+  mergeDate_base(currentObj, newObject)
   // addFun(currentObj, newObject);//方法则是保留本地的新建实例  new Search()这样
-  mergeObject(currentObj, newObject)
+  //mergeObject(currentObj, newObject)
 
   // @ts-ignore
   // mergeData(currentObj, newObject);
@@ -134,10 +157,54 @@ export function deepCopy(currentObj, newObject) {
 }
 
 export function deepCopyStrict(currentObj, newObject) {
-  mergeObject(currentObj, newObject);
+  addFun(currentObj, newObject);
 
   // mergeData(currentObj, newObject, 1);
   return currentObj;
+}
+
+
+// 会修改原数据
+function addFun_base(object, newobj) {
+  for (let key in object) {
+    if (!object.hasOwnProperty(key)) continue
+
+    if (typeof object[key] === 'object') {
+      if (!newobj) continue
+      addFun_base(object[key], newobj[key])
+    } else if (typeof object[key] === 'function') {
+      continue
+    } else {
+      if (!newobj || !newobj[key]) continue
+      Vue.set(object, key, newobj[key])
+    }
+  }
+}
+
+// 会修改原数据
+//浅拷贝对象。。
+function mergeDate_base(current, newObj) {
+  for (let key in newObj) {
+    if (!newObj.hasOwnProperty(key)) continue
+
+    if (typeof newObj[key] === 'object') {
+      if (!current[key]) {
+        Vue.set(current, key, newObj[key])
+        continue
+      }
+      mergeDate_base(current[key], newObj[key])
+    } else {
+      if (!current) {
+        current = newObj
+        continue
+      }
+      if (!current[key]) {
+        Vue.set(current, key, newObj[key])
+        continue
+      }
+      Vue.set(current, key, newObj[key])
+    }
+  }
 }
 
 
@@ -172,7 +239,6 @@ export const moveEl = function (el) {
     el.style.top = `${e.clientY - y}px`;
   }
 };
-
 
 export class pageMove {
 
@@ -307,7 +373,7 @@ export class pageMove {
   static initSort() {
     const that = pageMove;
     sortEl = document.querySelectorAll('.canvas > section');
-    console.log(sortEl);// 所有的元素，批量添加拖动事件监听
+    //console.log(sortEl);// 所有的元素，批量添加拖动事件监听
     Array.from(sortEl).map((v) => {
       v.ondragstart = that.sortStart;
       v.ondrag = that.sortDrag;
@@ -477,12 +543,8 @@ export class pageMove {
   }
 }
 
-
-
 function defaultEvent (e) {
-
   e.preventDefault()
-
 }
 
 
@@ -589,8 +651,6 @@ export const moveanyway = (eleId,isAdd) => {
 }
 
 
-
-
 function isNum(value) {
   return typeof value === 'number' && !isNaN(value);
 }
@@ -598,7 +658,6 @@ function isNum(value) {
 function getAreaPoint(row_idx, col_idx, row_idx1, col_idx1, scale) {
   return {x: row_idx * scale, y: col_idx * scale, x1: row_idx1 * scale, y1: col_idx1 * scale}
 }
-
 
 
 export const arrayUnique = (arr)=>{
