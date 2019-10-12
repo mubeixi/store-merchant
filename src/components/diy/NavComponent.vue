@@ -1,13 +1,13 @@
 <template>
-  <div @click.stop="setData({}, 0)" class="nav wrap">
-    <div class="box" :class="[className]">
-      <ul class="list" :style="{display:nav.value.list.length<5?'flex':'block'}">
+  <div @click.stop="setData({}, 0)" class="nav wrap" :style="{backgroundColor:style.bgColor}">
+    <div class="box" :class="[className]" :style="{color:style.color}">
+      <ul class="list" :class="displayStyle" :style="{display:nav.value.list.length<6?'flex':'block'}">
         <li v-for="(item,idx) in nav.value.list" class="item"
-            :style="{flex:nav.value.list.length<5?'1':''}">
+            :style="{flex:nav.value.list.length<6?'1':''}">
           <div v-show="nav.config.type===1" class="cover"
                :style="{backgroundImage:'url('+domainFunc(item.img)+')'}">
           </div>
-          <div class="title">{{item.title}}</div>
+          <div class="title" >{{item.title}}</div>
         </li>
       </ul>
     </div>
@@ -20,7 +20,7 @@
     import Nav from '@/assets/js/diy/nav';
     import {deepCopy, domain} from '@/common/utils';
     import _ from 'underscore'
-    import {objTranslate} from '@/common/utils';
+    import {objTranslate,mixinStyle} from '@/common/utils';
 
     @Component({
         props: {
@@ -40,11 +40,15 @@
             };
         },
         computed: {
+            displayStyle(){
+                return this.nav.value.list.length<6?'isflex':'isblock'
+            },
             className() {
                 return 'style1';//+this.nav.config.style
             },
             style() {
-                // return deepCopyStrict(this.coupon.styleDefault, this.coupon.style);
+
+                return mixinStyle(this.nav.styleDefault,this.nav.style)
             },
             activeAttr: {
                 get() {
@@ -150,7 +154,7 @@
     .list {
 
       .item {
-        margin-right: 15px;
+
         text-align: center;
         cursor: pointer;
         .cover {
@@ -166,7 +170,7 @@
           line-height: 22px;
           text-align: center;
           font-size: 14px;
-          color: #444;
+          /*color: #444;*/
         }
       }
     }
@@ -176,8 +180,23 @@
 
     .list {
 
-      white-space: nowrap;
-      overflow-x: scroll;
+      &.isflex{
+        .item{
+          .cover{
+            /*width: 44px;*/
+            /*height: 44px;*/
+          }
+        }
+      }
+      &.isblock{
+        white-space: nowrap;
+        overflow-x: scroll;
+        .item{
+          margin-right: 15px;
+          padding: 0 6px;
+        }
+      }
+
 
       ::-webkit-scrollbar {
         display: none;
@@ -187,6 +206,11 @@
         display: inline-block;
         /*height: 70px;*/
         overflow-y: hidden;
+        /*max-width: 50px;*/
+        .title{
+          overflow-y: hidden;
+          /*text-overflow: ellipsis;*/
+        }
       }
     }
   }

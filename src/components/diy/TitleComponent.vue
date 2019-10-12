@@ -1,6 +1,6 @@
 <template>
   <div @click.stop="setData({}, 0)" class="title"
-       :style="{color:title.style.color,backgroundColor:title.style.bgColor}">
+       :style="{color:title.style.color,backgroundColor:title.style.bgColor,paddingLeft:title.style.padding+'px',paddingRight:title.style.padding+'px'}">
     <!--    :class="{islink:title.value.link?1:0}"-->
     <div class="text">{{title.value.title}}</div>
     <div class="small">{{title.value.small}}</div>
@@ -93,7 +93,7 @@
 
   .title
     position relative
-    width 100%
+    /*width 100%*/
 
     .text
       font-size 18px

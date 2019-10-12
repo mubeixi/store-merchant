@@ -12,6 +12,7 @@ function setConfig() {
   if (JSON.stringify(this.style) === JSON.stringify({
     color: '',
     bgColor: '',
+    padding:''
   })) {
     Vue.set(this, 'style', JSON.parse(JSON.stringify(this.styleDefault)));
   }
@@ -41,6 +42,14 @@ function setAttrData() {
         editKey: 'small',
         model: this.value.small,
         editCB: item => item.model,
+      },
+      {
+        type: 'input',
+        text: '内边距',
+        inputType: 'number',
+        editType: 'style',
+        editKey: 'padding',
+        model: this.style.padding,
       },
       {
         type: 'color',
@@ -182,11 +191,13 @@ class Title extends Common {
   style = {
     color: '',
     bgColor: '',
+    padding:''
   }
 
   styleDefault = {
     color: '#333',
     bgColor: '#fff',
+    padding:10
   }
 
   config = {}

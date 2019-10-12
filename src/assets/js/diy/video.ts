@@ -19,7 +19,7 @@ function setConfig() {
 
 function setAttrData() {
   const data = {
-    title: '辅助间隙设置',
+    title: '视频设置',
     content: [
       {
         type: 'input',

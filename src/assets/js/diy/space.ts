@@ -60,13 +60,13 @@ class Space extends Common {
   // activeIndex = 0;
 
   style = {
-    bgColor: '',
-    height: '',
+    bgColor: '#fff',
+    height: '10', // 默认是10吧
   }
 
   styleDefault = {
-    bgColor: '#fff',
-    height: '10', // 默认是10吧
+    // bgColor: '#fff',
+    // height: '10', // 默认是10吧
   }
 
   config = {}

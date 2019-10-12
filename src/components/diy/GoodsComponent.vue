@@ -31,33 +31,33 @@
         </li>
 
         <!--因为参数是带了limit,所以这里不会为负数-->
-        <li v-for="(item,idx) in (limit-goodsList.length)" class="item"
-            :class="[idx%2==0?'even':'odd',goods.config.radius=='round'?'round':'',goods.config.showmode]"
-            :style="[itemMarginObj(idx)]"
-        >
-          <div class="cover"
-               :style="{width:itemw,height:itemw,backgroundImage:'url('+domainFunc(infoTmpl.ImgPath)+')'}">
-            <div v-show="goods.config.attr.tag.show" :class="goods.config.attr.tag.style"
-                 v-if="['new','hot'].indexOf(goods.config.attr.tag.style)!=-1" class="tag">
-              {{goods.config.attr.tag.style=='hot'?'hot':'new'}}
-            </div>
-            <div v-show="goods.config.attr.tag.show" v-else class="tag img"><img
-              :src="goods.config.attr.tag.img|domain"/></div>
-          </div>
-          <div class="info" :style="{width:itemw}" :class="{empyInfo:isEmpeyInfo}">
-            <div class="left">
-              <div v-show="goods.config.attr.title.show" class="title">{{infoTmpl.Products_Name}}</div>
-              <div v-show="goods.config.attr.desc.show" class="font12 graytext desc">
-                {{infoTmpl.Products_BriefDescription||'暂无介绍'}}
-              </div>
-              <div v-show="goods.config.attr.price.show" class="price"><span class="sign">￥</span>{{infoTmpl.Products_PriceX}}
-              </div>
-            </div>
-            <div v-show="goods.config.attr.buybtn.show" class="buybtn" :class="'theme'+goods.config.attr.buybtn.style">
-              {{goods.config.attr.buybtn.text||'购买'}}
-            </div>
-          </div>
-        </li>
+<!--        <li v-for="(item,idx) in (limit-goodsList.length>4?4:limit-goodsList.length)" class="item"-->
+<!--            :class="[idx%2==0?'even':'odd',goods.config.radius=='round'?'round':'',goods.config.showmode]"-->
+<!--            :style="[itemMarginObj(idx)]"-->
+<!--        >-->
+<!--          <div class="cover"-->
+<!--               :style="{width:itemw,height:itemw,backgroundImage:'url('+domainFunc(infoTmpl.ImgPath)+')'}">-->
+<!--            <div v-show="goods.config.attr.tag.show" :class="goods.config.attr.tag.style"-->
+<!--                 v-if="['new','hot'].indexOf(goods.config.attr.tag.style)!=-1" class="tag">-->
+<!--              {{goods.config.attr.tag.style=='hot'?'hot':'new'}}-->
+<!--            </div>-->
+<!--            <div v-show="goods.config.attr.tag.show" v-else class="tag img"><img-->
+<!--              :src="goods.config.attr.tag.img|domain"/></div>-->
+<!--          </div>-->
+<!--          <div class="info" :style="{width:itemw}" :class="{empyInfo:isEmpeyInfo}">-->
+<!--            <div class="left">-->
+<!--              <div v-show="goods.config.attr.title.show" class="title">{{infoTmpl.Products_Name}}</div>-->
+<!--              <div v-show="goods.config.attr.desc.show" class="font12 graytext desc">-->
+<!--                {{infoTmpl.Products_BriefDescription||'暂无介绍'}}-->
+<!--              </div>-->
+<!--              <div v-show="goods.config.attr.price.show" class="price"><span class="sign">￥</span>{{infoTmpl.Products_PriceX}}-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div v-show="goods.config.attr.buybtn.show" class="buybtn" :class="'theme'+goods.config.attr.buybtn.style">-->
+<!--              {{goods.config.attr.buybtn.text||'购买'}}-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </li>-->
       </ul>
     </div>
 

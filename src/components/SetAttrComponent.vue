@@ -296,9 +296,10 @@
           v-if="item.type === 'color'"
           v-model="item.model"
           class="inputcolor fun-color-pick"
-          format="rgb"
           @change="colorEv"
         />
+
+
 
         <!--魔方-->
         <div v-if="item.type==='MagicCube'">
@@ -506,7 +507,7 @@
 
                     //这里怎么直接这样写上vuex的数据了。。
                     if (!this.activeAttr[item.editType]) {
-                        this.activeAttr.activeAttr[item.editType] = {};
+                        this.activeAttr[item.editType] = {};
                     }
 
                     // config{} 或者style{}
@@ -528,6 +529,8 @@
 
                     // 有回调函数的,可以去函数里面做各种关联操作和格式化操作。比如像素加px，颜色值的转换之类，json转换之类。简单值的就直接走下面赋值了
                     //反正会跑一次回调的
+
+                    console.log(editObj,item.editKey,item)
                     if (item.editCB) {
                         editObj[item.editKey] = item.editCB(item);
                     } else {
@@ -567,6 +570,8 @@
                 // this.color1 = val
                 // this.clickObj.model = val
                 // this.currentData.model = val
+
+                console.log('颜色改变了')
 
                 // 用这个代替是一样的
                 this.change(this.currentData);

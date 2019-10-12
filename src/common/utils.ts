@@ -208,6 +208,23 @@ export function deepCopy(currentObj, newObject) {
   return currentObj;
 }
 
+export function mixinStyle(defaultStyle, style) {
+  if(!defaultStyle)defaultStyle={};
+  if(!style)style={};
+
+  let rt = objTranslate(defaultStyle)
+  for(var i in style){
+    if(!style.hasOwnProperty(i))continue;
+    if(style[i] && style[i]!='null' && style[i]!='undefined'){
+      rt[i] = style[i]
+    }
+
+  }
+  return rt;
+}
+
+
+
 export function deepCopyStrict(currentObj, newObject) {
   addFun_base(currentObj, newObject);
   mergeDate_base(currentObj, newObject);

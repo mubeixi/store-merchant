@@ -1,5 +1,5 @@
 <template>
-  <div @click.stop="setData({}, 0)" class="tab wrap" id="tabwrap" :class="tab.config.position"
+  <div @click.stop="setData({}, 0)" class="tab wrap" :id="'tabwrap'+index" :class="tab.config.position"
        :style="{margin:tab.config.position === 'left'?tab.style.wrapmargin:0+'px'}">
     <div class="tabs" id="tabs">
       <li :class="{active:tabActive===idx}" :id="'tab-item'+idx" @click="clickTab(item,idx)"
@@ -9,7 +9,7 @@
       <div class="box" :class="[className]" :style="{padding:tab.style.wrapmargin+'px'}">
         <ul class="list" >
           <li v-for="(item,idx) in goodsList" class="item"
-              :class="[idx%2==0?'even':'odd',tab.config.radius=='round'?'round':'',tabconfig.showmode]"
+              :class="[idx%2==0?'even':'odd',tab.config.radius=='round'?'round':'',tab.config.showmode]"
               :style="[itemMarginObj(idx)]"
           >
             <div class="cover"
@@ -37,33 +37,33 @@
           </li>
 
           <!--因为参数是带了limit,所以这里不会为负数-->
-          <li v-for="(item,idx) in (limit-goodsList.length)" class="item"
-              :class="[idx%2==0?'even':'odd',tab.config.radius=='round'?'round':'',tab.config.showmode]"
-              :style="[itemMarginObj(idx)]"
-          >
-            <div class="cover"
-                 :style="{width:itemw,height:itemw,backgroundImage:'url('+domainFunc(infoTmpl.ImgPath)+')'}">
-              <div v-show="tab.config.attr.tag.show" :class="tab.config.attr.tag.style"
-                   v-if="['new','hot'].indexOf(tab.config.attr.tag.style)!=-1" class="tag">
-                {{tab.config.attr.tag.style=='hot'?'hot':'new'}}
-              </div>
-              <div v-show="tab.config.attr.tag.show" v-else class="tag img"><img
-                :src="tab.config.attr.tag.img|domain"/></div>
-            </div>
-            <div class="info" :style="{width:itemw}" :class="{empyInfo:isEmpeyInfo}">
-              <div class="left">
-                <div v-show="tab.config.attr.title.show" class="title">{{infoTmpl.Products_Name}}</div>
-                <div v-show="tab.config.attr.desc.show" class="font12 graytext desc">
-                  {{infoTmpl.Products_BriefDescription||'暂无介绍'}}
-                </div>
-                <div v-show="tab.config.attr.price.show" class="price"><span class="sign">￥</span>{{infoTmpl.Products_PriceX}}
-                </div>
-              </div>
-              <div v-show="tab.config.attr.buybtn.show" class="buybtn" :class="'theme'+tab.config.attr.buybtn.style">
-                {{tab.config.attr.buybtn.text||'购买'}}
-              </div>
-            </div>
-          </li>
+<!--          <li v-for="(item,idx) in (limit-goodsList.length)" class="item"-->
+<!--              :class="[idx%2==0?'even':'odd',tab.config.radius=='round'?'round':'',tab.config.showmode]"-->
+<!--              :style="[itemMarginObj(idx)]"-->
+<!--          >-->
+<!--            <div class="cover"-->
+<!--                 :style="{width:itemw,height:itemw,backgroundImage:'url('+domainFunc(infoTmpl.ImgPath)+')'}">-->
+<!--              <div v-show="tab.config.attr.tag.show" :class="tab.config.attr.tag.style"-->
+<!--                   v-if="['new','hot'].indexOf(tab.config.attr.tag.style)!=-1" class="tag">-->
+<!--                {{tab.config.attr.tag.style=='hot'?'hot':'new'}}-->
+<!--              </div>-->
+<!--              <div v-show="tab.config.attr.tag.show" v-else class="tag img"><img-->
+<!--                :src="tab.config.attr.tag.img|domain"/></div>-->
+<!--            </div>-->
+<!--            <div class="info" :style="{width:itemw}" :class="{empyInfo:isEmpeyInfo}">-->
+<!--              <div class="left">-->
+<!--                <div v-show="tab.config.attr.title.show" class="title">{{infoTmpl.Products_Name}}</div>-->
+<!--                <div v-show="tab.config.attr.desc.show" class="font12 graytext desc">-->
+<!--                  {{infoTmpl.Products_BriefDescription||'暂无介绍'}}-->
+<!--                </div>-->
+<!--                <div v-show="tab.config.attr.price.show" class="price"><span class="sign">￥</span>{{infoTmpl.Products_PriceX}}-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div v-show="tab.config.attr.buybtn.show" class="buybtn" :class="'theme'+tab.config.attr.buybtn.style">-->
+<!--                {{tab.config.attr.buybtn.text||'购买'}}-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </li>-->
         </ul>
 
       </div>
@@ -100,7 +100,7 @@
                     ImgPath:''
                 },
                 fullHeight:0,
-                tabActive: 0,
+                tabActive: null,
                 currentTab: null,
                 goodsList: [],
                 tab: {style: {}, value: {list: []}, config: {}},
@@ -201,11 +201,13 @@
         methods: {
             clickTab(item, idx) {
 
-                if (this.tabActive === idx) {
-                    return;
-                }
-                this.tabActive = idx
-                this.currentTab = item;
+                // if (this.tabActive === idx) {
+                //     return;
+                // }
+                this.$set(this,'tabActive',idx)
+                this.$set(this,'currentTab',item)
+                // this.tabActive = idx
+                // this.currentTab = item;
             },
             loadGoodsList() {
 
@@ -217,6 +219,7 @@
                 console.log(list,cate_id,limit)
                 //如果值还没有设置的话
                 if(cate_id.length===0){
+                    this.goodsList = []
                     return;
                 }
 
@@ -285,6 +288,8 @@
                 if(!url){
                     return 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20190930095641111.png';//展位图替换掉吧。。
                 }
+                // http://iph.href.lu/375x375?text=nopic
+                // http://iph.href.lu/375x375?text=375x375
 
                 return domain(url)
             },
@@ -318,6 +323,8 @@
             this.tab = deepCopy(new Tab(), this.data);
             //重新绑定attrData.content，让修改可以同步到其他地方
             this.tab.setIndex(0,{value:false,config:false})
+
+            this.tabActive = 0
         }
     }
 </script>
@@ -547,11 +554,11 @@
           .title {
             max-height: 42px;
             line-height: 21px;
-            overflow-x: hidden;
+            overflow: hidden;
             text-overflow: ellipsis;
             color: #444;
             font-size: 16px;
-            margin-bottom: 6px;
+            margin-bottom: 10px;
           }
 
           .desc {
@@ -624,12 +631,12 @@
 
             .title {
               width: 100%;
-              overflow-x: hidden;
+              overflow: hidden;
               max-height: 42px;
               text-overflow: ellipsis;
               line-height: 21px;
               color: #444;
-              margin-bottom: 6px;
+              margin-bottom: 10px;
               font-size: 14px;
             }
 

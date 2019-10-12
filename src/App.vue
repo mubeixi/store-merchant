@@ -8,7 +8,13 @@
 
 </style>
 <style lang="less">
+
   #canvas{
+    .tab{
+      *::-webkit-scrollbar{
+        display:none !important;
+      }
+    }
     *::-webkit-scrollbar{
       /*display:none !important;*/
     }

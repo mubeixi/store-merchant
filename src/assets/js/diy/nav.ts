@@ -11,9 +11,10 @@ function setConfig() {
   // 如果新对象，那么可以考虑用默认值替换掉。
   if (JSON.stringify(this.style) === JSON.stringify({
     bgColor: '',
-    height: 30,
+    // bgColor: '',
+    // height: 30,
     color: '',
-    inputBgColor: '',
+    // inputBgColor: '',
   })) {
     Vue.set(this, 'style', JSON.parse(JSON.stringify(this.styleDefault)));
   }
@@ -41,6 +42,23 @@ function setAttrData() {
           },
 
         ],
+      },
+      {
+        type: 'color',
+        text: '文本颜色',
+        model: this.style.color,
+        editType: 'style',
+        editKey: 'color',
+        editCB: item => item.model,
+      },
+      {
+        type: 'color',
+        text: '背景颜色',
+        // rgba:true,//透明度
+        model: this.style.bgColor,
+        editType: 'style',
+        editKey: 'bgColor',
+        editCB: item => item.model,
       },
       {
         type: 'addbtn',
@@ -137,9 +155,10 @@ class Nav extends Common {
   // activeIndex = 0;
 
   style = {
+    bgColor: '',
     // bgColor: '',
     // height: 30,
-    // color: '',
+    color: '',
     // inputBgColor: '',
   }
 
@@ -150,9 +169,9 @@ class Nav extends Common {
    * @inputBgColor  输入框背景
    */
   styleDefault = {
-    // bgColor: '#fff',
+    bgColor: '#fff',
     // height: 30,
-    // color: '#444',
+    color: '#444',
     // inputBgColor: '#f2f2f2',
   }
 
