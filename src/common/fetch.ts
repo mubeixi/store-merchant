@@ -4,6 +4,8 @@ import {hexMD5} from "@/common/tool/md5";
 import {Loading} from "element-ui";
 import {ls} from "@/common/tool/ls";
 
+import Cookie from 'js-cookie';
+
 require('./tool/base64');
 
 window.funLoading = false
@@ -57,7 +59,7 @@ function get_Appid() {
   return 'xhh';
 }
 
-export const get_Users_ID = () => ls.get('Users_ID')
+export const get_Users_ID = () => Cookie.get('Users_ID');//ls.get('Users_ID')
 
 export const get_Users_Account = () => ls.get('Users_Account')
 
