@@ -215,9 +215,7 @@ export function mixinStyle(defaultStyle, style) {
   let rt = objTranslate(defaultStyle)
   for(var i in style){
     if(!style.hasOwnProperty(i))continue;
-    if(style[i] && style[i]!='null' && style[i]!='undefined'){
-      rt[i] = style[i]
-    }
+    rt[i] = style[i]
 
   }
   return rt;
@@ -481,15 +479,19 @@ export class pageMove {
 
   static sortDrag(e) {
 
-    console.log(e);
+    // console.log(e);
 
     let TARGET = e.target;
 
+    const sectionEl = document.querySelectorAll('.canvas > section')[0];
+
+    let preBoundingClientRect = sectionEl.getBoundingClientRect()
+
     //在这里插入一下拖动搜索框的逻辑
     if(TARGET.className.indexOf('search')>-1 && TARGET.className.indexOf('absolute')>-1){
-      console.log(e.clientY)
+      console.log(e.clientY,pageMove.canvasScrollTop)
       //因为绝对定位只能参照上一层，特别麻烦。
-      TARGET.style.top = e.clientY-$('.main')[0].offsetTop+'px';
+      TARGET.style.top = e.clientY-$('.main')[0].offsetTop+(100-preBoundingClientRect.top)+'px';
       return;
     }
 

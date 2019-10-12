@@ -3,9 +3,13 @@
     <div class="canvasBox" @drop="dropEv" @dragover.prevent >
 <!--      @mouseover="selectStyle"-->
 <!--      @mouseout="outStyle"-->
+      <!--           @scroll="canvasScroll($event)" -->
+<!--      v-scroll="scrollFn"-->
+<!--      @scroll="canvasScroll($event)"-->
       <div class="canvas" id="canvas"
            @setData="setDataEv"
-           @scroll="canvasScroll($event)" ref="pageTemplageBox" v-if="show_preview" >
+
+           ref="pageTemplageBox" v-if="show_preview" >
         <section
           :ref="item | dragSorts"
           v-for="(item, index) in templateList[templateEditIndex]"
@@ -282,6 +286,9 @@
             ...mapState(['activeAttr', 'tabIndex','editStatus']),
         },
         methods: {
+            scrollFn:function(direction){
+                console.log(direction)
+            },
             restTmplFun(defaultData){
 
 
@@ -379,12 +386,14 @@
             //     let className = document.getElementById('canvas').className
             //     document.getElementById('canvas').className = className.replace(/isMouseInPreview/,'')
             // },
-            canvasScroll() {
+            canvasScroll(e) {
+                console.log(e.srcElement.scrollTop, e.target.scrollTop)
+                console.log(e)
                 this.canvasScrollTop = this.$refs.pageTemplageBox.scrollTop
-                var editEL = document.querySelector('.section.tab-bar')
-                editEL.style.top = `calc(6.67rem - 53px + ${
-                    this.canvasScrollTop
-                }px)`
+                // var editEL = document.querySelector('.section.tab-bar')
+                // editEL.style.top = `calc(6.67rem - 53px + ${
+                //     this.canvasScrollTop
+                // }px)`
             },
             uploadConfig() {
 
@@ -711,7 +720,7 @@
             if(typeof className !='string')return'';
 
 
-            className = className.replace(/[0-9]?/g, '');
+            // className = className.replace(/[0-9]?/g, '');
 
             let rt = []
             // let rt = this.dragMove.map((v) => {
@@ -720,6 +729,11 @@
             //     }
             //     return className;
             // });
+
+            //之类就可以看出来是不是search
+            if(className.indexOf('search')!=-1 && this.templateData[this.templateEditIndex][idx].style.position === 'absolute'){
+                rt.push('noborder')
+            }
 
             if (this.currentData.index === idx) {
                 rt.push('active')
@@ -859,7 +873,7 @@
     height 667px
     background #f2f2f2
     overflow-x hidden
-    overflow-y auto
+    overflow-y scroll
     border 1px solid #e5e5e5
 
   .canvas
@@ -891,8 +905,8 @@
 
   }
 
-  .section.active.noborder{
-    /*position static*/
+  .section.noborder{
+    position static
   }
 
   .section.active.noborder:before{
@@ -973,8 +987,10 @@
   }
 
 
+
+</style>
+<style scoped lang="less">
   .canvasBox::-webkit-scrollbar {
-    width: 0px;
-    height: 0px;
+    display:none !important;
   }
 </style>

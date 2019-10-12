@@ -149,7 +149,9 @@
                     let {list = [], cate_id=[], limit} = val;
 
                     console.log(list,cate_id,limit)
+
                     //如果值还没有设置的话
+                    //取消注释，拉取默认的商品。这样的话，方便有主题让人应用
                     if(list.length===0 && cate_id.length===0){
                         return;
                     }
@@ -163,7 +165,6 @@
 
                     getProductList(param).then(res => {
                         this.goodsList = res.data
-
                     })
 
                 }

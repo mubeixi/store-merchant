@@ -4,7 +4,7 @@
     <div class="box" :class="{'round':search.config.type==='round'}">
       <i class="el-icon-search icon"></i>
       <!--      :placeholder="search.value.hot|placeholderStr"-->
-      <input class="input" readonly :style="{height:search.style.height+'px',backgroundColor:search.style.inputBgColor,color:search.style.color}" />
+      <input class="input" readonly :style="{height:style.height+'px',backgroundColor:style.inputBgColor,color:style.color}" />
       <!--      <el-input  clearable size="small"  prefix-icon="el-icon-search" :placeholder="search.config.hot|placeholderStr" />-->
     </div>
   </div>
@@ -14,7 +14,7 @@
     import {Component, Vue} from 'vue-property-decorator';
     import {mapState} from 'vuex';
     import Search from '@/assets/js/diy/search';
-    import {deepCopy, deepCopyStrict,moveanyway} from '@/common/utils';
+    import {deepCopy, deepCopyStrict,moveanyway,mixinStyle} from '@/common/utils';
     import {fun} from '@/common';
 
     @Component({
@@ -36,24 +36,24 @@
             getWrapStyle(){
               if(this.search.style.position==='absolute'){
                   return {
-                      backgroundColor:this.search.style.bgColor,
+                      backgroundColor:this.style.bgColor,
                       // left:this.search.style.x+'px',
-                      top:this.search.style.y+'px',
+                      top:this.style.y+'px',
                       position:'absolute'
                   }
               }
 
                 return {
-                    backgroundColor:this.search.style.bgColor,
+                    backgroundColor:this.style.bgColor,
                     position:'inherit'
                 }
 
             },
             getPostion(){
-                return this.search.style.position === 'absolute'?'absolute':'inherit';
+                return this.style.position === 'absolute'?'absolute':'inherit';
             },
             style() {
-                return deepCopyStrict(this.search.styleDefault, this.search.style);
+                return mixinStyle(this.search.styleDefault, this.search.style);
             },
             activeAttr: {
                 get() {
@@ -84,6 +84,7 @@
               handler(val){
 
                   this.$nextTick().then(res=>{
+
                       let eleId = 'searchWrap'+this.index
                       let sectionEle = document.getElementById('section'+this.index);
 
@@ -91,6 +92,10 @@
 
                       if(val==='absolute'){
 
+                          //还是每次都去顶上吧
+                          //this.search.style.y = 0;//parseInt(document.getElementById('searchWrap'+this.index).style.top);//在这里来修改
+
+                          // sectionEle.style.position = 'static'
                           //绝对定位就不要外边框了
                           if(sectionEle.className.indexOf('noborder')<0){
                               sectionEle.className += ' noborder'
@@ -98,6 +103,8 @@
 
                           // moveanyway(eleId,true)
                       }else{
+
+                          // sectionEle.style.position = 'relative'
 
                           sectionEle.className = sectionEle.className.replace(/noborder/,'')
 
@@ -124,35 +131,31 @@
             setData(item, index) {
                 console.log('点击了一次')
 
+                //牛逼
                 if(this.search.style.position==='absolute'){
-
-
-
-
-
-
-
-
                     this.search.style.y = parseInt(document.getElementById('searchWrap'+this.index).style.top);//在这里来修改
                 }
 
-                let sectionEle = document.getElementById('section'+this.index);
-
-                if(this.search.style.position==='absolute'){
-
-                    //绝对定位就不要外边框了
-                    if(sectionEle.className.indexOf('noborder')<0){
-                        sectionEle.className += ' noborder'
-                    }
-
-                    // moveanyway(eleId,true)
-                }else{
-
-                    sectionEle.className = sectionEle.className.replace(/noborder/,'')
-
-                    //取消事件绑定
-                    // moveanyway(eleId,false)
-                }
+                // let sectionEle = document.getElementById('section'+this.index);
+                //
+                // if(this.search.style.position==='absolute'){
+                //
+                //     //绝对定位就不要外边框了
+                //     sectionEle.style.position = 'static'
+                //     // if(sectionEle.className.indexOf('noborder')<0){
+                //     //     // sectionEle.className += ' noborder'
+                //     //
+                //     // }
+                //
+                //     // moveanyway(eleId,true)
+                // }else{
+                //
+                //     sectionEle.style.position = 'relative'
+                //     // sectionEle.className = sectionEle.className.replace(/noborder/,'')
+                //
+                //     //取消事件绑定
+                //     // moveanyway(eleId,false)
+                // }
 
 
 
@@ -246,6 +249,7 @@
         box-sizing: border-box;
         border: 1px solid #DCDFE6;
         padding: 0 30px;
+        background: none;
 
         &::placeholder {
           color: #999;

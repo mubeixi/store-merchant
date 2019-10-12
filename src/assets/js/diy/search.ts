@@ -174,8 +174,8 @@ class Search extends Common {
     color: '',
     inputBgColor: '',
     position:'inherit',
-    x:10,
-    y:10
+    x:0,
+    y:0
   }
 
   /**

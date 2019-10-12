@@ -106,6 +106,8 @@ export const fun = {
 };
 // console.log(filter)
 
+require('./directive');
+
 export default {
   install() {
     // Vue.prototype.$i18n = i18n

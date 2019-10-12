@@ -9,7 +9,7 @@
     import {Component, Vue} from 'vue-property-decorator';
     import {mapState} from 'vuex';
     import Space from '@/assets/js/diy/space';
-    import {deepCopy, deepCopyStrict} from '@/common/utils';
+    import {deepCopy, deepCopyStrict,mixinStyle} from '@/common/utils';
 
     @Component({
         props: {
@@ -28,7 +28,7 @@
         },
         computed: {
             style() {
-                return deepCopyStrict(this.space.styleDefault, this.space.style);
+                return mixinStyle(this.space.styleDefault, this.space.style);
             },
             activeAttr: {
                 get() {
