@@ -3,12 +3,20 @@
     <div class="cover" :class="[className]"
          :style="{backgroundImage:'url('+domainFunc(base.config.cover)+')'}">
       <div class="logotitle">
-        <img class="logo" :src="base.config.logo|domain"/>
-        <div class="title">{{base.config.title}}</div>
+        <div class="flex">
+          <img class="logo" style="margin-top: 8px" :src="base.config.logo|domain"/>
+          <div class="title">
+            <div style="line-height: 32px">{{base.config.title}}</div>
+            <div class="flex" style="line-height: initial">
+              <div class="total font12">全部商品{{base.config.total}} </div>
+              <div class="new font12" style="margin-left: 4px;"> 上新{{base.config.new}}</div>
+            </div>
+          </div>
+        </div>
+
       </div>
-      <!--      <div class="desc">{{base.config.desc}}</div>-->
-      <!--      <div class="total">商品 {{base.config.total}}</div>-->
-      <!--      <div class="new">新品 {{base.config.new}}</div>-->
+<!--            <div class="desc">{{base.config.desc}}</div>-->
+
 <!--      -->
       <div v-if="base.config.style===2" class="round">
         <div class="mask" :style="{height:3.5933*W+'px',width:3.5933*W+'px',backgroundSize:W+'px',backgroundImage:'url('+domainFunc(base.config.cover)+')'}"></div>
@@ -132,7 +140,7 @@
       position: absolute;
       left: 30px;
       bottom: 20px;
-      display: flex;
+      /*display: flex;*/
     }
 
     .logo {
@@ -142,7 +150,7 @@
     }
 
     .title {
-      line-height: 40px;
+      /*line-height: 40px;*/
       margin-left: 10px;
     }
 

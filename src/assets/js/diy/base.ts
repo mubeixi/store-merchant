@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Common from './commonClass';
-import {ls} from "@/common/tool/ls";
+import {ss,ls} from "@/common/tool/ls";
 
-const shopInfo = ls.get('Shop_Info')
+const shopInfo = ss.get('Shop_Info')
 
 function setValue() {
   // let value = {}
@@ -95,12 +95,12 @@ class Base extends Common {
   }
 
   config = {
-    cover: 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20191007094401198.png',
+    cover: 'http://new401in.bafangka.com/uploadfiles/wkbq6nc2kc/image/20191007094401198.png',
     logo: shopInfo.ShopLogo,
     title: shopInfo.ShopName,
     desc: shopInfo.description,
-    total: 223,
-    new: 22,
+    total: shopInfo.prod_total,
+    new: shopInfo.prod_isnew_total,
     style: 1
 
     // loop:false,//是否循环

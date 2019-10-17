@@ -54,6 +54,8 @@ export const setSkinConfig = (data, options) => fetch('update_shophome', data, o
 
 export const getProductCategory = (data, options) => fetch('pro_cate', data, options)
 
+export const getUsersInfo = (data, options) => fetch('get_users_info', data, options)
+
 
 function get_Appid() {
   return 'xhh';
