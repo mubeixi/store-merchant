@@ -108,7 +108,8 @@
     .more
       position absolute
       right 10px
-      top 10px
+      top 50%
+      transform translateY(-50%)
       font-size 12px
       color #66b1ff
 
