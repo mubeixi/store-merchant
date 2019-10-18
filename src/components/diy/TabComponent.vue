@@ -126,6 +126,11 @@
             itemw() {
                 let full = this.fullWidth;
 
+
+                if(this.tab.config.showmode == 'border-bgwhite'){
+                    full -= 4;//4个边框
+                }
+
                 //内边不是乘以3 而是1
                 //375-90-30-10 = 245px
                 if (this.tab.config.style === 2) {
@@ -346,7 +351,7 @@
   }
 
   .border-bgwhite{
-
+    box-sizing: border-box;
     border: 1px solid #e3e3e3;
   }
 
