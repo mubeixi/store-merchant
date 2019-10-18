@@ -1,5 +1,5 @@
 <template>
-  <div @click.stop="setData({}, 0)" class="goods wrap" id="goods" :style="{padding:goods.style.wrapmargin+'px'}">
+  <div @click.stop="setData({}, 0)" class="goods wrap" id="goods" :style="{paddingLeft:goods.style.wrapmargin+'px',paddingRight:goods.style.wrapmargin+'px'}">
     <div class="box" :class="[className]">
       <ul class="list" >
         <li v-for="(item,idx) in goodsList" class="item"
@@ -186,27 +186,27 @@
             itemMarginObj(idx) {
 
                 let conf = this.goods.style.margin;
-                let {left = conf, top = conf, bottom = conf, right = conf} = {}
+                let {left = conf, top = conf, bottom = 0, right = conf} = {}
                 // {marginBottom:tool.style.margin+'px',marginLeft:idx%2==0?tool.style.margin:tool.style.margin/2+'px',marginRight:idx%2==0?tool.style.margin/2:tool.style.margin+'px'}
                 switch (this.goods.config.style) {
                     case 1:
-                        top = 0;
+                        // top = 0;
                         left = 0;
                         right = 0;
                         break;
                     case 4:
-                        top = 0;
+                        // top = 0;
                         bottom = 0;
                         left = 0;
                         break;
                     case 3:
-                        top = 0;
+                        // top = 0;
                         left = 0;
                         right = 0;
                         break;
                     case 2:
                         console.log(idx)
-                        top = 0;
+                        // top = 0;
                         left = idx % 2 == 0 ? 0 : conf / 2;
                         right = idx % 2 == 0 ? conf / 2 : 0;
                         break;
@@ -217,6 +217,8 @@
                     marginLeft: left + 'px',
                     marginRight: right + 'px'
                 })
+                //6666
+                if(idx===0 || idx===1)top = 0
                 return {
                     marginTop: top + 'px',
                     marginBottom: bottom + 'px',
