@@ -56,6 +56,7 @@ export const getProductCategory = (data, options) => fetch('pro_cate', data, opt
 
 export const getUsersInfo = (data, options) => fetch('get_users_info', data, options)
 
+export const getProductCountInfo  = (data,options) => fetch('get_users_info', data, options);
 
 function get_Appid() {
   return 'xhh';
