@@ -218,7 +218,9 @@
                     marginRight: right + 'px'
                 })
                 //6666
-                if(idx===0 || idx===1)top = 0
+                if(idx===0 )top = 0
+                //这个需要是2
+                if(idx===1 && this.goods.config.style==2 )top = 0
                 return {
                     marginTop: top + 'px',
                     marginBottom: bottom + 'px',
