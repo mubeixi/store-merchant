@@ -16,6 +16,8 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
 
   // @ts-ignore
   param.act = act;
+
+  param.env = 'wx_mp';
   // param.Users_Account = get_Users_Account();
   // @ts-ignore
   param.Users_ID = get_Users_ID();
