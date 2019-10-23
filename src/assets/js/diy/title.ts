@@ -151,7 +151,7 @@ function setAttrData() {
 
         },
         removeCB: (idx) => {
-          this.value.list.splice(idx, 1);
+          this.value.more.splice(idx, 1);
 
           //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
           this.setIndex(0, {value:false,config:false});
