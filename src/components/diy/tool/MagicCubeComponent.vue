@@ -288,6 +288,9 @@ export default {
       let width = (area.x1 - area.x) * this.rowW*2;
       let height = (area.y1 - area.y) * this.colH*2;
 
+      width = parseInt(width)
+      height = parseInt(height)
+
       return `${width}x${height}像素或同等比例`;
 
     },
