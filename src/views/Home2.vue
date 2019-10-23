@@ -1,8 +1,8 @@
 <template>
   <div class="wrap">
-    <header class="boxShadow mainHeader" style="">
-      <el-button type="primary" size="small">保存并继续</el-button>
-    </header>
+<!--    <header class="boxShadow mainHeader" style="">-->
+<!--      <el-button type="primary" size="small">保存并继续</el-button>-->
+<!--    </header>-->
     <div class="flex main">
       <div class="plugins">
         <plugins-component></plugins-component>
@@ -76,6 +76,7 @@
 </script>
 <style lang="stylus" scoped>
   .mainHeader
+
     padding 16px 0
     box-sizing border-box
     text-align right
@@ -92,8 +93,10 @@
 
     .preview
       position relative
-      width 377px
-      margin-right 90px
+      top 70px
+      position: relative;
+      min-height: 601px;
+      width: 1549px;
 
     .setattr
       height calc(100vh - 200px)
