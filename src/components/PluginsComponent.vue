@@ -32,36 +32,44 @@
     }
 </script>
 
-<style scoped lang="stylus">
+<style scoped lang="less">
   .left-template {
-    background-color: white;
-    min-height: 100%;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
+    background-color:white;
+    //box-shadow 0 0 10px rgba(0, 0, 0, 0.12);
 
     h5 {
       padding: 10px 0;
     }
 
     ul {
-      padding: 1px 0;
-      overflow: hidden;
-      margin:0px;
+      padding : 0;
+      overflow :hidden;
+      display: block;
+      margin :0px;
+      width :162px;
 
       li {
-        /*cursor: pointer;*/
-        width: 91px;
-        height: 100px;
-        border-right: 1px solid #f1f1f1;
-        border-bottom: 1px solid #f1f1f1;
-        box-sizing border-box;
-        position: relative;
-        float: left;
-        cursor: move;
+        /*cursor pointer*/
+        width :50%;
+        height :90px;
+        /*border-right 1px solid #f1f1f1
+        border-bottom 1px solid #f1f1f1*/
+        box-sizing :border-box;
+        position :relative;
+        display :inline-block;
+        /*float left*/
+        cursor :move;
+        &:hover{
+          color:#409EFF;
 
-        &:nth-child(3n+3) {
-          width: 90px;
-          border-right: bottom;
+
+          p{
+            color: #333;
+          }
         }
+
+
+
 
         .center {
           position: absolute;
@@ -93,18 +101,18 @@
           display: block;
           text-align: center;
           font-size: 25px;
-          color: #999;
+
           cursor: pointer;
 
           &:hover {
-            color: #333
+
           }
         }
 
         p {
           text-align: center;
           font-size: 14px;
-          color: #333;
+          color: #777;
           margin-top: 6px;
           line-height: 1;
         }

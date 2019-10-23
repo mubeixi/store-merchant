@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
-import Home2 from './views/Home2.vue';
+
 import Hello from './views/Hello.vue';
 import Empty from './views/Empty.vue';
 
@@ -14,11 +14,7 @@ export default new Router({
       name: 'Home',
       component: Home,
     },
-    {
-      path: '/style2',
-      name: 'Home',
-      component: Home2,
-    },
+
     {
       path: '/hello',
       name: 'Hello',
