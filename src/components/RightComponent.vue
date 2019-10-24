@@ -13,8 +13,10 @@
               <i  class="el-icon-delete"></i>
             </div>
           </li>
+
         </transition-group>
       </draggable>
+      <div class="line10"></div>
 
     </ul>
   </div>

@@ -3,7 +3,7 @@
 <!--    <div class="title" style="" v-show="eTitle">-->
 <!--      <div class="leftText">{{eTitle}}</div>-->
 <!--    </div>-->
-    <el-form ref="form" :model="form" :label-width="activeAttr.attrData.labelSize==='L'?'100px':'80px'">
+    <el-form ref="form" :model="form" size="small" :label-width="activeAttr.attrData.labelSize==='L'?'100px':'80px'">
       <el-form-item inline-message
                     class="formitem"
                     :label="item.text"
@@ -54,7 +54,7 @@
         <div v-if="item.type==='arr' && item.value.length>0" class="arr-box">
 
           <div v-for="(arr_item,idx) in item.value" :key="idx" class="arr-row"
-               style="background: #f2f2f2;padding: 20px;">
+               style="">
             <!--简单值-->
             <div class="flex" v-if="['text','number'].indexOf(item.row_type)!==-1">
               <span class="padding10-c">{{item.label}}</span>
@@ -139,7 +139,7 @@
                   <div class="graytext" style="width: 50px;padding-left: 10px;">链接</div>
                   <el-tooltip class="item" effect="dark" :content="item.value[idx].tooltip||'未绑定'"
                               placement="right">
-                    <el-button :title="item.value[idx].tooltip" size="small"
+                    <el-button :title="item.value[idx].tooltip" size="mini"
                                @click="openSwiperBindLink(item,idx,item.bindCB)">绑定链接
                     </el-button>
                   </el-tooltip>
@@ -187,10 +187,10 @@
         </div>
 
 
-        <el-button v-if="item.removeBtn" class="rightBtn" @click.prevent="removeInput(item, index)"
+        <el-button size="small" v-if="item.removeBtn" class="rightBtn" @click.prevent="removeInput(item, index)"
                    icon='el-icon-minus'></el-button>
 
-        <el-button v-if="item.addBtn" class="rightBtn" @click.prevent="addInput(item, index)"
+        <el-button size="small" v-if="item.addBtn" class="rightBtn" @click.prevent="addInput(item, index)"
                    icon='el-icon-plus'></el-button>
 
         <el-switch v-if="item.type === 'switch'" v-model="item.model"
@@ -688,6 +688,8 @@
     .arr-row {
       position: relative;
       margin-bottom: 15px;
+      background: #f2f2f2;padding: 15px;
+      border-radius: 2px;
 
       span {
         color: #666;

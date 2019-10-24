@@ -1,13 +1,13 @@
 <template>
   <div class="preview-body">
-    <div class="preview-head"><div class="preview-header-title">首页</div></div>
+    <div class="preview-head"><div class="preview-header-title">{{system.title||'新页面'}}</div></div>
     <div class="canvasBox" @drop="dropEv" @dragover.prevent >
 <!--      @mouseover="selectStyle"-->
 <!--      @mouseout="outStyle"-->
       <!--           @scroll="canvasScroll($event)" -->
 <!--      v-scroll="scrollFn"-->
 <!--      @scroll="canvasScroll($event)"-->
-      <div class="canvas" id="canvas"
+      <div class="canvas" id="canvas" :style="{backgroundColor:system.bgcolor}"
            @setData="setDataEv"
            ref="pageTemplageBox" v-if="show_preview" >
         <section
@@ -283,7 +283,7 @@
                 set() {
                 },
             },
-            ...mapState(['activeAttr', 'tabIndex','editStatus']),
+            ...mapState(['activeAttr', 'tabIndex','editStatus','system']),
         },
         methods: {
             scrollFn:function(direction){
@@ -442,11 +442,15 @@
 
                 this.isAjax = true
 
+
+                let mixinData = {plugin:this.templateData,system:this.system}
+
                 let postData = {
                     Skin_ID: this.skinInfo.Skin_ID,
-                    Home_Json: JSON.stringify(this.templateData)
+                    //this.templateData换掉最新的
+                    Home_Json: JSON.stringify(mixinData)
                 }
-                console.log('保存模板', this.templateData);
+                console.log('保存模板', mixinData);
 
                 setSkinConfig(postData).then(res => {
 
@@ -575,7 +579,7 @@
                 this[type] && this[type]();
             },
             // 修改当前活跃的index,以及
-            ...mapActions(['setTemplateEditIndex', 'setTmplData','setEditStatus','setMode','setComponentTitle']),
+            ...mapActions(['setTemplateEditIndex', 'setTmplData','setEditStatus','setMode','setComponentTitle','setSystem']),
         },
         mounted(){
             let _self = this;
@@ -657,6 +661,7 @@
 
                 getSkinConfig().then(res => {
                     console.log(JSON.parse(res.data.Home_Json))
+
                     _self.skinInfo = res.data
 
                     resolve(JSON.parse(res.data.Home_Json))
@@ -664,7 +669,14 @@
                 })
 
             })
-            .then(templateData => {
+            .then(mixinData => {
+
+                console.log(mixinData)
+                let templateData = mixinData.plugin;
+
+
+                this.setSystem(mixinData.system);
+
 
 
                 //存储页面数据

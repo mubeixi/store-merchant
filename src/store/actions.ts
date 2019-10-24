@@ -38,4 +38,8 @@ export const setMode = ({commit}, data) => {
   commit('mode', data);
 };
 
+export const setSystem = ({commit}, data) => {
+  commit('system', data);
+};
+
 

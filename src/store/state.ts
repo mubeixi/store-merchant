@@ -1,5 +1,6 @@
 export default {
   activeAttr: {attrData: {}},
+  system:{bgcolor:'#f2f2f2',title:'首页'},
   editStatus: false,
   mode:'attr',
   componentTitle:{

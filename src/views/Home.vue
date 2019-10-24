@@ -22,6 +22,7 @@
           <div class="deco-component-title__msg">{{componentTitle.desc}}</div>
         </div>
         <set-attr-component v-show="mode=='attr'" ref="setAttr"></set-attr-component>
+        <common-attr-component v-show="mode=='system'" ref="setAttr"></common-attr-component>
         <right-component  v-show="mode=='plugin'"></right-component>
       </div>
     </div>
@@ -43,6 +44,7 @@
     import {mapState,mapActions} from 'vuex';
     import SetAttrComponent from '@/components/SetAttrComponent.vue'; // @ is an alias to /src
     import PreviewComponent from '@/components/PreviewComponent.vue';
+    import CommonAttrComponent from '@/components/CommonAttrComponent.vue';
     import PluginsComponent from '@/components/PluginsComponent.vue';
     import RightComponent from '@/components/RightComponent.vue';
     import {moveEl} from '@/common/utils';
@@ -56,6 +58,7 @@
             SetAttrComponent,
             PreviewComponent,
             RightComponent,
+            CommonAttrComponent
         },
         data() {
             return {
@@ -85,7 +88,7 @@
         },
         mounted() {
             // 右侧如果内容过多，可以用滚动栏
-            moveEl(this.$refs.setAttr.$el);
+            //moveEl(this.$refs.setAttr.$el);
         },
     })
     export default class Home extends Vue {
