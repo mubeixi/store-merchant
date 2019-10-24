@@ -9,6 +9,7 @@
           <p class="text">{{item.value}}</p>
         </div>
       </li>
+
     </ul>
   </div>
 </template>
@@ -33,8 +34,13 @@
 </script>
 
 <style scoped lang="less">
+  .left-template::-webkit-scrollbar{
+    display: block;
+  }
   .left-template {
     background-color:white;
+    height: 100vh;
+    overflow-y: auto;
     //box-shadow 0 0 10px rgba(0, 0, 0, 0.12);
 
     h5 {
@@ -47,6 +53,7 @@
       display: block;
       margin :0px;
       width :162px;
+      padding-bottom: 70px;
 
       li {
         /*cursor pointer*/
