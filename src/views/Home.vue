@@ -151,8 +151,8 @@
       /*overflow-y scroll*/
       padding-bottom 70px
       overflow-x hidden
-      width 460px
-      /*width 376px*/
+      /*width 460px*/
+      width 390px
       /*padding-right 20px*/
 
   .right

@@ -136,14 +136,14 @@
                   </div>
                 </div>
                 <div class="flex">
-                  <div class="graytext" style="width: 50px;padding-left: 10px;">链接</div>
+                  <div class="graytext" style="width: 50px;padding-left: 10px;box-sizing: border-box">链接</div>
                   <el-tooltip class="item" effect="dark" :content="item.value[idx].tooltip||'未绑定'"
                               placement="right">
                     <el-button :title="item.value[idx].tooltip" size="mini"
                                @click="openSwiperBindLink(item,idx,item.bindCB)">绑定链接
                     </el-button>
                   </el-tooltip>
-                  <span class="padding10-c font12" :title="item.value[idx].tooltip">{{item.value[idx].tooltip|cutstr(14,'..')}}</span>
+<!--                  <span class="padding10-c font12" :title="item.value[idx].tooltip">{{item.value[idx].tooltip|cutstr(14,'..')}}</span>-->
                 </div>
 
               </div>
@@ -210,42 +210,50 @@
           {{item.label}}
         </el-checkbox>
 
-        <div v-if="item.type === 'diy'" class="flex">
+        <div v-if="item.type === 'diy'" class="" >
           <!--          @change="checkboxCB(item)"-->
           <el-checkbox @change="item.checkboxCB" v-model="item.model">{{item.label}}</el-checkbox>
 
           <template v-if="item.row_type === 'buybtn'">
 
-            <el-radio-group style="margin-left: 20px;padding-top: 14px" v-model="item.data.style"
-                            @change="item.radioCB">
-              <el-radio :label="1">样式一</el-radio>
-              <el-radio :label="2">样式二</el-radio>
-            </el-radio-group>
+           <div>
+             <el-radio-group style="margin-left: 20px;padding-top: 14px" v-model="item.data.style"
+                             @change="item.radioCB">
+               <el-radio :label="1">样式一</el-radio>
+               <el-radio :label="2">样式二</el-radio>
+             </el-radio-group>
+           </div>
 
-            <el-input size="small" style="width: 90px;margin-left: 20px;" v-model="item.data.text"
-                      @input="item.inputCB"/>
-            <el-tooltip class="item" effect="dark" content="自定义按钮的文本" placement="right">
-              <i class="el-icon-question"></i>
-            </el-tooltip>
+           <div>
+             <el-input size="small" style="width: 90px;margin-left: 20px;" v-model="item.data.text"
+                       @input="item.inputCB"/>
+             <el-tooltip class="item" effect="dark" content="自定义按钮的文本" placement="right">
+               <i class="el-icon-question"></i>
+             </el-tooltip>
+           </div>
 
 
           </template>
 
           <template v-if="item.row_type === 'tag'">
-            <el-radio-group style="margin-left: 20px;padding-top: 14px" v-model="item.data.style"
-                            @change="item.radioCB">
-              <el-radio label="new">新品</el-radio>
-              <el-radio label="hot">热卖</el-radio>
-              <el-radio label="diy">自定义</el-radio>
-            </el-radio-group>
+            <div class="line10">
+              <el-radio-group style="margin-left: 20px;padding-top: 14px" v-model="item.data.style"
+                              @change="item.radioCB">
+                <el-radio label="new">新品</el-radio>
+                <el-radio label="hot">热卖</el-radio>
+                <el-radio label="diy">自定义</el-radio>
+              </el-radio-group>
+            </div>
             <!--非新品和热卖才-->
-            <upload-img-components style="margin-left: 20px;" v-if="item.data.style === 'diy'"
-                                   class="myUploadImg"
-                                   :onSuccess='item.radioImgCB'
-                                   type='avatar'
-                                   :mini="true"
-                                   tip="推荐100*100png图片"
-                                   :imgUrl='item.data.img'></upload-img-components>
+            <div>
+              <upload-img-components style="margin-left: 20px;" v-if="item.data.style === 'diy'"
+                                     class="myUploadImg"
+                                     :onSuccess='item.radioImgCB'
+                                     type='avatar'
+                                     :mini="true"
+                                     tip="推荐100*100png图片"
+                                     :imgUrl='item.data.img'></upload-img-components>
+            </div>
           </template>
 
         </div>
@@ -259,7 +267,7 @@
             </el-radio>
           </el-radio-group>
 
-          <div v-if="item.model==='filter'">
+          <div v-if="item.model==='filter'"   style="margin-left: -70px;margin-top: 8px">
             <el-tooltip class="item rightBtn" effect="dark" :content="item.origintooltip"
                         placement="right">
               <el-button @click="openGoodsBindList(item,item.bindListCB)" type="primary"
@@ -269,7 +277,7 @@
 
           </div>
 
-          <div v-if="item.model!='filter'" class="line10">
+          <div v-if="item.model!='filter'" class="line10"  style="margin-left: -70px;margin-top: 8px">
             <el-tooltip class="item rightBtn" effect="dark" :content="item.origintooltip"
                         placement="right">
               <el-button @click="openGoodsBindCate(item,item.bindCateCB,null,true)" type="primary"
@@ -281,7 +289,7 @@
 
           </div>
 
-          <div v-if="item.model!='filter'">
+          <div v-if="item.model!='filter'"   style="margin-left: -70px;">
             <span>产品数量</span>
             <el-input  size="small" style="width: 140px;margin-left: 20px;" type="number" max="30" min="1" v-model="item.limit"
                       @input="item.inputCB(item.limit)"/>

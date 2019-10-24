@@ -407,7 +407,7 @@
           .title {
             max-height: 42px;
             line-height: 21px;
-            overflow-x: hidden;
+            overflow: hidden;
             text-overflow: ellipsis;
             color: #444;
             font-size: 16px;
@@ -484,7 +484,7 @@
 
             .title {
               width: 100%;
-              overflow-x: hidden;
+              overflow: hidden;
               max-height: 42px;
               text-overflow: ellipsis;
               line-height: 21px;
