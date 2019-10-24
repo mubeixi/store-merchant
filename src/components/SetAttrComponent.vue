@@ -1,8 +1,8 @@
 <template>
-  <div v-show="tmplData[0] && tmplData[0].length>0" @click="taggleEditStatus">
-    <div class="title" style="" v-show="eTitle">
-      <div class="leftText">{{eTitle}}</div>
-    </div>
+  <div class="attr-body" v-show="tmplData[0] && tmplData[0].length>0" @click="taggleEditStatus">
+<!--    <div class="title" style="" v-show="eTitle">-->
+<!--      <div class="leftText">{{eTitle}}</div>-->
+<!--    </div>-->
     <el-form ref="form" :model="form" :label-width="activeAttr.attrData.labelSize==='L'?'100px':'80px'">
       <el-form-item inline-message
                     class="formitem"
@@ -383,6 +383,16 @@
                 return '选择的链接将会显示在这里';
             },
         },
+        watch:{
+          eTitle:{
+              immediate:true,
+              handler(val){
+
+                  this.setComponentTitle({title:val,desc:''})
+
+              }
+          }
+        },
         computed: {
 
             eTitle() {
@@ -593,7 +603,7 @@
                 if (this.activeAttr.isSendAjax) return;
                 this.currentData = item;
             },
-            ...mapActions(['setActiveAttr','setEditStatus']),
+            ...mapActions(['setActiveAttr','setEditStatus','setComponentTitle']),
         },
 
     })
@@ -705,5 +715,15 @@
     margin-left: 10px;
     cursor: pointer;
     color: #409eff;
+  }
+
+  .attr-body{
+    padding-top: 15px;
+  }
+  .attr-body::-webkit-scrollbar {
+    display: none;
+  }
+  .attr-body .el-form::-webkit-scrollbar {
+    display: none;
   }
 </style>

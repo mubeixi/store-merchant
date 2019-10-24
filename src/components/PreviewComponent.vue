@@ -9,7 +9,6 @@
 <!--      @scroll="canvasScroll($event)"-->
       <div class="canvas" id="canvas"
            @setData="setDataEv"
-
            ref="pageTemplageBox" v-if="show_preview" >
         <section
           :ref="item | dragSorts"
@@ -493,6 +492,13 @@
                 this.currentData.index = index;
                 this.currentData.name = item;
 
+                console.log(item)
+
+                this.setMode('attr');
+
+
+
+
                 // this.setEditStatus(false)
                 //this.editData = config;
             },
@@ -569,7 +575,7 @@
                 this[type] && this[type]();
             },
             // 修改当前活跃的index,以及
-            ...mapActions(['setTemplateEditIndex', 'setTmplData','setEditStatus']),
+            ...mapActions(['setTemplateEditIndex', 'setTmplData','setEditStatus','setMode','setComponentTitle']),
         },
         mounted(){
             let _self = this;
@@ -1024,6 +1030,7 @@
   .preview-body{
     /*position: absolute;*/
     padding-top: 70px;
+    padding-bottom: 100px;
     top: 0;
     bottom: 0;
   }
