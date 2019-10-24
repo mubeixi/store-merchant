@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="preview-body">
+    <div class="preview-head"><div class="preview-header-title">首页</div></div>
     <div class="canvasBox" @drop="dropEv" @dragover.prevent >
 <!--      @mouseover="selectStyle"-->
 <!--      @mouseout="outStyle"-->
@@ -175,9 +176,9 @@
       </div>
 
     </div>
-    <div class="handle text-center">
-      <el-button @click="uploadConfig" type="primary">保存</el-button>
-    </div>
+<!--    <div class="handle text-center">-->
+<!--      <el-button @click="uploadConfig" type="primary">保存</el-button>-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -352,7 +353,9 @@
 
 
                         //this.tabbarLast()
-                        setTimeout(() => pageMove.init('sort', this), 500)
+
+
+                        //setTimeout(() => pageMove.init('sort', this), 500)
 
 
                     })
@@ -361,13 +364,15 @@
                     })
                     .then(() => {
                         //拖拽
-                        var isDraggable = ['div', 'nav']
-                        Array.from(
-                            document.querySelectorAll('[draggable=true]')
-                        ).filter(el => {
-                            let tagName = el.tagName.toLowerCase()
-                            return isDraggable.some(elName => elName === tagName)
-                        })
+
+                        // var isDraggable = ['div', 'nav']
+                        // Array.from(
+                        //     document.querySelectorAll('[draggable=true]')
+                        // ).filter(el => {
+                        //     let tagName = el.tagName.toLowerCase()
+                        //     return isDraggable.some(elName => elName === tagName)
+                        // })
+
                     })
 
 
@@ -870,14 +875,19 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
   .canvasBox
-    height 667px
-    background #f2f2f2
-    overflow-x hidden
-    overflow-y scroll
-    border 1px solid #e5e5e5
+    /*height 667px*/
+    /*width 1549px*/
+    /*margin 0 auto*/
+    //background #f2f2f2
+    //overflow-x hidden
+    //overflow-y scroll
+    //border 1px solid #e5e5e5
 
   .canvas
-    height 100%
+    //height 100%
+    //box-shadow 0 0 14px 0 rgba(0,0,0,0.1)
+    width 375px
+    margin 0 auto
     padding 0
     position relative
 
@@ -992,5 +1002,32 @@
 <style scoped lang="less">
   .canvasBox::-webkit-scrollbar {
     display:none !important;
+  }
+  .preview-head{
+    background-image: url(~@/assets/img/statusbar.jpg);
+    height: 64px;
+    width: 375px;
+    margin: 0 auto;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 50%;
+    position: relative;
+    box-shadow: 0 0 14px 0 rgba(0,0,0,.1);
+  }
+  .preview-header-title{
+    width: 180px;
+    margin: 0 auto;
+    height: 34px;
+    text-align: center;
+    padding-top: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .preview-body{
+    /*position: absolute;*/
+    padding-top: 70px;
+    top: 0;
+    bottom: 0;
   }
 </style>
