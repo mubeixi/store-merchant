@@ -407,9 +407,6 @@
                     return;
                 }
 
-
-
-
                 //各种数据检测
                 for(var i in this.templateList){
                     for(var j in this.templateList[i]){
@@ -699,20 +696,20 @@
                     }
                 }
 
-                setTimeout(() => pageMove.init('sort', this), 500)
+                //setTimeout(() => pageMove.init('sort', this), 500)
             })
             .catch(err => {
                 throw new Error(err)
             })
             .then(() => {
                 //拖拽
-                var isDraggable = ['div', 'nav']
-                Array.from(
-                    document.querySelectorAll('[draggable=true]')
-                ).filter(el => {
-                    let tagName = el.tagName.toLowerCase()
-                    return isDraggable.some(elName => elName === tagName)
-                })
+                // var isDraggable = ['div', 'nav']
+                // Array.from(
+                //     document.querySelectorAll('[draggable=true]')
+                // ).filter(el => {
+                //     let tagName = el.tagName.toLowerCase()
+                //     return isDraggable.some(elName => elName === tagName)
+                // })
             })
 
 
