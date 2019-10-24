@@ -145,7 +145,8 @@
       ajaxData() {
         let param = {
           Users_ID: get_Users_ID(),
-          act: 'upload_image'
+          act: 'upload_image',
+          env : 'wx_mp'
         };
 
         let ajaxData = createToken(param);
