@@ -24,6 +24,14 @@ export const tabIndex = function (state: any, value: any) {
   state.tabIndex = value;
 };
 
+export const componentTitle = function(state:any,value:any){
+  state.componentTitle = value
+}
+
+export const mode = function(state:any,value:any){
+  state.mode = value
+}
+
 // export const eTitle = function (state: any, value: any) {
 //   state.eTitle = value
 // };

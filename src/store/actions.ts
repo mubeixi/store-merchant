@@ -28,3 +28,14 @@ export const setTmplData = ({commit}, data) => {
 export const setEditStatus = ({commit}, data) => {
   commit('editStatus', data);
 };
+
+
+export const setComponentTitle = ({commit}, data) => {
+  commit('componentTitle', data);
+};
+
+export const setMode = ({commit}, data) => {
+  commit('mode', data);
+};
+
+
