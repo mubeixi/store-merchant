@@ -25,7 +25,7 @@
         </div>
 
 
-        <el-input @blur="inputBlurEvent(item)" v-if="item.type === 'input'" autosize
+        <el-input size="small" @blur="inputBlurEvent(item)" v-if="item.type === 'input'" autosize
                   v-model="item.model" class="input"
                   @input='change(item)'
                   :type='item.inputType'></el-input>
@@ -58,7 +58,7 @@
             <!--简单值-->
             <div class="flex" v-if="['text','number'].indexOf(item.row_type)!==-1">
               <span class="padding10-c">{{item.label}}</span>
-              <el-input @input="item.inputCB(item)" class="flex1" v-model="item.value[idx]"/>
+              <el-input  size="small" @input="item.inputCB(item)" class="flex1" v-model="item.value[idx]"/>
             </div>
 
             <div class="flex" v-if="['coupon'].indexOf(item.row_type)!==-1">
@@ -96,7 +96,7 @@
               <div class="line10 flex">
                 <div class="graytext" style="width: 70px;padding-left: 10px;">导航标题</div>
                 <div>
-                  <el-input v-model="item.value[idx].title"/>
+                  <el-input  size="small" v-model="item.value[idx].title"/>
                 </div>
               </div>
 
@@ -131,7 +131,7 @@
                 <div class="line10 flex">
                   <div class="graytext" style="width: 50px;padding-left: 10px;">标题</div>
                   <div>
-                    <el-input autosize v-model="item.value[idx].title" class="input"
+                    <el-input  size="small" v-model="item.value[idx].title" class="input"
                               @input='item.inputCB'/>
                   </div>
                 </div>
@@ -176,7 +176,7 @@
                   <el-radio label="all">全部</el-radio>
                   <el-radio label="diy">自定义</el-radio>
                 </el-radio-group>
-                <el-input type="number" v-if="item.arr[idx].type==='diy'"
+                <el-input  size="small" type="number" v-if="item.arr[idx].type==='diy'"
                           style="width: 140px;margin-left: 20px;" v-model="item.arr[idx].limit"/>
               </div>
             </div>
@@ -283,7 +283,7 @@
 
           <div v-if="item.model!='filter'">
             <span>产品数量</span>
-            <el-input style="width: 140px;margin-left: 20px;" type="number" max="30" min="1" v-model="item.limit"
+            <el-input  size="small" style="width: 140px;margin-left: 20px;" type="number" max="30" min="1" v-model="item.limit"
                       @input="item.inputCB(item.limit)"/>
             <span class="padding10-c font14 graytext">(最多显示30个)</span>
           </div>
@@ -719,6 +719,7 @@
 
   .attr-body{
     padding-top: 15px;
+    padding-right: 15px;
   }
   .attr-body::-webkit-scrollbar {
     display: none;

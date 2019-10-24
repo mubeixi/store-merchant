@@ -863,7 +863,7 @@
                 console.log(dragSection);
                 dragSection.click()
 
-                pageMove.init('sort', this, () => console.log(22222));
+                //pageMove.init('sort', this, () => console.log(22222));
 
                 // 每次页面都会重排一次，可能是因为这里导致拖拽切换导航的时候，页面其他元素不显示了。
                 // 始终把 tabbar 放到最后

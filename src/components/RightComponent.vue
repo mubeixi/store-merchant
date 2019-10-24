@@ -82,22 +82,30 @@
 
     ul {
       margin 0
-      padding 0
-      overflow: hidden;
+
+      overflow hidden
+      padding 0 16px
 
       li {
-        padding 0 0 0 10px
+        padding 0px
+        margin-top 12px
         font-size 14px
-        line-height 38px
+        line-height 40px
         cursor pointer
-        border-bottom 1px solid #e7e7e7
+        /*border-bottom 1px solid #e7e7e7*/
+        box-shadow 0 0 4px 0 rgba(10,42,97,.2)
         color #444
-        height 38px
+        height 40px
+
         .sorticon{
           cursor move
           color #999
-          font-size 18px
-          line-height 38px
+          font-size 22px
+          line-height 40px
+          height 40px
+          padding-right 6px
+          float left
+
         }
         .right{
           float right
@@ -106,8 +114,8 @@
         }
         .el-icon-delete{
 
-          height 38px
-          line-height 38px
+          height 40px
+          line-height 40px
 
         }
         .el-icon-delete:hover{
