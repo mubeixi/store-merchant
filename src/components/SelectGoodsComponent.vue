@@ -1,9 +1,10 @@
 <template>
   <div class="selectPage">
     <el-dialog
-      :visible.sync="show"
+      :visible.sync="innerVisible"
       title="选择商品"
       width="70%"
+      @close="cancel"
       append-to-body
       class="innerDislog"
     >
@@ -23,11 +24,13 @@
           <el-table-column
             prop="Products_ID"
             fixed
+            width="60"
             label="ID">
           </el-table-column>
           <el-table-column
             prop="Products_Name"
             fixed
+            width="300"
             label="名称">
           </el-table-column>
           <el-table-column
@@ -197,7 +200,7 @@
         // this.innerVisible = false;
       },
       cancel() {
-        this.$emit('couponCancel');
+        this.$emit('cancel');
       },
       handleSelectionChange(val) {
         console.log(val);
