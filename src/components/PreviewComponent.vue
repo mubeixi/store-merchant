@@ -554,10 +554,19 @@
                 this.templateData[this.templateEditIndex].splice(index, 1);
 
 
+                console.log('删除掉额index'+index)
                 //this.$store.commit('templateEditIndex', 0)
                 //this.clickPlugin(0);
 
-                // 用心良苦啊,删除的时候还要保留这个页面，确实比较符合需要
+                //如果删除的是当前激活的
+                if(index === this.$store.state.tabIndex){
+                    //清空右侧的
+                    this.setActiveAttr({attrData: {}})
+
+                    this.$store.commit('tabIndex', null);
+                }
+
+              // 用心良苦啊,删除的时候还要保留这个页面，确实比较符合需要
                 // if (name.substring(0, 9) === 'switchNav') {
                 //   // 删除导航及其他页面
                 //   this.templateData = [this.templateData[this.templateEditIndex]];
@@ -579,7 +588,7 @@
                 this[type] && this[type]();
             },
             // 修改当前活跃的index,以及
-            ...mapActions(['setTemplateEditIndex', 'setTmplData','setEditStatus','setMode','setComponentTitle','setSystem']),
+            ...mapActions(['setTemplateEditIndex', 'setTmplData','setEditStatus','setMode','setComponentTitle','setSystem','setActiveAttr']),
         },
         mounted(){
             let _self = this;
