@@ -446,7 +446,8 @@
                 let mixinData = {plugin:this.templateData,system:this.system}
 
                 let postData = {
-                    Skin_ID: this.skinInfo.Skin_ID,
+                    // Skin_ID: this.skinInfo.Skin_ID,
+                    Home_ID: this.skinInfo.Home_ID,
                     //this.templateData换掉最新的
                     Home_Json: JSON.stringify(mixinData)
                 }
@@ -553,9 +554,8 @@
                 this.templateData[this.templateEditIndex].splice(index, 1);
 
 
-                this.$store.commit('templateEditIndex', 0)
-
-                this.clickPlugin(0);
+                //this.$store.commit('templateEditIndex', 0)
+                //this.clickPlugin(0);
 
                 // 用心良苦啊,删除的时候还要保留这个页面，确实比较符合需要
                 // if (name.substring(0, 9) === 'switchNav') {
@@ -675,7 +675,10 @@
                 let templateData = mixinData.plugin;
 
 
-                this.setSystem(mixinData.system);
+                if(mixinData.system){
+                    this.setSystem(mixinData.system);
+                }
+
 
 
 
@@ -902,6 +905,7 @@
     //height 100%
     //box-shadow 0 0 14px 0 rgba(0,0,0,0.1)
     width 375px
+    min-height 675px
     margin 0 auto
     padding 0
     position relative
