@@ -152,7 +152,7 @@
                     if (!val) return;
                     let {list = [], cate_id=[], limit} = val;
 
-                    console.log(list,cate_id,limit)
+                    //console.log(list,cate_id,limit)
 
                     //如果值还没有设置的话
                     //取消注释，拉取默认的商品。这样的话，方便有主题让人应用
@@ -205,18 +205,18 @@
                         right = 0;
                         break;
                     case 2:
-                        console.log(idx)
+                        //console.log(idx)
                         // top = 0;
                         left = idx % 2 == 0 ? 0 : conf / 2;
                         right = idx % 2 == 0 ? conf / 2 : 0;
                         break;
                 }
-                console.log({
-                    marginTop: top + 'px',
-                    marginBottom: bottom + 'px',
-                    marginLeft: left + 'px',
-                    marginRight: right + 'px'
-                })
+                // console.log({
+                //     marginTop: top + 'px',
+                //     marginBottom: bottom + 'px',
+                //     marginLeft: left + 'px',
+                //     marginRight: right + 'px'
+                // })
                 //6666
                 if(idx===0 )top = 0
                 //这个需要是2

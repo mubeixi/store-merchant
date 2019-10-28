@@ -150,7 +150,7 @@
         };
 
         let ajaxData = createToken(param);
-        console.log(ajaxData);
+        //console.log(ajaxData);
         return ajaxData;
       }
 

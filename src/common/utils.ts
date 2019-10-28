@@ -438,8 +438,10 @@ export class pageMove {
 
   static initSort() {
     const that = pageMove;
-    sortEl = document.querySelectorAll('.canvas > section');
-    //console.log(sortEl);// 所有的元素，批量添加拖动事件监听
+
+    //这里只允许搜索框拖拽
+    sortEl = document.querySelectorAll('.canvas > section.noborder');
+    console.log(sortEl);// 所有的元素，批量添加拖动事件监听
     Array.from(sortEl).map((v) => {
       v.ondragstart = that.sortStart;
       v.ondrag = that.sortDrag;
@@ -491,7 +493,10 @@ export class pageMove {
     if(TARGET.className.indexOf('search')>-1 && TARGET.className.indexOf('absolute')>-1){
       console.log(e.clientY,pageMove.canvasScrollTop)
       //因为绝对定位只能参照上一层，特别麻烦。
-      TARGET.style.top = e.clientY-$('.main')[0].offsetTop+(100-preBoundingClientRect.top)+'px';
+      let TOP = e.clientY-$('.main')[0].offsetTop+(0-preBoundingClientRect.top);
+      if(TOP >= 0){
+        TARGET.style.top = TOP+'px';
+      }
       return;
     }
 

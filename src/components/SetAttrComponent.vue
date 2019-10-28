@@ -3,7 +3,8 @@
 <!--    <div class="title" style="" v-show="eTitle">-->
 <!--      <div class="leftText">{{eTitle}}</div>-->
 <!--    </div>-->
-    <el-form ref="form" :model="form" size="small" :label-width="activeAttr.attrData.labelSize==='L'?'100px':'80px'">
+<!--    size="small"-->
+    <el-form ref="form" :model="form"  :label-width="activeAttr.attrData.labelSize==='L'?'100px':'80px'">
       <el-form-item inline-message
                     class="formitem"
                     :label="item.text"
@@ -216,15 +217,16 @@
 
           <template v-if="item.row_type === 'buybtn'">
 
-           <div>
-             <el-radio-group style="margin-left: 20px;padding-top: 14px" v-model="item.data.style"
+           <div style="display: inline-block;">
+<!--             padding-top: 14px-->
+             <el-radio-group style="margin-left: 20px;" v-model="item.data.style"
                              @change="item.radioCB">
                <el-radio :label="1">样式一</el-radio>
                <el-radio :label="2">样式二</el-radio>
              </el-radio-group>
            </div>
 
-           <div>
+           <div  style="display: inline-block;">
              <el-input size="small" style="width: 90px;margin-left: 20px;" v-model="item.data.text"
                        @input="item.inputCB"/>
              <el-tooltip class="item" effect="dark" content="自定义按钮的文本" placement="right">
@@ -236,8 +238,10 @@
           </template>
 
           <template v-if="item.row_type === 'tag'">
-            <div class="line10">
-              <el-radio-group style="margin-left: 20px;padding-top: 14px" v-model="item.data.style"
+<!--            class="line10"-->
+            <div style="display: inline-block;">
+<!--              padding-top: 14px-->
+              <el-radio-group style="margin-left: 20px;" v-model="item.data.style"
                               @change="item.radioCB">
                 <el-radio label="new">新品</el-radio>
                 <el-radio label="hot">热卖</el-radio>

@@ -28,7 +28,9 @@
     </div>
     <div class="handle">
       <el-button @click="saveData" type="primary" size="small">保存</el-button>
-<!--      <el-button size="small">预览</el-button>-->
+      <el-button @click="saveData" size="small">上架</el-button>
+      <el-button @click="saveData" size="small">保存并上架</el-button>
+      <el-button @click="viewEv" size="small">缩略图</el-button>
 <!--      <el-button size="small">更多操作</el-button>-->
     </div>
 
@@ -52,6 +54,10 @@
     import {isDev} from '../common/env';
 
 
+    import html2canvas from 'html2canvas';
+    import {Canvas2Image} from '@/assets/js/diy/tool/canvas2img';
+    import {uploadImgByBase64} from '@/common/fetch';
+
     @Component({
         components: {
             PluginsComponent,
@@ -63,10 +69,112 @@
         data() {
             return {
                 isDev: isDev,
-                previewActiveIndex:null
+                previewActiveIndex:null,
+                imgUrl:'',
+                title:'自定义页面'
             }
         },
         methods: {
+            async convert2canvas(el) {
+                let shareContent = el //需要截图的包裹的（原生的）DOM 对象
+                let width = shareContent.offsetWidth //获取dom 宽度
+                let height = shareContent.offsetHeight //获取dom 高度
+                let canvas = document.createElement('canvas') //创建一个canvas节点
+                let scale = 2 //定义任意放大倍数 支持小数
+                canvas.width = width * scale //定义canvas 宽度 * 缩放
+                canvas.height = height * scale //定义canvas高度 *缩放
+                canvas.getContext('2d').scale(scale, scale) //获取context,设置scale
+                let opts = {
+                    scale: scale, // 添加的scale 参数
+                    canvas: canvas, //自定义 canvas
+                    // logging: true, //日志开关，便于查看html2canvas的内部执行流程
+                    width: width, //dom 原始宽度
+                    height: height,
+                    useCORS: false // 【重要】开启跨域配置
+                }
+                await html2canvas(shareContent, opts).then(canvas => {
+
+                    console.log(canvas)
+                    let context = canvas.getContext('2d')
+                    // 【重要】关闭抗锯齿
+                    context.mozImageSmoothingEnabled = false
+                    context.webkitImageSmoothingEnabled = false
+                    context.msImageSmoothingEnabled = false
+                    context.imageSmoothingEnabled = false
+                    // 【重要】默认转化的格式为png,也可设置为其他格式
+                    // return this.imgUrl = Canvas2Image.convertToPNG(canvas, canvas.width, canvas.height).getAttribute('src');
+                    let src = Canvas2Image.convertToPNG(
+                        canvas,
+                        canvas.width,
+                        canvas.height
+                    ).getAttribute('src')
+                    console.log(src)
+
+                    let base64Data = src;
+                    //let blob = this.dataURItoBlob(src)
+                    // let file = new File(
+                    //     [blob],
+                    //     (this.title || '自定义页面') + '.png'
+                    // )
+                    //let data = new FormData()
+                    //data.append('file', file)
+
+                    //,'title':this.title || '自定义页面'+'png'
+                    let data = {data:base64Data};
+
+                    return uploadImgByBase64(data).then(res => {
+                        this.imgUrl = res.data.url
+                    })
+                })
+            },
+            dataURItoBlob(base64Data) {
+                let byteString
+                if (base64Data.split(',')[0].indexOf('base64') >= 0)
+                    byteString = atob(base64Data.split(',')[1])
+                else byteString = unescape(base64Data.split(',')[1])
+                let mimeString = base64Data
+                    .split(',')[0]
+                    .split(':')[1]
+                    .split(';')[0]
+                let ia = new Uint8Array(byteString.length)
+                for (let i = 0; i < byteString.length; i++)
+                    ia[i] = byteString.charCodeAt(i)
+                return new Blob([ia], { type: mimeString })
+            },
+            async viewEv(boolean, name) {
+
+                //截图
+                let el = document.getElementById('canvas')
+                await this.convert2canvas(el)
+
+                //let data = JSON.stringify(this.activeTemplateData)
+                //let modelIndex = this.$route.query.id
+                var postData = {}
+
+                //postData.title = this.title
+
+                //postData.config = data
+                postData.cover = this.imgUrl
+                // postData.name = ''
+
+                console.log(postData);
+                return;
+
+                if (this.is_edit_id) {
+                    // postData.ids = this.is_edit_id;
+
+                    // manageEdit({row:postData,ids:this.is_edit_id}).then(() => {
+                    //     return this.$Message.success('修改成功！')
+                    // }).catch(e=>{})
+
+                }else{
+                    // manageAdd({row:postData,group:2}).then(
+                    //     () => {
+                    //         return this.$Message.success('保存成功！')
+                    //     }
+                    // ).catch(e=>{})
+                }
+            },
             ...mapActions(['setMode','setComponentTitle']),
             setAct(idx,mode,title,desc){
                 this.previewActiveIndex=idx;
@@ -152,7 +260,7 @@
       padding-bottom 70px
       overflow-x hidden
       /*width 460px*/
-      width 390px
+      width 540px
       /*padding-right 20px*/
 
   .right

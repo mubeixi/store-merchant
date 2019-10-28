@@ -60,6 +60,9 @@ export const getUsersInfo = (data, options) => fetch('get_users_info', data, opt
 
 export const getProductCountInfo  = (data,options) => fetch('get_users_info', data, options);
 
+
+export const uploadImgByBase64 = (data,options) => fetch('upload_blob_img', data, options);
+
 function get_Appid() {
   return 'xhh';
 }

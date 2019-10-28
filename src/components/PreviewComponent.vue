@@ -236,7 +236,7 @@
             activeAttr: {
                 deep: true,
                 handler(val) {
-                    console.log('activeAttr对象有改变111111111')
+                    //console.log('activeAttr对象有改变111111111')
                     // 去修改准备提交到线上的数据对象
                     // 等于右边有变动，中间预览马上就跟着变了
 
@@ -287,7 +287,7 @@
         },
         methods: {
             scrollFn:function(direction){
-                console.log(direction)
+                //console.log(direction)
             },
             restTmplFun(defaultData){
 
@@ -354,7 +354,7 @@
                         //this.tabbarLast()
 
 
-                        //setTimeout(() => pageMove.init('sort', this), 500)
+                        // setTimeout(() => pageMove.init('sort', this), 500)
 
 
                     })
@@ -391,8 +391,8 @@
             //     document.getElementById('canvas').className = className.replace(/isMouseInPreview/,'')
             // },
             canvasScroll(e) {
-                console.log(e.srcElement.scrollTop, e.target.scrollTop)
-                console.log(e)
+                //console.log(e.srcElement.scrollTop, e.target.scrollTop)
+                //console.log(e)
                 this.canvasScrollTop = this.$refs.pageTemplageBox.scrollTop
                 // var editEL = document.querySelector('.section.tab-bar')
                 // editEL.style.top = `calc(6.67rem - 53px + ${
@@ -417,7 +417,7 @@
 
                             //检查图片设置
                             for(var valItem of conf.value.list){
-                                console.log(valItem)
+                                //console.log(valItem)
                                 if(!valItem.bgimg){
                                     this.$fun.error({title:'设置错误',msg:'魔方中有区块未设置图片'})
                                     //去掉锁
@@ -451,7 +451,7 @@
                     //this.templateData换掉最新的
                     Home_Json: JSON.stringify(mixinData)
                 }
-                console.log('保存模板', mixinData);
+                //console.log('保存模板', mixinData);
 
                 setSkinConfig(postData).then(res => {
 
@@ -472,7 +472,7 @@
                 const templateName = sectionEl.getAttribute('data-tag');
 
                 const dragEl = sectionEl.getElementsByClassName(`${templateName}`)[0];
-                console.log(templateName, dragEl);
+                //console.log(templateName, dragEl);
                 if (!dragEl) return;
                 // 模拟点击
                 dragEl.click();
@@ -481,7 +481,7 @@
                 // this.$emit('setData', data)
             },
             activeStatus(e, index, item) {
-                console.log(e, index, item);
+                //console.log(e, index, item);
                 this.sort.downIndex = index;
                 const currentEl = e.currentTarget;
                 const config = {
@@ -491,13 +491,13 @@
                     top: `${currentEl.offsetTop}px`,
                     display: 'block',
                 };
-                console.log(config);
+                //console.log(config);
 
                 // 方便删除的
                 this.currentData.index = index;
                 this.currentData.name = item;
 
-                console.log(item)
+                //console.log(item)
 
                 this.setMode('attr');
 
@@ -554,7 +554,7 @@
                 this.templateData[this.templateEditIndex].splice(index, 1);
 
 
-                console.log('删除掉额index'+index)
+                //console.log('删除掉额index'+index)
                 //this.$store.commit('templateEditIndex', 0)
                 //this.clickPlugin(0);
 
@@ -583,7 +583,7 @@
             },
             hideRightMenu(e) {
                 const type = e.target.getAttribute('type');
-                console.log(type)
+                //console.log(type)
                 this.$refs.rightMenu.style.display = 'none';
                 this[type] && this[type]();
             },
@@ -669,7 +669,7 @@
 
 
                 getSkinConfig().then(res => {
-                    console.log(JSON.parse(res.data.Home_Json))
+                    //console.log(JSON.parse(res.data.Home_Json))
 
                     _self.skinInfo = res.data
 
@@ -680,7 +680,7 @@
             })
             .then(mixinData => {
 
-                console.log(mixinData)
+                //console.log(mixinData)
                 let templateData = mixinData.plugin;
 
 
@@ -726,7 +726,7 @@
                     }
                 }
 
-                //setTimeout(() => pageMove.init('sort', this), 500)
+                setTimeout(() => pageMove.init('sort', this), 500)
             })
             .catch(err => {
                 throw new Error(err)
@@ -746,7 +746,7 @@
         }
 
         setClass(className, idx) {
-            console.log(className)
+            //console.log(className)
             if (typeof className === 'undefined') return '';
 
             if(typeof className !='string')return'';
@@ -763,7 +763,7 @@
             // });
 
             //之类就可以看出来是不是search
-            if(className.indexOf('search')!=-1 && this.templateData[this.templateEditIndex][idx].style.position === 'absolute'){
+            if(className.indexOf('search')!=-1 && this.templateData[this.templateEditIndex][idx].style && this.templateData[this.templateEditIndex][idx].style.position === 'absolute'){
                 rt.push('noborder')
             }
 
@@ -778,7 +778,7 @@
 
         dropEv(e: any) {
             const templateName = e.dataTransfer.getData('text/plain');
-            console.log(templateName);
+            //console.log(templateName);
             if (templateName === '') return; // 在页面内拖动时，无需添加组件
 
             // 如果是switchNav组件，特殊操作。虽然我也不知道为什么要这样
@@ -840,7 +840,7 @@
             }
 
 
-            console.log(newClass)
+            //console.log(newClass)
             //
             // //这里面的数据，会跟踪吗
             //
@@ -869,11 +869,11 @@
 
                 //上面是先执行各个组件的created
                 const lastIndex = this.templateList[this.templateEditIndex].length - 1;
-                console.log(lastIndex,templateName);
+                //console.log(lastIndex,templateName);
 
                 //用的延时，来确保点击的时候。created函数已经实现完毕（各个组件的created函数都是本地，而且没有异步操作)
                 const dragEl = document.querySelectorAll('.canvas > section')[lastIndex].getElementsByClassName(`${templateName}`)[0];
-                console.log(dragEl);
+                //console.log(dragEl);
 
                 if (!dragEl) return;
 
@@ -884,10 +884,10 @@
                 const dragSection = document.getElementById('section' + lastIndex);
 
                 if (!dragSection) return;
-                console.log(dragSection);
+                //console.log(dragSection);
                 dragSection.click()
 
-                //pageMove.init('sort', this, () => console.log(22222));
+                pageMove.init('sort', this, () => console.log('move init start'));
 
                 // 每次页面都会重排一次，可能是因为这里导致拖拽切换导航的时候，页面其他元素不显示了。
                 // 始终把 tabbar 放到最后
@@ -918,6 +918,7 @@
     margin 0 auto
     padding 0
     position relative
+    overflow hidden
 
   .handle
     margin-top 80px
