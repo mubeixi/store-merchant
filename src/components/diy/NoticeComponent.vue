@@ -12,7 +12,12 @@
       <svg class="fun-icon icon" :style="{color:notice.style.iconColor}"  aria-hidden="true">
         <use xlink:href="#icon-gonggao" ></use>
       </svg>
-      <div class="flex1 title" :style="{color:notice.style.color}">{{notice.value.content}}</div>
+
+      <div class="flex1 title"  :style="{color:notice.style.color}">
+
+        <span :style="{marginLeft: '-' + marginLeft + 'px'}">{{notice.value.content}}</span>
+      </div>
+
     </div>
   </div>
 </template>
@@ -37,6 +42,9 @@
         data() {
             return {
                 number: 0,
+                time:100,
+                marginLeft:0,
+                an:null,
                 notice: {},
             };
         },
@@ -77,6 +85,29 @@
         },
         components: {},
         methods: {
+            startAn: function(){ // 开始
+                let _self = this;
+                let width = document.getElementById('canvas').offsetWidth;
+                _self.an = setInterval( function() {
+                    if (_self.marginLeft > width) {
+                        _self.marginLeft = 0;
+                    }
+                    _self.marginLeft += 2;
+                } , _self.time);
+            },
+            stopAn: function(){ // 停止
+                this.prevLeft = this.marginLeft;
+                this.marginLeft = 0;
+                clearInterval(this.an);
+                this.$emit('on-stop-An');
+            },
+            pauseAn: function(){ // 暂停动画
+                clearInterval(this.an);
+            },
+            itemClick: function( item, e ) {
+                this.$emit('on-item-click',item );
+            },
+
             startMove() {
                 let _self = this;
                 setTimeout(function () {
@@ -120,6 +151,12 @@
             this.notice = deepCopy(new Notice(), this.data);
             //重新绑定attrData.content，让修改可以同步到其他地方
             this.notice.setIndex(0,{value:false,config:false})
+
+
+            this.$nextTick(function(){
+                this.startAn();
+            })
+
         }
 
     }
@@ -181,6 +218,10 @@
   .title{
     color: #666;
     font-size: 14px;
+    height: 20px;
+    line-height: 20px;
+    overflow: hidden;
+    /*white-space: nowrap;*/
   }
 
 
