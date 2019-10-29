@@ -4,7 +4,7 @@
 <!--      <div class="leftText">{{eTitle}}</div>-->
 <!--    </div>-->
     <el-form ref="form" size="small" :model="form" label-width="80px">
-      <el-form-item inline-message class="formitem" label="首页名称">
+      <el-form-item inline-message class="formitem" label="模板名称">
         <el-input @input="titleEv" type='text' v-model="form.title"></el-input>
       </el-form-item>
       <el-form-item inline-message class="formitem" label="背景色">

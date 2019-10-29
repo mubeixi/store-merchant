@@ -183,10 +183,11 @@
 
 <script lang="ts">
     import {pageMove,objTranslate} from '@/common/utils';
+    import {ss} from '@/common/tool/ss';
     import {Component, Vue} from 'vue-property-decorator';
     import {State} from 'vuex-class';
     import {mapActions, mapState} from 'vuex';
-    import {getSkinConfig, setSkinConfig} from '@/common/fetch';
+    import {getSkinConfig, setSkinConfig,uploadImgByBase64} from '@/common/fetch';
 
     import SpaceComponent from '@/components/diy/SpaceComponent';
     import HrComponent from '@/components/diy/HrComponent.vue';
@@ -218,8 +219,12 @@
     import Nav from '@/assets/js/diy/nav';
     import Cube from '@/assets/js/diy/cube';
     import Tab from '../assets/js/diy/tab';
-
     import MagicCube from '@/assets/js/diy/tool/MagicCube';
+
+
+    import html2canvas from 'html2canvas';
+    import {Canvas2Image} from '@/assets/js/diy/tool/canvas2img';
+
 
     @Component({
         name: 'PreviewComponent',
@@ -399,7 +404,115 @@
                 //     this.canvasScrollTop
                 // }px)`
             },
-            uploadConfig() {
+            async convert2canvas(el) {
+                let shareContent = el //需要截图的包裹的（原生的）DOM 对象
+                let width = shareContent.offsetWidth //获取dom 宽度
+                let height = shareContent.offsetHeight //获取dom 高度
+                let canvas = document.createElement('canvas') //创建一个canvas节点
+                let scale = 2 //定义任意放大倍数 支持小数
+                canvas.width = width * scale //定义canvas 宽度 * 缩放
+                canvas.height = height * scale //定义canvas高度 *缩放
+                canvas.getContext('2d').scale(scale, scale) //获取context,设置scale
+                let opts = {
+                    scale: scale, // 添加的scale 参数
+                    canvas: canvas, //自定义 canvas
+                    // logging: true, //日志开关，便于查看html2canvas的内部执行流程
+                    width: width, //dom 原始宽度
+                    height: height,
+                    useCORS: false // 【重要】开启跨域配置
+                }
+                await html2canvas(shareContent, opts).then(canvas => {
+
+                    console.log(canvas)
+                    let context = canvas.getContext('2d')
+                    // 【重要】关闭抗锯齿
+                    context.mozImageSmoothingEnabled = false
+                    context.webkitImageSmoothingEnabled = false
+                    context.msImageSmoothingEnabled = false
+                    context.imageSmoothingEnabled = false
+                    // 【重要】默认转化的格式为png,也可设置为其他格式
+                    // return this.imgUrl = Canvas2Image.convertToPNG(canvas, canvas.width, canvas.height).getAttribute('src');
+                    let src = Canvas2Image.convertToPNG(
+                        canvas,
+                        canvas.width,
+                        canvas.height
+                    ).getAttribute('src')
+                    console.log(src)
+
+                    let base64Data = src;
+                    //let blob = this.dataURItoBlob(src)
+                    // let file = new File(
+                    //     [blob],
+                    //     (this.title || '自定义页面') + '.png'
+                    // )
+                    //let data = new FormData()
+                    //data.append('file', file)
+
+                    //,'title':this.title || '自定义页面'+'png'
+                    let data = {image:base64Data};
+
+                    return uploadImgByBase64(data).then(res => {
+                        this.imgUrl = res.data.path
+                    })
+                })
+            },
+            dataURItoBlob(base64Data) {
+                let byteString
+                if (base64Data.split(',')[0].indexOf('base64') >= 0)
+                    byteString = atob(base64Data.split(',')[1])
+                else byteString = unescape(base64Data.split(',')[1])
+                let mimeString = base64Data
+                    .split(',')[0]
+                    .split(':')[1]
+                    .split(';')[0]
+                let ia = new Uint8Array(byteString.length)
+                for (let i = 0; i < byteString.length; i++)
+                    ia[i] = byteString.charCodeAt(i)
+                return new Blob([ia], { type: mimeString })
+            },
+            // async viewEv(boolean, name) {
+            //
+            //     //截图
+            //     let el = document.getElementById('canvas')
+            //     await this.convert2canvas(el)
+            //
+            //     //let data = JSON.stringify(this.activeTemplateData)
+            //     //let modelIndex = this.$route.query.id
+            //     var postData = {}
+            //
+            //     //postData.title = this.title
+            //
+            //     //postData.config = data
+            //     postData.cover = this.imgUrl
+            //     // postData.name = ''
+            //
+            //     console.log(postData);
+            //     return;
+            //
+            //     //如果是空白模板
+            //     if (ss.get('Skin_ID') == 1) {
+            //
+            //         // postData.ids = this.is_edit_id;
+            //
+            //         // manageEdit({row:postData,ids:this.is_edit_id}).then(() => {
+            //         //     return this.$Message.success('修改成功！')
+            //         // }).catch(e=>{})
+            //
+            //     }else{
+            //         // manageAdd({row:postData,group:2}).then(
+            //         //     () => {
+            //         //         return this.$Message.success('保存成功！')
+            //         //     }
+            //         // ).catch(e=>{})
+            //     }
+            // },
+            /**
+             * 保存数据
+             * @param Skin_Name Skin_ID为1（即空白模板)的时候，需要填写
+             * @param Skin_Img Skin_ID为1（即空白模板)的时候，需要截图
+             * @param is_use 可选，是否使用此模版为商城首页模版
+             */
+            async uploadConfig(is_use) {
 
                 if(this.isAjax){
                     this.$fun.info({msg:'操作过快'})
@@ -446,12 +559,33 @@
                 let mixinData = {plugin:this.templateData,system:this.system}
 
                 let postData = {
-                    // Skin_ID: this.skinInfo.Skin_ID,
-                    Home_ID: this.skinInfo.Home_ID,
+                    Skin_ID: ss.get('Skin_ID'),
+                    Home_ID: ss.get('Home_ID'),
                     //this.templateData换掉最新的
                     Home_Json: JSON.stringify(mixinData)
                 }
-                //console.log('保存模板', mixinData);
+
+                //是否使用
+                if(is_use){
+                    postData.is_use = is_use
+                }
+
+                let Skin_Name = this.system.title
+
+                //自定义
+                if(ss.get('Skin_ID') == 1){
+                    if(!this.system.title){
+                        this.$fun.warning("全局设置——模板名称必填");
+                        return;
+                    }
+                    postData.Skin_Name = Skin_Name
+
+                    //截图
+                    let el = document.getElementById('canvas')
+                    await this.convert2canvas(el)
+                    postData.Skin_Img = this.imgUrl;
+                }
+
 
                 setSkinConfig(postData).then(res => {
 
@@ -627,6 +761,8 @@
             sortIndex: -1,
         }
 
+        imgUrl = ''
+
         editData = {
             display: 'none',
         }
@@ -665,16 +801,23 @@
         created() {
 
             let _self = this;
-            new Promise(resolve => {
+            new Promise((resolve,reject) => {
 
 
-                getSkinConfig().then(res => {
+                getSkinConfig({Home_ID:ss.get('Home_ID'),Skin_ID:ss.get('Skin_ID')}).then(res => {
                     //console.log(JSON.parse(res.data.Home_Json))
+
 
                     _self.skinInfo = res.data
 
-                    resolve(JSON.parse(res.data.Home_Json))
+                    if(res.data.Home_Json){
+                        resolve(JSON.parse(res.data.Home_Json))
+                    }
 
+                    reject(false)
+
+                },err=>{
+                    console.log(err)
                 })
 
             })
@@ -687,8 +830,6 @@
                 if(mixinData.system){
                     this.setSystem(mixinData.system);
                 }
-
-
 
 
                 //存储页面数据
@@ -727,26 +868,19 @@
                 }
 
                 setTimeout(() => pageMove.init('sort', this), 500)
+            },err=>{
+                console.log('模板为空')
             })
             .catch(err => {
                 throw new Error(err)
             })
-            .then(() => {
-                //拖拽
-                // var isDraggable = ['div', 'nav']
-                // Array.from(
-                //     document.querySelectorAll('[draggable=true]')
-                // ).filter(el => {
-                //     let tagName = el.tagName.toLowerCase()
-                //     return isDraggable.some(elName => elName === tagName)
-                // })
-            })
+
 
 
         }
 
         setClass(className, idx) {
-            //console.log(className)
+            console.log(className,idx)
             if (typeof className === 'undefined') return '';
 
             if(typeof className !='string')return'';

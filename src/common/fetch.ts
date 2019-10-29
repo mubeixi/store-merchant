@@ -33,7 +33,15 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
     window.funLoading = Loading.service(options)
   }
 
-  return Vue.http[method](url, data, options).then(res => res.data, e => e);
+  return new Promise(((resolve, reject) => {
+
+    Vue.http[method](url, data, options).then(res=>{
+      resolve(res.data)
+    },error=>{
+      reject(error)
+    })
+
+  }));
 
 };
 
@@ -49,10 +57,12 @@ export const getShopSkinList = (data, options) => fetch('get_shopskin', data, op
 export const chooseShopSkin = (data, options) => fetch('choose_shopskin', data, options)
 
 //获取商城的配置
-export const getSkinConfig = (data, options) => fetch('get_shophome', data, options)
+//get_shophome
+export const getSkinConfig = (data, options) => fetch('get_skin_data', data, options)
 
 //更新商城的配置
-export const setSkinConfig = (data, options) => fetch('update_shophome', data, options)
+//update_shophome
+export const setSkinConfig = (data, options) => fetch('save_skin_date', data, options)
 
 export const getProductCategory = (data, options) => fetch('pro_cate', data, options)
 
@@ -61,7 +71,7 @@ export const getUsersInfo = (data, options) => fetch('get_users_info', data, opt
 export const getProductCountInfo  = (data,options) => fetch('get_users_info', data, options);
 
 
-export const uploadImgByBase64 = (data,options) => fetch('upload_blob_img', data, options);
+export const uploadImgByBase64 = (data,options) => fetch('upload_image', data, options);
 
 function get_Appid() {
   return 'xhh';

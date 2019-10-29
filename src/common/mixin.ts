@@ -1,5 +1,6 @@
 import {getUsersInfo} from "@/common/fetch";
 import {ls,ss} from '@/common/tool/ls';
+import {GetQueryByString} from "@/common/utils";
 import Cookies from 'js-cookie';
 import {isDev} from "./env";
 
@@ -7,6 +8,7 @@ import {isDev} from "./env";
  * 很多接口都需要user_id,先全局mixin下
  */
 export const doLoginMixin = {
+
   async created() {
 
 
@@ -26,7 +28,7 @@ export const doLoginMixin = {
     //走ss这样会每次重新打开页面，就会获取数据
     if(!ss.get('Shop_Info')){
 
-      await getUsersInfo().then(res => {
+      await getUsersInfo({},{}).then(res => {
         ss.set('Shop_Info', {
           ShopName: res.data.ShopName,
           ShopLogo: res.data.ShopLogo,
@@ -35,6 +37,16 @@ export const doLoginMixin = {
           prod_isnew_total:res.data.prod_isnew_total
         })
       }).catch()
+    }
+
+
+    //保存一下两个可能存在的参数
+    if(GetQueryByString(location.href,'Skin_ID')){
+      ss.set('Skin_ID',GetQueryByString(location.href,'Skin_ID'))
+    }
+
+    if(GetQueryByString(location.href,'Home_ID')){
+      ss.set('Home_ID',GetQueryByString(location.href,'Home_ID'))
     }
 
 
