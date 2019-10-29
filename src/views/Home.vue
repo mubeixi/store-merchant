@@ -30,23 +30,30 @@
       <el-button @click="saveData(0)" type="primary" size="small">保存</el-button>
 <!--      <el-button @click="saveData(1)" size="small">上架</el-button>-->
       <el-button @click="saveData(1)" size="small">保存并上架</el-button>
-      <el-button @click="saveData(0,1)" size="small">预览</el-button>
+      <div class="preBox" >
+        <el-button @click="saveData(0,1)" size="small">预览</el-button>
+        <div class="tooltip" v-show="centerDialogVisible" @click="centerDialogVisible=false">
+          <div class="qrcode"><qrcode-vue :value="preUrl" size="100" level="H"></qrcode-vue></div>
+          <div class="font12" style="line-height: 20px;height: 20px">扫一扫预览</div>
+        </div>
+      </div>
+
 <!--      <el-button size="small">更多操作</el-button>-->
     </div>
 
-    <el-dialog
-      title="扫码预览"
-      :visible.sync="centerDialogVisible"
-      width="30%"
-      center>
-      <div style="text-align: center">
-        <qrcode-vue :value="preUrl" size="200" level="H"></qrcode-vue>
-      </div>
+<!--    <el-dialog-->
+<!--      title="扫码预览"-->
+<!--      :visible.sync="centerDialogVisible"-->
+<!--      width="30%"-->
+<!--      center>-->
+<!--      <div style="text-align: center">-->
+<!--        -->
+<!--      </div>-->
 <!--      <span slot="footer" class="dialog-footer">-->
-<!--    <el-button @click="centerDialogVisible = false">取 消</el-button>-->
-<!--    <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>-->
-<!--  </span>-->
-    </el-dialog>
+<!--        <el-button @click="centerDialogVisible = false">取 消</el-button>-->
+<!--        <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>-->
+<!--      </span>-->
+<!--    </el-dialog>-->
 
 <!--    <div class="right">-->
 <!--      -->
@@ -228,6 +235,35 @@
   //}
 </style>
 <style lang="less">
+
+.preBox{
+  margin-left: 10px;
+  position: relative;
+  .tooltip{
+    position: absolute;
+    bottom: 50px;
+    left: -20px;
+    transform: translate(0%,0%);
+    background-color: #d5d5d5;
+    color: #444;
+    text-align: center;
+    font-size: 12px;
+    border-radius: 2px;
+    .qrcode{
+      padding:  6px 6px 0 6px ;
+    }
+    &::after {
+      content: " ";
+      position: absolute;
+      top: 100%; /* 提示工具底部 */
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #d1d1d1 transparent transparent transparent;
+    }
+  }
+}
 .preview::-webkit-scrollbar {
   display: none;
 }

@@ -437,7 +437,7 @@
                         canvas.width,
                         canvas.height
                     ).getAttribute('src')
-                    console.log(src)
+                    //console.log(src)
 
                     let base64Data = src;
                     //let blob = this.dataURItoBlob(src)
@@ -513,6 +513,13 @@
               */
             async uploadConfig(is_use,pre,call) {
 
+                let load = this.$loading({
+                    fullscreen: true,
+                    text:'保存中',
+                    spinner:'el-icon-loading',
+                    background:'rgba(0, 0, 0, 0.3)'
+
+                })
                 if(this.isAjax){
                     this.$fun.info({msg:'操作过快'})
                     return;
@@ -555,11 +562,22 @@
                 this.isAjax = true
                 let mixinData = {plugin:this.templateData,system:this.system}
 
+                let Skin_ID =  ss.get('Skin_ID'),
+                    Home_ID = ss.get('Home_ID');
+                if(!Skin_ID && !Home_ID){
+                    this.$fun.error({msg:'页面参数错误'});
+                    return;
+                }
+
                 let postData = {
-                    Skin_ID: ss.get('Skin_ID'),
-                    Home_ID: ss.get('Home_ID'),
                     //this.templateData换掉最新的
                     Home_Json: JSON.stringify(mixinData)
+                }
+
+                if(Home_ID){
+                    postData.Home_ID = Home_ID
+                }else{
+                    postData.Skin_ID = Skin_ID
                 }
 
                 //是否使用
@@ -586,6 +604,8 @@
 
                 setSkinConfig(postData).then(res => {
 
+                    load.close();
+
                     this.isAjax = false
                     if (res.errorCode === 0) {
                         this.$fun.success('配置保存成功');
@@ -594,7 +614,11 @@
                         }
                     }
 
+                },err=>{
+                    load.close();
                 }).catch(e => {
+                    load.close();
+
                     this.isAjax = false
                     this.$fun.error('配置保存失败')
                 })
@@ -804,7 +828,22 @@
             new Promise((resolve,reject) => {
 
 
-                getSkinConfig({Home_ID:ss.get('Home_ID'),Skin_ID:ss.get('Skin_ID')}).then(res => {
+                let Skin_ID =  ss.get('Skin_ID'),
+                    Home_ID = ss.get('Home_ID');
+                if(!Skin_ID && !Home_ID){
+                    this.$fun.error({msg:'页面参数错误'});
+                    return;
+                }
+
+                let postData = {}
+
+                if(Home_ID){
+                    postData.Home_ID = Home_ID
+                }else{
+                    postData.Skin_ID = Skin_ID
+                }
+
+                getSkinConfig(postData).then(res => {
                     //console.log(JSON.parse(res.data.Home_Json))
 
 
