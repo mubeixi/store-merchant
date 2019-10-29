@@ -507,12 +507,11 @@
             //     }
             // },
             /**
-             * 保存数据
-             * @param Skin_Name Skin_ID为1（即空白模板)的时候，需要填写
-             * @param Skin_Img Skin_ID为1（即空白模板)的时候，需要截图
-             * @param is_use 可选，是否使用此模版为商城首页模版
-             */
-            async uploadConfig(is_use) {
+             *
+             * @param is_use 是否选中当前模板
+             * @param pre 是否预览
+              */
+            async uploadConfig(is_use,pre,call) {
 
                 if(this.isAjax){
                     this.$fun.info({msg:'操作过快'})
@@ -554,8 +553,6 @@
                 }
 
                 this.isAjax = true
-
-
                 let mixinData = {plugin:this.templateData,system:this.system}
 
                 let postData = {
@@ -591,7 +588,10 @@
 
                     this.isAjax = false
                     if (res.errorCode === 0) {
-                        this.$fun.success('配置保存成功')
+                        this.$fun.success('配置保存成功');
+                        if(pre){
+                            this.$emit('preFun',true);
+                        }
                     }
 
                 }).catch(e => {

@@ -14,7 +14,7 @@
 <!--          <div @click="saveData" :class="{active:previewActiveIndex===2}" class="item preview-page-save"><i class="preview-page-coms-icon"></i>数据保存</div>-->
 <!--          <div :class="{active:previewActiveIndex===3}" class="item preview-page-more"><i class="preview-page-coms-icon"></i>更多操作</div>-->
         </div>
-        <preview-component ref="preview" @setData="setDataEv"></preview-component>
+        <preview-component @preFun="setPreEv" ref="preview" @setData="setDataEv"></preview-component>
       </div>
       <div class="setattr">
         <div class="deco-component-title">
@@ -30,9 +30,23 @@
       <el-button @click="saveData(0)" type="primary" size="small">保存</el-button>
 <!--      <el-button @click="saveData(1)" size="small">上架</el-button>-->
       <el-button @click="saveData(1)" size="small">保存并上架</el-button>
-<!--      <el-button @click="viewEv" size="small">缩略图</el-button>-->
+      <el-button @click="saveData(0,1)" size="small">预览</el-button>
 <!--      <el-button size="small">更多操作</el-button>-->
     </div>
+
+    <el-dialog
+      title="扫码预览"
+      :visible.sync="centerDialogVisible"
+      width="30%"
+      center>
+      <div style="text-align: center">
+        <qrcode-vue :value="preUrl" size="200" level="H"></qrcode-vue>
+      </div>
+<!--      <span slot="footer" class="dialog-footer">-->
+<!--    <el-button @click="centerDialogVisible = false">取 消</el-button>-->
+<!--    <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>-->
+<!--  </span>-->
+    </el-dialog>
 
 <!--    <div class="right">-->
 <!--      -->
@@ -52,7 +66,20 @@
     import {moveEl} from '@/common/utils';
 
     import {ss} from '@/common/tool/ss';
-    import {isDev} from '../common/env';
+    import {isDev,front_url} from '../common/env';
+
+    import Cookies from 'js-cookie';
+
+    import QrcodeVue from 'qrcode.vue';
+
+    const serialize = function(obj) {
+        var ary = [];
+        for (var p in obj)
+            if (obj.hasOwnProperty(p) && (obj[p] || obj[p]== 0 || obj[p] =='' )) {
+                ary.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
+            }
+        return ary.join('&');
+    };
 
 
 
@@ -63,12 +90,14 @@
             SetAttrComponent,
             PreviewComponent,
             RightComponent,
-            CommonAttrComponent
+            CommonAttrComponent,
+            QrcodeVue
         },
         data() {
             return {
                 isDev: isDev,
-                previewActiveIndex:null,
+                centerDialogVisible:false,
+                previewActiveIndex:null
             }
         },
         methods: {
@@ -83,13 +112,32 @@
             setDataEv(data) {
 
             },
-            saveData(use){
+            setPreEv(val){
+                this.centerDialogVisible = val
+            },
+            saveData(use,pre){
                 // this.previewActiveIndex=2;
-                this.$refs.preview.uploadConfig(use);
+                this.$refs.preview.uploadConfig(use,pre);
+
 
             }
         },
         computed: {
+            //预览网址
+            preUrl(){
+                let Skin_ID =  ss.get('Skin_ID'),
+                    Home_ID =  ss.get('Home_ID'),
+                    Users_ID = Cookies.get('Users_ID');
+
+                let obj = {Skin_ID,Home_ID,Users_ID};
+
+                let str = serialize(obj);
+
+                if(str)str = '?'+str;
+
+                return front_url+'pages/index/pre'+str;
+
+            },
             ...mapState(['activeAttr', 'editStatus','mode','componentTitle']),
         },
         mounted() {
