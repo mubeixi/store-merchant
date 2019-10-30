@@ -13,12 +13,14 @@ export const doLoginMixin = {
 
 
     //保存一下两个可能存在的参数
+    ss.set('Skin_ID',GetQueryByString(location.href,'Skin_ID'))
     if(GetQueryByString(location.href,'Skin_ID')){
-      ss.set('Skin_ID',GetQueryByString(location.href,'Skin_ID'))
+
     }
 
+    ss.set('Home_ID',GetQueryByString(location.href,'Home_ID'))
     if(GetQueryByString(location.href,'Home_ID')){
-      ss.set('Home_ID',GetQueryByString(location.href,'Home_ID'))
+
     }
 
 
