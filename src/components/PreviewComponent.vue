@@ -409,7 +409,7 @@
                 let width = shareContent.offsetWidth //获取dom 宽度
                 let height = shareContent.offsetHeight //获取dom 高度
                 let canvas = document.createElement('canvas') //创建一个canvas节点
-                let scale = 2 //定义任意放大倍数 支持小数
+                let scale = 1 //定义任意放大倍数 支持小数
                 canvas.width = width * scale //定义canvas 宽度 * 缩放
                 canvas.height = height * scale //定义canvas高度 *缩放
                 canvas.getContext('2d').scale(scale, scale) //获取context,设置scale
@@ -452,6 +452,7 @@
                     let data = {image:base64Data};
 
                     return uploadImgByBase64(data).then(res => {
+                        console.log('upimg rt ','http://new401.bafangka.com'+res.data.path)
                         this.imgUrl = res.data.path
                     })
                 })
@@ -513,13 +514,7 @@
               */
             async uploadConfig(is_use,pre,call) {
 
-                let load = this.$loading({
-                    fullscreen: true,
-                    text:'保存中',
-                    spinner:'el-icon-loading',
-                    background:'rgba(0, 0, 0, 0.3)'
 
-                })
                 if(this.isAjax){
                     this.$fun.info({msg:'操作过快'})
                     return;
@@ -585,7 +580,12 @@
                     postData.is_use = is_use
                 }
 
+
+
+
                 let Skin_Name = this.system.title
+
+                let load = null;
 
                 //自定义
                 if(ss.get('Skin_ID') == 1){
@@ -595,10 +595,32 @@
                     }
                     postData.Skin_Name = Skin_Name
 
+
+
                     //截图
                     let el = document.getElementById('canvas')
+
+                    load = this.$loading({
+                        fullscreen: true,
+                        text:'保存中',
+                        spinner:'el-icon-loading',
+                        background:'rgba(0, 0, 0, 0.3)'
+
+                    })
+
                     await this.convert2canvas(el)
                     postData.Skin_Img = this.imgUrl;
+
+
+                }else{
+
+                    load = this.$loading({
+                        fullscreen: true,
+                        text:'保存中',
+                        spinner:'el-icon-loading',
+                        background:'rgba(0, 0, 0, 0.3)'
+
+                    })
                 }
 
 
@@ -608,6 +630,11 @@
 
                     this.isAjax = false
                     if (res.errorCode === 0) {
+
+                        if(Skin_ID==1 && res.data.Home_ID){
+                            ss.set('Home_ID',res.data.Home_ID)
+                        }
+
                         this.$fun.success('配置保存成功');
                         if(pre){
                             this.$emit('preFun',true);
@@ -620,7 +647,7 @@
                     load.close();
 
                     this.isAjax = false
-                    this.$fun.error('配置保存失败')
+                    this.$fun.error({msg:'配置保存失败'})
                 })
             },
             clickPlugin(idx) {
@@ -1008,7 +1035,7 @@
                 //     newClass = new ScaleJS()
                 //     break
                 default:
-                    this.$fun.error('组件不存在');
+                    this.$fun.error({msg:'组件不存在'});
                     break;
             }
 

@@ -12,6 +12,15 @@ export const doLoginMixin = {
   async created() {
 
 
+    //保存一下两个可能存在的参数
+    if(GetQueryByString(location.href,'Skin_ID')){
+      ss.set('Skin_ID',GetQueryByString(location.href,'Skin_ID'))
+    }
+
+    if(GetQueryByString(location.href,'Home_ID')){
+      ss.set('Home_ID',GetQueryByString(location.href,'Home_ID'))
+    }
+
 
     if(isDev){
       Cookies.set('Users_ID','wkbq6nc2kc')
@@ -37,17 +46,11 @@ export const doLoginMixin = {
           prod_isnew_total:res.data.prod_isnew_total
         })
       }).catch()
+
     }
 
 
-    //保存一下两个可能存在的参数
-    if(GetQueryByString(location.href,'Skin_ID')){
-      ss.set('Skin_ID',GetQueryByString(location.href,'Skin_ID'))
-    }
 
-    if(GetQueryByString(location.href,'Home_ID')){
-      ss.set('Home_ID',GetQueryByString(location.href,'Home_ID'))
-    }
 
 
 
