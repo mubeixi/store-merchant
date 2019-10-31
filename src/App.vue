@@ -9,6 +9,10 @@
 </style>
 <style lang="less">
 
+  .el-carousel__container{
+    /*min-height: 10px;*/
+    height: auto;
+  }
   #canvas{
     .tab{
       *::-webkit-scrollbar{

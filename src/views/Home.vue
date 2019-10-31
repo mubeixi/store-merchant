@@ -117,7 +117,7 @@
                     Home_ID =  ss.get('Home_ID'),
                     Users_ID = Cookies.get('Users_ID');
 
-                let obj = {Skin_ID,Home_ID,Users_ID};
+                let obj = {Skin_ID,Home_ID,users_id:Users_ID};
 
                 let str = serialize(obj);
 

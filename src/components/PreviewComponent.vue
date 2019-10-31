@@ -588,7 +588,7 @@
                 let load = null;
 
                 //自定义
-                if(ss.get('Skin_ID') == 1){
+                if(1 || ss.get('Skin_ID') == 1){
                     if(!this.system.title){
                         this.$fun.warning("全局设置——模板名称必填");
                         return;

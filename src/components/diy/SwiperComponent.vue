@@ -1,25 +1,26 @@
 <template>
   <div @click.stop="setData({}, 0)" class="swiper wrap fun-preview-swiper" :class="{single:swiper.value.list.length<2}">
-      <div v-if="swiper.value.list.length==1" style="height:175px">
-          <div class="cover-full" :style="{backgroundImage:'url('+domainFunc(swiper.value.list[0].img_src)+')'}"></div>
+      <div v-if="swiper.value.list.length==1" >
+        <img style="width: 100%;display: block" :src="domainFunc(swiper.value.list[0].img_src)" />
+<!--          <div class="cover-full" :style="{backgroundImage:'url('+domainFunc(swiper.value.list[0].img_src)+')'}"></div>-->
       </div>
-      
+
         <el-carousel
             v-else
         :autoplay="swiper.config.autoplay"
         :interval="swiper.config.interval|str2num"
         trigger="click"
-        :loop="swiper.config.loop" height="175px">
+        :loop="swiper.config.loop" >
         <!--      <el-carousel-item v-for="item in 4" :key="item" v-if="swiper.value.list.length<1">-->
         <!--        <h3 class="small text-center">{{ item }}</h3>-->
         <!--      </el-carousel-item>-->
         <el-carousel-item v-for="(item,idx) in swiper.value.list" :key="idx">
             <h3 v-if="!item.img_src" class="small text-center">请上传图片</h3>
-            <div v-else class="cover-full"
-                :style="{backgroundImage:'url('+domainFunc(item.img_src)+')'}"></div>
+          <img style="width: 100%;display: block" v-else :src="domainFunc(item.img_src)" />
+<!--            <div v-else class="cover-full" :style="{backgroundImage:'url('+domainFunc(item.img_src)+')'}"></div>-->
         </el-carousel-item>
         </el-carousel>
-    
+
   </div>
 </template>
 

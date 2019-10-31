@@ -190,6 +190,8 @@ export const  Canvas2Image = function () {
       if (type == undefined) { type = 'png'; }
       type = fixType(type);
 
+      console.log(type)
+
       if (/bmp/.test(type)) {
         var data = getImageData(scaleCanvas(canvas, width, height));
         var strData = genBitmapImage(data);
