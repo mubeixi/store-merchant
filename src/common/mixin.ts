@@ -13,6 +13,7 @@ export const doLoginMixin = {
 
 
     //保存一下两个可能存在的参数
+    console.log('设置Skin_ID和Home_ID')
     ss.set('Skin_ID',GetQueryByString(location.href,'Skin_ID'))
     if(GetQueryByString(location.href,'Skin_ID')){
 

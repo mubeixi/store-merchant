@@ -557,8 +557,8 @@
                 this.isAjax = true
                 let mixinData = {plugin:this.templateData,system:this.system}
 
-                let Skin_ID =  ss.get('Skin_ID'),
-                    Home_ID = ss.get('Home_ID');
+                let Skin_ID =  parseInt(ss.get('Skin_ID')),
+                    Home_ID = parseInt(ss.get('Home_ID'));
                 if(!Skin_ID && !Home_ID){
                     this.$fun.error({msg:'页面参数错误'});
                     return;
@@ -855,8 +855,8 @@
             new Promise((resolve,reject) => {
 
 
-                let Skin_ID =  ss.get('Skin_ID'),
-                    Home_ID = ss.get('Home_ID');
+                let Skin_ID =  parseInt(ss.get('Skin_ID')),
+                    Home_ID = parseInt(ss.get('Home_ID'));
                 if(!Skin_ID && !Home_ID){
                     this.$fun.error({msg:'页面参数错误'});
                     return;

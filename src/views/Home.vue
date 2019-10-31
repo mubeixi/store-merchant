@@ -103,6 +103,7 @@
         data() {
             return {
                 isDev: isDev,
+                preUrl:'',
                 centerDialogVisible:false,
                 previewActiveIndex:null
             }
@@ -110,6 +111,23 @@
         methods: {
 
             ...mapActions(['setMode','setComponentTitle']),
+            setpreUrl(){
+
+                let Skin_ID =  ss.get('Skin_ID'),
+                    Home_ID =  ss.get('Home_ID'),
+                    Users_ID = Cookies.get('Users_ID');
+
+                let obj = {Skin_ID,Home_ID,Users_ID};
+
+                let str = serialize(obj);
+
+                if(str)str = '?'+str;
+
+                console.log('更新preurl',this.preUrl);
+
+                this.preUrl = front_url+'pages/index/pre'+str;
+
+            },
             setAct(idx,mode,title,desc){
                 this.previewActiveIndex=idx;
                 this.setMode(mode);
@@ -120,6 +138,8 @@
 
             },
             setPreEv(val){
+
+                this.setpreUrl();
                 this.centerDialogVisible = val
             },
             saveData(use,pre){
@@ -131,39 +151,21 @@
         },
         computed: {
             //预览网址
-            preUrl(){
-                let Skin_ID =  ss.get('Skin_ID'),
-                    Home_ID =  ss.get('Home_ID'),
-                    Users_ID = Cookies.get('Users_ID');
 
-                let obj = {Skin_ID,Home_ID,Users_ID};
-
-                let str = serialize(obj);
-
-                if(str)str = '?'+str;
-
-                return front_url+'pages/index/pre'+str;
-
-            },
             ...mapState(['activeAttr', 'editStatus','mode','componentTitle']),
         },
         mounted() {
             // 右侧如果内容过多，可以用滚动栏
             //moveEl(this.$refs.setAttr.$el);
         },
-    })
-    export default class Home extends Vue {
         created() {
 
-            console.log(this)
-            //模拟设置一下
-            // getShopSkinList().then(res=>{
-            //
-            //     chooseShopSkin({Skin_ID:res.data.shop_skin_list[0].Skin_ID}).then(r=>{
-            //
-            //     })
-            // })
+            this.setpreUrl();
+
         }
+    })
+    export default class Home extends Vue {
+
     }
 </script>
 <style lang="stylus" scoped>
