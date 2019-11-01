@@ -93,10 +93,10 @@ class Base extends Common {
     // color: '#444',
     // inputBgColor: '#f2f2f2',
   }
-
+  // http://new401.bafangka.com/static/api/images/user/face.jpg
   config = {
-    cover: 'http://new401in.bafangka.com/uploadfiles/wkbq6nc2kc/image/20191007094401198.png',
-    logo: shopInfo.ShopLogo,
+    cover: 'http://new401.bafangka.com/uploadfiles/wkbq6nc2kc/image/20191007094401198.png',
+    logo: shopInfo.ShopLogo || 'http://new401.bafangka.com/static/api/images/user/face.jpg',
     title: shopInfo.ShopName,
     desc: shopInfo.description,
     total: shopInfo.prod_total,
