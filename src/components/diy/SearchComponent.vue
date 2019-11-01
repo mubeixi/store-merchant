@@ -17,6 +17,8 @@
     import {deepCopy, deepCopyStrict,moveanyway,mixinStyle} from '@/common/utils';
     import {fun} from '@/common';
 
+    import {pageMove} from '@/common/utils';
+
     @Component({
         props: {
             index: {
@@ -100,6 +102,9 @@
                           if(sectionEle.className.indexOf('noborder')<0){
                               sectionEle.className += ' noborder'
                           }
+
+
+                          pageMove.init('sort', this.$parent, () => console.log('move init start'));
 
                           // moveanyway(eleId,true)
                       }else{

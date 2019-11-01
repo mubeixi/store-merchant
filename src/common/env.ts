@@ -2,6 +2,8 @@
 export const baseApiUrl = 'https://new401.bafangka.com';
 
 
+export const staticUrl = 'http://new401.bafangka.com';
+
 export const front_url = 'https://new401.bafangka.com/fre/';
 
 export const apiKey = '458f_$#@$*!fdjisdJDFHUk4%%653154%^@#(FSD#$@0-T';

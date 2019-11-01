@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import {baseApiUrl} from "@/common/env";
+import {baseApiUrl,staticUrl} from "@/common/env";
 import {fun} from "@/common/index";
 import _ from "underscore"
 
@@ -13,7 +13,7 @@ export const getStyle = function (el, name) {
 
 export const domain = (url) => {
   if (!url) return '';
-  if (url.indexOf('http') == -1) return baseApiUrl + url;
+  if (url.indexOf('http') == -1) return staticUrl + url;
   return url;
 }
 
@@ -570,8 +570,10 @@ export class pageMove {
 
 
 
-    const {downIndex} = that.vm.$data.sort;// 原来在的位置
-    const {sortIndex} = that.vm.$data.sort;// 需要被拖动到的位置
+    let downIndex=false;
+    downIndex = that.vm.$data.sort;// 原来在的位置
+    let sortIndex = false;
+    sortIndex = that.vm.$data.sort;// 需要被拖动到的位置
 
 
     let TARGET = e.target;
@@ -581,7 +583,10 @@ export class pageMove {
 
       //需要更新一下商品
       if(TARGET.id.indexOf('searchWrap')!==-1){
-        that.vm.clickPlugin(downIndex)
+        if(downIndex!==false){
+          that.vm.clickPlugin(downIndex)
+        }
+
       }
       return;
     }

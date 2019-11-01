@@ -284,9 +284,9 @@
 }
 
 .preview-page{
-  position: absolute;
+  position: fixed;
   top: 70px;
-  right: 10px;
+  right: 550px;
   text-align: center;
   font-size: 12px;
   color: #323233;
