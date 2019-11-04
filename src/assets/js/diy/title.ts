@@ -12,7 +12,9 @@ function setConfig() {
   if (JSON.stringify(this.style) === JSON.stringify({
     color: '',
     bgColor: '',
-    padding:''
+    padding:'',
+    paddingc:'',
+    fontSize:''
   })) {
     Vue.set(this, 'style', JSON.parse(JSON.stringify(this.styleDefault)));
   }
@@ -44,12 +46,39 @@ function setAttrData() {
         editCB: item => item.model,
       },
       {
+        type: 'uploadImg',
+        text: '标签图片',
+        tip: '建议上传尺寸1:1的图片',
+        uploadType: 'avatar',
+        model: this.config.icon,
+        mini:true,
+        editType: 'config',
+        editKey: 'icon',
+        editCB: item => item.model,
+      },
+      {
         type: 'input',
-        text: '内边距',
+        text: '左右边距',
         inputType: 'number',
         editType: 'style',
         editKey: 'padding',
         model: this.style.padding,
+      },
+      {
+        type: 'input',
+        text: '上下边距',
+        inputType: 'number',
+        editType: 'style',
+        editKey: 'paddingc',
+        model: this.style.paddingc,
+      },
+      {
+        type: 'input',
+        text: '字体大小',
+        inputType: 'number',
+        editType: 'style',
+        editKey: 'fontSize',
+        model: this.style.fontSize,
       },
       {
         type: 'color',
@@ -67,27 +96,27 @@ function setAttrData() {
         editKey: 'color',
         editCB: item => item.model,
       },
-      {
-        type: 'setlink',
-        text: '跳转链接',
-        editType: 'value',
-        editKey: 'link',
-        model: this.value,
-        bindLinkCB: (dataType, type, path, tooltip, dataItem, pageEl, idx2) => {
-
-          console.log(dataType, type, path, tooltip, dataItem, pageEl, idx2)
-          pageEl.bindLinkDialogShow = false;
-
-          Vue.set(this.value, 'link', path);
-          Vue.set(this.value, 'linkType', type);
-          Vue.set(this.value, 'tooltip', tooltip);
-
-          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
-          this.setIndex(0, {value:false,config:false});
-          this.vm.$store.commit('activeAttr', this);// 传出去
-
-        },
-      },
+      // {
+      //   type: 'setlink',
+      //   text: '跳转链接',
+      //   editType: 'value',
+      //   editKey: 'link',
+      //   model: this.value,
+      //   bindLinkCB: (dataType, type, path, tooltip, dataItem, pageEl, idx2) => {
+      //
+      //     console.log(dataType, type, path, tooltip, dataItem, pageEl, idx2)
+      //     pageEl.bindLinkDialogShow = false;
+      //
+      //     Vue.set(this.value, 'link', path);
+      //     Vue.set(this.value, 'linkType', type);
+      //     Vue.set(this.value, 'tooltip', tooltip);
+      //
+      //     //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+      //     this.setIndex(0, {value:false,config:false});
+      //     this.vm.$store.commit('activeAttr', this);// 传出去
+      //
+      //   },
+      // },
       {
         type: 'addbtn',
         text: '文本导航',
@@ -191,16 +220,22 @@ class Title extends Common {
   style = {
     color: '',
     bgColor: '',
-    padding:''
+    padding:'',
+    paddingc:'',
+    fontSize:''
   }
 
   styleDefault = {
     color: '#333',
     bgColor: '#fff',
-    padding:10
+    paddingc:10,
+    padding:10,
+    fontSize:16
   }
 
-  config = {}
+  config = {
+    icon:''
+  }
 
 
   value = {

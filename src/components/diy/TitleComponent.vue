@@ -1,9 +1,14 @@
 <template>
   <div @click.stop="setData({}, 0)" class="title"
-       :style="{color:title.style.color,backgroundColor:title.style.bgColor,paddingLeft:title.style.padding+'px',paddingRight:title.style.padding+'px'}">
+       :style="{color:title.style.color,backgroundColor:title.style.bgColor,paddingLeft:title.style.padding+'px',paddingRight:title.style.padding+'px',paddingTop:title.style.paddingc+'px',paddingBottom:title.style.paddingc+'px'}">
     <!--    :class="{islink:title.value.link?1:0}"-->
-    <div class="text">{{title.value.title}}</div>
-    <div class="small">{{title.value.small}}</div>
+    <div class="flex">
+      <img class="icon" :style="{marginRight:10+'px'}" :src="domainFunc(title.config.icon)" />
+      <div class="flex1">
+        <div class="text" :style="{fontSize:title.style.fontSize+'px'}">{{title.value.title}}</div>
+        <div class="small"  :style="{fontSize:title.style.fontSize-4+'px'}">{{title.value.small}}</div>
+      </div>
+    </div>
 
     <span class="more">{{moreData.title}}</span>
   </div>
@@ -14,6 +19,7 @@
     import {mapState} from 'vuex';
     import Title from '@/assets/js/diy/title';
     import {deepCopy, deepCopyStrict} from '@/common/utils';
+    import {domain} from '@/common/utils';
 
     @Component({
         props: {
@@ -61,6 +67,9 @@
         },
         components: {},
         methods: {
+            domainFunc(url){
+                return domain(url)
+            },
             setData(item, index) {
                 // console.log('hehe',this.hr)
                 // @ts-ignore
@@ -91,17 +100,24 @@
 
 <style scoped lang="stylus">
 
+  .flex{
+    align-items:center;
+  }
+  .icon{
+    max-width 40px;
+  }
   .title
     position relative
     /*width 100%*/
 
     .text
-      font-size 18px
+      //font-size 18px
 
     /*color #333*/
 
     .small
-      font-size 14px
+      opacity 0.8
+      //font-size 14px
 
     /*color #666*/
 
