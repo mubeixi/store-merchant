@@ -4,6 +4,7 @@
 <!--      <div class="leftText">{{eTitle}}</div>-->
 <!--    </div>-->
 <!--    size="small"-->
+<!--    -->
     <el-form ref="form" :model="form"  :label-width="activeAttr.attrData.labelSize==='L'?'100px':'80px'">
       <el-form-item inline-message
                     class="formitem"
@@ -16,6 +17,7 @@
 
         <upload-img-components v-if="item.type === 'uploadImg'" :tip="item.tip" class="myUploadImg"
                                :onSuccess='uploadImg'
+                               :mini="item.mini"
                                :type='item.uploadType'
                                :imgUrl='item.model'></upload-img-components>
 
@@ -304,6 +306,7 @@
         </div>
 
         <el-color-picker
+          @click="openColorPicker"
           show-alpha
           v-if="item.type === 'color'"
           v-model="item.model"
@@ -370,6 +373,7 @@
         },
         data() {
             return {
+                isLockMouser:false,
                 bindCateMultiple:false,
                 bindListDialogShow: false,
                 bindListSuccessCall: null,
@@ -426,6 +430,9 @@
         },
 
         methods: {
+            openColorPicker(){
+                this.isLockMouser = true;
+            },
             taggleEditStatus(){
 
                 // let className = document.getElementById('canvas').className
@@ -491,6 +498,7 @@
             },
 
             uploadImg(response) {
+                console.log(response)
                 //先修改Preview中的预览组件实例值
                 this.currentData.model = response.data.path;// response.data.url;
                 //再修改VUEX中的值
@@ -593,7 +601,10 @@
                 // this.clickObj.model = val
                 // this.currentData.model = val
 
-                console.log('颜色改变了')
+                console.log('颜色改变了');
+
+                //解除锁定
+                this.isLockMouser = false;
 
                 // 用这个代替是一样的
                 this.change(this.currentData);
@@ -612,6 +623,7 @@
                 }
             },
             saveCurrentItem(item) {
+                if(this.isLockMouser)return;
                 if (this.activeAttr.isSendAjax) return;
                 this.currentData = item;
             },
