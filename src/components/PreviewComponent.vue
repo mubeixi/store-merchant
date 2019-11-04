@@ -631,7 +631,8 @@
                     this.isAjax = false
                     if (res.errorCode === 0) {
 
-                        if(Skin_ID==1 && res.data.Home_ID){
+                        //只要有Skin_ID就是从系统模板创建
+                        if(Skin_ID>0 && res.data.Home_ID){
                             ss.set('Home_ID',res.data.Home_ID)
                         }
 
