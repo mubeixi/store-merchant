@@ -4,7 +4,7 @@
     <!--    :class="{islink:title.value.link?1:0}"-->
     <div class="flex">
       <img class="icon" :style="{marginRight:10+'px'}" :src="domainFunc(title.config.icon)" />
-      <div class="flex1">
+      <div class="flex1" :style="{textAlign:title.style.textAlign}">
         <div class="text" :style="{fontSize:title.style.fontSize+'px'}">{{title.value.title}}</div>
         <div class="small"  :style="{fontSize:title.style.fontSize-4+'px'}">{{title.value.small}}</div>
       </div>

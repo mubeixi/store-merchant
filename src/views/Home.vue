@@ -192,9 +192,9 @@
     margin 0px auto 0
 
     .plugins
-      width 186px
+      /*width 162px*/
       padding 0 12px
-      box-sizing border-box
+      /*box-sizing border-box*/
 
     .preview
       position relative

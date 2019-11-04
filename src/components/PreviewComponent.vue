@@ -876,7 +876,7 @@
 
                     _self.skinInfo = res.data
 
-                    if(res.data.Home_Json){
+                    if(res.data && res.data.Home_Json){
                         resolve(JSON.parse(res.data.Home_Json))
                     }
 
@@ -936,6 +936,7 @@
                 setTimeout(() => pageMove.init('sort', this), 500)
             },err=>{
                 console.log('模板为空')
+                //this.$fun.warning({msg:'模板数据加载失败'})
             })
             .catch(err => {
                 throw new Error(err)
@@ -1165,7 +1166,7 @@
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     position: fixed; /*自定义菜单相对与body元素进行定位*/
     background-color: white;
-    z-index: 21;
+    z-index: 212121;
     // padding: 10px 0;
     border: 1px solid #e6e6e6;
     font-size: 14px;

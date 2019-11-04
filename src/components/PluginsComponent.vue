@@ -1,16 +1,21 @@
 <template>
-  <div class="left-template">
-    <ul>
-      <li :data-label="item.label" draggable="true" :title="item.tip" @dragstart="sourceDrag"
-          v-for="(item,key) in plugins">
-        <div class="center">
-          <img draggable="false" class="icon" :src="item.icon"/>
-          <img draggable="false" class="icona" :src="item.icona"/>
-          <p class="text">{{item.value}}</p>
-        </div>
-      </li>
+  <div class="left-template-box">
+    <div v-for="(group,idx) in plugins">
+      <div class="dt">{{group.groupTitle}}</div>
+      <ul>
+        <li :data-label="item.label" draggable="true" :title="item.tip" @dragstart="sourceDrag"
+            v-for="(item,key) in group.list">
+          <div class="center">
+            <img draggable="false" class="icon" :src="item.icon" />
+            <img draggable="false" class="icona" :src="item.icona" />
+            <div class="text">{{item.value}}</div>
+          </div>
+        </li>
 
-    </ul>
+      </ul>
+    </div>
+    <div style="height: 70px;"></div>
+
   </div>
 </template>
 
@@ -34,12 +39,31 @@
 </script>
 
 <style scoped lang="less">
-  .left-template::-webkit-scrollbar{
-    display: block;
+  .dl{
+
+    .dt{
+
+    }
+    .dd{
+
+    }
   }
-  .left-template {
+
+  .dt{
+    padding: 15px 0;
+    width: 162px;
+  }
+  .left-template-box::-webkit-scrollbar{
+    display: none;
+    width: 0;
+  }
+  .left-template-box {
+    /*width: 162px;*/
+    padding: 0;
     background-color:white;
-    height: 100vh;
+    height: 100vh;//calc(100% - 70px);
+    /*overflow :hidden;*/
+    /*margin-bottom: 70px;*/
     overflow-y: auto;
     //box-shadow 0 0 10px rgba(0, 0, 0, 0.12);
 
@@ -49,11 +73,11 @@
 
     ul {
       padding : 0;
-      overflow :hidden;
+
       display: block;
       margin :0px;
       width :162px;
-      padding-bottom: 70px;
+
 
       li {
         /*cursor pointer*/
@@ -72,7 +96,7 @@
           background: #409EFF;
 
 
-          p{
+          .text{
             color:white;
             //color: #333;
           }
@@ -97,6 +121,7 @@
           position: absolute;
           left: 0;
           top: 50%;
+          right: 0;
           transform: translateY(-50%);
           width: 100%;
           .icona{
@@ -141,7 +166,7 @@
         /*  }*/
         /*}*/
 
-        p {
+        .text {
           text-align: center;
           font-size: 14px;
           color: #777;

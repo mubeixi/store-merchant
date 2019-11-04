@@ -14,7 +14,8 @@ function setConfig() {
     bgColor: '',
     padding:'',
     paddingc:'',
-    fontSize:''
+    fontSize:'',
+    textAlign:''
   })) {
     Vue.set(this, 'style', JSON.parse(JSON.stringify(this.styleDefault)));
   }
@@ -48,7 +49,7 @@ function setAttrData() {
       {
         type: 'uploadImg',
         text: '标签图片',
-        tip: '建议上传尺寸1:1的图片',
+        tip: '建议上传宽度不超过4px的纯色图片',
         uploadType: 'avatar',
         model: this.config.icon,
         mini:true,
@@ -87,6 +88,24 @@ function setAttrData() {
         editType: 'style',
         editKey: 'bgColor',
         editCB: item => item.model,
+      },
+      {
+        type: 'radio',
+        text: '对齐模式',
+        editType: 'style',
+        editKey: 'textAlign',
+        model: this.style.textAlign,
+        value: [
+          {
+            label: '居左',
+            value: 'left',
+          },
+          {
+            label: '居中',
+            value: 'center',
+          },
+
+        ],
       },
       {
         type: 'color',
@@ -222,7 +241,8 @@ class Title extends Common {
     bgColor: '',
     padding:'',
     paddingc:'',
-    fontSize:''
+    fontSize:'',
+    textAlign:''
   }
 
   styleDefault = {
@@ -230,7 +250,8 @@ class Title extends Common {
     bgColor: '#fff',
     paddingc:10,
     padding:10,
-    fontSize:16
+    fontSize:16,
+    textAlign:''
   }
 
   config = {
