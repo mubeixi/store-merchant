@@ -11,10 +11,10 @@
         <el-tabs v-model="innerDialog.index" tab-position="left" class="leftMenuEl">
           <el-tab-pane label="自定义链接" name="customize" :disabled="!config.customize.show">
             <el-input v-model="innerDialog.customizeLink" placeholder="在此输入链接地址">
-              <el-select v-model="innerDialog.customizeStart" slot="prepend" placeholder="请选择">
-                <el-option label="http://" value="http://"></el-option>
-                <el-option label="https://" value="https://"></el-option>
-              </el-select>
+<!--              <el-select v-model="innerDialog.customizeStart" slot="prepend" placeholder="请选择">-->
+<!--                <el-option label="http://" value="http://"></el-option>-->
+<!--                <el-option label="https://" value="https://"></el-option>-->
+<!--              </el-select>-->
             </el-input>
           </el-tab-pane>
           <el-tab-pane label="选择页面" name="page" :disabled="!config.page.show">
@@ -28,7 +28,7 @@
                 </el-radio-group>
               </el-tab-pane>
 
-              <el-tab-pane label="分类" name="2" :disabled="!config.page.classify.show">
+              <el-tab-pane label="商品分类" name="2" :disabled="!config.page.classify.show">
                 <el-tree
                   :data="innerDialog.classify.data"
                   :props="innerDialog.classify.defaultProps"
@@ -44,7 +44,7 @@
                 ></el-tree>
               </el-tab-pane>
 
-              <el-tab-pane label="产品" name="3" :disabled="!config.page.product.show">
+              <el-tab-pane label="产品详情" name="3" :disabled="!config.page.product.show">
                 <el-radio-group v-model="innerDialog.product.checked" class="systemPage">
                   <el-radio style="padding-bottom: 4px;" class="pageBlock" :label="item.path"
                             v-for="(item, index) in innerDialog.product.data"
@@ -52,6 +52,26 @@
                   </el-radio>
                 </el-radio-group>
               </el-tab-pane>
+
+              <el-tab-pane label="自定义URL" name="4" :disabled="!config.page.product.show">
+                <el-radio-group v-model="innerDialog.product.checked" class="systemPage">
+                  <el-radio style="padding-bottom: 4px;" class="pageBlock" :label="item.path"
+                            v-for="(item, index) in innerDialog.product.data"
+                            :key="index" @change="saveProduct(item)">{{ item.text }}
+                  </el-radio>
+                </el-radio-group>
+              </el-tab-pane>
+
+              <el-tab-pane label="自定义页面" name="5" :disabled="!config.page.product.show">
+                <el-radio-group v-model="innerDialog.product.checked" class="systemPage">
+                  <el-radio style="padding-bottom: 4px;" class="pageBlock" :label="item.path"
+                            v-for="(item, index) in innerDialog.product.data"
+                            :key="index" @change="saveProduct(item)">{{ item.text }}
+                  </el-radio>
+                </el-radio-group>
+              </el-tab-pane>
+
+
             </el-tabs>
           </el-tab-pane>
         </el-tabs>
@@ -253,7 +273,7 @@
       return {
         innerVisible: false,
         innerDialog: {
-          data: ['自定义链接', '选择页面'],
+          data: ['手动输入', '选择页面'],
           index: 'customize',
           customizeLink: '',
           customizeStart: 'http://',
@@ -279,11 +299,6 @@
                 id: 4,
                 text: '我的优惠券',
                 path:'/pages/coupon/coupon'
-              },
-              {
-                id: 5,
-                text: '赠品中心',
-                path:'/pages/myGift/myGift'
               },
               {
                 id: 5,
