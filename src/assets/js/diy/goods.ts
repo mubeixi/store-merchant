@@ -179,6 +179,48 @@ function setAttrData() {
           },
         ],
       },
+      {
+        type: 'radio',
+        text: '长宽比例',
+        editType: 'config',
+        editKey: 'ratio',
+        model: this.config.ratio,
+        value: [
+          {
+            label: '1/1',
+            value: 1/1,
+          },
+          {
+            label: '1/2',
+            value: 1/2,
+          },
+          {
+            label: '3/4',
+            value: 3/4,
+          },
+          {
+            label: '9/16',
+            value: 9/16,
+          }
+        ],
+      },
+      {
+        type: 'radio',
+        text: '图片填充',
+        editType: 'config',
+        editKey: 'fill',
+        model: this.config.fill,
+        value: [
+          {
+            label: '填充',
+            value: 'cover',
+          },
+          {
+            label: '周边留白',
+            value: 'contain',
+          },
+        ],
+      },
 
       {
         type: 'checkbox',
@@ -351,6 +393,8 @@ class Goods extends Common {
     origin: 'filter',
     origintooltip: '请绑定',//提示语
     style: 1,
+    fill:'cover',
+    ratio:1,
     showmode: 'noborder-bgwhite',//'border-bgwhite','noborder-nobg'  无边框白底 有边框白底 无边框透明底
     radius: 'round',//圆角 none直角
     attr: {

@@ -7,7 +7,7 @@
             :style="[itemMarginObj(idx)]"
         >
           <div class="cover"
-               :style="{width:itemw,height:itemw,backgroundImage:'url('+domainFunc(item.ImgPath)+')'}">
+               :style="{width:itemw,height:itemH,backgroundSize:goods.config.fill?goods.config.fill:'cover',backgroundImage:'url('+domainFunc(item.ImgPath)+')'}">
             <div v-show="goods.config.attr.tag.show" :class="goods.config.attr.tag.style"
                  v-if="['new','hot'].indexOf(goods.config.attr.tag.style)!=-1" class="tag">
               {{goods.config.attr.tag.style=='hot'?'hot':'new'}}
@@ -121,6 +121,27 @@
                 }
                 return 'auto';
 
+            },
+            itemH(){
+                let full = this.fullWidth;
+                let ratio = this.goods.config.ratio?this.goods.config.ratio:1;
+                let num = 0;
+
+                if(this.goods.config.showmode == 'border-bgwhite'){
+                    full -= 4;//4个边框
+                }
+                if (this.goods.config.style === 2) {
+                    //内边不是乘以3 而是1
+                    num = (full - this.goods.style.wrapmargin * 2 - this.goods.style.margin * 1) / 2
+                }
+
+                if (this.goods.config.style === 4) {
+                    num = full / 3;
+                }
+                if(num>0){
+                    return num*ratio +'px';
+                }
+                return 'auto';
             },
             className() {
                 return 'style' + this.goods.config.style
@@ -389,7 +410,7 @@
         //margin-bottom: 10px;
         .cover {
           position: relative;
-          .cover-full-bg(contain, 100%, white);
+          .cover-full-bg(contain, 100%, #eee);
 
           .tag {
 
@@ -462,7 +483,7 @@
 
         .cover {
           position: relative;
-          .cover-full-bg(cover, 0%, #f7f7f7);
+          .cover-full-bg(cover, 0%, #eee);
 
           .tag {
 
@@ -528,7 +549,6 @@
     }
   }
 
-
   .style3 {
     .list {
 
@@ -555,7 +575,7 @@
 
           position: relative;
 
-          .cover-full-bg(contain, 0,white);
+          .cover-full-bg(contain, 0,#eee);
 
           .tag {
 
@@ -645,7 +665,7 @@
         .cover {
           position: relative;
           flex: 1;
-          .cover-full-bg(cover, 0%, #f7f7f7);
+          .cover-full-bg(cover, 0%, #eee);
 
           .tag {
 
