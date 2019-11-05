@@ -29,10 +29,14 @@ export default [
   {
     name: 'getTitleByTag',
     methods: (tag) => {
-      for (const plugin of PLUGINSLIST) {
-        if (plugin.label === tag) {
-          return plugin.value;
+
+      for (const group of PLUGINSLIST) {
+        for(const plugin of group.list){
+          if (plugin.label === tag) {
+            return plugin.value;
+          }
         }
+
       }
       // throw '未知组件';
       return '未知组件';

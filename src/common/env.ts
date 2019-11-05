@@ -2,7 +2,7 @@
 export const baseApiUrl = 'https://new401.bafangka.com';
 
 
-export const staticUrl = 'http://new401.bafangka.com';
+export const staticUrl = 'https://new401.bafangka.com';
 
 export const front_url = 'https://new401.bafangka.com/fre/';
 

@@ -6,15 +6,15 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://new401.bafangka.com/api',
+        target: 'https://new401.bafangka.com/api',
         changeOrigin: true,
         // http2: true,
         ws: true,
         pathRewrite: {
-          '^/api': ''
-        }
-      }
-    }
-  }
+          '^/api': '',
+        },
+      },
+    },
+  },
 
 };

@@ -51,6 +51,7 @@ function setAttrData() {
         text: '标签图片',
         tip: '建议上传宽度不超过4px的纯色图片',
         uploadType: 'avatar',
+        showDelIcon:true,
         model: this.config.icon,
         mini:true,
         editType: 'config',

@@ -18,6 +18,7 @@
         <upload-img-components v-if="item.type === 'uploadImg'" :tip="item.tip" class="myUploadImg"
                                :onSuccess='uploadImg'
                                :mini="item.mini"
+                               :showDelIcon="item.showDelIcon"
                                :type='item.uploadType'
                                :imgUrl='item.model'></upload-img-components>
 

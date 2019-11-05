@@ -27,7 +27,7 @@
       </template>
       <i v-else class="el-icon-plus"></i>
 
-      <div slot="tip" class="el-upload__tip ">{{tip}} <i @click="remove" style="position: absolute;right: 0;top: 0;font-size: 22px;cursor: pointer;" v-if="imgUrl" class="el-icon-circle-close del-icon"></i> </div>
+      <div slot="tip" class="el-upload__tip ">{{tip}} <i @click="remove" style="position: absolute;right: 0;top: 0;font-size: 22px;cursor: pointer;" v-if="showDelIcon && imgUrl" class="el-icon-circle-close del-icon"></i> </div>
     </el-upload>
     <!--/api/frontend/ajax/upload-->
     <el-upload
@@ -66,6 +66,9 @@
     props: {
       mini: {
         type: Boolean,
+      },
+      showDelIcon:{
+        type:Boolean
       },
       small: {
         type: Boolean,

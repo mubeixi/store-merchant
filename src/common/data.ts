@@ -55,13 +55,13 @@ export const PLUGINSLIST = [
     groupTitle:'营销组件',
     list:[
       {
-        label: 'nav', tip: '好用的工具', value: '秒杀', icona: require('@/assets/img/plugin-icon-w/1.png'),icon: require('@/assets/img/plugin-icon/1.png'),
+        label: 'kill', tip: '好用的工具', value: '秒杀', icona: require('@/assets/img/plugin-icon-w/kill.png'),icon: require('@/assets/img/plugin-icon/kill.png'),
       },
       {
-        label: 'swiper', tip: '好用的工具', value: '拼团',icona: require('@/assets/img/plugin-icon-w/2.png'),icon: require('@/assets/img/plugin-icon/2.png'),
+        label: 'group', tip: '好用的工具', value: '拼团',icona: require('@/assets/img/plugin-icon-w/group.png'),icon: require('@/assets/img/plugin-icon/group.png'),
       },
       {
-        label: 'tab', tip: '好用的工具', value: '限时抢购',icona: require('@/assets/img/plugin-icon-w/3.png'),icon: require('@/assets/img/plugin-icon/3.png'),
+        label: 'flash', tip: '好用的工具', value: '限时抢购',icona: require('@/assets/img/plugin-icon-w/flash.png'),icon: require('@/assets/img/plugin-icon/flash.png'),
       }
     ]
   }
