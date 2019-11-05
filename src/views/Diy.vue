@@ -124,7 +124,7 @@
 
                 console.log('更新preurl',this.preUrl);
 
-                this.preUrl = front_url+'pages/common/page'+str;
+                this.preUrl = front_url+'pages/page/page'+str;
 
             },
             setAct(idx,mode,title,desc){
