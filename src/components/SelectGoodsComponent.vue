@@ -105,6 +105,7 @@
     data() {
       return {
         loading: true,
+        finish:false,
         innerVisible: false,
         multipleSelection: [],
         list: [],
@@ -122,10 +123,16 @@
         handler(val) {
           this.innerVisible = val;
 
+          if(val){
+            this.paginate.page = 1;
+          }
+          
+          
+
           if (val && !this.finish) {
 
             this.loadGoodsInfo((arr) => {
-              this.finish = true;
+              //this.finish = true;
               this.list = arr;
             });
 

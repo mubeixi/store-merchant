@@ -465,6 +465,7 @@
                 //
             },
             openGoodsBindList(item, success,pintuan_flag,flashsale_flag) {
+              console.log(item,success,pintuan_flag,flashsale_flag)
                 this.bindListDialogShow = true
                 this.bindListSuccessCall = success
                 //是否要拼团和抢购的
