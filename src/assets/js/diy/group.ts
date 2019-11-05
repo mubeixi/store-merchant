@@ -26,11 +26,13 @@ function setConfig() {
 
 function setAttrData() {
   const data = {
-    title: '商品信息设置',
+    title: '拼团',
     content: [
       {
         type: 'origin',
         text: '商品来源',
+        pintuan_flag:1,
+        //flashsale_flag:1,
         editType: 'config',
         editKey: 'origin',
         model: this.config.origin,
@@ -96,10 +98,10 @@ function setAttrData() {
             label: '筛选产品',
             value: 'filter',//挑选
           },
-          {
-            label: '产品分类',
-            value: 'cate',
-          }
+          // {
+          //   label: '产品分类',
+          //   value: 'cate',
+          // }
         ],
       },
       {
@@ -362,9 +364,9 @@ function attrData(options = {}) {
 }
 
 
-class Goods extends Common {
+class Group extends Common {
 
-  tag = 'goods';
+  tag = 'group';
   activeIndex = 0;
 
   style = {
@@ -434,4 +436,4 @@ class Goods extends Common {
   }
 }
 
-export default Goods;
+export default Group;

@@ -11,10 +11,13 @@
         <el-tabs v-model="innerDialog.index" tab-position="left" class="leftMenuEl">
           <el-tab-pane label="自定义链接" name="customize" :disabled="!config.customize.show">
             <el-input v-model="innerDialog.customizeLink" placeholder="在此输入链接地址">
-<!--              <el-select v-model="innerDialog.customizeStart" slot="prepend" placeholder="请选择">-->
-<!--                <el-option label="http://" value="http://"></el-option>-->
-<!--                <el-option label="https://" value="https://"></el-option>-->
-<!--              </el-select>-->
+
+              <template slot="prepend">
+                <el-select style="width: 90px" v-model="innerDialog.customizeStart"  placeholder="请选择">
+                  <el-option label="http://" value="http://"></el-option>
+                  <el-option label="https://" value="https://"></el-option>
+                </el-select>
+              </template>
             </el-input>
           </el-tab-pane>
           <el-tab-pane label="选择页面" name="page" :disabled="!config.page.show">
@@ -53,19 +56,19 @@
                 </el-radio-group>
               </el-tab-pane>
 
-              <el-tab-pane label="自定义URL" name="4" :disabled="!config.page.product.show">
-                <el-radio-group v-model="innerDialog.product.checked" class="systemPage">
+              <el-tab-pane label="自定义URL" name="4" :disabled="!config.page.customer.show">
+                <el-radio-group v-model="innerDialog.customer.checked" class="systemPage">
                   <el-radio style="padding-bottom: 4px;" class="pageBlock" :label="item.path"
-                            v-for="(item, index) in innerDialog.product.data"
+                            v-for="(item, index) in innerDialog.customer.data"
                             :key="index" @change="saveProduct(item)">{{ item.text }}
                   </el-radio>
                 </el-radio-group>
               </el-tab-pane>
 
-              <el-tab-pane label="自定义页面" name="5" :disabled="!config.page.product.show">
-                <el-radio-group v-model="innerDialog.product.checked" class="systemPage">
+              <el-tab-pane label="自定义页面" name="5" :disabled="!config.page.diy.show">
+                <el-radio-group v-model="innerDialog.diy.checked" class="systemPage">
                   <el-radio style="padding-bottom: 4px;" class="pageBlock" :label="item.path"
-                            v-for="(item, index) in innerDialog.product.data"
+                            v-for="(item, index) in innerDialog.diy.data"
                             :key="index" @change="saveProduct(item)">{{ item.text }}
                   </el-radio>
                 </el-radio-group>
@@ -250,7 +253,6 @@
               this.innerDialog.classify.isHasData = true;
               let data = refreshCateData(res.data);
               this.innerDialog.classify.data.push(...data);
-
             });
         }
         if (val === '3' && !this.innerDialog.product.isHasData) {
@@ -267,6 +269,39 @@
             });
 
         }
+
+        if (val === '4' && !this.innerDialog.customer.isHasData) {
+          getProductList({ pageSize: 999 })
+            .then(res => {
+              this.innerDialog.customer.isHasData = true;
+              let data = res.data.map(v => {
+                v.text = `[自定义URL] ${v.Products_Name}`;
+                v.path = `/pages/detail/detail?Products_ID=${v.Products_ID}`;
+                v.type = 'default';
+                return v;
+              });
+              this.innerDialog.customer.data.push(...data);
+            });
+
+        }
+
+        if (val === '5' && !this.innerDialog.diy.isHasData) {
+          getProductList({ pageSize: 999 })
+            .then(res => {
+              this.innerDialog.diy.isHasData = true;
+              let data = res.data.map(v => {
+                v.text = `[自定义页面] ${v.Products_Name}`;
+                v.path = `/pages/detail/detail?Products_ID=${v.Products_ID}`;
+                v.type = 'default';
+                return v;
+              });
+              this.innerDialog.diy.data.push(...data);
+            });
+
+        }
+
+
+
       }
     },
     data() {
@@ -335,6 +370,18 @@
             isHasData: false,
             checkedObj: {}
           },
+          customer: {
+            data: [],
+            checked: '',
+            isHasData: false,
+            checkedObj: {}
+          },
+          diy: {
+            data: [],
+            checked: '',
+            isHasData: false,
+            checkedObj: {}
+          },
           classify: {
             data: [],
             index: 0,
@@ -360,6 +407,12 @@
             },
             product: {
               show: true
+            },
+            customer:{
+              show:true
+            },
+            diy:{
+              show:true
             }
           }
         }

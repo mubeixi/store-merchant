@@ -227,6 +227,48 @@ function setAttrData() {
           },
         ],
       },
+      {
+        type: 'radio',
+        text: '图片比例',
+        editType: 'config',
+        editKey: 'ratio',
+        model: this.config.ratio,
+        value: [
+          {
+            label: '1/1',
+            value: 1/1,
+          },
+          {
+            label: '1/2',
+            value: 1/2,
+          },
+          {
+            label: '3/4',
+            value: 3/4,
+          },
+          {
+            label: '9/16',
+            value: 9/16,
+          }
+        ],
+      },
+      {
+        type: 'radio',
+        text: '图片填充',
+        editType: 'config',
+        editKey: 'fill',
+        model: this.config.fill,
+        value: [
+          {
+            label: '填充',
+            value: 'cover',
+          },
+          {
+            label: '周边留白',
+            value: 'contain',
+          },
+        ],
+      },
 
       {
         type: 'checkbox',

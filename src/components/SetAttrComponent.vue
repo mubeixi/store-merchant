@@ -267,41 +267,43 @@
 
         <div v-if="item.type === 'origin'">
 
-
           <el-radio-group v-model="item.model">
             <el-radio v-for="(radio, ind) in item.value" :key="ind" :label="radio.value"
                       @change="radioChange(radio, item)">{{ radio.label }}
             </el-radio>
           </el-radio-group>
 
+
           <div v-if="item.model==='filter'"   style="margin-left: -70px;margin-top: 8px">
             <el-tooltip class="item rightBtn" effect="dark" :content="item.origintooltip"
                         placement="right">
-              <el-button @click="openGoodsBindList(item,item.bindListCB)" type="primary"
+              <el-button @click="openGoodsBindList(item,item.bindListCB,item.pintuan_flag,item.flashsale_flag)" type="primary"
                          size="small">选择商品
               </el-button>
             </el-tooltip>
 
           </div>
 
-          <div v-if="item.model!='filter'" class="line10"  style="margin-left: -70px;margin-top: 8px">
-            <el-tooltip class="item rightBtn" effect="dark" :content="item.origintooltip"
-                        placement="right">
-              <el-button @click="openGoodsBindCate(item,item.bindCateCB,null,true)" type="primary"
-                         size="small">绑定分类
-              </el-button>
+          <template v-if="!item.pintuan_flag && !item.flashsale_flag">
+            <div v-if="item.model!='filter'" class="line10"  style="margin-left: -70px;margin-top: 8px">
+              <el-tooltip class="item rightBtn" effect="dark" :content="item.origintooltip"
+                          placement="right">
+                <el-button @click="openGoodsBindCate(item,item.bindCateCB,null,true)" type="primary"
+                           size="small">绑定分类
+                </el-button>
 
-            </el-tooltip>
-            <span class="padding10-c font12 graytext">{{item.origintooltip|cutstr(20,'..')}}</span>
+              </el-tooltip>
+              <span class="padding10-c font12 graytext">{{item.origintooltip|cutstr(20,'..')}}</span>
 
-          </div>
+            </div>
 
-          <div v-if="item.model!='filter'"   style="margin-left: -70px;">
-            <span>产品数量</span>
-            <el-input  size="small" style="width: 140px;margin-left: 20px;" type="number" max="30" min="1" v-model="item.limit"
-                      @input="item.inputCB(item.limit)"/>
-            <span class="padding10-c font14 graytext">(最多显示30个)</span>
-          </div>
+            <div v-if="item.model!='filter'"   style="margin-left: -70px;">
+              <span>产品数量</span>
+              <el-input  size="small" style="width: 140px;margin-left: 20px;" type="number" max="30" min="1" v-model="item.limit"
+                        @input="item.inputCB(item.limit)"/>
+              <span class="padding10-c font14 graytext">(最多显示30个)</span>
+            </div>
+          </template>
 
 
         </div>
@@ -333,8 +335,7 @@
     </el-form>
 
 
-    <select-goods-component @cancel="bindListCancel" :onSuccess="bindListSuccessCall"
-                            :pageEl="pageEl" :show="bindListDialogShow"/>
+    <select-goods-component @cancel="bindListCancel" :pintuan_flag="pintuan_flag" :flashsale_flag="flashsale_flag" :onSuccess="bindListSuccessCall" :pageEl="pageEl" :show="bindListDialogShow"/>
 
     <bind-cate-components :multiple="bindCateMultiple" @cancel="bindCateCancel" :onSuccess="bindCateSuccessCall"
                           :idx2="bindCateIdx2" :pageEl="pageEl" :show="bindCateDialogShow"/>
@@ -374,6 +375,9 @@
         },
         data() {
             return {
+                pintuan_flag:0,
+                flashsale_flag:0,
+
                 isLockMouser:false,
                 bindCateMultiple:false,
                 bindListDialogShow: false,
@@ -460,9 +464,12 @@
                 this.bindLinkIdx2 = idx2;
                 //
             },
-            openGoodsBindList(item, success) {
+            openGoodsBindList(item, success,pintuan_flag,flashsale_flag) {
                 this.bindListDialogShow = true
                 this.bindListSuccessCall = success
+                //是否要拼团和抢购的
+                this.pintuan_flag = pintuan_flag?1:0
+                this.flashsale_flag = flashsale_flag?1:0
             },
             openGoodsBindCate(item, success, idx2,bindCateMultiple) {
                 this.bindCateDialogShow = true

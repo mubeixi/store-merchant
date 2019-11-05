@@ -1,5 +1,5 @@
 <template>
-  <div @click.stop="setData({}, 0)" class="goods wrap" id="goods" :style="{paddingLeft:goods.style.wrapmargin+'px',paddingRight:goods.style.wrapmargin+'px'}">
+  <div @click.stop="setData({}, 0)" class="group wrap" id="goods" :style="{paddingLeft:goods.style.wrapmargin+'px',paddingRight:goods.style.wrapmargin+'px'}">
     <div class="box" :class="[className]">
       <ul class="list" >
         <li v-for="(item,idx) in goodsList" class="item"
@@ -67,7 +67,7 @@
 <script lang="ts">
     import {Component, Vue} from 'vue-property-decorator';
     import {mapState} from 'vuex';
-    import Goods from '@/assets/js/diy/goods';
+    import Group from '@/assets/js/diy/group';
     import {deepCopy, domain} from '@/common/utils';
     import {getProductList} from '@/common/fetch';
 
@@ -300,7 +300,7 @@
         },
 
     })
-    export default class GoodsComponent extends Vue {
+    export default class GroupComponent extends Vue {
         created() {
             let _self = this;
             this.$nextTick().then(res => {
@@ -309,10 +309,10 @@
 
             //用这个来搞事啊
             //funvm也是vue实例，而且不是根实例，是这个组件的实例，可以快捷的调用组件中的对象或者方法以及$ref
-            Goods.prototype.funvm = this;
+            Group.prototype.funvm = this;
             //Goods.prototype.vm = this;
             this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
-            this.goods = deepCopy(new Goods(), this.data);
+            this.goods = deepCopy(new Group(), this.data);
             //重新绑定attrData.content，让修改可以同步到其他地方
             this.goods.setIndex(0,{value:false,config:false})
         }
@@ -321,8 +321,6 @@
 
 <style scoped lang="less">
   @import "~@/assets/css/fun.less";
-
-
 
   .wrap{
     background: #f8f8f8;

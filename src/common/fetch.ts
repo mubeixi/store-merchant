@@ -60,9 +60,15 @@ export const chooseShopSkin = (data, options) => fetch('choose_shopskin', data, 
 //get_shophome
 export const getSkinConfig = (data, options) => fetch('get_skin_data', data, options)
 
+export const getDiySkinConfig = (data, options) => fetch('get_makeup_home_data', data, options)
+
 //更新商城的配置
 //update_shophome
 export const setSkinConfig = (data, options) => fetch('save_skin_date', data, options)
+
+
+export const setDiySkinConfig = (data, options) => fetch('save_makeup_home_data', data, options)
+
 
 export const getProductCategory = (data, options) => fetch('pro_cate', data, options)
 

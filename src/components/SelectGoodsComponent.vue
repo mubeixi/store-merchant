@@ -84,6 +84,12 @@
       pageEl: {
         type: Object
       },
+      pintuan_flag:{
+        default:0
+      },
+      flashsale_flag:{
+        default:0
+      },
       onSuccess: {
         type: Function,
         default: noop,
@@ -163,7 +169,17 @@
         if (this.paginate.total > 0 && this.page >= this.paginate.total) return;
         this.loading = true;
         let _self = this;
-        getProductList(JSON.parse(JSON.stringify(this.paginate)))
+        //构造请求
+        let postData = JSON.parse(JSON.stringify(this.paginate));
+        //限时抢购
+        if(this.flashsale_flag){
+          postData.flashsale_flag = this.flashsale_flag;
+        }
+        //拼团
+        if(this.pintuan_flag){
+          postData.pintuan_flag = this.pintuan_flag;
+        }
+        getProductList(postData)
           .then(res => {
             setTimeout(function () {
               _self.loading = false;

@@ -13,7 +13,7 @@
               :style="[itemMarginObj(idx)]"
           >
             <div class="cover"
-                 :style="{width:itemw,height:itemw,backgroundImage:'url('+domainFunc(item.ImgPath)+')'}">
+                 :style="{width:itemw,height:itemH,backgroundImage:'url('+domainFunc(item.ImgPath)+')'}">
               <div v-show="tab.config.attr.tag.show" :class="tab.config.attr.tag.style"
                    v-if="['new','hot'].indexOf(tab.config.attr.tag.style)!=-1" class="tag">
                 {{tab.config.attr.tag.style=='hot'?'hot':'new'}}
@@ -123,6 +123,77 @@
             h(){
                 return this.fullHeight;
             },
+            // itemw() {
+            //     let full = this.fullWidth;
+            //
+            //     if(this.tab.config.showmode == 'border-bgwhite'){
+            //         full -= 4;//4个边框
+            //     }
+            //
+            //     if (this.tab.config.style === 2) {
+            //         //内边不是乘以3 而是1
+            //         return (full - this.tab.style.wrapmargin * 2 - this.tab.style.margin * 1) / 2 + 'px';
+            //     }
+            //
+            //     if (this.tab.config.style === 1) {
+            //         //内边不是乘以3 而是1
+            //         return (full - this.tab.style.wrapmargin * 2)+'px'
+            //     }
+            //
+            //     if (this.tab.config.style === 3) {
+            //         //内边不是乘以3 而是1
+            //         return 140+'px';
+            //     }
+            //
+            //     if (this.tab.config.style === 4) {
+            //         return full / 3 + 'px';
+            //     }
+            //     return 'auto';
+            //
+            // },
+            itemH(){
+                let full = this.fullWidth;
+                let ratio = this.tab.config.ratio?this.tab.config.ratio:1;
+                let num = 0;
+
+                if(this.tab.config.showmode == 'border-bgwhite'){
+                    full -= 4;//4个边框
+                }
+
+                //内边不是乘以3 而是1
+                //375-90-30-10 = 245px
+                if (this.tab.config.style === 2) {
+
+                    if(this.tab.config.position === 'left'){
+                        num = (full - 90 - this.tab.style.wrapmargin * 2 - this.tab.style.margin * 1)/2;
+                    }else{
+                        num = (full -  this.tab.style.wrapmargin * 2 - this.tab.style.margin * 1) / 2
+                    }
+
+                }
+
+
+                if (this.tab.config.style === 1) {
+                    //内边不是乘以3 而是1
+                    num = (full - 90 - this.tab.style.wrapmargin * 2)
+                }
+                //
+                if (this.tab.config.style === 3) {
+                    //内边不是乘以3 而是1
+                    num = 140;
+                }
+
+                if (this.tab.config.style === 4) {
+                    num = full / 3;
+                }
+
+                if(num>0){
+                    return num*ratio +'px';
+                }
+
+                return 'auto';
+            },
+
             itemw() {
                 let full = this.fullWidth;
 
@@ -142,6 +213,17 @@
 
                     return (full -  this.tab.style.wrapmargin * 2 - this.tab.style.margin * 1) / 2 + 'px';
 
+                }
+
+
+                if (this.tab.config.style === 1) {
+                    //内边不是乘以3 而是1
+                    return (full - 90 - this.tab.style.wrapmargin * 2)+'px'
+                }
+                //
+                if (this.tab.config.style === 3) {
+                    //内边不是乘以3 而是1
+                    return 140+'px';
                 }
 
                 if (this.tab.config.style === 4) {
@@ -541,327 +623,6 @@
     text-overflow: ellipsis;
   }
 
-  .style1 {
-    .list {
-      .item {
-        //margin-bottom: 10px;
-        .cover {
-          position: relative;
-          .cover-full-bg(contain, 100%, white);
-
-          .tag {
-
-          }
-        }
-
-        .info {
-          position: relative;
-          background: white;
-          padding: 10px;
-          /*display: flex;*/
-          /*justify-content: space-between;*/
-          /*flex: 1;*/
-
-          .title {
-            max-height: 42px;
-            line-height: 21px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: #444;
-            font-size: 16px;
-            margin-bottom: 10px;
-          }
-
-          .desc {
-            margin-bottom: 6px;
-          }
-
-          .price {
-            .sign {
-              font-size: 12px;
-            }
-
-            font-size: 16px;
-            color: #f56c6c;
-          }
-
-          .buybtn {
-            position: absolute;
-            right: 10px;
-            bottom: 10px;
-            /*right: 10px;*/
-            /*top:50%;*/
-            /*transform: translateY(-50%);*/
-          }
-        }
-
-      }
-    }
-  }
-
-  .style2 {
-    .list {
-      display: flex;
-      flex-wrap: wrap;
-
-      .item {
-
-        box-sizing: border-box;
-        display: block;
-        overflow: hidden;
-
-        /*&.even{*/
-        /*  margin: 10px 5px 10px 10px;*/
-        /*}*/
-
-        /*&.odd{*/
-        /*  margin: 10px 10px 10px 5px;*/
-        /*}*/
-
-        .cover {
-          position: relative;
-          .cover-full-bg(cover, 0%, #f7f7f7);
-
-          .tag {
-
-          }
-        }
-
-        .info {
-          width: 100%;
-          background: white;
-          padding: 10px;
-          box-sizing: border-box;
-          /*display: flex;*/
-          /*justify-content: space-between;*/
-          overflow: hidden;
-          position: relative;
-
-          .left {
-            /*flex: 1;*/
-
-            .title {
-              width: 100%;
-              overflow: hidden;
-              max-height: 42px;
-              text-overflow: ellipsis;
-              line-height: 21px;
-              color: #444;
-              margin-bottom: 10px;
-              font-size: 14px;
-            }
-
-            .desc {
-              margin-bottom: 6px;
-            }
-
-            .price {
-              height: 30px;
-              line-height: 30px;
-              .sign {
-                font-size: 12px;
-              }
-              color: #f56c6c;
-
-              font-size: 14px;
-
-            }
-          }
-
-          .buybtn {
-            font-size: 12px;
-            height: 24px;
-            line-height: 24px;
-            position: absolute;
-            right: 10px;
-            bottom: 10px;
-            /*position: absolute;*/
-            /*right: 0;*/
-            /*top:50%;*/
-            /*transform: translateY(-50%);*/
-          }
-        }
-
-      }
-    }
-  }
-
-
-  .style3 {
-    .list {
-
-
-      .item {
-        width: 100%;
-        box-sizing: border-box;
-        display: flex;
-        overflow: hidden;
-        //flex-direction:row-reverse;
-
-        /*&.even{*/
-        /*  margin: 10px 5px 10px 10px;*/
-        /*}*/
-
-        /*&.odd{*/
-        /*  margin: 10px 10px 10px 5px;*/
-        /*}*/
-
-
-        .cover {
-          width: 140px !important;
-          height: 140px !important;
-
-          position: relative;
-
-          .cover-full-bg(contain, 0,white);
-
-          .tag {
-
-          }
-        }
-
-        .info {
-          flex: 1;
-
-          /*width: 100%;*/
-          background: white;
-          padding: 10px;
-          box-sizing: border-box;
-          overflow: hidden;
-
-          .left {
-
-            .title {
-              width: 100%;
-              overflow-x: hidden;
-              overflow-y: hidden;
-              max-height: 42px;
-              text-overflow: ellipsis;
-              line-height: 21px;
-              color: #444;
-              margin-bottom: 6px;
-              font-size: 14px;
-            }
-
-            .desc {
-              margin-bottom: 6px;
-            }
-
-            .price {
-              margin: 6px 0;
-
-              .sign {
-                font-size: 12px;
-              }
-              color: #f56c6c;
-
-              font-size: 14px;
-
-            }
-          }
-
-          .buybtn {
-            font-size: 12px;
-            height: 24px;
-            line-height: 24px;
-            display: inline-block;
-            /*position: absolute;*/
-            /*right: 0;*/
-            /*top:50%;*/
-            /*transform: translateY(-50%);*/
-          }
-        }
-
-      }
-    }
-  }
-
-  .style4 {
-
-    .list {
-
-      white-space: nowrap;
-      overflow-x: scroll;
-      overflow-y: hidden;
-
-      .item {
-
-        display: inline-block;
-        box-sizing: border-box;
-        overflow: hidden;
-        //flex-direction:row-reverse;
-
-        /*&.even{*/
-        /*  margin: 10px 5px 10px 10px;*/
-        /*}*/
-
-        /*&.odd{*/
-        /*  margin: 10px 10px 10px 5px;*/
-        /*}*/
-
-
-        .cover {
-          position: relative;
-          flex: 1;
-          .cover-full-bg(cover, 0%, #f7f7f7);
-
-          .tag {
-
-          }
-        }
-
-        .info {
-
-          /*width: 100%;*/
-          background: white;
-          padding: 10px;
-          box-sizing: border-box;
-          overflow: hidden;
-
-          .left {
-
-            .title {
-              white-space: pre-wrap;
-              max-height: 42px;
-              line-height: 21px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              color: #444;
-              margin-bottom: 6px;
-              font-size: 14px;
-            }
-
-            .desc {
-              margin-bottom: 6px;
-            }
-
-            .price {
-              margin: 6px 0;
-
-              .sign {
-                font-size: 12px;
-              }
-              color: #f56c6c;
-
-              font-size: 14px;
-
-            }
-          }
-
-          .buybtn {
-            font-size: 12px;
-            height: 24px;
-            line-height: 24px;
-            display: inline-block;
-            /*position: absolute;*/
-            /*right: 0;*/
-            /*top:50%;*/
-            /*transform: translateY(-50%);*/
-          }
-        }
-
-      }
-    }
-  }
+  @import "goods.less";
 
 </style>

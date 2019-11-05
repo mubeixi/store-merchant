@@ -121,6 +121,33 @@
             :index="index"
           />
 
+          <group-component
+            ref="plugin"
+            v-if="item.indexOf('group') !== -1"
+            @setData="setDataEv"
+            :draggable="true"
+            :data="templateData[templateEditIndex][index]"
+            :index="index"
+          />
+
+          <flash-component
+            ref="plugin"
+            v-if="item.indexOf('flash') !== -1"
+            @setData="setDataEv"
+            :draggable="true"
+            :data="templateData[templateEditIndex][index]"
+            :index="index"
+          />
+
+          <kill-component
+            ref="plugin"
+            v-if="item.indexOf('kill') !== -1"
+            @setData="setDataEv"
+            :draggable="true"
+            :data="templateData[templateEditIndex][index]"
+            :index="index"
+          />
+
           <nav-component
             ref="plugin"
             v-if="item.indexOf('nav') !== -1"
@@ -187,7 +214,7 @@
     import {Component, Vue} from 'vue-property-decorator';
     import {State} from 'vuex-class';
     import {mapActions, mapState} from 'vuex';
-    import {getSkinConfig, setSkinConfig,uploadImgByBase64} from '@/common/fetch';
+    import {getSkinConfig, setSkinConfig,uploadImgByBase64,getDiySkinConfig,setDiySkinConfig} from '@/common/fetch';
 
     import SpaceComponent from '@/components/diy/SpaceComponent';
     import HrComponent from '@/components/diy/HrComponent.vue';
@@ -200,6 +227,9 @@
     import NoticeComponent from '@/components/diy/NoticeComponent.vue';
     import BaseComponent from '@/components/diy/BaseComponent.vue';
     import GoodsComponent from '@/components/diy/GoodsComponent';
+    import FlashComponent from '@/components/diy/FlashComponent';
+    import KillComponent from '@/components/diy/KillComponent';
+    import GroupComponent from '@/components/diy/GroupComponent';
     import NavComponent from "@/components/diy/NavComponent.vue";
     import CubeComponent from '@/components/diy/CubeComponent.vue';
     import TabComponent from '@/components/diy/TabComponent';
@@ -216,6 +246,9 @@
     import Notice from '@/assets/js/diy/notice';
     import Base from '@/assets/js/diy/base';
     import Goods from '@/assets/js/diy/goods';
+    import Group from '@/assets/js/diy/group';
+    import Flash from '@/assets/js/diy/flash';
+    import Kill from '@/assets/js/diy/kill';
     import Nav from '@/assets/js/diy/nav';
     import Cube from '@/assets/js/diy/cube';
     import Tab from '../assets/js/diy/tab';
@@ -228,7 +261,12 @@
 
     @Component({
         name: 'PreviewComponent',
-        props: {},
+        props: {
+            isDiy:{
+                default:false,
+                type:Boolean
+            }
+        },
         watch: {
             templateData: {
                 deep: true,
@@ -270,7 +308,10 @@
             SearchComponent,
             SwiperComponent,
             BaseComponent,
-            CubeComponent
+            CubeComponent,
+            GroupComponent,
+            FlashComponent,
+            KillComponent
 
         },
         filters: {
@@ -296,19 +337,12 @@
             },
             restTmplFun(defaultData){
 
-
                 if(!defaultData)return;
-
                 new Promise((resolve,reject) => {
-
                     this.isChangeData = true
                     //初始化这个
                     this.$store.commit('activeAttr',{attrData: {}})
-
-
                     resolve(defaultData)
-
-
                 })
                     .then(templateData => {
 
@@ -332,7 +366,6 @@
                             this.templateList = [[]]
                         }
 
-
                         //存储页面组件templateList
                         for (let i = 0; i < this.templateData.length; i++) {
                             if (this.templateData[i] && this.templateData[i] !== []) {
@@ -342,33 +375,19 @@
                             }
                         }
 
-
-
-
-
                         var _self = this
                         _self.show_preview = false
                         setTimeout(function () {
                             _self.show_preview = true;
                             _self.isChangeData = false
                         },200)
-
-
-
-
-                        //this.tabbarLast()
-
-
                         // setTimeout(() => pageMove.init('sort', this), 500)
-
-
                     })
                     .catch(err => {
                         throw new Error(err)
                     })
                     .then(() => {
                         //拖拽
-
                         // var isDraggable = ['div', 'nav']
                         // Array.from(
                         //     document.querySelectorAll('[draggable=true]')
@@ -376,33 +395,10 @@
                         //     let tagName = el.tagName.toLowerCase()
                         //     return isDraggable.some(elName => elName === tagName)
                         // })
-
                     })
-
-
-
-
-
             },
-            // selectStyle(){
-            //   let className = document.getElementById('canvas').className
-            //   if(className.indexOf('isMouseInPreview')===-1){
-            //       document.getElementById('canvas').className += ' isMouseInPreview'
-            //   }
-            //   this.setEditStatus(false)
-            // },
-            // outStyle(){
-            //     let className = document.getElementById('canvas').className
-            //     document.getElementById('canvas').className = className.replace(/isMouseInPreview/,'')
-            // },
             canvasScroll(e) {
-                //console.log(e.srcElement.scrollTop, e.target.scrollTop)
-                //console.log(e)
                 this.canvasScrollTop = this.$refs.pageTemplageBox.scrollTop
-                // var editEL = document.querySelector('.section.tab-bar')
-                // editEL.style.top = `calc(6.67rem - 53px + ${
-                //     this.canvasScrollTop
-                // }px)`
             },
             async convert2canvas(el) {
                 let shareContent = el //需要截图的包裹的（原生的）DOM 对象
@@ -471,42 +467,6 @@
                     ia[i] = byteString.charCodeAt(i)
                 return new Blob([ia], { type: mimeString })
             },
-            // async viewEv(boolean, name) {
-            //
-            //     //截图
-            //     let el = document.getElementById('canvas')
-            //     await this.convert2canvas(el)
-            //
-            //     //let data = JSON.stringify(this.activeTemplateData)
-            //     //let modelIndex = this.$route.query.id
-            //     var postData = {}
-            //
-            //     //postData.title = this.title
-            //
-            //     //postData.config = data
-            //     postData.cover = this.imgUrl
-            //     // postData.name = ''
-            //
-            //     console.log(postData);
-            //     return;
-            //
-            //     //如果是空白模板
-            //     if (ss.get('Skin_ID') == 1) {
-            //
-            //         // postData.ids = this.is_edit_id;
-            //
-            //         // manageEdit({row:postData,ids:this.is_edit_id}).then(() => {
-            //         //     return this.$Message.success('修改成功！')
-            //         // }).catch(e=>{})
-            //
-            //     }else{
-            //         // manageAdd({row:postData,group:2}).then(
-            //         //     () => {
-            //         //         return this.$Message.success('保存成功！')
-            //         //     }
-            //         // ).catch(e=>{})
-            //     }
-            // },
             /**
              *
              * @param is_use 是否选中当前模板
@@ -554,50 +514,66 @@
                     }
                 }
 
+
+                if(!this.system.title){
+                    this.$fun.warning("名称必填");
+                    return;
+                }
+
+
                 this.isAjax = true
                 let mixinData = {plugin:this.templateData,system:this.system}
 
-                let Skin_ID =  parseInt(ss.get('Skin_ID')),
-                    Home_ID = parseInt(ss.get('Home_ID'));
-                if(!Skin_ID && !Home_ID){
-                    this.$fun.error({msg:'页面参数错误'});
-                    return;
-                }
 
                 let postData = {
                     //this.templateData换掉最新的
                     Home_Json: JSON.stringify(mixinData)
                 }
 
-                if(Home_ID){
-                    postData.Home_ID = Home_ID
-                }else{
-                    postData.Skin_ID = Skin_ID
+
+
+                //不是diy
+                if(!this.isDiy){
+                    let Skin_ID =  parseInt(ss.get('Skin_ID')),
+                        Home_ID = parseInt(ss.get('Home_ID'));
+                    if(!Skin_ID && !Home_ID){
+                        this.$fun.error({msg:'页面参数错误'});
+                        return;
+                    }
+
+                    if(Home_ID){
+                        postData.Home_ID = Home_ID
+                    }else{
+                        postData.Skin_ID = Skin_ID
+                    }
+
+                    //是否使用
+                    if(is_use){
+                        postData.is_use = is_use
+                    }
+
                 }
 
-                //是否使用
-                if(is_use){
-                    postData.is_use = is_use
+                //自定义页面保存
+                if(this.isDiy){
+                    if(ss.get('Home_ID')){
+                        postData.Home_ID = parseInt(ss.get('Home_ID'))
+                    }
                 }
 
 
 
 
-                let Skin_Name = this.system.title
 
                 let load = null;
 
+                let Skin_Name = this.system.title
+
                 //自定义
-                if(1 || ss.get('Skin_ID') == 1){
-                    if(!this.system.title){
-                        this.$fun.warning("全局设置——模板名称必填");
-                        return;
-                    }
+                if(!this.isDiy){
+
                     postData.Skin_Name = Skin_Name
-
-
-
-                    //截图
+                    //每次都需要截图
                     let el = document.getElementById('canvas')
 
                     load = this.$loading({
@@ -614,6 +590,7 @@
 
                 }else{
 
+                    postData.Home_Name = Skin_Name
                     load = this.$loading({
                         fullscreen: true,
                         text:'保存中',
@@ -624,15 +601,25 @@
                 }
 
 
-                setSkinConfig(postData).then(res => {
+                //保存方法也不一样
+                let saveFunc = null;
+
+                if(this.isDiy){
+                    saveFunc = setDiySkinConfig;
+                }else{
+                    saveFunc = setSkinConfig;
+                }
+
+                saveFunc(postData).then(res => {
 
                     load.close();
 
                     this.isAjax = false
                     if (res.errorCode === 0) {
 
-                        //只要有Skin_ID就是从系统模板创建
-                        if(Skin_ID>0 && res.data.Home_ID){
+
+                        //保存Home_ID
+                        if(res.data.Home_ID){
                             ss.set('Home_ID',res.data.Home_ID)
                         }
 
@@ -856,22 +843,42 @@
             new Promise((resolve,reject) => {
 
 
-                let Skin_ID =  parseInt(ss.get('Skin_ID')),
-                    Home_ID = parseInt(ss.get('Home_ID'));
-                if(!Skin_ID && !Home_ID){
-                    this.$fun.error({msg:'页面参数错误'});
-                    return;
-                }
+                let postData = {},getSkinConfigFunc = null;
+                //普通模式
+                if(!_self.isDiy){
+                    let Skin_ID =  parseInt(ss.get('Skin_ID')),
+                        Home_ID = parseInt(ss.get('Home_ID'));
+                    if(!Skin_ID && !Home_ID){
+                        _self.$fun.error({msg:'页面参数错误'});
+                        return;
+                    }
+                    if(Home_ID){
+                        postData.Home_ID = Home_ID
+                    }else{
+                        postData.Skin_ID = Skin_ID
+                    }
 
-                let postData = {}
+                    getSkinConfigFunc = getSkinConfig;
 
-                if(Home_ID){
-                    postData.Home_ID = Home_ID
                 }else{
-                    postData.Skin_ID = Skin_ID
+
+                    //如果有，就加载吧
+                    let Home_ID = parseInt(ss.get('Home_ID'));
+                    if(Home_ID){
+                        postData.Home_ID = Home_ID;
+                        getSkinConfigFunc = getDiySkinConfig;
+                    }else{
+
+                        //没有Home_ID就什么都不做
+                        return;
+                    }
+
+
+
                 }
 
-                getSkinConfig(postData).then(res => {
+
+                getSkinConfigFunc(postData).then(res => {
                     //console.log(JSON.parse(res.data.Home_Json))
 
 
@@ -1017,6 +1024,15 @@
                     break;
                 case 'goods':
                     newClass = new Goods();
+                    break;
+                case 'group':
+                    newClass = new Group();
+                    break;
+                case 'kill':
+                    newClass = new Kill();
+                    break;
+                case 'flash':
+                    newClass = new Flash();
                     break;
                 case 'cube':
                     newClass = new Cube()

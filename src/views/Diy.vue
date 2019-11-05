@@ -14,7 +14,7 @@
 <!--          <div @click="saveData" :class="{active:previewActiveIndex===2}" class="item preview-page-save"><i class="preview-page-coms-icon"></i>数据保存</div>-->
 <!--          <div :class="{active:previewActiveIndex===3}" class="item preview-page-more"><i class="preview-page-coms-icon"></i>更多操作</div>-->
         </div>
-        <preview-component @preFun="setPreEv" ref="preview" @setData="setDataEv"></preview-component>
+        <preview-component :isDiy="true" @preFun="setPreEv" ref="preview" @setData="setDataEv"></preview-component>
       </div>
       <div class="setattr">
         <div class="deco-component-title">
@@ -29,7 +29,7 @@
     <div class="handle">
       <el-button @click="saveData(0)" type="primary" size="small">保存</el-button>
 <!--      <el-button @click="saveData(1)" size="small">上架</el-button>-->
-      <el-button @click="saveData(1)" size="small">保存并上架</el-button>
+<!--      <el-button @click="saveData(1)" size="small">保存并上架</el-button>-->
       <div class="preBox" >
         <el-button @click="saveData(0,1)" size="small">预览</el-button>
         <div class="tooltip" v-show="centerDialogVisible" @click="centerDialogVisible=false">
@@ -113,11 +113,10 @@
             ...mapActions(['setMode','setComponentTitle']),
             setpreUrl(){
 
-                let Skin_ID =  ss.get('Skin_ID'),
-                    Home_ID =  ss.get('Home_ID'),
+                let Home_ID =  ss.get('Home_ID'),
                     Users_ID = Cookies.get('Users_ID');
 
-                let obj = {Skin_ID,Home_ID,users_id:Users_ID};
+                let obj = {Home_ID,users_id:Users_ID};
 
                 let str = serialize(obj);
 
@@ -125,7 +124,7 @@
 
                 console.log('更新preurl',this.preUrl);
 
-                this.preUrl = front_url+'pages/index/pre'+str;
+                this.preUrl = front_url+'pages/common/page'+str;
 
             },
             setAct(idx,mode,title,desc){
@@ -138,6 +137,7 @@
 
             },
             setPreEv(val){
+
                 this.setpreUrl();
                 this.centerDialogVisible = val
             },
