@@ -262,34 +262,54 @@
             data: [
               {
                 id: 1,
-                text: '个人中心',
-                path: '/pages/person/person'
+                text: '系统消息',
+                path:'/pages/systemMsg/systemMsg'
               },
               {
                 id: 2,
-                text: '分销中心',
-                path: '/personal/distribution'
+                text: '签到',
+                path:'/pages/qiandao/qiandao'
               },
               {
                 id: 3,
-                text: '我的团队',
-                path: '/personal/distribution/team'
+                text: '我的收藏',
+                path:'/pages/collection/collection'
               },
               {
                 id: 4,
-                text: '提现',
-                path: '/personal/distribution/withDraw'
+                text: '我的优惠券',
+                path:'/pages/coupon/coupon'
               },
               {
                 id: 5,
-                text: '消息通知',
-                path: '/notice'
+                text: '赠品中心',
+                path:'/pages/myGift/myGift'
+              },
+              {
+                id: 5,
+                text: '赠品中心',
+                path:'/pages/myGift/myGift'
               },
               {
                 id: 6,
-                text: '分享海报',
-                path: '/Share'
-              }
+                text: '任务中心',
+                path:'/pages/taskCenter/taskCenter'
+              },
+              {
+                id: 7,
+                text: '会员中心',
+                path:'/pages/vipGrade/vipGrade'
+              },
+              {
+                id: 8,
+                text: '购物车',
+                path:'/pages/cart/cart'
+              },
+              {
+                id: 9,
+                text: '分销中心',
+                path:'/pages/fenxiao/fenxiao'
+              },
             ],
             checked: '',
             checkedObj: {}
