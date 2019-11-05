@@ -205,7 +205,7 @@
                   :closable='item.propmt.closable'/>
 
         <el-radio-group v-model="item.model" v-if="item.type === 'radio'">
-          <el-radio style="margin-bottom: 10px;" v-for="(radio, ind) in item.value" :key="ind" :label="radio.value"
+          <el-radio  v-for="(radio, ind) in item.value" :key="ind" :label="radio.value"
                     @change="radioChange(radio, item)">{{ radio.label }}
           </el-radio>
         </el-radio-group>
