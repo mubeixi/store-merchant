@@ -123,10 +123,10 @@ function setAttrData() {
             label: '详细列表',
             value: 3,
           },
-          {
-            label: '横向滑动',
-            value: 4,
-          },
+          // {
+          //   label: '横向滑动',
+          //   value: 4,
+          // },
         ],
       },
       {

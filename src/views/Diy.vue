@@ -150,7 +150,6 @@
         },
         computed: {
             //预览网址
-
             ...mapState(['activeAttr', 'editStatus','mode','componentTitle']),
         },
         mounted() {
