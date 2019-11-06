@@ -60,7 +60,7 @@
                 <el-radio-group v-model="innerDialog.customer.checked" class="systemPage">
                   <el-radio style="padding-bottom: 4px;" class="pageBlock" :label="item.path"
                             v-for="(item, index) in innerDialog.customer.data"
-                            :key="index" @change="saveProduct(item)">{{ item.text }}
+                            :key="index" @change="saveDiyUrl(item)">{{ item.text }}
                   </el-radio>
                 </el-radio-group>
               </el-tab-pane>
@@ -69,7 +69,7 @@
                 <el-radio-group v-model="innerDialog.diy.checked" class="systemPage">
                   <el-radio style="padding-bottom: 4px;" class="pageBlock" :label="item.path"
                             v-for="(item, index) in innerDialog.diy.data"
-                            :key="index" @change="saveProduct(item)">{{ item.text }}
+                            :key="index" @change="saveDiyPage(item)">{{ item.text }}
                   </el-radio>
                 </el-radio-group>
               </el-tab-pane>
@@ -90,7 +90,7 @@
 </template>
 
 <script>
-  import { getProductCategory, getProductList } from '@/common/fetch';
+  import { getProductCategory, getProductList,getDiyPageList,getSystemUrl,getDiyUrl } from '@/common/fetch';
   import { deepCopy } from '@/common/utils';
 
   function refreshCateData(arr) {
@@ -271,12 +271,12 @@
         }
 
         if (val === '4' && !this.innerDialog.customer.isHasData) {
-          getProductList({ pageSize: 999 })
+          getDiyUrl({ pageSize: 999 })
             .then(res => {
               this.innerDialog.customer.isHasData = true;
               let data = res.data.map(v => {
-                v.text = `[自定义URL] ${v.Products_Name}`;
-                v.path = `/pages/detail/detail?Products_ID=${v.Products_ID}`;
+                v.text = `[自定义URL] ${v.Url_Name}`;
+                v.path = v.Url_Value;
                 v.type = 'default';
                 return v;
               });
@@ -286,12 +286,12 @@
         }
 
         if (val === '5' && !this.innerDialog.diy.isHasData) {
-          getProductList({ pageSize: 999 })
+          getDiyPageList({ pageSize: 999 })
             .then(res => {
               this.innerDialog.diy.isHasData = true;
               let data = res.data.map(v => {
-                v.text = `[自定义页面] ${v.Products_Name}`;
-                v.path = `/pages/detail/detail?Products_ID=${v.Products_ID}`;
+                v.text = `[自定义页面] ${v.Home_Name}`;
+                v.path = `/pages/page/page?Home_ID=${v.Home_ID}`;
                 v.type = 'default';
                 return v;
               });
@@ -459,8 +459,14 @@
       saveSystem(item) {
         this.innerDialog.system.checkedObj = item;
       },
+      saveDiyUrl(item){
+        this.innerDialog.customer.checkedObj = item;
+      },
       saveProduct(item) {
         this.innerDialog.product.checkedObj = item;
+      },
+      saveDiyPage(item) {
+        this.innerDialog.diy.checkedObj = item;
       },
       nodeClick(data, checked, node) {
         this.$refs.treeForm.setCheckedNodes([data]);
@@ -493,9 +499,27 @@
             case '3':
               path = this.innerDialog.product.checked;
               if (path === '') return this.$message('请先选择产品');
-              tooltip = `产品：${this.innerDialog.product.checkedObj.text}`;
+              tooltip = `产品：${this.innerDialog.product.checkedObj.Products_Name}`;
               dataItem = this.innerDialog.product.checkedObj;
               type = 'product';
+              break;
+            case '4':
+              path = this.innerDialog.customer.checked;
+              if (path === '') return this.$message('请先选择url');
+              tooltip = `自定义URL：${this.innerDialog.customer.checkedObj.Url_Name}`;
+              dataItem = this.innerDialog.customer.checkedObj;
+              type = 'diyurl';
+              break;
+
+              // v.text = `[自定义页面] ${v.Home_Name}`;
+              // v.path = `/pages/page/page?Home_ID=${v.Home_ID}`;
+              // v.type = 'default';
+            case '5':
+              path = this.innerDialog.diy.checked;
+              if (path === '') return this.$message('请先选择页面');
+              tooltip = `自定义页面：${this.innerDialog.diy.checkedObj.Home_Name}`;
+              dataItem = this.innerDialog.diy.checkedObj;
+              type = 'diypage';
               break;
           }
         }

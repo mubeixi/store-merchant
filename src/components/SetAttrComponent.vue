@@ -87,7 +87,7 @@
                                @click="openSwiperBindLink(item,idx,item.bindCB)">绑定链接
                     </el-button>
                   </el-tooltip>
-                  <span class="padding10-c font12">{{item.value[idx].tooltip|cutstr(20,'..')}}</span>
+                  <span class="padding10-c font12">{{item.value[idx].tooltip|cutstr(16,'..')}}</span>
                   <div class="graytext2 font12" style="line-height: 22px;">
                     建议尺寸为750*350
                   </div>

@@ -62,6 +62,21 @@ export const getSkinConfig = (data, options) => fetch('get_skin_data', data, opt
 
 export const getDiySkinConfig = (data, options) => fetch('get_makeup_home_data', data, options)
 
+
+//获取自定义页面的列表
+export const getDiyPageList = (data, options) => fetch('get_makeup_home', data, options)
+
+//获取自定义URL列表
+export const getDiyUlrList = (data, options) => fetch('get_makeup_home', data, options)
+
+//获取系统url列表
+export const getSystemUrl = (data,options) => fetch('system_url', data, options)
+
+//获取diy url列表
+export const getDiyUrl = (data,options) => fetch('system_diy_url', data, options)
+
+
+
 //更新商城的配置
 //update_shophome
 export const setSkinConfig = (data, options) => fetch('save_skin_date', data, options)
