@@ -158,6 +158,8 @@
         },
         created() {
 
+            //记录打开过ss
+            // ss.set('is_open_diy',1);
             this.setpreUrl();
 
         }

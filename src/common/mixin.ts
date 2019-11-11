@@ -21,13 +21,12 @@ export const doLoginMixin = {
 
     ss.set('Home_ID',GetQueryByString(location.href,'Home_ID'))
     if(GetQueryByString(location.href,'Home_ID')){
-
     }
 
-    //这样就是意味着使用系统模板，所以要清空Home_ID
-    if(GetQueryByString(location.href,'Skin_ID') && !GetQueryByString(location.href,'Home_ID')){
-      ss.remove('Home_ID');
-    }
+
+
+
+
 
 
     if(isDev){

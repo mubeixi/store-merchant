@@ -70,7 +70,7 @@
     import CommonAttrComponent from '@/components/CommonAttrComponent.vue';
     import PluginsComponent from '@/components/PluginsComponent.vue';
     import RightComponent from '@/components/RightComponent.vue';
-    import {moveEl} from '@/common/utils';
+    import {GetQueryByString, moveEl} from '@/common/utils';
 
     import {ss} from '@/common/tool/ss';
     import {isDev,front_url} from '../common/env';
@@ -158,6 +158,22 @@
             //moveEl(this.$refs.setAttr.$el);
         },
         created() {
+
+
+            //需要可以刷新的时候保留HOME_ID,但是从新的页面进来需要清空
+            //这样就是意味着使用系统模板，所以要清空Home_ID
+
+            //只要之前打开过diy
+            // if(ss.get('is_open_diy')){
+            //     // && !GetQueryByString(location.href,'Home_ID')
+            //     //一律清空Home_ID
+            //     console.log('只要之前打开过diy,一律清空Home_ID')
+            //     if(GetQueryByString(location.href,'Skin_ID')){
+            //         ss.remove('Home_ID');
+            //     }
+            //     ss.remove('is_open_diy');
+            // }
+
 
             this.setpreUrl();
 

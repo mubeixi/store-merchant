@@ -620,6 +620,17 @@
 
                         //保存Home_ID
                         if(res.data.Home_ID){
+
+                            //刷新页面
+                            if(!this.isDiy){
+                                //需要刷新页面
+                                //str.replace(/\?.*/g, "")
+                                let oldURL =location.href;
+                                let newUrl = oldURL.replace(/\?.*/g,"?Home_ID="+res.data.Home_ID)
+                                console.log('需要跳转到的页面',newUrl)
+                                location.replace(newUrl);
+
+                            }
                             ss.set('Home_ID',res.data.Home_ID)
                         }
 
