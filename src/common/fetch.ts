@@ -84,6 +84,13 @@ export const setSkinConfig = (data, options) => fetch('save_skin_date', data, op
 
 export const setDiySkinConfig = (data, options) => fetch('save_makeup_home_data', data, options)
 
+//秒杀列表
+export const getFlashSaleList = (data, options) => fetch('get_flashsale', data, options)
+
+//获取限时抢购
+export const getSpikeList = (data, options) => fetch('get_spike_list', data, options)
+
+export const getSpikeProd = (data, options) => fetch('get_spike_prod', data, options)
 
 export const getProductCategory = (data, options) => fetch('pro_cate', data, options)
 

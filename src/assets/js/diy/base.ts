@@ -95,8 +95,8 @@ class Base extends Common {
   }
   // http://new401.bafangka.com/static/api/images/user/face.jpg
   config = {
-    cover: 'http://new401.bafangka.com/uploadfiles/wkbq6nc2kc/image/20191007094401198.png',
-    logo: shopInfo.ShopLogo || 'http://new401.bafangka.com/static/api/images/user/face.jpg',
+    cover: 'https://new401.bafangka.com/uploadfiles/wkbq6nc2kc/image/20191007094401198.png',
+    logo: shopInfo.ShopLogo || 'https://new401.bafangka.com/static/api/images/user/face.jpg',
     title: shopInfo.ShopName,
     desc: shopInfo.description,
     total: shopInfo.prod_total,

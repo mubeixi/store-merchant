@@ -30,7 +30,7 @@ function setAttrData() {
     content: [
       {
         type: 'origin',
-        text: '商品来源',
+        text: '绑定活动',
         // pintuan_flag:1,
         flashsale_flag:1,
         editType: 'config',
@@ -39,39 +39,66 @@ function setAttrData() {
         origintooltip: this.config.origintooltip,
         limit: this.value.limit,
         cate_id: this.value.cate_id,
-        bindListCB: (list, pageEl) => {
-          console.log(list)
+        // bindListCB: (list, pageEl) => {
+        //   console.log(list)
+        //
+        //   let tempArr = list.map(goods => {
+        //     return goods.Products_ID
+        //   })
+        //
+        //
+        //   Vue.set(this.config, 'origin', 'filter');
+        //   Vue.set(this.value, 'list', tempArr);
+        //   Vue.set(this.value, 'cate_id', []);
+        //
+        //   pageEl.bindListDialogShow = false;
+        //
+        //
+        //   //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+        //   this.setIndex(0, {value:false,config:false});
+        //   this.vm.$store.commit('activeAttr', this);// 传出去
+        //
+        // },
+        // bindCateCB: (dataType, type, path, tooltip, dataArr, pageEl, idx2) => {
+        //
+        //   console.log(dataArr)
+        //   pageEl.bindSpikeDialogShow = false;
+        //
+        //   let ids = dataArr.map(item=>item.id)
+        //   Vue.set(this.config, 'origin', 'cate');
+        //   Vue.set(this.value, 'cate_id', ids);
+        //   Vue.set(this.config, 'origintooltip', tooltip);
+        //
+        //   //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+        //   this.setIndex(0, {value:false,config:false});
+        //   this.vm.$store.commit('activeAttr', this);// 传出去
+        //
+        // },
+        bindItemCB: (obj, pageEl) => {
 
-          let tempArr = list.map(goods => {
-            return goods.Products_ID
-          })
+          console.log(obj)
+
+            if(!obj.id)return;
+            let tempArr =[]
 
 
-          Vue.set(this.config, 'origin', 'filter');
-          Vue.set(this.value, 'list', tempArr);
-          Vue.set(this.value, 'cate_id', []);
-
-          pageEl.bindListDialogShow = false;
+            Vue.set(this.config, 'origin', 'spiket');
+            Vue.set(this.value, 'list', tempArr);
+            Vue.set(this.value, 'cate_id', []);
 
 
-          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
-          this.setIndex(0, {value:false,config:false});
-          this.vm.$store.commit('activeAttr', this);// 传出去
 
-        },
-        bindCateCB: (dataType, type, path, tooltip, dataArr, pageEl, idx2) => {
+            //重点是这一句
+            Vue.set(this.value, 'spike_id', obj.id);
+            Vue.set(this.config, 'origintooltip', obj.name);
 
-          console.log(dataArr)
-          pageEl.bindCateDialogShow = false;
 
-          let ids = dataArr.map(item=>item.id)
-          Vue.set(this.config, 'origin', 'cate');
-          Vue.set(this.value, 'cate_id', ids);
-          Vue.set(this.config, 'origintooltip', tooltip);
+            pageEl.bindSpikeDialogShow = false;
 
-          //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
-          this.setIndex(0, {value:false,config:false});
-          this.vm.$store.commit('activeAttr', this);// 传出去
+
+            //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
+            this.setIndex(0, {value:false,config:false});
+            this.vm.$store.commit('activeAttr', this);// 传出去
 
         },
         inputCB: (val) => {
@@ -403,7 +430,7 @@ class Flash extends Common {
       title: {show: true,readOnly:true},
       desc: {show: false},
       price: {show: true},
-      buybtn: {show: true, text: '购买', style: ''}, //样式1 样式2
+      buybtn: {show: true, text: '立即抢购', style: ''}, //样式1 样式2
       tag: {show: false, style: '', img: ''} //hot new diy 第三个是图片。 都是放在商品左上角
     }
     // loop:false,//是否循环
@@ -414,6 +441,7 @@ class Flash extends Common {
 
   value = {
     cate_id: [],
+    spike_id:null,
     limit: 20,
     list: []
   }

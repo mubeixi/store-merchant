@@ -229,7 +229,7 @@
              </el-radio-group>
            </div>
 
-           <div  style="display: inline-block;">
+           <div  style="display: inline-block;" v-show="!item.data.hide">
              <el-input size="small" style="width: 90px;margin-left: 20px;" v-model="item.data.text"
                        @input="item.inputCB"/>
              <el-tooltip class="item" effect="dark" content="自定义按钮的文本" placement="right">
@@ -265,7 +265,7 @@
 
         </div>
 
-        <div v-if="item.type === 'origin'">
+        <div v-if="item.type === 'origin' && !item.flashsale_flag">
 
           <el-radio-group v-model="item.model">
             <el-radio v-for="(radio, ind) in item.value" :key="ind" :label="radio.value"
@@ -277,14 +277,14 @@
           <div v-if="item.model==='filter'"   style="margin-left: -70px;margin-top: 8px">
             <el-tooltip class="item rightBtn" effect="dark" :content="item.origintooltip"
                         placement="right">
-              <el-button @click="openGoodsBindList(item,item.bindListCB,item.pintuan_flag,item.flashsale_flag)" type="primary"
+              <el-button @click="openGoodsBindList(item,item.bindListCB,item.pintuan_flag,item.flashsale_flag,item.kill_flag)" type="primary"
                          size="small">选择商品
               </el-button>
             </el-tooltip>
 
           </div>
 
-          <template v-if="!item.pintuan_flag && !item.flashsale_flag">
+          <template v-if="!item.pintuan_flag && !item.flashsale_flag && !item.kill_flag">
             <div v-if="item.model!='filter'" class="line10"  style="margin-left: -70px;margin-top: 8px">
               <el-tooltip class="item rightBtn" effect="dark" :content="item.origintooltip"
                           placement="right">
@@ -305,6 +305,15 @@
             </div>
           </template>
 
+
+        </div>
+
+        <div v-if="item.type === 'origin' && item.flashsale_flag">
+          <el-tooltip class="item rightBtn" effect="dark" :content="item.origintooltip"
+                      placement="right">
+            <el-button @click="openSpikeBind(item,item.bindItemCB,null,true)" type="primary" size="small">绑定活动</el-button>
+
+          </el-tooltip>
 
         </div>
 
@@ -334,8 +343,9 @@
       <!--      </el-form-item>-->
     </el-form>
 
+    <select-spike-list-component @cancel="bindSpikeCancel" :onSuccess="bindSpikeSuccessCall" :pageEl="pageEl" :show="bindSpikeDialogShow" />
 
-    <select-goods-component @cancel="bindListCancel" :pintuan_flag="pintuan_flag" :flashsale_flag="flashsale_flag" :onSuccess="bindListSuccessCall" :pageEl="pageEl" :show="bindListDialogShow"/>
+    <select-goods-component @cancel="bindListCancel" :pintuan_flag="pintuan_flag" :kill_flag="kill_flag" :flashsale_flag="flashsale_flag" :onSuccess="bindListSuccessCall" :pageEl="pageEl" :show="bindListDialogShow"/>
 
     <bind-cate-components :multiple="bindCateMultiple" @cancel="bindCateCancel" :onSuccess="bindCateSuccessCall"
                           :idx2="bindCateIdx2" :pageEl="pageEl" :show="bindCateDialogShow"/>
@@ -359,6 +369,7 @@
     import BindCateComponents from '@/components/BindCateComponents';
     import SelectGoodsComponent from '@/components/SelectGoodsComponent';
     import MagicCubeComponent from '@/components/diy/tool/MagicCubeComponent';
+    import SelectSpikeListComponent from '@/components/SelectSpikeListComponent';
 
     // 没有继承，是依靠vuex的数据。也不碍事啊
     @Component({
@@ -368,15 +379,20 @@
             uploadImgComponents,
             BindCateComponents,
             SelectGoodsComponent,
-            MagicCubeComponent
+            MagicCubeComponent,
+            SelectSpikeListComponent
         },
         props: {
             // eTitle:{type:String, default:'属性设置'}
         },
         data() {
             return {
+                bindSpikeDialogShow:false,
+                bindSpikeSuccessCall: null,
+
                 pintuan_flag:0,
                 flashsale_flag:0,
+                kill_flag:0,
 
                 isLockMouser:false,
                 bindCateMultiple:false,
@@ -464,13 +480,23 @@
                 this.bindLinkIdx2 = idx2;
                 //
             },
-            openGoodsBindList(item, success,pintuan_flag,flashsale_flag) {
-              console.log(item,success,pintuan_flag,flashsale_flag)
+            openGoodsBindList(item, success,pintuan_flag,flashsale_flag,kill_flag) {
+                console.log(item,success,pintuan_flag,flashsale_flag,kill_flag)
                 this.bindListDialogShow = true
                 this.bindListSuccessCall = success
                 //是否要拼团和抢购的
                 this.pintuan_flag = pintuan_flag?1:0
                 this.flashsale_flag = flashsale_flag?1:0
+                this.kill_flag = kill_flag?1:0
+            },
+            openSpikeBind(item, success) {
+              console.log(item,success)
+                this.bindSpikeDialogShow = true
+                this.bindSpikeSuccessCall = success
+
+            },
+            bindSpikeCancel() {
+                this.bindSpikeDialogShow = false
             },
             openGoodsBindCate(item, success, idx2,bindCateMultiple) {
                 this.bindCateDialogShow = true

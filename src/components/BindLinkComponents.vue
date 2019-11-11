@@ -247,6 +247,21 @@
 
         if (!this.innerVisible) return;
 
+        if (val === '1' && !this.innerDialog.system.isHasData) {
+          getSystemUrl()
+            .then(res => {
+              this.innerDialog.system.isHasData = true;
+              let data = res.data.map((v,idx) => {
+                v.id = idx;
+                v.text = `[系统页面] ${v.name}`;
+                v.path = v.url;
+                v.type = 'default';
+                return v;
+              });
+              this.innerDialog.system.data.push(...data);
+            });
+        }
+
         if (val === '2' && !this.innerDialog.classify.isHasData) {
           getProductCategory()
             .then(res => {
@@ -314,53 +329,55 @@
           customizeStart: 'http://',
           customizeIndex: '1',
           system: {
-            data: [
-              {
-                id: 1,
-                text: '系统消息',
-                path:'/pages/systemMsg/systemMsg'
-              },
-              {
-                id: 2,
-                text: '签到',
-                path:'/pages/qiandao/qiandao'
-              },
-              {
-                id: 3,
-                text: '我的收藏',
-                path:'/pages/collection/collection'
-              },
-              {
-                id: 4,
-                text: '我的优惠券',
-                path:'/pages/coupon/coupon'
-              },
-              {
-                id: 5,
-                text: '赠品中心',
-                path:'/pages/myGift/myGift'
-              },
-              {
-                id: 6,
-                text: '任务中心',
-                path:'/pages/taskCenter/taskCenter'
-              },
-              {
-                id: 7,
-                text: '会员中心',
-                path:'/pages/vipGrade/vipGrade'
-              },
-              {
-                id: 8,
-                text: '购物车',
-                path:'/pages/cart/cart'
-              },
-              {
-                id: 9,
-                text: '分销中心',
-                path:'/pages/fenxiao/fenxiao'
-              },
-            ],
+            data:[],
+            // data: [
+            //   {
+            //     id: 1,
+            //     text: '系统消息',
+            //     path:'/pages/systemMsg/systemMsg'
+            //   },
+            //   {
+            //     id: 2,
+            //     text: '签到',
+            //     path:'/pages/qiandao/qiandao'
+            //   },
+            //   {
+            //     id: 3,
+            //     text: '我的收藏',
+            //     path:'/pages/collection/collection'
+            //   },
+            //   {
+            //     id: 4,
+            //     text: '我的优惠券',
+            //     path:'/pages/coupon/coupon'
+            //   },
+            //   {
+            //     id: 5,
+            //     text: '赠品中心',
+            //     path:'/pages/myGift/myGift'
+            //   },
+            //   {
+            //     id: 6,
+            //     text: '任务中心',
+            //     path:'/pages/taskCenter/taskCenter'
+            //   },
+            //   {
+            //     id: 7,
+            //     text: '会员中心',
+            //     path:'/pages/vipGrade/vipGrade'
+            //   },
+            //   {
+            //     id: 8,
+            //     text: '购物车',
+            //     path:'/pages/cart/cart'
+            //   },
+            //   {
+            //     id: 9,
+            //     text: '分销中心',
+            //     path:'/pages/fenxiao/fenxiao'
+            //   },
+            // ],
+            isHasData: false,
             checked: '',
             checkedObj: {}
           },
@@ -484,7 +501,7 @@
             case '1':
               path = this.innerDialog.system.checked;
               if (path === '') return this.$message('请先选择系统页面');
-              tooltip = `系统页面：${this.innerDialog.system.checkedObj.text}`;
+              tooltip = `系统页面：${this.innerDialog.system.checkedObj.name}`;
               dataItem = this.innerDialog.system.checkedObj;
               type = 'page';
               break;

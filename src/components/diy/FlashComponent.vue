@@ -69,7 +69,7 @@
     import {mapState} from 'vuex';
     import Flash from '@/assets/js/diy/flash';
     import {deepCopy, domain} from '@/common/utils';
-    import {getProductList} from '@/common/fetch';
+    import {getSpikeProd} from '@/common/fetch';
 
     @Component({
         props: {
@@ -191,25 +191,32 @@
                 deep: true,
                 handler(val) {
 
+                    console.log('spike_id is 2222222222')
                     if (!val) return;
-                    let {list = [], cate_id=[], limit} = val;
+                    let {list = [], cate_id=[], limit,spike_id} = val;
+
+                    console.log('spike_id is',spike_id)
 
                     //console.log(list,cate_id,limit)
 
                     //如果值还没有设置的话
                     //取消注释，拉取默认的商品。这样的话，方便有主题让人应用
-                    if(list.length===0 && cate_id.length===0){
+                // && cate_id.length===0
+                    if(!spike_id){
                         return;
                     }
 
-                    let param = {pageSize: cate_id.length===0 && limit ? limit : 6}
-                    if (cate_id.length>0) {
-                        param.Cate_ID = cate_id.join(',')
-                    } else {
-                        param.Products_ID = list.join(',')
-                    }
+                    // pageSize: cate_id.length===0 && limit ? limit : 6
+                    let param = {}
+                    // if (cate_id.length>0) {
+                    //     param.Cate_ID = cate_id.join(',')
+                    // } else {
+                    //
+                    // }
 
-                    getProductList(param).then(res => {
+                    //param.Products_ID = list.join(',');
+
+                    getSpikeProd({spike_id}).then(res => {
                         this.goodsList = res.data
                     })
 
@@ -300,7 +307,7 @@
         },
 
     })
-    export default class GroupComponent extends Vue {
+    export default class FlashComponent extends Vue {
         created() {
             let _self = this;
             this.$nextTick().then(res => {
@@ -312,6 +319,7 @@
             Flash.prototype.funvm = this;
             //Goods.prototype.vm = this;
             this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
+
             this.goods = deepCopy(new Flash(), this.data);
             //重新绑定attrData.content，让修改可以同步到其他地方
             this.goods.setIndex(0,{value:false,config:false})

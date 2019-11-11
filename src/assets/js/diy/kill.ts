@@ -31,6 +31,7 @@ function setAttrData() {
       {
         type: 'origin',
         text: '商品来源',
+        kill_flag:1,
         //pintuan_flag:1,
         //flashsale_flag:1,
         editType: 'config',
@@ -403,7 +404,7 @@ class Kill extends Common {
       title: {show: true,readOnly:true},
       desc: {show: false},
       price: {show: true},
-      buybtn: {show: true, text: '购买', style: ''}, //样式1 样式2
+      buybtn: {show: true, text: '购买',hide:true, style: ''}, //样式1 样式2
       tag: {show: false, style: '', img: ''} //hot new diy 第三个是图片。 都是放在商品左上角
     }
     // loop:false,//是否循环

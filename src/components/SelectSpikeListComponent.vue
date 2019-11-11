@@ -2,51 +2,49 @@
   <div class="selectPage">
     <el-dialog
       :visible.sync="innerVisible"
-      title="选择商品"
+      title="绑定限时抢购活动"
       width="70%"
       @close="cancel"
       append-to-body
       class="innerDislog"
     >
       <div class="container">
+<!--        @row-click="handleRowChange"-->
         <el-table
           :data="list"
           v-loading="loading"
           stripe
           max-height="500"
+          highlight-current-row
           ref="multipleTable"
-          @selection-change="handleSelectionChange"
-          @row-click="handleRowChange"
+          @current-change="handleCurrentChange"
+
           row-class-name="fun-table-row"
           style="width: 100%">
-          <el-table-column type="selection">
-          </el-table-column>
+
           <el-table-column
-            prop="Products_ID"
+            prop="id"
             fixed
             width="60"
             label="ID">
           </el-table-column>
           <el-table-column
-            prop="Products_Name"
+            prop="name"
             fixed
             width="300"
             label="名称">
           </el-table-column>
           <el-table-column
-            prop="Products_JSON"
+            prop="name"
             fixed
-            width="160"
-            label="缩略图">
-            <template slot-scope="scope">
-              <img style="height: 60px;max-width: 100px;" :src="scope.row.ImgPath"/>
-            </template>
+            label="名称">
           </el-table-column>
           <el-table-column
-            prop="Products_PriceX"
-
-            label="价格">
+            prop="name"
+            fixed
+            label="名称">
           </el-table-column>
+
         </el-table>
         <div class="pagination padding10-r">
           <el-pagination
@@ -71,7 +69,7 @@
 </template>
 
 <script>
-  import { getProductList,getFlashSaleList } from '../common/fetch';
+  import { getSpikeList } from '../common/fetch';
   import { domain } from '@/common/utils';
 
   function noop() {
@@ -79,7 +77,7 @@
   }
 
   export default {
-    name: 'SelectGoodsComponent',
+    name: 'SelectSpikeListComponent',
     props: {
       pageEl: {
         type: Object
@@ -110,6 +108,7 @@
         loading: true,
         finish:false,
         innerVisible: false,
+        currentRow:{},
         multipleSelection: [],
         list: [],
         //分页
@@ -182,17 +181,7 @@
         //构造请求
         let postData = JSON.parse(JSON.stringify(this.paginate));
 
-        let getProductListFn = getProductList;
-        //秒杀
-        if(this.kill_flag){
-          getProductListFn = getFlashSaleList;
-          //postData.flashsale_flag = this.flashsale_flag;
-        }
-        //拼团
-        if(this.pintuan_flag){
-          postData.pintuan_flag = this.pintuan_flag;
-        }
-        getProductListFn(postData)
+        getSpikeList(postData)
           .then(res => {
             setTimeout(function () {
               _self.loading = false;
@@ -225,15 +214,15 @@
       },
       selectCoupon({}) {
 
-        this.onSuccess.call(this, this.multipleSelection, this.pageEl);
+        this.onSuccess.call(this, this.currentRow, this.pageEl);
         // this.innerVisible = false;
       },
       cancel() {
         this.$emit('cancel');
       },
-      handleSelectionChange(val) {
+      handleCurrentChange(val) {
         console.log(val);
-        this.multipleSelection = val;
+        this.currentRow = val;
 
         // for(var item of val){
         //   if(this.multipleSelection.indexOf(item.Coupon_ID)===-1){
