@@ -24,9 +24,9 @@ export const ls = {
 };
 
 export const ss = {
-  set(key, val) {
+  set(key, val,req) {
     //Null undefined '' 这些不让传进来了
-    if (!val && (val != 0 || val != false)) return false;
+    if (!req && !val && (val != 0 || val != false)) return false;
     return window.sessionStorage.setItem(key, JSON.stringify(val))
   },
 

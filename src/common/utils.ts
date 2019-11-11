@@ -50,7 +50,7 @@ export const GetQueryByString = (str, name) => {
     return decodeURIComponent(r[2]);
 
   }
-  return null; //返回参数值
+  return ''; //返回参数值
 
 }
 

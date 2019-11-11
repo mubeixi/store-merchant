@@ -209,7 +209,7 @@
 </template>
 
 <script lang="ts">
-    import {pageMove,objTranslate} from '@/common/utils';
+    import {pageMove, objTranslate, GetQueryByString} from '@/common/utils';
     import {ss} from '@/common/tool/ss';
     import {Component, Vue} from 'vue-property-decorator';
     import {State} from 'vuex-class';
@@ -405,17 +405,17 @@
                 let width = shareContent.offsetWidth //获取dom 宽度
                 let height = shareContent.offsetHeight //获取dom 高度
                 let canvas = document.createElement('canvas') //创建一个canvas节点
-                let scale = 1;//1 //定义任意放大倍数 支持小数
+                let scale = 0.5 //定义任意放大倍数 支持小数
                 canvas.width = width * scale //定义canvas 宽度 * 缩放
                 canvas.height = height * scale //定义canvas高度 *缩放
                 canvas.getContext('2d').scale(scale, scale) //获取context,设置scale
                 let opts = {
-                    scale: scale, // 添加的scale 参数
+                    scale: 1, // 添加的scale 参数
                     canvas: canvas, //自定义 canvas
-                    // logging: true, //日志开关，便于查看html2canvas的内部执行流程
+                    logging: false, //日志开关，便于查看html2canvas的内部执行流程
                     width: width, //dom 原始宽度
                     height: height,
-                    useCORS: false // 【重要】开启跨域配置
+                    useCORS: true // 【重要】开启跨域配置
                 }
                 await html2canvas(shareContent, opts).then(canvas => {
 
@@ -621,14 +621,17 @@
                         //保存Home_ID
                         if(res.data.Home_ID){
 
+
                             //刷新页面
-                            if(!this.isDiy){
+                            if(!this.isDiy && (GetQueryByString(location.href,'Home_ID')==0 || !GetQueryByString(location.href,'Home_ID')) ){
                                 //需要刷新页面
                                 //str.replace(/\?.*/g, "")
                                 let oldURL =location.href;
                                 let newUrl = oldURL.replace(/\?.*/g,"?Home_ID="+res.data.Home_ID)
                                 console.log('需要跳转到的页面',newUrl)
-                                location.replace(newUrl);
+                                location.href = newUrl;
+                                location.reload();
+                                return;
 
                             }
                             ss.set('Home_ID',res.data.Home_ID)
