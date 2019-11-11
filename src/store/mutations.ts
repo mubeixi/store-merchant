@@ -1,5 +1,6 @@
 export const activeAttr = function (state: { activeAttr: any; }, value: any) {
   // window.ActiveAttrObj = value;
+  // console.log(22222222,'storesotre')
   state.activeAttr = value;
   // if(!window.ActiveAttrObj)window.ActiveAttrObj = state.activeAttr;//绑定下
 };

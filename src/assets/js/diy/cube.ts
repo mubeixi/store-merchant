@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Common from './commonClass';
+import {deepCopy, objTranslate} from "../../../common/utils";
 
 function setValue() {
   // let value = {}
@@ -400,11 +401,14 @@ function setAttrData() {
         text: '内容设置',
         row: this.config.row,
         col: this.config.col,
+        tagName:this.tagName,
         width:375,
         style_type:this.config.type,
         value: this.value.list,
         //数据变化放进来的
-        seclectChangeCB: (arr) => {
+        seclectChangeCB: (arr,pageEl) => {
+          // console.log('55555555555555555cube选中列表有变动',this.tagName)
+          // console.log(objTranslate(arr),objTranslate(this.value),objTranslate(this));
           //如果是数组的长度变小了
           if (arr.length < this.value.list.length) {
             var ids = []
@@ -445,12 +449,17 @@ function setAttrData() {
             }
           }
 
-
-
           //这里重新生成的attrData应该会在组件中直接显示。 也就是说我只需要直接把this给activeAttr即可
           this.setIndex(0, {value:false,config:false});
           this.vm.$store.commit('activeAttr', this);// 传出去
 
+          //清空
+          //console.log(pageEl)
+          // setTimeout(function () {
+          //   Vue.set(pageEl,'currentData',{})
+          // },300)
+
+          // pageEl.currentData = {}
 
         },
         bindCB: (dataType, type, path, tooltip, dataItem, pageEl, idx2) => {
@@ -501,6 +510,7 @@ function attrData(options = {}) {
  * 魔方类
  */
 class Cube extends Common {
+
   tag = 'cube';
   // activeIndex = 0;
 
@@ -545,9 +555,16 @@ class Cube extends Common {
     list: [],//存优惠券数组
   }
 
+  tagName = ''
+
 
   constructor() {
     super();
+
+    let nowTime = new Date();
+    let timeStamp = nowTime.getTime()
+
+    this.tagName = 'cube'+timeStamp/1000;
 
 
     // 统一这样来初始化
@@ -558,6 +575,7 @@ class Cube extends Common {
 
 
   setIndex(index: number, options: object) {
+    console.log('cube is setIndex')
     this.activeIndex = index;
     attrData.call(this, options);
   }

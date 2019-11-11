@@ -279,11 +279,12 @@
             activeAttr: {
                 deep: true,
                 handler(val) {
-                    //console.log('activeAttr对象有改变111111111')
+                    // console.log('1.51.51.51.51activeAttr对象有改变111111111',this.templateList,this.tabIndex,objTranslate(val))
                     // 去修改准备提交到线上的数据对象
                     // 等于右边有变动，中间预览马上就跟着变了
 
                     //这里只是存一个值而已，所以不需要搞什么
+                    //已经从这里避免了引用依赖
                     this.$set(this.templateData[this.templateEditIndex], this.tabIndex,objTranslate(val));
                     // if(!this.isChangeData){
                     //     //这里只是解除了依赖而已
@@ -1050,6 +1051,8 @@
                     newClass = new Flash();
                     break;
                 case 'cube':
+                    // let len = this.templateList[this.templateEditIndex].length;
+                    // let tagName = 'cube'+(len+1);
                     newClass = new Cube()
                     break;
                 case 'nav':

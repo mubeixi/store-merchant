@@ -54,9 +54,10 @@
 
 <script>
 
-import MagicCube from "@/assets/js/diy/tool/MagicCube";
+import MagicCube from '../../../assets/js/diy/tool/MagicCube';
 
 import {domain} from '@/common/utils';
+import {objTranslate} from '../../../common/utils';
 import uploadImgComponents from '@/components/common/uploadImgComponents';
 import BindLinkComponents from '@/components/BindLinkComponents';
 import _ from 'underscore'
@@ -66,7 +67,7 @@ export default {
   props:{
     selecteds:{
       type:Array,
-      default:function(){return []}
+      default:[],//function(){return []}
     },
     row:{
       type:Number,
@@ -154,11 +155,18 @@ export default {
         this.INIT()
       }
     },
+    selecteds:{
+      immediate:true,
+      deep:true,
+      handler(val){
+        // console.log('333333333333333selecteds发生修改',val);
+      }
+    },
     //传上去
     'CTX.selects':{
       deep:true,
       handler(val){
-        this.$emit('selectChange',val)
+        this.$emit('selectChange',objTranslate(val))
       }
     }
   },
@@ -400,7 +408,7 @@ export default {
     INIT(){
       this.CTX = new MagicCube(this.row,this.col,this.width,this.width*this.row/this.col);//还有label。。真牛
       this.CTX.selects = this.CTX.selects.concat(this.selecteds)
-      window.CTX = this.CTX;
+      //window.CTX = this.CTX;
     }
   },
   created() {

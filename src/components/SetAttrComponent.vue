@@ -330,7 +330,8 @@
 
         <!--魔方-->
         <div v-if="item.type==='MagicCube'">
-          <magic-cube-component :row.sync="item.row" :col.sync="item.col" :type.sync="item.style_type" :selecteds.sync="item.value"
+          <!--时间戳做key??-->
+          <magic-cube-component  :key="item.tagName" :row.sync="item.row" :col.sync="item.col" :type.sync="item.style_type" :selecteds.sync="item.value"
                                 @mouseenter.native="bindBindLinkDiaCall(item.bindCB)"
                                 @selectChange="bindSelectChange"
                                 @openBindLink="openMagicCubeBindLink"/>
@@ -428,6 +429,14 @@
                   this.setComponentTitle({title:val,desc:''})
 
               }
+          },
+          //每次改组件的时候，手动吧currentData置空吧
+          tabIndex:{
+              immediate:true,
+              handler(val){
+                  console.log('置空currentData')
+                  this.currentData = {}
+              }
           }
         },
         computed: {
@@ -444,7 +453,7 @@
                     // this.setActiveAttr(navl)
                 },
             },
-            ...mapState(['tmplData']),
+            ...mapState(['tmplData','tabIndex']),
         },
         created() {
             this.pageEl = this
@@ -466,8 +475,14 @@
                 this.bindLinkSuccessCall = item.bindLinkCB
             },
             bindSelectChange(arr) {
-                console.log('选中区域变化', arr)
-                this.currentData.seclectChangeCB && this.currentData.seclectChangeCB(arr)
+                // console.log('444444444444444选中区域变化', arr,this.currentData)
+
+                //每改完一次，需要手动设置current为空，不然太坑了。。
+                if(this.currentData.seclectChangeCB){
+                    this.currentData.seclectChangeCB(arr,this)
+                    //this.currentData = {};
+                }
+
 
             },
             //用两个来

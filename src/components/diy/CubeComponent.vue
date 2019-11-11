@@ -23,6 +23,7 @@
     import Cube from '@/assets/js/diy/cube';
     import {deepCopy, domain} from '@/common/utils';
     import {getRowColSpan} from '@/assets/js/diy/tool/MagicCube';
+    import {objTranslate} from '@/common/utils';
 
     @Component({
         props: {
@@ -137,6 +138,12 @@
 
               }
             },
+            data:{
+                deep: true,
+                handler(val) {
+                    //this.cube = deepCopy(new Cube(), val)
+                },
+            },
             // 属性变化
             activeAttr: {
                 deep: true,
@@ -180,10 +187,17 @@
             setData(item, index) {
                 // console.log('hehe',this.search)
                 // @ts-ignore
-                this.$store.commit('activeAttr', this.cube);// 这里点击之后，setAttr马上就有响应。
 
+                // console.log('1111111111activeAttr的值发生修改',objTranslate(this.cube))
+
+
+
+                //拖一下勾？？
+                //let Data = deepCopy(new Cube(), objTranslate(this.cube));
+                this.$store.commit('activeAttr', this.cube);// 这里点击之后，setAttr马上就有响应。
                 // @ts-ignore
                 this.$store.commit('tabIndex', this.index);
+
 
                 // 用vuex就不要一层层传递了，头都晕了
                 // this.$emit('setData', this.img.attrData)
@@ -193,24 +207,22 @@
 
     })
     export default class CubeComponent extends Vue {
-        created() {
+        async created() {
             //用这个来搞事啊
             //funvm也是vue实例，而且不是根实例，是这个组件的实例，可以快捷的调用组件中的对象或者方法以及$ref
             Cube.prototype.funvm = this;
             //Cube.prototype.vm = this;
             this.$store.commit('tabIndex', this.index);// 设置tabIndex，等于templData是二维数组，这个是二维数组的
             this.cube = deepCopy(new Cube(), this.data);
+            // console.log('新建cube组件的值',objTranslate(this.cube))
 
-            // if(this.data.value && this.data.value.list.length>0){
-            //     this.cube.value.list = [...this.data.value.list];
-            // }
 
             //利用数据生成一下attrData
 
             //重新绑定attrData.content，让修改可以同步到其他地方
             this.cube.setIndex(0,{value:false,config:false})
-
             this.CTX = this.cube;
+            // console.log('新建cube组件的值2222222222222222222222',objTranslate(this.cube))
 
         }
     }
