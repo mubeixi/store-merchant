@@ -1,49 +1,19 @@
 // @ts-nocheck
 
-import { getStyle } from '../utils';
+import { getStyle } from '../utils'
 
-const $ = el=>document.querySelectorAll(el);
+const $ = el=>document.querySelectorAll(el)
 
-let sortEl;
-const pageMoveArr = {};
+let sortEl
+const pageMoveArr = {}
 
-class pageMove {
-
-  pageMove.x = 0;
-  pageMove.y = 0;
-  pageMove.isDown = false;
-  pageMove.canvas = $('.canvas')[0];
-
-  pageMove.downX = 0;
-  pageMove.downY = 0;
-  pageMove.dragObj = null;
-
-  pageMove.leftMenuMainX = 0;
-  pageMove.pageContentScrollX = 0;
-  pageMove.canvasPageX = $('.canvas')[0].offsetLeft;
-  pageMove.pageOffsetX = pageMove.canvasPageX - pageMove.pageContentScrollX + pageMove.leftMenuMainX;
-
-  pageMove.canvasPageY = $('.canvas')[0].offsetTop;
-  pageMove.pageContentScrollY = 0;
-  pageMove.headerHeight = 0;// parseInt(getStyle($('header.mainHeader')[0], 'height'))
-  pageMove.pageOffsetY = pageMove.canvasPageY - pageMove.pageContentScrollY + pageMove.headerHeight;
-  console.log(pageMove.pageOffsetY);
-  pageMove.cb = cb;
-
-  // sort
-  pageMove.beforeOffsetX = 0;
-  pageMove.beforeOffsetY = 0;
-  pageMove.sortMiddleArr = [];
-  pageMove.vm = vm;
-  pageMove.canvasScrollTop = 0;
-
-  pageMove.dragEl = dragEl;
+export class pageMove {
 
   constructor(){
 
   }
-  static init(dragEl, vm, cb) {
 
+  static init(dragEl, vm, cb) {
     pageMove.x = 0;
     pageMove.y = 0;
     pageMove.isDown = false;
@@ -358,7 +328,3 @@ class pageMove {
   }
 }
 
-
-export default {
-  pageMove
-}

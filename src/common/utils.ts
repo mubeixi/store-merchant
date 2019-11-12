@@ -1,14 +1,20 @@
 // @ts-nocheck
-
 import Vue from 'vue';
 import {staticUrl} from "@/common/env";
 
-
-
+/**
+ * 获取指定的样式值
+ * @param el
+ * @param name
+ */
 export const getStyle = function (el, name) {
   return window.getComputedStyle(el, null)[name];
 };
 
+/**
+ * 给相对路径的图片加上前缀
+ * @param url
+ */
 export const domain = (url) => {
   if (!url) return '';
   if (url.indexOf('http') == -1) return staticUrl + url;
@@ -16,7 +22,8 @@ export const domain = (url) => {
 }
 
 /**
- *
+ *从指定字符串str中获取name=val的val值
+ * 一般用于从location.href查找指定的参数
  * @param {*} str
  * @param {*} name
  */
@@ -51,24 +58,19 @@ export const GetQueryByString = (str, name) => {
 
 }
 
-
-
+/**
+ * 对象=>字符串=>对象
+ * 一般用于console.log立即显示（有时候虽然在前面打印，但是会由于引用的问题，打印的不是即时结果)
+ * 同时可以用于简单粗暴的避免引用传递的对象copy，但是注意这种写法只保留值，会丢失方法
+ * @param obj
+ */
+export const objTranslate = obj=>JSON.parse(JSON.stringify(obj))
 
 
 /**
- * 深拷贝.
+ * 限定覆盖指定的值
  * @param targetObj
  * @param tmplObj
- * @param cover
- *
- * 一般来说，无脑深拷贝就行了
- *
- * 有几个特殊情况
- * 1.如果targetObj有的属性，但是tempObj没有（是没有，即该属性为undefined，而不是值为false/或者0和null之类，则什么都不用做
- * 2.无脑复制，仅限于value中的list属性
- *
- *
- *
  */
 export const mergeObject = function (targetObj,tmplObj) {
 
@@ -82,26 +84,22 @@ export const mergeObject = function (targetObj,tmplObj) {
   }
 }
 
-export const objTranslate = obj=>JSON.parse(JSON.stringify(obj))
-
 /**
  * 深拷贝，解决引用的问题。
  * @param currentObj
  * @param newObject
- *
  * 不过很奇怪之前的人为什么要复制两遍
  */
 export function deepCopy(currentObj, newObject) {
-  // addFun_base(currentObj, newObject)
-  // mergeDate_base(currentObj, newObject)
   mergeObject(currentObj, newObject);//方法则是保留本地的新建实例  new Search()这样
-  // mergeObject(currentObj, newObject)
-
-  // @ts-ignore
-  // mergeData(currentObj, newObject);
   return currentObj;
 }
 
+/**
+ * 混合样式
+ * @param defaultStyle
+ * @param style
+ */
 export function mixinStyle(defaultStyle, style) {
   if(!defaultStyle)defaultStyle={};
   if(!style)style={};
@@ -115,14 +113,16 @@ export function mixinStyle(defaultStyle, style) {
   return rt;
 }
 
-
-
+/**
+ * 比较两个对象，并且将模板对象上的值覆盖目标对象
+ * @param currentObj
+ * @param newObject
+ */
 export function deepCopyStrict(currentObj, newObject) {
   addFun_base(currentObj, newObject);
   mergeDate_base(currentObj, newObject);
   return currentObj;
 }
-
 
 // 会修改原数据
 function addFun_base(object, newobj) {
@@ -141,8 +141,7 @@ function addFun_base(object, newobj) {
   }
 }
 
-// 会修改原数据
-//浅拷贝对象。。
+// 会修改原数据 浅拷贝对象。。
 function mergeDate_base(current, newObj) {
   for (let key in newObj) {
     if (!newObj.hasOwnProperty(key)) continue
@@ -167,16 +166,18 @@ function mergeDate_base(current, newObj) {
   }
 }
 
-
-function defaultEvent (e) {
-  e.preventDefault()
-}
-
-
+/**
+ * 是否为Number类型
+ * @param value
+ */
 function isNum(value) {
   return typeof value === 'number' && !isNaN(value);
 }
 
+/**
+ * 去除数组中的相同元素
+ * @param arr
+ */
 export const arrayUnique = (arr)=>{
   var res=[];
   for(var i=0,len=arr.length;i<len;i++){
@@ -189,7 +190,11 @@ export const arrayUnique = (arr)=>{
   return res;
 }
 
-
+/**
+ * 请求数组拼接成字符串
+ * 可以用在post请求转get,或者拼接url
+ * @param obj
+ */
 export const serialize = obj=>{
   var ary = [];
   for (var p in obj)
