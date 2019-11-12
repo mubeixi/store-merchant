@@ -70,7 +70,7 @@
     import CommonAttrComponent from '@/components/CommonAttrComponent.vue';
     import PluginsComponent from '@/components/PluginsComponent.vue';
     import RightComponent from '@/components/RightComponent.vue';
-    import {moveEl} from '@/common/utils';
+
 
     import {ss} from '@/common/tool/ss';
     import {isDev,front_url} from '../common/env';

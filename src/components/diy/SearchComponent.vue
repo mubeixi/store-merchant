@@ -14,10 +14,10 @@
     import {Component, Vue} from 'vue-property-decorator';
     import {mapState} from 'vuex';
     import Search from '@/assets/js/diy/search';
-    import {deepCopy, deepCopyStrict,moveanyway,mixinStyle} from '@/common/utils';
+    import {deepCopy, deepCopyStrict,mixinStyle} from '@/common/utils';
     import {fun} from '@/common';
 
-    import {pageMove} from '@/common/utils';
+    import {pageMove} from '@/common/tool/pageMove';
 
     @Component({
         props: {

@@ -1,8 +1,5 @@
 <template>
   <div class="wrap">
-    <!--    <header class="boxShadow mainHeader" style="">-->
-    <!--      <el-button type="primary" size="small">保存并继续</el-button>-->
-    <!--    </header>-->
     <div class="flex main">
       <div class="plugins">
         <plugins-component></plugins-component>
@@ -11,8 +8,6 @@
         <div class="preview-page">
           <div @click="setAct(0,'system','全局设置','针对页面的整体配置')" :class="{active:mode==='system'}" class="item preview-page-options"><i class="preview-page-options-icon"></i>全局设置</div>
           <div @click="setAct(1,'plugin','组件管理','可以便捷拖动、删除组件')" :class="{active:mode==='plugin'}" class="item preview-page-coms"><i class="preview-page-coms-icon"></i>组件管理</div>
-<!--          <div @click="saveData" :class="{active:previewActiveIndex===2}" class="item preview-page-save"><i class="preview-page-coms-icon"></i>数据保存</div>-->
-<!--          <div :class="{active:previewActiveIndex===3}" class="item preview-page-more"><i class="preview-page-coms-icon"></i>更多操作</div>-->
         </div>
         <preview-component @preFun="setPreEv" ref="preview" @setData="setDataEv"></preview-component>
       </div>
@@ -28,7 +23,7 @@
     </div>
     <div class="handle">
       <el-button @click="saveData(0)" type="primary" size="small">保存</el-button>
-<!--      <el-button @click="saveData(1)" size="small">上架</el-button>-->
+      <!--<el-button @click="saveData(1)" size="small">上架</el-button>-->
       <el-button @click="saveData(1)" size="small">保存并上架</el-button>
       <div class="preBox" >
         <el-button @click="saveData(0,1)" size="small">预览</el-button>
@@ -37,27 +32,7 @@
           <div class="font12" style="line-height: 20px;height: 20px">扫一扫预览</div>
         </div>
       </div>
-
-<!--      <el-button size="small">更多操作</el-button>-->
     </div>
-
-<!--    <el-dialog-->
-<!--      title="扫码预览"-->
-<!--      :visible.sync="centerDialogVisible"-->
-<!--      width="30%"-->
-<!--      center>-->
-<!--      <div style="text-align: center">-->
-<!--        -->
-<!--      </div>-->
-<!--      <span slot="footer" class="dialog-footer">-->
-<!--        <el-button @click="centerDialogVisible = false">取 消</el-button>-->
-<!--        <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>-->
-<!--      </span>-->
-<!--    </el-dialog>-->
-
-<!--    <div class="right">-->
-<!--      -->
-<!--    </div>-->
 
   </div>
 </template>

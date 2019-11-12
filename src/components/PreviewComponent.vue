@@ -209,7 +209,8 @@
 </template>
 
 <script lang="ts">
-    import {pageMove, objTranslate, GetQueryByString} from '@/common/utils';
+    import {pageMove} from '@/common/tool/pageMove';
+    import {objTranslate, GetQueryByString} from '@/common/utils';
     import {ss} from '@/common/tool/ss';
     import {Component, Vue} from 'vue-property-decorator';
     import {State} from 'vuex-class';
