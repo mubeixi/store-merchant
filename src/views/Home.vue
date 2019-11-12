@@ -110,6 +110,11 @@
         @State('mode') mode
         @State('componentTitle') componentTitle
 
+        //vue的生命周期
+        created(){
+            this.setpreUrl();
+        }
+
         setpreUrl(){
 
             let Skin_ID =  ss.get('Skin_ID'),
@@ -146,10 +151,7 @@
 
         }
 
-        //vue的生命周期
-        created(){
-            this.setpreUrl();
-        }
+
 
     }
 </script>
