@@ -64,17 +64,26 @@
       <el-form-item label="商品重量" prop="productWeight">
         <el-input v-model="ruleForm.productWeight" type="number" class="sortInput" ></el-input>
       </el-form-item>
+
       <el-form-item label="其他属性" prop="otherAttributes">
-        <el-checkbox-group v-model="ruleForm.otherAttributes">
-          <el-checkbox label="下架" name="type"></el-checkbox>
-          <el-checkbox label="新品" name="type"></el-checkbox>
-          <el-checkbox label="热卖" name="type"></el-checkbox>
-          <el-checkbox label="推荐" name="type"></el-checkbox>
-        </el-checkbox-group>
+        <el-radio-group v-model="ruleForm.otherAttributes">
+          <el-radio label="下架" ></el-radio>
+          <el-radio label="新品" ></el-radio>
+          <el-radio label="热卖" ></el-radio>
+          <el-radio label="推荐" ></el-radio>
+        </el-radio-group>
       </el-form-item>
 
       <el-form-item label="关联门店" prop="classification">
         <span class="classificationSpan">选择门店</span>
+      </el-form-item>
+
+      <el-form-item label="订单类型" prop="otherAttributes">
+        <el-radio-group v-model="ruleForm.otherAttributes">
+          <el-radio label="1" style="display: block;margin-bottom: 15px" >实物订单  ( 买家下单 -> 买家付款 -> 商家发货 -> 买家收货 -> 订单完成 ) </el-radio>
+          <el-radio label="2" style="display: block;margin-bottom: 15px" >虚拟订单  ( 买家下单 -> 买家付款 -> 系统发送消费券码到买家手机 -> 商家认证消费 -> 订单完成 )</el-radio>
+          <el-radio label="3" style="display: block;margin-bottom: 15px" >其他  ( 买家下单 -> 买家付款 -> 订单完成 ) </el-radio>
+        </el-radio-group>
       </el-form-item>
 
       <el-form-item label="商品库存" prop="productStock">
