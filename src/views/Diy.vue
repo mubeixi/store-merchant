@@ -89,9 +89,11 @@
     };
 
 
+    import {tmplDiyMixin} from '@/common/mixin';
 
 
     @Component({
+        mixins:[tmplDiyMixin],
         components: {
             PluginsComponent,
             SetAttrComponent,

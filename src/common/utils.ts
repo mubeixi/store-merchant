@@ -788,3 +788,13 @@ export const arrayUnique = (arr)=>{
   }
   return res;
 }
+
+
+export const serialize = obj=>{
+  var ary = [];
+  for (var p in obj)
+    if (obj.hasOwnProperty(p) && (obj[p] || obj[p]== 0 || obj[p] =='' )) {
+      ary.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
+    }
+  return ary.join('&');
+};

@@ -24,7 +24,7 @@ export const ls = {
 };
 
 export const ss = {
-  set(key, val,req) {
+  set(key, val,req:boolean = false) {
     //Null undefined '' 这些不让传进来了
     if (!req && !val && (val != 0 || val != false)) return false;
     return window.sessionStorage.setItem(key, JSON.stringify(val))

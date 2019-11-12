@@ -63,35 +63,31 @@
 </template>
 
 <script lang="ts">
-    import {Component, Vue} from 'vue-property-decorator';
-    import {mapState,mapActions} from 'vuex';
+
+    import {
+        Component,
+        Vue
+    } from 'vue-property-decorator';
+    import {
+        Getter,
+        Action,
+        State
+    } from 'vuex-class'
     import SetAttrComponent from '@/components/SetAttrComponent.vue'; // @ is an alias to /src
     import PreviewComponent from '@/components/PreviewComponent.vue';
     import CommonAttrComponent from '@/components/CommonAttrComponent.vue';
     import PluginsComponent from '@/components/PluginsComponent.vue';
     import RightComponent from '@/components/RightComponent.vue';
-    import {GetQueryByString, moveEl} from '@/common/utils';
 
+    import {front_url} from '../common/env';
     import {ss} from '@/common/tool/ss';
-    import {isDev,front_url} from '../common/env';
-
     import Cookies from 'js-cookie';
-
     import QrcodeVue from 'qrcode.vue';
-
-    const serialize = function(obj) {
-        var ary = [];
-        for (var p in obj)
-            if (obj.hasOwnProperty(p) && (obj[p] || obj[p]== 0 || obj[p] =='' )) {
-                ary.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
-            }
-        return ary.join('&');
-    };
-
-
-
+    import {tmplDiyMixin} from '@/common/mixin';
+    import {serialize} from '@/common/utils';
 
     @Component({
+        mixins:[tmplDiyMixin],
         components: {
             PluginsComponent,
             SetAttrComponent,
@@ -99,87 +95,61 @@
             RightComponent,
             CommonAttrComponent,
             QrcodeVue
-        },
-        data() {
-            return {
-                isDev: isDev,
-                preUrl:'',
-                centerDialogVisible:false,
-                previewActiveIndex:null
-            }
-        },
-        methods: {
-
-            ...mapActions(['setMode','setComponentTitle']),
-            setpreUrl(){
-
-                let Skin_ID =  ss.get('Skin_ID'),
-                    Home_ID =  ss.get('Home_ID'),
-                    Users_ID = Cookies.get('Users_ID');
-
-                let obj = {Skin_ID,Home_ID,users_id:Users_ID};
-
-                let str = serialize(obj);
-
-                if(str)str = '?'+str;
-
-                console.log('更新preurl',this.preUrl);
-
-                this.preUrl = front_url+'pages/index/pre'+str;
-
-            },
-            setAct(idx,mode,title,desc){
-                this.previewActiveIndex=idx;
-                this.setMode(mode);
-                this.setComponentTitle({title,desc})
-            },
-            // 这个数据一直往上传，这么辛苦
-            setDataEv(data) {
-
-            },
-            setPreEv(val){
-                this.setpreUrl();
-                this.centerDialogVisible = val
-            },
-            saveData(use,pre){
-                // this.previewActiveIndex=2;
-                this.$refs.preview.uploadConfig(use,pre);
-
-
-            }
-        },
-        computed: {
-            //预览网址
-
-            ...mapState(['activeAttr', 'editStatus','mode','componentTitle']),
-        },
-        mounted() {
-            // 右侧如果内容过多，可以用滚动栏
-            //moveEl(this.$refs.setAttr.$el);
-        },
-        created() {
-
-
-            //需要可以刷新的时候保留HOME_ID,但是从新的页面进来需要清空
-            //这样就是意味着使用系统模板，所以要清空Home_ID
-
-            //只要之前打开过diy
-            // if(ss.get('is_open_diy')){
-            //     // && !GetQueryByString(location.href,'Home_ID')
-            //     //一律清空Home_ID
-            //     console.log('只要之前打开过diy,一律清空Home_ID')
-            //     if(GetQueryByString(location.href,'Skin_ID')){
-            //         ss.remove('Home_ID');
-            //     }
-            //     ss.remove('is_open_diy');
-            // }
-
-
-            this.setpreUrl();
-
         }
     })
     export default class Home extends Vue {
+
+        preUrl = ''
+        centerDialogVisible = false
+        previewActiveIndex = null
+
+        @Action('setMode') setMode
+        @Action('setComponentTitle') setComponentTitle
+
+        @State('activeAttr') activeAttr
+        @State('mode') mode
+        @State('componentTitle') componentTitle
+
+        setpreUrl(){
+
+            let Skin_ID =  ss.get('Skin_ID'),
+                Home_ID =  ss.get('Home_ID'),
+                Users_ID = Cookies.get('Users_ID');
+
+            let obj = {Skin_ID,Home_ID,users_id:Users_ID};
+
+            let str = serialize(obj);
+
+            if(str)str = '?'+str;
+
+            console.log('更新preurl',this.preUrl);
+
+            this.preUrl = front_url+'pages/index/pre'+str;
+
+        }
+        setAct(idx,mode,title,desc){
+            this.previewActiveIndex=idx;
+            this.setMode(mode);
+            this.setComponentTitle({title,desc})
+        }
+        // 这个数据一直往上传，这么辛苦
+        setDataEv(data) {
+
+        }
+        setPreEv(val){
+            this.setpreUrl();
+            this.centerDialogVisible = val
+        }
+        saveData(use,pre){
+            // @ts-ignore
+            this.$refs.preview.uploadConfig(use,pre);
+
+        }
+
+        //vue的生命周期
+        created(){
+            this.setpreUrl();
+        }
 
     }
 </script>
