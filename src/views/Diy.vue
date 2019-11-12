@@ -1,8 +1,5 @@
 <template>
   <div class="wrap">
-    <!--    <header class="boxShadow mainHeader" style="">-->
-    <!--      <el-button type="primary" size="small">保存并继续</el-button>-->
-    <!--    </header>-->
     <div class="flex main">
       <div class="plugins">
         <plugins-component></plugins-component>
@@ -11,8 +8,6 @@
         <div class="preview-page">
           <div @click="setAct(0,'system','全局设置','针对页面的整体配置')" :class="{active:mode==='system'}" class="item preview-page-options"><i class="preview-page-options-icon"></i>全局设置</div>
           <div @click="setAct(1,'plugin','组件管理','可以便捷拖动、删除组件')" :class="{active:mode==='plugin'}" class="item preview-page-coms"><i class="preview-page-coms-icon"></i>组件管理</div>
-<!--          <div @click="saveData" :class="{active:previewActiveIndex===2}" class="item preview-page-save"><i class="preview-page-coms-icon"></i>数据保存</div>-->
-<!--          <div :class="{active:previewActiveIndex===3}" class="item preview-page-more"><i class="preview-page-coms-icon"></i>更多操作</div>-->
         </div>
         <preview-component :isDiy="true" @preFun="setPreEv" ref="preview" @setData="setDataEv"></preview-component>
       </div>
@@ -37,58 +32,32 @@
           <div class="font12" style="line-height: 20px;height: 20px">扫一扫预览</div>
         </div>
       </div>
-
-<!--      <el-button size="small">更多操作</el-button>-->
     </div>
-
-<!--    <el-dialog-->
-<!--      title="扫码预览"-->
-<!--      :visible.sync="centerDialogVisible"-->
-<!--      width="30%"-->
-<!--      center>-->
-<!--      <div style="text-align: center">-->
-<!--        -->
-<!--      </div>-->
-<!--      <span slot="footer" class="dialog-footer">-->
-<!--        <el-button @click="centerDialogVisible = false">取 消</el-button>-->
-<!--        <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>-->
-<!--      </span>-->
-<!--    </el-dialog>-->
-
-<!--    <div class="right">-->
-<!--      -->
-<!--    </div>-->
 
   </div>
 </template>
 
 <script lang="ts">
-    import {Component, Vue} from 'vue-property-decorator';
-    import {mapState,mapActions} from 'vuex';
+    import {
+        Component,
+        Vue
+    } from 'vue-property-decorator';
+    import {
+        Action,
+        State
+    } from 'vuex-class'
+
     import SetAttrComponent from '@/components/SetAttrComponent.vue'; // @ is an alias to /src
     import PreviewComponent from '@/components/PreviewComponent.vue';
     import CommonAttrComponent from '@/components/CommonAttrComponent.vue';
     import PluginsComponent from '@/components/PluginsComponent.vue';
     import RightComponent from '@/components/RightComponent.vue';
 
-
     import {ss} from '@/common/tool/ss';
-    import {isDev,front_url} from '../common/env';
-
+    import {front_url} from '../common/env';
     import Cookies from 'js-cookie';
-
     import QrcodeVue from 'qrcode.vue';
-
-    const serialize = function(obj) {
-        var ary = [];
-        for (var p in obj)
-            if (obj.hasOwnProperty(p) && (obj[p] || obj[p]== 0 || obj[p] =='' )) {
-                ary.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
-            }
-        return ary.join('&');
-    };
-
-
+    import {serialize} from '@/common/utils';
     import {tmplDiyMixin} from '@/common/mixin';
 
 
@@ -101,82 +70,64 @@
             RightComponent,
             CommonAttrComponent,
             QrcodeVue
-        },
-        data() {
-            return {
-                isDev: isDev,
-                preUrl:'',
-                centerDialogVisible:false,
-                previewActiveIndex:null
-            }
-        },
-        methods: {
-
-            ...mapActions(['setMode','setComponentTitle']),
-            setpreUrl(){
-
-                let Home_ID =  ss.get('Home_ID'),
-                    Users_ID = Cookies.get('Users_ID');
-
-                let obj = {Home_ID,users_id:Users_ID};
-
-                let str = serialize(obj);
-
-                if(str)str = '?'+str;
-
-                console.log('更新preurl',this.preUrl);
-
-                this.preUrl = front_url+'pages/page/page'+str;
-
-            },
-            setAct(idx,mode,title,desc){
-                this.previewActiveIndex=idx;
-                this.setMode(mode);
-                this.setComponentTitle({title,desc})
-            },
-            // 这个数据一直往上传，这么辛苦
-            setDataEv(data) {
-
-            },
-            setPreEv(val){
-
-                this.setpreUrl();
-                this.centerDialogVisible = val
-            },
-            saveData(use,pre){
-                // this.previewActiveIndex=2;
-                this.$refs.preview.uploadConfig(use,pre);
-
-
-            }
-        },
-        computed: {
-            //预览网址
-            ...mapState(['activeAttr', 'editStatus','mode','componentTitle']),
-        },
-        mounted() {
-            // 右侧如果内容过多，可以用滚动栏
-            //moveEl(this.$refs.setAttr.$el);
-        },
-        created() {
-
-            //记录打开过ss
-            // ss.set('is_open_diy',1);
-            this.setpreUrl();
-
         }
     })
     export default class Home extends Vue {
 
+        preUrl = ''
+        centerDialogVisible = false
+        previewActiveIndex = null
+
+        @Action('setMode') setMode
+        @Action('setComponentTitle') setComponentTitle
+
+        @State('activeAttr') activeAttr
+        @State('mode') mode
+        @State('editStatus') editStatus
+        @State('componentTitle') componentTitle
+
+        mounted() {
+
+        }
+        created() {
+            this.setpreUrl();
+        }
+
+        setpreUrl(){
+
+            let Home_ID =  ss.get('Home_ID'),
+                Users_ID = Cookies.get('Users_ID');
+
+            let obj = {Home_ID,users_id:Users_ID};
+            let str = serialize(obj);
+            if(str)str = '?'+str;
+            console.log('更新preurl',this.preUrl);
+            this.preUrl = front_url+'pages/page/page'+str;
+
+        }
+        setAct(idx,mode,title,desc){
+            this.previewActiveIndex=idx;
+            this.setMode(mode);
+            this.setComponentTitle({title,desc})
+        }
+        // 这个数据一直往上传，这么辛苦
+        setDataEv(data) {
+
+        }
+        setPreEv(val){
+
+            this.setpreUrl();
+            this.centerDialogVisible = val
+        }
+        saveData(use,pre){
+            //@ts-ignore
+            this.$refs.preview.uploadConfig(use,pre);
+        }
+
     }
 </script>
 <style lang="stylus" scoped>
-  /*.mainHeader*/
 
-  /*  padding 16px 0*/
-  /*  box-sizing border-box*/
-  /*  text-align right*/
-  /*  border-bottom 1px solid #e7e7e7*/
   .handle
     position fixed
     z-index 999
@@ -194,31 +145,21 @@
     margin 0px auto 0
 
     .plugins
-      /*width 162px*/
       padding 0 12px
-      /*box-sizing border-box*/
 
     .preview
       position relative
       flex 1
-      //height calc(100vh - 70px)
       height 100vh
-      /*box-sizing border-box*/
-      /*padding-top 70px*/
       overflow-x hidden
       overflow-y auto
       background #f7f8fa
-      //min-height: 601px;
-
 
     .setattr
       height calc(100vh - 70px)
-      /*overflow-y scroll*/
       padding-bottom 70px
       overflow-x hidden
-      /*width 460px*/
       width 540px
-      /*padding-right 20px*/
 
   .right
     position fixed
@@ -228,15 +169,8 @@
     background white
     bottom 0
     top 100px
-    /*overflow-y scroll*/
     border 1px solid #e7e7e7
 
-
-  /*webkit内核*/
-  //.setattr::-webkit-scrollbar {
-  //  width:0px;
-  //  height:0px;
-  //}
 </style>
 <style lang="less">
 

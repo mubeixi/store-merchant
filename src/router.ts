@@ -3,7 +3,6 @@ import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Diy from './views/Diy.vue';
 
-import Hello from './views/Hello.vue';
 import Empty from './views/Empty.vue';
 
 Vue.use(Router);
@@ -19,12 +18,6 @@ export default new Router({
       path: '/diy',
       name: 'DIY',
       component: Diy,
-    },
-
-    {
-      path: '/hello',
-      name: 'Hello',
-      component: Hello,
     },
     {
       path: '/empty',

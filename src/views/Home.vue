@@ -44,7 +44,6 @@
         Vue
     } from 'vue-property-decorator';
     import {
-        Getter,
         Action,
         State
     } from 'vuex-class'
