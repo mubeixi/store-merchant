@@ -7,7 +7,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --report",
     "lint": "vue-cli-service lint",
-    "push": "node ./push.js"
+    "push": "node ./push.js",
+    "ftp": "node ./ftp.js"
   },
   "dependencies": {
     "core-js": "^2.6.5",
@@ -42,6 +43,8 @@
     "cz-conventional-changelog": "^3.0.2",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "ftp": "^0.3.10",
+    "ftp-deploy": "^2.3.6",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
     "stylus": "^0.54.5",
