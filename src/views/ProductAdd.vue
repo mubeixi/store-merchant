@@ -5,7 +5,7 @@
     </div>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="ruleForm">
       <el-form-item label="商品排序" prop="sort">
-        <el-input v-model.number="ruleForm.sort" class="sortInput"></el-input>
+        <el-input v-model="ruleForm.sort" class="sortInput"></el-input>
         <span class="sortMsg">注：数字越大，越往前（必须大于0）</span>
       </el-form-item>
       <el-form-item label="商品名称" prop="names">
@@ -37,7 +37,7 @@
           <el-input v-model.number="ruleForm.groupNumber"  class="sortInput"></el-input>
         </el-form-item>
         <el-form-item label="拼团价格" prop="groupPrice"  style="margin-left: 43px;margin-bottom: 0px">
-          <el-input v-model.number="ruleForm.groupPrice"  class="sortInput"></el-input>
+          <el-input v-model="ruleForm.groupPrice"  class="sortInput"></el-input>
         </el-form-item>
         <el-form-item label="截止时间" prop="groupDate" style="margin-left: 43px;margin-bottom: 0px">
           <el-date-picker
@@ -51,7 +51,7 @@
 
 
       <el-form-item label="商品利润" prop="commodityProfit">
-        <el-input v-model.number="ruleForm.commodityProfit"  class="sortInput sortInputs" ></el-input>
+        <el-input v-model="ruleForm.commodityProfit"  class="sortInput sortInputs" ></el-input>
         <span class="sortMsg">注：**********************</span>
       </el-form-item>
 
@@ -64,8 +64,79 @@
           <el-option label="区域二" value="beijing"></el-option>
         </el-select>
       </el-form-item>
+
+      <el-form-item label="商品规格">
+       <div class="specs_box">
+         <div class="specs_row" v-for="(row,idx_row) in specs" :key="idx_row">
+           <span class="label">{{row.title}}</span>
+           <div class="" style="width: 110px;margin-left: 10px;display: inline-block;" v-for="(val,idx_val) in row.vals" :key="idx_val">
+             <el-input  size="mini"  :value="val" />
+           </div>
+           <span class="margin15-c" style="cursor: pointer;color: #155bd4">添加规格值</span>
+         </div>
+         <div>
+           <el-button size="small" type="primary" @click="createSkuData">生成skus</el-button>
+         </div>
+       </div>
+      </el-form-item>
+
+      <el-form-item label="商品参数" v-show="skus.length>0">
+        <div class="sku_box">
+
+          <table class="table" >
+            <tr class="tr">
+              <th class="th" v-for="(spec,idx) in specs">{{spec.title}}</th>
+              <th class="th">价格</th>
+              <th class="th">库存</th>
+              <th class="th">成本价</th>
+            </tr>
+            <template v-for="(sku,idx) in skus">
+              <tr class="tr">
+
+                <template v-for="(i,index) in specs.length">
+                  <template v-if="index==0 && idx%(specs[index].vals.length)==0">
+<!--                          <template v-if="index==0 && idx%(specs[index].vals.length)==0">-->
+<!--                      <td class="td" :rowspan="specs[index].vals.length">{{sku[index]}}</td>-->
+                      <td class="td" :rowspan="skus.length/specs[index].vals.length">{{sku[index]}}</td>
+                    </template>
+                    <template v-if="index!=0">
+                      <td class="td">{{sku[index]}}</td>
+                    </template>
+
+                </template>
+                <td class="td"><el-input size="mini" /></td>
+                <td class="td"><el-input size="mini" /></td>
+                <td class="td"><el-input size="mini" /></td>
+              </tr>
+            </template>
+
+          </table>
+
+<!--          <div class="table">-->
+<!--            <div class="tr">-->
+<!--              <div class="th" v-for="(spec,idx) in specs">{{spec.title}}</div>-->
+<!--              <div class="th">价格</div>-->
+<!--              <div class="th">库存</div>-->
+<!--              <div class="th">成本价</div>-->
+<!--            </div>-->
+<!--            <template v-for="(sku,idx) in skus">-->
+<!--              <div class="tr">-->
+<!--                <template v-for="(i,index) in specs.length">-->
+<!--                  <div class="td">{{sku[index]}}</div>-->
+<!--                </template>-->
+<!--                <div class="td"><el-input size="mini" /></div>-->
+<!--                <div class="td"><el-input size="mini" /></div>-->
+<!--                <div class="td"><el-input size="mini" /></div>-->
+<!--              </div>-->
+<!--            </template>-->
+<!--            -->
+<!--          </div>-->
+        </div>
+      </el-form-item>
+
+
       <el-form-item label="商品重量" prop="productWeight">
-        <el-input v-model.number="ruleForm.productWeight"  class="sortInput" ></el-input>
+        <el-input v-model="ruleForm.productWeight"  class="sortInput" ></el-input>
       </el-form-item>
 
       <el-form-item label="运费计算" prop="goods">
@@ -107,7 +178,7 @@
       </el-form-item>
 
       <el-form-item label="商品库存" prop="productStock">
-        <el-input v-model.number="ruleForm.productStock"  class="sortInput"></el-input>
+        <el-input v-model="ruleForm.productStock"  class="sortInput"></el-input>
         <span class="sortMsg">注:若不限则填写10000</span>
       </el-form-item>
 
@@ -146,9 +217,9 @@
         Action,
         State
     } from 'vuex-class'
-    import ca from 'element-ui/src/locale/lang/ca'
-    import fa from "element-ui/src/locale/lang/fa";
-
+    // import ca from 'element-ui/src/locale/lang/ca'
+    // import fa from "element-ui/src/locale/lang/fa";
+    import {calcDescartes} from "@/common/utils";
 
 
     @Component({
@@ -163,6 +234,8 @@
 
 
     export default class AddProduct extends Vue {
+
+
 
 
         editorText =  '' // 双向同步的变量
@@ -217,6 +290,22 @@
             },
         }
 
+        specs = [
+            {title:'颜色',vals:['黑色','白色','红色']},
+            {title:'尺码',vals:['X','M']},
+            // {title:'面料',vals:['羊毛','牛毛','鹅毛']},
+        ]
+
+        skus = [];
+
+        createSkuData(){
+            let spec_arr = this.specs.map(item=>{
+                return item.vals
+            })
+            console.log(spec_arr);
+            this.skus = calcDescartes(spec_arr)
+        }
+
 
 
         ruleForm =  {
@@ -244,8 +333,6 @@
         }
 
 
-
-
         rules = {
             sort: [
                 {required: true,message: '请输入商品排序', trigger: 'blur' }
@@ -254,7 +341,8 @@
                 { required: true, message: '请输入商品名称', trigger: 'blur' }
             ],
             Virtualsales:[
-                { required: true, message: '请输入虚拟销量', trigger: 'blur' }
+                { required: true, message: '请输入虚拟销量', trigger: 'blur' },
+                { type: 'number', message: '虚拟销量必须为数字值'}
             ],
             originalPrice:[
                 { required: true, message: '请输入原价',trigger: 'blur' }
@@ -263,7 +351,8 @@
                 { validator:this.validateFn.pass, trigger: 'blur' }
             ],
             groupNumber:[
-                {validator:this.validateFn.groupNumber, trigger: 'blur' }
+                {validator:this.validateFn.groupNumber, trigger: 'blur' },
+                { type: 'number', message: '拼团人数必须为数字值'}
             ],
             groupPrice:[
                 { validator:this.validateFn.groupPrice, trigger: 'blur' }
@@ -296,7 +385,6 @@
                 { required: true, message: '请选择订单类型', trigger: 'change' }
             ]
         }
-
 
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
@@ -400,6 +488,27 @@
   }
 
 
+}
+
+@borderColor:#eee;
+.table{
+  display: block;
+  margin-right: 20px;
+  border-left: 1px solid @borderColor;
+  border-top: 1px solid @borderColor;
+  .tr{
+
+    .td,.th{
+      padding: 0 20px;
+
+      border-right: 1px solid @borderColor;
+      border-bottom: 1px solid @borderColor;
+      text-align: center;
+    }
+    .th{
+
+    }
+  }
 }
 
 
