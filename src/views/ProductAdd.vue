@@ -95,8 +95,8 @@
         <span class="classificationSpan">选择门店</span>
       </el-form-item>
 
-      <el-form-item label="订单类型" prop="otherAttributes">
-        <el-radio-group v-model="ruleForm.otherAttributes">
+      <el-form-item label="订单类型" prop="orderType">
+        <el-radio-group v-model="ruleForm.orderType">
           <el-radio label="shi" style="display: block;margin-bottom: 15px" >实物订单  ( 买家下单 -> 买家付款 -> 商家发货 -> 买家收货 -> 订单完成 ) </el-radio>
           <el-radio label="xu" style="display: block;margin-bottom: 15px" >虚拟订单  ( 买家下单 -> 买家付款 -> 系统发送消费券码到买家手机 -> 商家认证消费 -> 订单完成 )</el-radio>
           <el-radio label="qi" style="display: block;margin-bottom: 15px" >其他  ( 买家下单 -> 买家付款 -> 订单完成 ) </el-radio>
@@ -178,6 +178,8 @@
             productStock:'',//商品库存
             refund:'',//退货说明
             goods:'',//运费
+            type:'',//是否拼团
+            orderType:'',//订单类型
         }
 
 
@@ -229,6 +231,9 @@
             ],
             goods:[
                 { required: true, message: '请选择运费类型', trigger: 'change' }
+            ],
+            orderType:[
+                { required: true, message: '请选择订单类型', trigger: 'change' }
             ]
         }
 
@@ -325,7 +330,7 @@
       cursor: pointer;
     }
     .group{
-      width:1631px;
+      width:98%;
       height:78px;
       background:rgba(248,248,248,1);
       padding-left: 24px;
