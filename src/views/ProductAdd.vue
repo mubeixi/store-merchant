@@ -357,7 +357,7 @@
       cursor: pointer;
     }
     .group{
-      width:98%;
+      width:92%;
       height:78px;
       background:rgba(248,248,248,1);
       padding-left: 24px;
