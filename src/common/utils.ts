@@ -203,3 +203,23 @@ export const serialize = obj=>{
     }
   return ary.join('&');
 };
+
+/**
+ * 多维数组的笛卡尔乘积
+ * @param array
+ */
+export const calcDescartes = (array)=>{
+  if (array.length < 2) return array[0] || [];
+  return [].reduce.call(array, function (col, set) {
+    var res = [];
+    col.forEach(function (c) {
+      set.forEach(function (s) {
+        var t = [].concat(Array.isArray(c) ? c : [c]);
+        t.push(s);
+        res.push(t);
+      })
+    });
+    console.log(res)
+    return res;
+  });
+}
