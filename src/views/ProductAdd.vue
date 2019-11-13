@@ -29,17 +29,17 @@
         </el-form-item>
       </el-form-item>
 
-      <el-form-item label="拼团" prop="type">
+      <el-form-item label="拼团" prop="type" style="margin-bottom: 10px">
         <el-checkbox v-model="ruleForm.type" name="group">是否参与拼团</el-checkbox>
       </el-form-item>
-      <div class="group">
-        <el-form-item label="拼团人数" prop="groupNumber">
+      <div class="group" style="margin-left: 104px;margin-bottom: 22px;">
+        <el-form-item label="拼团人数" prop="groupNumber" style="margin-bottom: 0px">
           <el-input v-model.number="ruleForm.groupNumber"  class="sortInput"></el-input>
         </el-form-item>
-        <el-form-item label="拼团价格" prop="groupPrice"  style="margin-left: 43px">
+        <el-form-item label="拼团价格" prop="groupPrice"  style="margin-left: 43px;margin-bottom: 0px">
           <el-input v-model.number="ruleForm.groupPrice"  class="sortInput"></el-input>
         </el-form-item>
-        <el-form-item label="截止时间" prop="groupDate" style="margin-left: 43px">
+        <el-form-item label="截止时间" prop="groupDate" style="margin-left: 43px;margin-bottom: 0px">
           <el-date-picker
             v-model="ruleForm.groupDate"
             type="datetime"
@@ -244,7 +244,6 @@
             productDescription:[
                 { required: true, message: '请输入商品简介', trigger: 'blur' }
             ],
-
             productTypes: [
                 { required: true, message: '请选择商品类型', trigger: 'change' }
             ],
