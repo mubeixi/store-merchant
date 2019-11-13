@@ -16,13 +16,13 @@
           <span class="classificationSpan">选择分类</span>
       </el-form-item>
       <el-form-item label="虚拟销量" prop="Virtualsales">
-        <el-input v-model="ruleForm.Virtualsales" type="number" class="sortInput"></el-input>
+        <el-input v-model.number="ruleForm.Virtualsales"  class="sortInput"></el-input>
         <span class="sortMsg">注：**********************</span>
       </el-form-item>
 
       <el-form-item label="产品价格" prop="originalPrice">
-        <el-input v-model="ruleForm.originalPrice" type="number" placeholder="原价:¥" class="sortInput"></el-input>
-        <el-input v-model="ruleForm.currentPrice" type="number" placeholder="现价:¥" class="sortInput" style="margin-left: 18px"></el-input>
+        <el-input v-model.number="ruleForm.originalPrice"  placeholder="原价:¥" class="sortInput"></el-input>
+        <el-input v-model.number="ruleForm.currentPrice"  placeholder="现价:¥" class="sortInput" style="margin-left: 18px"></el-input>
       </el-form-item>
 
       <el-form-item label="拼团" prop="type">
@@ -31,10 +31,10 @@
         </el-checkbox-group>
         <div class="group">
           <el-form-item label="拼团人数" prop="groupNumber">
-            <el-input v-model="ruleForm.groupNumber" type="number" class="sortInput"></el-input>
+            <el-input v-model.number="ruleForm.groupNumber"  class="sortInput"></el-input>
           </el-form-item>
           <el-form-item label="拼团价格" prop="groupPrice"  style="margin-left: 43px">
-            <el-input v-model="ruleForm.groupPrice" type="number" class="sortInput"></el-input>
+            <el-input v-model.number="ruleForm.groupPrice"  class="sortInput"></el-input>
           </el-form-item>
           <el-form-item label="截止时间" prop="groupDate" style="margin-left: 43px">
             <el-date-picker
@@ -48,7 +48,7 @@
       </el-form-item>
 
       <el-form-item label="商品利润" prop="commodityProfit">
-        <el-input v-model="ruleForm.commodityProfit" type="number" class="sortInput sortInputs" ></el-input>
+        <el-input v-model.number="ruleForm.commodityProfit"  class="sortInput sortInputs" ></el-input>
         <span class="sortMsg">注：**********************</span>
       </el-form-item>
 
@@ -62,7 +62,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="商品重量" prop="productWeight">
-        <el-input v-model="ruleForm.productWeight" type="number" class="sortInput" ></el-input>
+        <el-input v-model.number="ruleForm.productWeight"  class="sortInput" ></el-input>
       </el-form-item>
 
       <el-form-item label="运费计算" prop="goods">
@@ -77,7 +77,7 @@
           <el-radio label="wu" style="display: block;margin-bottom: 15px" >物流模板</el-radio>
           <el-radio label="gu" style="display: block;margin-bottom: 15px" >
             固定运费
-            <el-input  type="number" class="sortInput" placeholder="运费金额：¥" style="width: 200px;margin-left: 23px;"></el-input>
+            <el-input   class="sortInput" placeholder="运费金额：¥" style="width: 200px;margin-left: 23px;"></el-input>
           </el-radio>
         </el-radio-group>
       </el-form-item>
@@ -104,7 +104,7 @@
       </el-form-item>
 
       <el-form-item label="商品库存" prop="productStock">
-        <el-input v-model="ruleForm.productStock" type="number" class="sortInput"></el-input>
+        <el-input v-model.number="ruleForm.productStock"  class="sortInput"></el-input>
         <span class="sortMsg">注:若不限则填写10000</span>
       </el-form-item>
 
@@ -133,19 +133,9 @@
         Action,
         State
     } from 'vuex-class'
+    import ca from 'element-ui/src/locale/lang/ca';
 
-    const validatePass = (rule, value, callback) => {
-        let _this=this;
-        if (value === '') {
-            callback(new Error('请输入价格'));
-        } else {
-            // if (this.ruleForm.currentPrice !== '') {
-            //     callback(new Error('请输入价格'));
-            // }
-            console.log(_this,rule,value,"sssssssssss")
-            //callback();
-        }
-    }
+
 
     @Component({
         mixins:[],
@@ -157,6 +147,19 @@
 
 
     export default class AddProduct extends Vue {
+
+        validateCurrentPrice = (rule, value, callback)=>{
+
+            console.log(rule,value,callback)
+            if (value === '') {
+                callback(new Error('请输入现价'));
+            } else {
+                if (value >= this.ruleForm.originalPrice) {
+                    callback(new Error('现价应低于原价'));
+                }
+                callback();
+            }
+        }
 
         ruleForm =  {
             sort: '',//商品排序
@@ -177,6 +180,7 @@
             goods:'',//运费
         }
 
+
         rules = {
             sort: [
                 {required: true,message: '请输入商品排序', trigger: 'blur' }
@@ -188,7 +192,10 @@
                 { required: true, message: '请输入虚拟销量', trigger: 'blur' }
             ],
             originalPrice:[
-                { required: true,validator:validatePass, trigger: 'blur' }
+                { required: true, message: '请输入原价',trigger: 'blur' }
+            ],
+            currentPrice:[
+                { validator:this.validateCurrentPrice, trigger: 'blur' }
             ],
             groupNumber:[
                 { required: true, message: '请输入拼团人数', trigger: 'blur' }
