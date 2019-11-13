@@ -65,6 +65,23 @@
         <el-input v-model="ruleForm.productWeight" type="number" class="sortInput" ></el-input>
       </el-form-item>
 
+      <el-form-item label="运费计算" prop="goods">
+        <el-radio-group v-model="ruleForm.goods">
+          <el-radio label="mian" style="display: block;margin-bottom: 15px" >
+            免运费
+              <el-select  placeholder="请选择类型"  style="width: 200px;margin-left: 37px;">
+                <el-option label="区域一" value="shanghai"></el-option>
+                <el-option label="区域二" value="beijing"></el-option>
+              </el-select>
+          </el-radio>
+          <el-radio label="wu" style="display: block;margin-bottom: 15px" >物流模板</el-radio>
+          <el-radio label="gu" style="display: block;margin-bottom: 15px" >
+            固定运费
+            <el-input  type="number" class="sortInput" placeholder="运费金额：¥" style="width: 200px;margin-left: 23px;"></el-input>
+          </el-radio>
+        </el-radio-group>
+      </el-form-item>
+
       <el-form-item label="其他属性" prop="otherAttributes">
         <el-radio-group v-model="ruleForm.otherAttributes">
           <el-radio label="下架" ></el-radio>
@@ -80,9 +97,9 @@
 
       <el-form-item label="订单类型" prop="otherAttributes">
         <el-radio-group v-model="ruleForm.otherAttributes">
-          <el-radio label="1" style="display: block;margin-bottom: 15px" >实物订单  ( 买家下单 -> 买家付款 -> 商家发货 -> 买家收货 -> 订单完成 ) </el-radio>
-          <el-radio label="2" style="display: block;margin-bottom: 15px" >虚拟订单  ( 买家下单 -> 买家付款 -> 系统发送消费券码到买家手机 -> 商家认证消费 -> 订单完成 )</el-radio>
-          <el-radio label="3" style="display: block;margin-bottom: 15px" >其他  ( 买家下单 -> 买家付款 -> 订单完成 ) </el-radio>
+          <el-radio label="shi" style="display: block;margin-bottom: 15px" >实物订单  ( 买家下单 -> 买家付款 -> 商家发货 -> 买家收货 -> 订单完成 ) </el-radio>
+          <el-radio label="xu" style="display: block;margin-bottom: 15px" >虚拟订单  ( 买家下单 -> 买家付款 -> 系统发送消费券码到买家手机 -> 商家认证消费 -> 订单完成 )</el-radio>
+          <el-radio label="qi" style="display: block;margin-bottom: 15px" >其他  ( 买家下单 -> 买家付款 -> 订单完成 ) </el-radio>
         </el-radio-group>
       </el-form-item>
 
@@ -157,6 +174,7 @@
             otherAttributes:[],//其他属性
             productStock:'',//商品库存
             refund:'',//退货说明
+            goods:'',//运费
         }
 
         rules = {
@@ -201,6 +219,9 @@
             ],
             refund:[
                 { required: true, message: '请选择退货类型', trigger: 'change' }
+            ],
+            goods:[
+                { required: true, message: '请选择运费类型', trigger: 'change' }
             ]
         }
 
