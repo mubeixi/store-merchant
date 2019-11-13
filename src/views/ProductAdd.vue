@@ -20,7 +20,6 @@
         <span class="sortMsg">注：**********************</span>
       </el-form-item>
 
-
       <el-form-item label="产品价格">
         <el-form-item prop="originalPrice" style="display: inline-block">
           <el-input v-model="ruleForm.originalPrice"  placeholder="原价:¥" class="sortInput"></el-input>
@@ -30,29 +29,26 @@
         </el-form-item>
       </el-form-item>
 
-
-
       <el-form-item label="拼团" prop="type">
-        <el-checkbox-group v-model="ruleForm.type">
-          <el-checkbox label="是否参与拼团" name="group"></el-checkbox>
-        </el-checkbox-group>
-        <div class="group">
-          <el-form-item label="拼团人数" prop="groupNumber">
-            <el-input v-model.number="ruleForm.groupNumber"  class="sortInput"></el-input>
-          </el-form-item>
-          <el-form-item label="拼团价格" prop="groupPrice"  style="margin-left: 43px">
-            <el-input v-model.number="ruleForm.groupPrice"  class="sortInput"></el-input>
-          </el-form-item>
-          <el-form-item label="截止时间" prop="groupDate" style="margin-left: 43px">
-            <el-date-picker
-              v-model="ruleForm.groupDate"
-              type="datetime"
-              placeholder="选择日期时间"
-              style="width: 200px" >
-            </el-date-picker>
-          </el-form-item>
-        </div>
+        <el-checkbox v-model="ruleForm.type" name="group">是否参与拼团</el-checkbox>
       </el-form-item>
+      <div class="group">
+        <el-form-item label="拼团人数" prop="groupNumber">
+          <el-input v-model.number="ruleForm.groupNumber"  class="sortInput"></el-input>
+        </el-form-item>
+        <el-form-item label="拼团价格" prop="groupPrice"  style="margin-left: 43px">
+          <el-input v-model.number="ruleForm.groupPrice"  class="sortInput"></el-input>
+        </el-form-item>
+        <el-form-item label="截止时间" prop="groupDate" style="margin-left: 43px">
+          <el-date-picker
+            v-model="ruleForm.groupDate"
+            type="datetime"
+            placeholder="选择日期时间"
+            style="width: 200px" >
+          </el-date-picker>
+        </el-form-item>
+      </div>
+
 
       <el-form-item label="商品利润" prop="commodityProfit">
         <el-input v-model.number="ruleForm.commodityProfit"  class="sortInput sortInputs" ></el-input>
@@ -141,6 +137,7 @@
         State
     } from 'vuex-class'
     import ca from 'element-ui/src/locale/lang/ca'
+    import fa from "element-ui/src/locale/lang/fa";
 
 
 
@@ -158,17 +155,39 @@
     export default class AddProduct extends Vue {
 
 
-        validatePass = (rule, value, callback) => {
+        validateFn = {
+            pass:(rule, value, callback) => {
 
-            if (value === '') {
-                callback(new Error('请输入现价'));
-            } else {
-                if (value >= this.ruleForm.originalPrice) {
-                    callback(new Error('现价应低于原价'));
+                if (value === '') {
+                    callback(new Error('请输入现价'));
+                } else {
+                    if (value >= this.ruleForm.originalPrice) {
+                        callback(new Error('现价应低于原价'));
+                    }
+                    callback();
                 }
+            },
+            groupNumber:(rule, value, callback) => {
+
+                if (this.ruleForm.type && !this.ruleForm.groupNumber)callback(new Error('请输入拼团人数'))
                 callback();
-            }
+
+            },
+            groupPrice:(rule, value, callback) => {
+
+                if (this.ruleForm.type && !this.ruleForm.groupPrice)callback(new Error('请输入拼团价格'))
+                callback();
+
+            },
+            groupDate:(rule, value, callback) => {
+
+                if (this.ruleForm.type && !this.ruleForm.groupDate)callback(new Error('请输入拼团截止时间'))
+                callback();
+
+            },
         }
+
+
 
         ruleForm =  {
             sort: '',//商品排序
@@ -187,7 +206,7 @@
             productStock:'',//商品库存
             refund:'',//退货说明
             goods:'mian',//运费
-            type:0,//是否拼团
+            type:false,//是否拼团
             orderType:'',//订单类型
         }
 
@@ -208,16 +227,16 @@
                 { required: true, message: '请输入原价',trigger: 'blur' }
             ],
             currentPrice:[
-                { validator:this.validatePass, trigger: 'blur' }
+                { validator:this.validateFn.pass, trigger: 'blur' }
             ],
             groupNumber:[
-                { required: true, message: '请输入拼团人数', trigger: 'blur' }
+                {validator:this.validateFn.groupNumber,message: '请输入原价', trigger: 'blur' }
             ],
             groupPrice:[
-                { required: true,message: '请输入拼团价格', trigger: 'blur' }
+                { validator:this.validateFn.groupPrice, trigger: 'blur' }
             ],
             groupDate:[
-                { type: 'date', required: true, message: '请选择截止时间', trigger: 'change' }
+                { type: 'date', validator:this.validateFn.groupDate, trigger: 'change' }
             ],
             commodityProfit:[
               { required: true, message: '请输入商品利润', trigger: 'blur' }
@@ -225,9 +244,7 @@
             productDescription:[
                 { required: true, message: '请输入商品简介', trigger: 'blur' }
             ],
-            // type: [
-            //     { type: 'array', required: true, message: '请选择是否参与拼团', trigger: 'change' }
-            // ],
+
             productTypes: [
                 { required: true, message: '请选择商品类型', trigger: 'change' }
             ],
