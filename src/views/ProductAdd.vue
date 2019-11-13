@@ -5,7 +5,7 @@
     </div>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="ruleForm">
       <el-form-item label="商品排序" prop="sort">
-        <el-input v-model="ruleForm.sort" class="sortInput"></el-input>
+        <el-input v-model.number="ruleForm.sort" class="sortInput"></el-input>
         <span class="sortMsg">注：数字越大，越往前（必须大于0）</span>
       </el-form-item>
       <el-form-item label="商品名称" prop="names">
@@ -32,7 +32,7 @@
       <el-form-item label="拼团" prop="type" style="margin-bottom: 10px">
         <el-checkbox v-model="ruleForm.type" name="group">是否参与拼团</el-checkbox>
       </el-form-item>
-      <div class="group" style="margin-left: 104px;margin-bottom: 22px;">
+      <div class="group" style="margin-left: 104px;margin-bottom: 22px;" v-if="ruleForm.type">
         <el-form-item label="拼团人数" prop="groupNumber" style="margin-bottom: 0px">
           <el-input v-model.number="ruleForm.groupNumber"  class="sortInput"></el-input>
         </el-form-item>
@@ -72,26 +72,26 @@
         <el-radio-group v-model="ruleForm.goods">
           <el-radio label="mian" style="display: block;margin-bottom: 15px" >
             免运费
-<!--              <el-select  placeholder="请选择类型"  style="width: 200px;margin-left: 37px;">-->
-<!--                <el-option label="区域一" value="shanghai"></el-option>-->
-<!--                <el-option label="区域二" value="beijing"></el-option>-->
-<!--              </el-select>-->
+              <el-select  v-model="ruleForm.freight" placeholder="请选择类型"  style="width: 200px;margin-left: 37px;">
+                <el-option label="区域一" value="shanghai"></el-option>
+                <el-option label="区域二" value="beijing"></el-option>
+              </el-select>
           </el-radio>
           <el-radio label="wu" style="display: block;margin-bottom: 15px" >物流模板</el-radio>
           <el-radio label="gu" style="display: block;margin-bottom: 15px" >
             固定运费
-            <el-input   class="sortInput" placeholder="运费金额：¥" style="width: 200px;margin-left: 23px;"></el-input>
+            <el-input  v-model="ruleForm.freightGu"  class="sortInput" placeholder="运费金额：¥" style="width: 200px;margin-left: 23px;"></el-input>
           </el-radio>
         </el-radio-group>
       </el-form-item>
 
       <el-form-item label="其他属性" prop="otherAttributes">
-        <el-radio-group v-model="ruleForm.otherAttributes">
-          <el-radio label="下架" ></el-radio>
-          <el-radio label="新品" ></el-radio>
-          <el-radio label="热卖" ></el-radio>
-          <el-radio label="推荐" ></el-radio>
-        </el-radio-group>
+        <el-checkbox-group v-model="ruleForm.otherAttributes">
+          <el-checkbox label="下架" name="otherAttributes"></el-checkbox>
+          <el-checkbox label="新品" name="otherAttributes"></el-checkbox>
+          <el-checkbox label="热卖" name="otherAttributes"></el-checkbox>
+          <el-checkbox label="推荐" name="otherAttributes"></el-checkbox>
+        </el-checkbox-group>
       </el-form-item>
 
       <el-form-item label="关联门店" prop="classification">
@@ -185,6 +185,15 @@
                 callback();
 
             },
+            freightIs:(rule, value, callback) => {
+               if(value=='mian'){
+                   if(!this.ruleForm.freight)callback(new Error('请选择运费类型'))
+               }
+                if(value=='gu'){
+                    if(!this.ruleForm.freightGu)callback(new Error('请输入运费'))
+                }
+                callback();
+            },
         }
 
 
@@ -207,7 +216,9 @@
             refund:'',//退货说明
             goods:'mian',//运费
             type:false,//是否拼团
-            orderType:'',//订单类型
+            orderType:'shi',//订单类型
+            freight:'',//运费
+            freightGu:'',//固定运费
         }
 
 
@@ -230,7 +241,7 @@
                 { validator:this.validateFn.pass, trigger: 'blur' }
             ],
             groupNumber:[
-                {validator:this.validateFn.groupNumber,message: '请输入原价', trigger: 'blur' }
+                {validator:this.validateFn.groupNumber, trigger: 'blur' }
             ],
             groupPrice:[
                 { validator:this.validateFn.groupPrice, trigger: 'blur' }
@@ -257,7 +268,7 @@
                 { required: true, message: '请选择退货类型', trigger: 'change' }
             ],
             goods:[
-                { required: true, message: '请选择运费类型', trigger: 'change' }
+                { validator:this.validateFn.freightIs, trigger: 'change' }
             ],
             orderType:[
                 { required: true, message: '请选择订单类型', trigger: 'change' }
