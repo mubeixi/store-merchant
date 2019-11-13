@@ -20,10 +20,17 @@
         <span class="sortMsg">注：**********************</span>
       </el-form-item>
 
-      <el-form-item label="产品价格" prop="originalPrice">
-        <el-input v-model.number="ruleForm.originalPrice"  placeholder="原价:¥" class="sortInput"></el-input>
-        <el-input v-model.number="ruleForm.currentPrice"  placeholder="现价:¥" class="sortInput" style="margin-left: 18px"></el-input>
+
+      <el-form-item label="产品价格">
+        <el-form-item prop="originalPrice" style="display: inline-block">
+          <el-input v-model="ruleForm.originalPrice"  placeholder="原价:¥" class="sortInput"></el-input>
+        </el-form-item>
+        <el-form-item  prop="currentPrice" style="display: inline-block">
+          <el-input v-model="ruleForm.currentPrice"  placeholder="现价:¥" class="sortInput" style="margin-left: 18px"></el-input>
+        </el-form-item>
       </el-form-item>
+
+
 
       <el-form-item label="拼团" prop="type">
         <el-checkbox-group v-model="ruleForm.type">
@@ -69,10 +76,10 @@
         <el-radio-group v-model="ruleForm.goods">
           <el-radio label="mian" style="display: block;margin-bottom: 15px" >
             免运费
-              <el-select  placeholder="请选择类型"  style="width: 200px;margin-left: 37px;">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
+<!--              <el-select  placeholder="请选择类型"  style="width: 200px;margin-left: 37px;">-->
+<!--                <el-option label="区域一" value="shanghai"></el-option>-->
+<!--                <el-option label="区域二" value="beijing"></el-option>-->
+<!--              </el-select>-->
           </el-radio>
           <el-radio label="wu" style="display: block;margin-bottom: 15px" >物流模板</el-radio>
           <el-radio label="gu" style="display: block;margin-bottom: 15px" >
@@ -133,7 +140,7 @@
         Action,
         State
     } from 'vuex-class'
-    import ca from 'element-ui/src/locale/lang/ca';
+    import ca from 'element-ui/src/locale/lang/ca'
 
 
 
@@ -146,11 +153,13 @@
 
 
 
+
+
     export default class AddProduct extends Vue {
 
-        validateCurrentPrice = (rule, value, callback)=>{
 
-            console.log(rule,value,callback)
+        validatePass = (rule, value, callback) => {
+
             if (value === '') {
                 callback(new Error('请输入现价'));
             } else {
@@ -172,15 +181,17 @@
             groupDate:'',//拼团时间
             commodityProfit:'',//商品利润
             productDescription:'',//商品简介
-            productTypes: '',//商品类型
+            productTypes: 'shanghai',//商品类型
             productWeight:'',//商品重量
             otherAttributes:[],//其他属性
             productStock:'',//商品库存
             refund:'',//退货说明
-            goods:'',//运费
-            type:'',//是否拼团
+            goods:'mian',//运费
+            type:0,//是否拼团
             orderType:'',//订单类型
         }
+
+
 
 
         rules = {
@@ -197,7 +208,7 @@
                 { required: true, message: '请输入原价',trigger: 'blur' }
             ],
             currentPrice:[
-                { validator:this.validateCurrentPrice, trigger: 'blur' }
+                { validator:this.validatePass, trigger: 'blur' }
             ],
             groupNumber:[
                 { required: true, message: '请输入拼团人数', trigger: 'blur' }

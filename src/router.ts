@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Diy from './views/Diy.vue';
-import AddProduct from './views/ProductAdd.vue';
+
 import Empty from './views/Empty.vue';
 import ProductAdd from "@/views/ProductAdd.vue";
 
