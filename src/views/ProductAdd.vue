@@ -3,7 +3,7 @@
     <div class="menuset">
         <span class="menusetText">发布商品</span>
     </div>
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="ruleForm">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="ruleForm">
       <el-form-item label="商品排序" prop="sort">
         <el-input v-model="ruleForm.sort" class="sortInput"></el-input>
         <span class="sortMsg">注：数字越大，越往前（必须大于0）</span>
@@ -118,6 +118,16 @@
         </el-select>
       </el-form-item>
 
+      <el-form-item label="商品详情">
+        <div>
+          <wzw-editor id="container" height="400px" width="800px" :content.sync="editorText"
+                      :afterChange="afterChange()"
+                      pluginsPath="../../../static/kindeditor/plugins/"
+                      :loadStyleMode="false"
+                      @on-content-change="onContentChange"></wzw-editor>
+        </div>
+      </el-form-item>
+
 
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
@@ -154,6 +164,17 @@
 
     export default class AddProduct extends Vue {
 
+
+        editorText =  '' // 双向同步的变量
+        editorTextCopy =  ''  // content-change 事件回掉改变的对象
+
+        onContentChange (val) {
+            this.ruleForm.content = val;
+            //console.log(this.editorTextCopy)
+        }
+
+        afterChange () {
+        }
 
         validateFn = {
             pass:(rule, value, callback) => {
@@ -208,6 +229,7 @@
             goods:'mian',//运费
             type:false,//是否拼团
             orderType:'',//订单类型
+            content:'',//富文本
         }
 
 

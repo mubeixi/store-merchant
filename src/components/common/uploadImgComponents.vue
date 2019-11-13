@@ -22,17 +22,13 @@
       <!--        :style="{height:parseInt(this.cropperOption.aspectRatio*100)+'%'}"-->
       <template v-if="imgUrl">
         <div class="avatar" :style="{backgroundImage:'url('+domainFunc(imgUrl)+')'}"></div>
-
-        <!--        <img class="avatar"   :src="imgUrl | domain"/>-->
       </template>
       <i v-else class="el-icon-plus"></i>
-
       <div slot="tip" class="el-upload__tip ">{{tip}} <i @click="remove" style="position: absolute;right: 0;top: 0;font-size: 22px;cursor: pointer;" v-if="showDelIcon && imgUrl" class="el-icon-circle-close del-icon"></i> </div>
     </el-upload>
     <!--/api/frontend/ajax/upload-->
     <el-upload
       v-else
-
       ref="upload"
       :multiple="multiple"
       :limit="limit"
