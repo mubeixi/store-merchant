@@ -94,7 +94,7 @@
               <tr class="tr">
 
                 <template v-for="(i,index) in specs.length">
-                  <template v-if="index==0 && idx%(specs[index].vals.length)==0">
+                    <template v-if="index==0 && idx%(specs[index].vals.length)==0">
 <!--                          <template v-if="index==0 && idx%(specs[index].vals.length)==0">-->
 <!--                      <td class="td" :rowspan="specs[index].vals.length">{{sku[index]}}</td>-->
                       <td class="td" :rowspan="skus.length/specs[index].vals.length">{{sku[index]}}</td>
