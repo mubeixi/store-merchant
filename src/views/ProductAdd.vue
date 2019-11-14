@@ -113,7 +113,7 @@
           <el-input  size="mini" />
           <img src="@/assets/img/productAdd/del.png" class="imgDel" >
         </div>
-        <span class="margin15-c" style="cursor: pointer;color: #428CF7" >添加承诺</span>
+        <span class="margin15-c" style="cursor: pointer;color: #428CF7">添加规格值</span>
       </el-form-item>
 
       <el-form-item label="商品重量" prop="productWeight">
