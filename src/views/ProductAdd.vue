@@ -83,7 +83,7 @@
       <el-form-item label="商品参数" v-show="skus.length>0">
         <div class="sku_box">
 
-          <table class="table" >
+          <table class="table" cellspacing="0" cellpadding="0" >
             <tr class="tr">
               <th class="th" v-for="(spec,idx) in specs">{{spec.title}}</th>
               <th class="th">价格</th>
@@ -94,14 +94,15 @@
               <tr class="tr">
 
                 <template v-for="(i,index) in specs.length">
-                  <template v-if="index==0 && idx%(specs[index].vals.length)==0">
-<!--                          <template v-if="index==0 && idx%(specs[index].vals.length)==0">-->
-<!--                      <td class="td" :rowspan="specs[index].vals.length">{{sku[index]}}</td>-->
-                      <td class="td" :rowspan="skus.length/specs[index].vals.length">{{sku[index]}}</td>
-                    </template>
-                    <template v-if="index!=0">
-                      <td class="td">{{sku[index]}}</td>
-                    </template>
+
+<!--                  v-if="index==0 && idx%(specs[index].vals.length)==0"-->
+                  <template v-if="idx%getRowsSpan(index)===0">
+                    <td class="td" :rowspan="getRowsSpan(index,idx)">{{sku[index]}}</td>
+                  </template>
+
+<!--                  <template v-if="index!=0">-->
+<!--                    <td class="td">{{sku[index]}}</td>-->
+<!--                  </template>-->
 
                 </template>
                 <td class="td"><el-input size="mini" /></td>
@@ -138,7 +139,6 @@
       <el-form-item label="商品重量" prop="productWeight">
         <el-input v-model="ruleForm.productWeight"  class="sortInput" ></el-input>
       </el-form-item>
-
       <el-form-item label="运费计算" prop="goods">
         <el-radio-group v-model="ruleForm.goods">
           <el-radio label="mian" style="display: block;margin-bottom: 15px" >
@@ -155,7 +155,6 @@
           </el-radio>
         </el-radio-group>
       </el-form-item>
-
       <el-form-item label="其他属性" prop="otherAttributes">
         <el-checkbox-group v-model="ruleForm.otherAttributes">
           <el-checkbox label="下架" name="otherAttributes"></el-checkbox>
@@ -164,11 +163,9 @@
           <el-checkbox label="推荐" name="otherAttributes"></el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-
       <el-form-item label="关联门店" prop="classification">
         <span class="classificationSpan">选择门店</span>
       </el-form-item>
-
       <el-form-item label="订单类型" prop="orderType">
         <el-radio-group v-model="ruleForm.orderType">
           <el-radio label="shi" style="display: block;margin-bottom: 15px" >实物订单  ( 买家下单 -> 买家付款 -> 商家发货 -> 买家收货 -> 订单完成 ) </el-radio>
@@ -176,19 +173,16 @@
           <el-radio label="qi" style="display: block;margin-bottom: 15px" >其他  ( 买家下单 -> 买家付款 -> 订单完成 ) </el-radio>
         </el-radio-group>
       </el-form-item>
-
       <el-form-item label="商品库存" prop="productStock">
         <el-input v-model="ruleForm.productStock"  class="sortInput"></el-input>
         <span class="sortMsg">注:若不限则填写10000</span>
       </el-form-item>
-
       <el-form-item label="退货损坏说明" prop="refund">
         <el-select v-model="ruleForm.refund" placeholder="请选择类型"  style="width: 600px">
           <el-option label="区域一" value="shanghai"></el-option>
           <el-option label="区域二" value="beijing"></el-option>
         </el-select>
       </el-form-item>
-
       <el-form-item label="商品详情">
         <div>
           <wzw-editor id="container" height="400px" width="800px" :content.sync="editorText"
@@ -198,8 +192,6 @@
                       @on-content-change="onContentChange"></wzw-editor>
         </div>
       </el-form-item>
-
-
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -217,9 +209,25 @@
         Action,
         State
     } from 'vuex-class'
-    // import ca from 'element-ui/src/locale/lang/ca'
-    // import fa from "element-ui/src/locale/lang/fa";
+
     import {calcDescartes} from "@/common/utils";
+
+    /**
+     * 获取二维数组（一维数组的元素也是数组)的指定位置开始到最后的长度叠加成绩
+     * @param arr
+     * @param startIdx
+     */
+    const getArrayMulite = (arr,startIdx)=>{
+
+        let rt = 1;
+
+        for(var i=startIdx+1;i<arr.length;i++){
+            rt *= arr[i].length
+        }
+
+        console.log(rt)
+        return rt;
+    }
 
 
     @Component({
@@ -229,21 +237,13 @@
         }
     })
 
-
-
-
-
     export default class AddProduct extends Vue {
-
-
-
 
         editorText =  '' // 双向同步的变量
         editorTextCopy =  ''  // content-change 事件回掉改变的对象
 
         onContentChange (val) {
             this.ruleForm.content = val;
-            //console.log(this.editorTextCopy)
         }
 
         afterChange () {
@@ -290,10 +290,12 @@
             },
         }
 
+        spec_val_list = []
         specs = [
             {title:'颜色',vals:['黑色','白色','红色']},
-            {title:'尺码',vals:['X','M']},
-            // {title:'面料',vals:['羊毛','牛毛','鹅毛']},
+            {title:'尺码',vals:['X','M','L']},
+            {title:'面料',vals:['羊毛','牛毛','鹅毛']},
+            {title:'产地',vals:['美国','台湾','大陆','泰国']},
         ]
 
         skus = [];
@@ -302,11 +304,14 @@
             let spec_arr = this.specs.map(item=>{
                 return item.vals
             })
-            console.log(spec_arr);
+            console.log(spec_arr)
+            this.spec_val_list = spec_arr
             this.skus = calcDescartes(spec_arr)
         }
 
-
+        getRowsSpan(specsIndex){
+            return getArrayMulite(this.spec_val_list,specsIndex);
+        }
 
         ruleForm =  {
             sort: '',//商品排序
@@ -331,7 +336,6 @@
             freight:'',//运费
             freightGu:'',//固定运费
         }
-
 
         rules = {
             sort: [
@@ -387,6 +391,7 @@
         }
 
         submitForm(formName) {
+            //@ts-ignore
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     alert('submit!');
@@ -397,6 +402,7 @@
             });
         }
         resetForm(formName) {
+            //@ts-ignore
             this.$refs[formName].resetFields();
         }
 
@@ -491,8 +497,11 @@
 }
 
 @borderColor:#eee;
+.sku_box{
+  margin-right: 20px;
+}
 .table{
-  display: block;
+  width: 100%;
   margin-right: 20px;
   border-left: 1px solid @borderColor;
   border-top: 1px solid @borderColor;
