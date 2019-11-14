@@ -3,7 +3,7 @@
     <div class="menuset">
         <span class="menusetText">发布商品</span>
     </div>
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="ruleForm">
+    <el-form size="small" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="ruleForm">
       <el-form-item label="商品排序" prop="sort">
         <el-input v-model="ruleForm.sort" class="sortInput"></el-input>
         <span class="sortMsg">注：数字越大，越往前（必须大于0）</span>
@@ -15,7 +15,7 @@
       <el-form-item label="商品分类" prop="classification">
           <span class="classificationSpan" @click="bindCateDialogShow=true">选择分类</span>
       </el-form-item>
-      <div class="group cate_list" style="margin-left: 104px;margin-bottom: 22px;" v-if="cate_list.length>0">
+      <div class="group cate_list" style="margin-left: 120px;margin-bottom: 22px;" v-if="cate_list.length>0">
         <span class="cate_item" v-for="(cate,idx) in cate_list">{{cate.Category_Name}}</span>
       </div>
       <el-form-item label="虚拟销量" prop="Virtualsales">
@@ -35,7 +35,7 @@
       <el-form-item label="拼团" prop="type" style="margin-bottom: 10px">
         <el-checkbox v-model="ruleForm.type" name="group">是否参与拼团</el-checkbox>
       </el-form-item>
-      <div class="group" style="margin-left: 104px;margin-bottom: 22px;" v-if="ruleForm.type">
+      <div class="group" style="margin-left: 120px;margin-bottom: 22px;" v-if="ruleForm.type">
         <el-form-item label="拼团人数" prop="groupNumber" style="margin-bottom: 0px">
           <el-input v-model.number="ruleForm.groupNumber"  class="sortInput"></el-input>
         </el-form-item>
@@ -180,6 +180,9 @@
       <el-form-item label="关联门店" prop="classification">
         <span class="classificationSpan" @click="dialogStoreShow=true">选择门店</span>
       </el-form-item>
+      <div class="group store_list" style="margin-left: 120px;margin-bottom: 22px;" v-if="store_list.length>0">
+        <div class="store_item" v-for="(store,idx) in store_list">{{store.Stores_Name}}</div>
+      </div>
       <el-form-item label="订单类型" prop="orderType">
         <el-radio-group v-model="ruleForm.orderType">
           <el-radio label="shi" style="display: block;margin-bottom: 15px" >实物订单  <span class="font12">( 买家下单 -> 买家付款 -> 商家发货 -> 买家收货 -> 订单完成 )</span> </el-radio>
@@ -542,12 +545,13 @@
         }
 
 
+        store_list = []
         bindStoreCancel(){
             this.dialogStoreShow = false
         }
 
-        bindStoreSuccessCall(){
-
+        bindStoreSuccessCall(list, pageEl){
+            this.store_list = list
             this.dialogStoreShow = false
         }
 
@@ -638,6 +642,15 @@
       align-items: center;
       &.cate_list{
         flex-wrap: wrap;
+      }
+      &.store_list{
+        display: block;
+
+      }
+      .store_item{
+        line-height: 36px;
+        height: 36px;
+        cursor: pointer;
       }
       .cate_item{
         margin-right: 10px;
