@@ -6,7 +6,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'https://new401.bafangka.com/api',
+        target: 'http://www.qiyeban.com/api',//'https://new401.bafangka.com/api',
         changeOrigin: true,
         // http2: true,
         ws: true,

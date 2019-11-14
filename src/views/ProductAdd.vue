@@ -52,7 +52,6 @@
         </el-form-item>
       </div>
 
-
       <el-form-item label="商品利润" prop="commodityProfit">
         <el-input v-model="ruleForm.commodityProfit"  class="sortInput sortInputs" ></el-input>
         <span class="sortMsg">注：**********************</span>
@@ -179,7 +178,7 @@
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="关联门店" prop="classification">
-        <span class="classificationSpan">选择门店</span>
+        <span class="classificationSpan" @click="dialogStoreShow=true">选择门店</span>
       </el-form-item>
       <el-form-item label="订单类型" prop="orderType">
         <el-radio-group v-model="ruleForm.orderType">
@@ -220,6 +219,13 @@
       :pageEl="pageEl"
       :show="bindCateDialogShow"/>
 
+    <bind-store-component
+      @cancel="bindStoreCancel"
+      :onSuccess="bindStoreSuccessCall"
+      :pageEl="pageEl"
+      :show="dialogStoreShow"
+    />
+
   </div>
 </template>
 
@@ -237,6 +243,7 @@
     import UploadComponents from "@/components/comm/UploadComponents.vue";
     import BindCateComponents from '@/components/BindCateComponents.vue';
     import {calcDescartes, objTranslate} from "@/common/utils";
+    import BindStoreComponent from "@/components/comm/BindStoreComponent.vue";
 
     /**
      * 获取二维数组（一维数组的元素也是数组)的指定位置开始到最后的长度叠加成绩
@@ -259,6 +266,7 @@
     @Component({
         mixins:[],
         components: {
+            BindStoreComponent,
             UploadComponents,BindCateComponents
         }
     })
@@ -267,6 +275,8 @@
 
         pageEl = this
         bindCateDialogShow = false
+
+        dialogStoreShow = false
         editorText =  '' // 双向同步的变量
         editorTextCopy =  ''  // content-change 事件回掉改变的对象
 
@@ -317,7 +327,6 @@
                 callback();
             },
         }
-
         spec_val_list = []
         specs = [
             {title:'颜色',vals:['黑色','白色','红色']},
@@ -331,7 +340,6 @@
         skuList = []
 
         skusData=[];
-
 
         @Watch('specs', { deep: true,immediate:true })
         handleWatch(){
@@ -374,7 +382,7 @@
                 if(idx!=-1){
                     return {...this.skusData[idx]}
                 }
-                
+
                 return {
                     name:nameStr,
                     price:'',
@@ -384,7 +392,6 @@
             });
 
         }
-
 
         getRowsSpan(specsIndex){
             return getArrayMulite(this.spec_val_list,specsIndex);
@@ -532,6 +539,16 @@
 
             this.cate_ids = ids.join('|')
             this.bindCateDialogShow = false
+        }
+
+
+        bindStoreCancel(){
+            this.dialogStoreShow = false
+        }
+
+        bindStoreSuccessCall(){
+
+            this.dialogStoreShow = false
         }
 
     }
