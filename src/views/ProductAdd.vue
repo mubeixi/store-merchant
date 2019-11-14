@@ -236,7 +236,7 @@
 
     import UploadComponents from "@/components/comm/UploadComponents.vue";
     import BindCateComponents from '@/components/BindCateComponents.vue';
-    import {calcDescartes} from "@/common/utils";
+    import {calcDescartes, objTranslate} from "@/common/utils";
 
     /**
      * 获取二维数组（一维数组的元素也是数组)的指定位置开始到最后的长度叠加成绩
@@ -335,20 +335,25 @@
 
         @Watch('specs', { deep: true,immediate:true })
         handleWatch(){
+            console.log('specs有变动')
+
+            console.log(this.skuList.length,objTranslate(this.skusData))
             if(this.skuList.length>1){
                 this.skusData=this.skuList
             }
+            console.log(objTranslate(this.skusData))
 
             this.createSkuData();
         }
 
         skuAdd(index){
-            this.specs[index].vals.length++;
-            this.createSkuData();
+        // .length++
+            this.specs[index].vals.push('规格名称');
+            //this.createSkuData();
         }
         skuDel(i,j){
             this.specs[i].vals.splice(j,1);
-            this.createSkuData();
+            //this.createSkuData();
         }
         createSkuData(){
             let spec_arr = this.specs.map(item=>{
@@ -369,6 +374,8 @@
                 if(idx!=-1){
                     return {...this.skusData[idx]}
                 }
+
+                //parseInt(Math.random()*100*100)/100,
                 return {
                     name:nameStr,
                     price:'',
@@ -377,20 +384,6 @@
                 }
             });
 
-            if(this.skusData.length<1){
-                this.skusData = this.skuList
-            }
-            // if(this.skusData.length>0){
-            //     for(let i=0;i<this.skusData.length;i++){
-            //         for(let j=0;i<this.skuList.length;j++) {
-            //             if(this.skusData[i].name===this.skuList[j].name){
-            //                 this.skuList[j].price=this.skusData[i].price;
-            //                 this.skuList[j].count=this.skusData[i].count;
-            //                 this.skuList[j].cost_price=this.skusData[i].cost_price;
-            //             }
-            //         }
-            //     }
-            // }
         }
 
 
