@@ -3,7 +3,7 @@
     <div class="menuset">
         <span class="menusetText">发布商品</span>
     </div>
-    <el-form size="small" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="ruleForm">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="ruleForm">
       <el-form-item label="商品排序" prop="sort">
         <el-input v-model="ruleForm.sort" class="sortInput"></el-input>
         <span class="sortMsg">注：数字越大，越往前（必须大于0）</span>
