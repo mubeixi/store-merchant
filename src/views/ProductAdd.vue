@@ -55,6 +55,38 @@
         <span class="sortMsg">注：**********************</span>
       </el-form-item>
 
+      <el-form-item label="商品主图">
+        <upload-components
+          size="mini"
+          :onRemove="removeThumbCall"
+          :onSuccess="upThumbSuccessCall"
+        />
+      </el-form-item>
+
+      <el-form-item label="主图视频及封面">
+        <div class="flex">
+          <div>
+            <upload-components
+              type="video"
+              accept="video/*"
+              size="mini"
+              :onRemove="removeVideoCall"
+              :onSuccess="upVideoSuccessCall"
+            />
+          </div>
+          <div class="margin15-c">
+            <upload-components
+              :limit="5"
+              size="mini"
+              :onRemove="removeImgsCall"
+              :onSuccess="upImgsSuccessCall"
+            />
+          </div>
+        </div>
+
+
+      </el-form-item>
+
       <el-form-item label="商品简介" prop="productDescription">
         <el-input type="textarea" v-model="ruleForm.productDescription" style="width: 600px"></el-input>
       </el-form-item>
@@ -110,8 +142,8 @@
 
       <el-form-item label="商品承诺" prop="productWeight">
         <div  style="width: 110px;margin-left: 10px;display: inline-block;position: relative" >
-          <el-input  size="mini" />
-          <img src="@/assets/img/productAdd/del.png" class="imgDel" >
+          <el-input  size="mini"   />
+          <img src="@/assets/img/productAdd/del.png" class="imgDel">
         </div>
         <span class="margin15-c" style="cursor: pointer;color: #428CF7">添加规格值</span>
       </el-form-item>
@@ -191,6 +223,7 @@
         State
     } from 'vuex-class'
 
+    import UploadComponents from "@/components/comm/UploadComponents.vue";
     import {calcDescartes} from "@/common/utils";
 
     /**
@@ -214,7 +247,7 @@
     @Component({
         mixins:[],
         components: {
-
+            UploadComponents
         }
     })
 
@@ -428,6 +461,37 @@
             ]
         }
 
+        imgs = []//展示图
+        video = ''//视频
+        thumb = ''//主图
+
+        removeThumbCall(file){
+            this.thumb = ''
+        }
+
+        upThumbSuccessCall(file){
+            this.thumb = file.path
+        }
+
+        removeImgsCall(file){
+            let idx = this.imgs.indexOf(file.path);
+            console.log(idx)
+            if(idx!=-1){
+                this.imgs.splice(idx,1);
+            }
+        }
+
+        upImgsSuccessCall(file){
+            this.imgs.push(file.path)
+        }
+
+        removeVideoCall(file){
+            this.video = ''
+        }
+
+        upVideoSuccessCall(file){
+            this.video = file.path
+        }
         submitForm(formName) {
             //@ts-ignore
             this.$refs[formName].validate((valid) => {
