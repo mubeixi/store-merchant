@@ -13,8 +13,11 @@
       </el-form-item>
 
       <el-form-item label="商品分类" prop="classification">
-          <span class="classificationSpan">选择分类</span>
+          <span class="classificationSpan" @click="bindCateDialogShow=true">选择分类</span>
       </el-form-item>
+      <div class="group cate_list" style="margin-left: 104px;margin-bottom: 22px;" v-if="cate_list.length>0">
+        <span class="cate_item" v-for="(cate,idx) in cate_list">{{cate.Category_Name}}</span>
+      </div>
       <el-form-item label="虚拟销量" prop="Virtualsales">
         <el-input v-model.number="ruleForm.Virtualsales"  class="sortInput"></el-input>
         <span class="sortMsg">注：**********************</span>
@@ -172,9 +175,9 @@
       </el-form-item>
       <el-form-item label="订单类型" prop="orderType">
         <el-radio-group v-model="ruleForm.orderType">
-          <el-radio label="shi" style="display: block;margin-bottom: 15px" >实物订单  ( 买家下单 -> 买家付款 -> 商家发货 -> 买家收货 -> 订单完成 ) </el-radio>
-          <el-radio label="xu" style="display: block;margin-bottom: 15px" >虚拟订单  ( 买家下单 -> 买家付款 -> 系统发送消费券码到买家手机 -> 商家认证消费 -> 订单完成 )</el-radio>
-          <el-radio label="qi" style="display: block;margin-bottom: 15px" >其他  ( 买家下单 -> 买家付款 -> 订单完成 ) </el-radio>
+          <el-radio label="shi" style="display: block;margin-bottom: 15px" >实物订单  <span class="font12">( 买家下单 -> 买家付款 -> 商家发货 -> 买家收货 -> 订单完成 )</span> </el-radio>
+          <el-radio label="xu" style="display: block;margin-bottom: 15px" >虚拟订单  <span class="font12">( 买家下单 -> 买家付款 -> 系统发送消费券码到买家手机 -> 商家认证消费 -> 订单完成 )</span></el-radio>
+          <el-radio label="qi" style="display: block;margin-bottom: 15px" >其他  <span class="font12">( 买家下单 -> 买家付款 -> 订单完成 )</span> </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="商品库存" prop="productStock">
@@ -201,6 +204,14 @@
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
+
+    <bind-cate-components
+      :multiple="true"
+      @cancel="bindCateCancel"
+      :onSuccess="bindCateSuccessCall"
+      :pageEl="pageEl"
+      :show="bindCateDialogShow"/>
+
   </div>
 </template>
 
@@ -214,6 +225,7 @@
         State
     } from 'vuex-class'
     import UploadComponents from "@/components/comm/UploadComponents.vue";
+    import BindCateComponents from '@/components/BindCateComponents.vue';
     import {calcDescartes} from "@/common/utils";
 
     /**
@@ -233,12 +245,14 @@
     @Component({
         mixins:[],
         components: {
-            UploadComponents
+            UploadComponents,BindCateComponents
         }
     })
 
     export default class AddProduct extends Vue {
 
+        pageEl = this
+        bindCateDialogShow = false
         editorText =  '' // 双向同步的变量
         editorTextCopy =  ''  // content-change 事件回掉改变的对象
 
@@ -391,6 +405,8 @@
         imgs = []//展示图
         video = ''//视频
         thumb = ''//主图
+        cate_list = []
+        cate_ids = ''
 
         removeThumbCall(file){
             this.thumb = ''
@@ -434,6 +450,24 @@
         resetForm(formName) {
             //@ts-ignore
             this.$refs[formName].resetFields();
+        }
+
+        bindCateCancel(){
+            this.bindCateDialogShow = false
+        }
+
+        bindCateSuccessCall(dataType, type, path, tooltip, dataArr, pageEl, idx2){
+            console.log(dataType, type, path, tooltip, dataArr, pageEl, idx2)
+            this.cate_list = dataArr.map(cate=>{
+                return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
+            })
+
+            let ids = this.cate_list.map(cate=>{
+                return cate.Category_ID
+            })
+
+            this.cate_ids = ids.join('|')
+            this.bindCateDialogShow = false
         }
 
     }
@@ -514,12 +548,22 @@
       cursor: pointer;
     }
     .group{
-      width:92%;
-      height:78px;
+      margin-right: 24px;
+      padding: 10px 24px;
+      //height:78px;
       background:rgba(248,248,248,1);
-      padding-left: 24px;
+
       display: flex;
       align-items: center;
+      &.cate_list{
+        flex-wrap: wrap;
+      }
+      .cate_item{
+        margin-right: 10px;
+        line-height: 36px;
+        height: 36px;
+        cursor: pointer;
+      }
     }
   }
 
