@@ -1,4 +1,9 @@
 import Vue from 'vue';
+import interceptorsConfig from './interceptors';
+import filter from './filter.js';
+
+
+
 // const i18n = require('i18n');
 import {
   Alert,
@@ -37,9 +42,6 @@ import {
   Tree,
   Upload
 } from 'element-ui';
-import interceptorsConfig from './interceptors';
-
-import filter from './filter.js';
 
 
 Vue.use(Input);

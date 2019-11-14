@@ -58,7 +58,8 @@ import MagicCube from '../../../assets/js/diy/tool/MagicCube';
 
 import {domain} from '@/common/utils';
 import {objTranslate} from '../../../common/utils';
-import uploadImgComponents from '@/components/common/uploadImgComponents';
+import UploadImgComponents from '@/components/diy/tool/UploadImgComponents';
+
 import BindLinkComponents from '@/components/BindLinkComponents';
 import _ from 'underscore'
 
@@ -113,7 +114,7 @@ export default {
     }
   },
   components:{
-    uploadImgComponents,BindLinkComponents
+    UploadImgComponents,BindLinkComponents
   },
   computed:{
     W(){
