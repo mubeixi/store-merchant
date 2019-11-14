@@ -374,8 +374,7 @@
                 if(idx!=-1){
                     return {...this.skusData[idx]}
                 }
-
-                //parseInt(Math.random()*100*100)/100,
+                
                 return {
                     name:nameStr,
                     price:'',
