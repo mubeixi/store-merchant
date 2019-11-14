@@ -219,7 +219,7 @@ export const calcDescartes = (array)=>{
         res.push(t);
       })
     });
-    console.log(res)
+    // console.log(res)
     return res;
   });
 }
