@@ -104,19 +104,21 @@
        <div class="specs_box">
          <div class="specs_row" v-for="(row,idx_row) in specs" :key="idx_row">
            <span class="label">{{row.title}}</span>
-           <div class="" style="width: 110px;margin-left: 10px;display: inline-block;" v-for="(val,idx_val) in row.vals" :key="idx_val">
-             <el-input  size="mini"  :value="val" />
+           <div  style="width: 110px;margin-left: 10px;display: inline-block;position: relative" v-for="(val,idx_val) in row.vals" :key="idx_val">
+             <el-input  size="mini"   v-model="specs[idx_row].vals[idx_val]"/>
+             <img src="@/assets/img/productAdd/del.png" class="imgDel" @click="skuDel(idx_row,idx_val)">
            </div>
-           <span class="margin15-c" style="cursor: pointer;color: #155bd4">添加规格值</span>
+           <span class="margin15-c" style="cursor: pointer;color: #428CF7" @click="skuAdd(idx_row)">添加规格值</span>
          </div>
-         <div>
-           <el-button size="small" type="primary" @click="createSkuData">生成skus</el-button>
-         </div>
+<!--         <div>-->
+<!--           <el-button size="small" type="primary" @click="createSkuData">生成skus</el-button>-->
+<!--         </div>-->
        </div>
       </el-form-item>
 
       <el-form-item label="商品参数" v-show="skus.length>0">
         <div class="sku_box">
+
           <table class="table" cellspacing="0" cellpadding="0" >
             <tr class="tr">
               <th class="th" v-for="(spec,idx) in specs">{{spec.title}}</th>
@@ -126,22 +128,28 @@
             </tr>
             <template v-for="(sku,idx) in skus">
               <tr class="tr">
-                <template v-if="idx%getRowsSpan(index)===0">
-                  <template v-for="(i,index) in specs.length">
-                      <td class="td" :rowspan="getRowsSpan(index,idx)">{{sku[index]}}</td>
+                <template v-for="(i,index) in specs.length">
+                  <template v-if="idx%getRowsSpan(index)===0">
+                    <td class="td" :rowspan="getRowsSpan(index,idx)">{{sku[index]}}</td>
                   </template>
                 </template>
-                <td class="td"><el-input size="mini" /></td>
-                <td class="td"><el-input size="mini" /></td>
-                <td class="td"><el-input size="mini" /></td>
+                <td class="td"><el-input size="mini" v-model="skuList[idx].price"/></td>
+                <td class="td"><el-input size="mini" v-model="skuList[idx].count"/></td>
+                <td class="td"><el-input size="mini" v-model="skuList[idx].cost_price"/></td>
               </tr>
             </template>
 
           </table>
-
         </div>
       </el-form-item>
 
+      <el-form-item label="商品承诺" prop="productWeight">
+        <div  style="width: 110px;margin-left: 10px;display: inline-block;position: relative" >
+          <el-input  size="mini"   />
+          <img src="@/assets/img/productAdd/del.png" class="imgDel">
+        </div>
+        <span class="margin15-c" style="cursor: pointer;color: #428CF7">添加规格值</span>
+      </el-form-item>
 
       <el-form-item label="商品重量" prop="productWeight">
         <el-input v-model="ruleForm.productWeight"  class="sortInput" ></el-input>
@@ -218,12 +226,14 @@
 <script lang="ts">
     import {
         Component,
-        Vue
+        Vue,
+        Watch
     } from 'vue-property-decorator';
     import {
         Action,
         State
     } from 'vuex-class'
+
     import UploadComponents from "@/components/comm/UploadComponents.vue";
     import BindCateComponents from '@/components/BindCateComponents.vue';
     import {calcDescartes} from "@/common/utils";
@@ -234,10 +244,14 @@
      * @param startIdx
      */
     const getArrayMulite = (arr,startIdx)=>{
+
         let rt = 1;
+
         for(var i=startIdx+1;i<arr.length;i++){
             rt *= arr[i].length
         }
+
+        // console.log(rt)
         return rt;
     }
 
@@ -309,19 +323,76 @@
             {title:'颜色',vals:['黑色','白色','红色']},
             {title:'尺码',vals:['X','M','L']},
             {title:'面料',vals:['羊毛','牛毛','鹅毛']},
-            {title:'产地',vals:['美国','台湾','大陆','泰国']},
+            // {title:'产地',vals:['美国','台湾','大陆','泰国']},
         ]
 
         skus = [];
 
+        skuList = []
+
+        skusData=[];
+
+
+        @Watch('specs', { deep: true,immediate:true })
+        handleWatch(){
+            if(this.skuList.length>1){
+                this.skusData=this.skuList
+            }
+
+            this.createSkuData();
+        }
+
+        skuAdd(index){
+            this.specs[index].vals.length++;
+            this.createSkuData();
+        }
+        skuDel(i,j){
+            this.specs[i].vals.splice(j,1);
+            this.createSkuData();
+        }
         createSkuData(){
             let spec_arr = this.specs.map(item=>{
                 return item.vals
             })
-            console.log(spec_arr)
+            // console.log(spec_arr)
             this.spec_val_list = spec_arr
             this.skus = calcDescartes(spec_arr)
+
+            let name_list = this.skusData.map(sku=>{
+                return sku.name
+            })
+
+            let nameStr,idx;
+            this.skuList = this.skus.map(sku=>{
+                nameStr = sku.join('|')
+                idx=name_list.indexOf(nameStr)
+                if(idx!=-1){
+                    return {...this.skusData[idx]}
+                }
+                return {
+                    name:nameStr,
+                    price:'',
+                    count:'',
+                    cost_price:''
+                }
+            });
+
+            if(this.skusData.length<1){
+                this.skusData = this.skuList
+            }
+            // if(this.skusData.length>0){
+            //     for(let i=0;i<this.skusData.length;i++){
+            //         for(let j=0;i<this.skuList.length;j++) {
+            //             if(this.skusData[i].name===this.skuList[j].name){
+            //                 this.skuList[j].price=this.skusData[i].price;
+            //                 this.skuList[j].count=this.skusData[i].count;
+            //                 this.skuList[j].cost_price=this.skusData[i].cost_price;
+            //             }
+            //         }
+            //     }
+            // }
         }
+
 
         getRowsSpan(specsIndex){
             return getArrayMulite(this.spec_val_list,specsIndex);
@@ -350,6 +421,7 @@
             freight:'',//运费
             freightGu:'',//固定运费
         }
+
         rules = {
             sort: [
                 {required: true,message: '请输入商品排序', trigger: 'blur' }
@@ -402,6 +474,7 @@
                 { required: true, message: '请选择订单类型', trigger: 'change' }
             ]
         }
+
         imgs = []//展示图
         video = ''//视频
         thumb = ''//主图
@@ -435,7 +508,6 @@
         upVideoSuccessCall(file){
             this.video = file.path
         }
-
         submitForm(formName) {
             //@ts-ignore
             this.$refs[formName].validate((valid) => {
@@ -595,6 +667,18 @@
 }
 
 
-
+/*  笛卡尔积样式*/
+.specs_box{
+  background-color: #f8f8f8;
+  padding: 14px;
+}
+/*删除图片样式*/
+.imgDel{
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  top: -1px;
+  right: -7px;
+}
 
 </style>
