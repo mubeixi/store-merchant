@@ -365,7 +365,8 @@
     import {Component, Vue} from 'vue-property-decorator';
     import {mapActions, mapState} from 'vuex';
     import BindLinkComponents from '@/components/BindLinkComponents';
-    import uploadImgComponents from '@/components/common/uploadImgComponents';
+    import UploadImgComponents from '@/components/diy/tool/UploadImgComponents.vue';
+
     import SelectCouponComponent from '@/components/SelectCouponComponent';
     import BindCateComponents from '@/components/BindCateComponents';
     import SelectGoodsComponent from '@/components/SelectGoodsComponent';
@@ -377,7 +378,7 @@
         components: {
             SelectCouponComponent,
             BindLinkComponents,
-            uploadImgComponents,
+            UploadImgComponents,
             BindCateComponents,
             SelectGoodsComponent,
             MagicCubeComponent,

@@ -55,6 +55,38 @@
         <span class="sortMsg">注：**********************</span>
       </el-form-item>
 
+      <el-form-item label="商品主图">
+        <upload-components
+          size="mini"
+          :onRemove="removeThumbCall"
+          :onSuccess="upThumbSuccessCall"
+        />
+      </el-form-item>
+
+      <el-form-item label="主图视频及封面">
+        <div class="flex">
+          <div>
+            <upload-components
+              type="video"
+              accept="video/*"
+              size="mini"
+              :onRemove="removeVideoCall"
+              :onSuccess="upVideoSuccessCall"
+            />
+          </div>
+          <div class="margin15-c">
+            <upload-components
+              :limit="5"
+              size="mini"
+              :onRemove="removeImgsCall"
+              :onSuccess="upImgsSuccessCall"
+            />
+          </div>
+        </div>
+
+
+      </el-form-item>
+
       <el-form-item label="商品简介" prop="productDescription">
         <el-input type="textarea" v-model="ruleForm.productDescription" style="width: 600px"></el-input>
       </el-form-item>
@@ -83,7 +115,6 @@
 
       <el-form-item label="商品参数" v-show="skus.length>0">
         <div class="sku_box">
-
           <table class="table" cellspacing="0" cellpadding="0" >
             <tr class="tr">
               <th class="th" v-for="(spec,idx) in specs">{{spec.title}}</th>
@@ -93,9 +124,15 @@
             </tr>
             <template v-for="(sku,idx) in skus">
               <tr class="tr">
+<<<<<<< HEAD
                 <template v-for="(i,index) in specs.length">
                   <template v-if="idx%getRowsSpan(index)===0">
                     <td class="td" :rowspan="getRowsSpan(index,idx)">{{sku[index]}}</td>
+=======
+                <template v-if="idx%getRowsSpan(index)===0">
+                  <template v-for="(i,index) in specs.length">
+                      <td class="td" :rowspan="getRowsSpan(index,idx)">{{sku[index]}}</td>
+>>>>>>> 57d0b2ead530c4de7c1f9c1a6401dc78d6d07840
                   </template>
                 </template>
                 <td class="td"><el-input size="mini" v-model="skuList[idx].price"/></td>
@@ -105,6 +142,10 @@
             </template>
 
           </table>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 57d0b2ead530c4de7c1f9c1a6401dc78d6d07840
         </div>
       </el-form-item>
 
@@ -190,7 +231,7 @@
         Action,
         State
     } from 'vuex-class'
-
+    import UploadComponents from "@/components/comm/UploadComponents.vue";
     import {calcDescartes} from "@/common/utils";
 
     /**
@@ -199,14 +240,15 @@
      * @param startIdx
      */
     const getArrayMulite = (arr,startIdx)=>{
-
         let rt = 1;
-
         for(var i=startIdx+1;i<arr.length;i++){
             rt *= arr[i].length
         }
+<<<<<<< HEAD
 
         // console.log(rt)
+=======
+>>>>>>> 57d0b2ead530c4de7c1f9c1a6401dc78d6d07840
         return rt;
     }
 
@@ -214,7 +256,7 @@
     @Component({
         mixins:[],
         components: {
-
+            UploadComponents
         }
     })
 
@@ -374,7 +416,6 @@
             freight:'',//运费
             freightGu:'',//固定运费
         }
-
         rules = {
             sort: [
                 {required: true,message: '请输入商品排序', trigger: 'blur' }
@@ -426,6 +467,37 @@
             orderType:[
                 { required: true, message: '请选择订单类型', trigger: 'change' }
             ]
+        }
+        imgs = []//展示图
+        video = ''//视频
+        thumb = ''//主图
+
+        removeThumbCall(file){
+            this.thumb = ''
+        }
+
+        upThumbSuccessCall(file){
+            this.thumb = file.path
+        }
+
+        removeImgsCall(file){
+            let idx = this.imgs.indexOf(file.path);
+            console.log(idx)
+            if(idx!=-1){
+                this.imgs.splice(idx,1);
+            }
+        }
+
+        upImgsSuccessCall(file){
+            this.imgs.push(file.path)
+        }
+
+        removeVideoCall(file){
+            this.video = ''
+        }
+
+        upVideoSuccessCall(file){
+            this.video = file.path
         }
 
         submitForm(formName) {
