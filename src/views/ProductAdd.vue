@@ -92,18 +92,10 @@
             </tr>
             <template v-for="(sku,idx) in skus">
               <tr class="tr">
-
                 <template v-for="(i,index) in specs.length">
-
-<!--                  v-if="index==0 && idx%(specs[index].vals.length)==0"-->
                   <template v-if="idx%getRowsSpan(index)===0">
                     <td class="td" :rowspan="getRowsSpan(index,idx)">{{sku[index]}}</td>
                   </template>
-
-<!--                  <template v-if="index!=0">-->
-<!--                    <td class="td">{{sku[index]}}</td>-->
-<!--                  </template>-->
-
                 </template>
                 <td class="td"><el-input size="mini" /></td>
                 <td class="td"><el-input size="mini" /></td>
@@ -112,26 +104,6 @@
             </template>
 
           </table>
-
-<!--          <div class="table">-->
-<!--            <div class="tr">-->
-<!--              <div class="th" v-for="(spec,idx) in specs">{{spec.title}}</div>-->
-<!--              <div class="th">价格</div>-->
-<!--              <div class="th">库存</div>-->
-<!--              <div class="th">成本价</div>-->
-<!--            </div>-->
-<!--            <template v-for="(sku,idx) in skus">-->
-<!--              <div class="tr">-->
-<!--                <template v-for="(i,index) in specs.length">-->
-<!--                  <div class="td">{{sku[index]}}</div>-->
-<!--                </template>-->
-<!--                <div class="td"><el-input size="mini" /></div>-->
-<!--                <div class="td"><el-input size="mini" /></div>-->
-<!--                <div class="td"><el-input size="mini" /></div>-->
-<!--              </div>-->
-<!--            </template>-->
-<!--            -->
-<!--          </div>-->
         </div>
       </el-form-item>
 
@@ -295,7 +267,7 @@
             {title:'颜色',vals:['黑色','白色','红色']},
             {title:'尺码',vals:['X','M','L']},
             {title:'面料',vals:['羊毛','牛毛','鹅毛']},
-            {title:'产地',vals:['美国','台湾','大陆','泰国']},
+            // {title:'产地',vals:['美国','台湾','大陆','泰国']},
         ]
 
         skus = [];
