@@ -105,21 +105,23 @@
            <span class="label">{{row.title}}</span>
            <div class="input-wrap"  style="width: 110px;margin-left: 10px;display: inline-block;position: relative" v-for="(val,idx_val) in row.vals" :key="idx_val">
 <!--             <el-input  size="mini"   v-model="specs[idx_row].vals[idx_val]" />-->
-             <el-select
+<!--             <el-select-->
+<!--               v-model="specs[idx_row].vals[idx_val]"-->
+<!--               size="mini"-->
+<!--               filterable-->
+<!--               allow-create-->
+<!--               >-->
+<!--               <el-option-->
+<!--                 v-for="item in options"-->
+<!--                 :key="item.value"-->
+<!--                 :label="item.label"-->
+<!--                 :value="item.value">-->
+<!--               </el-option>-->
+<!--             </el-select>-->
+             <el-autocomplete
+               class="inline-input"
                v-model="specs[idx_row].vals[idx_val]"
-               size="mini"
-
-               filterable
-               allow-create
-               
-               >
-               <el-option
-                 v-for="item in options"
-                 :key="item.value"
-                 :label="item.label"
-                 :value="item.value">
-               </el-option>
-             </el-select>
+             ></el-autocomplete>
              <div class="imgDel" @click="skuDel(idx_row,idx_val)">
                <i class="el-icon-error"></i>
              </div>
@@ -459,6 +461,7 @@
         allType='';
         allValue='';
         changePrice(index){
+            this.allValue='';
             this.allType=index;
             this.allPrice=false;
         }
@@ -820,4 +823,7 @@
 .el-icon-error:hover{
   color: red;
 }
+  .specs_row{
+    margin-bottom: 10px;
+  }
 </style>
