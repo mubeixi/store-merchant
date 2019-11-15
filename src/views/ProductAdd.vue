@@ -15,7 +15,7 @@
       <el-form-item label="商品分类" prop="classification">
           <span class="classificationSpan" @click="bindCateDialogShow=true">选择分类</span>
       </el-form-item>
-      <div class="group cate_list" style="margin-left: 104px;margin-bottom: 22px;" v-if="cate_list.length>0">
+      <div class="group cate_list" style="margin-left: 120px;margin-bottom: 22px;" v-if="cate_list.length>0">
         <span class="cate_item" v-for="(cate,idx) in cate_list">{{cate.Category_Name}}</span>
       </div>
       <el-form-item label="虚拟销量" prop="Virtualsales">
@@ -35,7 +35,7 @@
       <el-form-item label="拼团" prop="type" style="margin-bottom: 10px">
         <el-checkbox v-model="ruleForm.type" name="group">是否参与拼团</el-checkbox>
       </el-form-item>
-      <div class="group" style="margin-left: 104px;margin-bottom: 22px;" v-if="ruleForm.type">
+      <div class="group" style="margin-left: 120px;margin-bottom: 22px;" v-if="ruleForm.type">
         <el-form-item label="拼团人数" prop="groupNumber" style="margin-bottom: 0px">
           <el-input v-model.number="ruleForm.groupNumber"  class="sortInput"></el-input>
         </el-form-item>
@@ -51,7 +51,6 @@
           </el-date-picker>
         </el-form-item>
       </div>
-
 
       <el-form-item label="商品利润" prop="commodityProfit">
         <el-input v-model="ruleForm.commodityProfit"  class="sortInput sortInputs" ></el-input>
@@ -183,8 +182,11 @@
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="关联门店" prop="classification">
-        <span class="classificationSpan">选择门店</span>
+        <span class="classificationSpan" @click="dialogStoreShow=true">选择门店</span>
       </el-form-item>
+      <div class="group store_list" style="margin-left: 120px;margin-bottom: 22px;" v-if="store_list.length>0">
+        <div class="store_item" v-for="(store,idx) in store_list">{{store.Stores_Name}}</div>
+      </div>
       <el-form-item label="订单类型" prop="orderType">
         <el-radio-group v-model="ruleForm.orderType">
           <el-radio label="shi" style="display: block;margin-bottom: 15px" >实物订单  <span class="font12">( 买家下单 -> 买家付款 -> 商家发货 -> 买家收货 -> 订单完成 )</span> </el-radio>
@@ -224,6 +226,13 @@
       :pageEl="pageEl"
       :show="bindCateDialogShow"/>
 
+    <bind-store-component
+      @cancel="bindStoreCancel"
+      :onSuccess="bindStoreSuccessCall"
+      :pageEl="pageEl"
+      :show="dialogStoreShow"
+    />
+
   </div>
 </template>
 
@@ -241,6 +250,7 @@
     import UploadComponents from "@/components/comm/UploadComponents.vue";
     import BindCateComponents from '@/components/BindCateComponents.vue';
     import {calcDescartes, objTranslate} from "@/common/utils";
+    import BindStoreComponent from "@/components/comm/BindStoreComponent.vue";
 
     /**
      * 获取二维数组（一维数组的元素也是数组)的指定位置开始到最后的长度叠加成绩
@@ -263,6 +273,7 @@
     @Component({
         mixins:[],
         components: {
+            BindStoreComponent,
             UploadComponents,BindCateComponents
         }
     })
@@ -271,6 +282,8 @@
 
         pageEl = this
         bindCateDialogShow = false
+
+        dialogStoreShow = false
         editorText =  '' // 双向同步的变量
         editorTextCopy =  ''  // content-change 事件回掉改变的对象
 
@@ -334,7 +347,6 @@
                 callback();
             },
         }
-
         spec_val_list = []
         specs = [
             {title:'颜色',vals:['黑色','白色','红色']},
@@ -413,7 +425,6 @@
             });
 
         }
-
 
         getRowsSpan(specsIndex){
             return getArrayMulite(this.spec_val_list,specsIndex);
@@ -567,6 +578,17 @@
             this.bindCateDialogShow = false
         }
 
+
+        store_list = []
+        bindStoreCancel(){
+            this.dialogStoreShow = false
+        }
+
+        bindStoreSuccessCall(list, pageEl){
+            this.store_list = list
+            this.dialogStoreShow = false
+        }
+
     }
     // export default {
     //     name: "AddProduct",
@@ -654,6 +676,15 @@
       align-items: center;
       &.cate_list{
         flex-wrap: wrap;
+      }
+      &.store_list{
+        display: block;
+
+      }
+      .store_item{
+        line-height: 36px;
+        height: 36px;
+        cursor: pointer;
       }
       .cate_item{
         margin-right: 10px;

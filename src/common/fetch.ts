@@ -75,12 +75,9 @@ export const getSystemUrl = (data,options) => fetch('system_url', data, options)
 //获取diy url列表
 export const getDiyUrl = (data,options) => fetch('system_diy_url', data, options)
 
-
-
 //更新商城的配置
 //update_shophome
 export const setSkinConfig = (data, options) => fetch('save_skin_date', data, options)
-
 
 export const setDiySkinConfig = (data, options) => fetch('save_makeup_home_data', data, options)
 
@@ -98,8 +95,9 @@ export const getUsersInfo = (data, options) => fetch('get_users_info', data, opt
 
 export const getProductCountInfo  = (data,options) => fetch('get_users_info', data, options);
 
-
 export const uploadImgByBase64 = (data,options) => fetch('upload_image', data, options);
+
+export const getStoreList = (data,options) => fetch('get_store_list', data, options);
 
 function get_Appid() {
   return 'xhh';
