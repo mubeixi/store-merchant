@@ -2,9 +2,10 @@
   <div @click.stop="setData({}, 0)" class="notice wrap">
 
     <div class="flex content" :style="{background:notice.style.bgColor}">
-      <svg class="fun-icon icon" :style="{color:notice.style.iconColor}"  aria-hidden="true">
-        <use xlink:href="#icon-gonggao" ></use>
-      </svg>
+<!--      <svg class="fun-icon icon" :style="{color:notice.style.iconColor}"  aria-hidden="true">-->
+<!--        <use xlink:href="#icon-gonggao" ></use>-->
+<!--      </svg>-->
+      <i :style="{color:notice.style.iconColor}" class="el-icon-message-solid"></i>
 
       <div class="flex1 title"  :style="{color:notice.style.color}">
 
