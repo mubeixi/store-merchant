@@ -210,7 +210,12 @@ export const serialize = obj=>{
  * @param array
  */
 export const calcDescartes = (array)=>{
-  if (array.length < 2) return array[0] || [];
+  console.log(array)
+  if (array.length < 1) return [];
+  if (array.length < 2){
+    //if(array[0].length) return []
+    return [array[0]]
+  }
   return [].reduce.call(array, function (col, set) {
     var res = [];
     col.forEach(function (c) {
@@ -220,7 +225,7 @@ export const calcDescartes = (array)=>{
         res.push(t);
       })
     });
-    // console.log(res)
+    console.log(res)
     return res;
   });
 }

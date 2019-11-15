@@ -1,5 +1,8 @@
 <template>
   <div class="addProduct">
+    <div class="setting">
+      佣金设置
+    </div>
     <div class="menuset">
         <span class="menusetText">发布商品</span>
     </div>
@@ -94,8 +97,9 @@
       </el-form-item>
       <el-form-item label="商品类型" prop="productTypes">
         <el-select v-model="ruleForm.productTypes" placeholder="请选择类型"  style="width: 600px">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+          <template v-for="(it,ind_con) of prodConfig.prod_type_list">
+            <el-option :label="it.Type_Name" :value="it.Type_ID" ></el-option>
+          </template>
         </el-select>
       </el-form-item>
 
@@ -141,17 +145,29 @@
               <th class="th">库存</th>
               <th class="th">成本价</th>
             </tr>
-            <template v-for="(sku,idx) in skus">
-              <tr class="tr">
-                <template v-for="(i,index) in specs.length">
-                  <template v-if="idx%getRowsSpan(index)===0">
-                    <td class="td" :rowspan="getRowsSpan(index,idx)">{{sku[index]}}</td>
+            <template v-if="skus.length>1">
+              <template v-for="(sku,idx) in skus">
+                <tr class="tr">
+                  <template v-for="(i,index) in specs.length">
+                    <template v-if="idx%getRowsSpan(index)===0">
+                      <td class="td" :rowspan="getRowsSpan(index,idx)">{{sku[index]}}</td>
+                    </template>
                   </template>
-                </template>
-                <td class="td"><el-input size="mini" v-model="skuList[idx].Attr_Price"/></td>
-                <td class="td"><el-input size="mini" v-model="skuList[idx].Property_count"/></td>
-                <td class="td"><el-input size="mini" v-model="skuList[idx].Supply_Price"/></td>
-              </tr>
+                  <td class="td"><el-input v-if="skuList[idx]" size="mini" v-model="skuList[idx].Attr_Price"/></td>
+                  <td class="td"><el-input v-if="skuList[idx]" size="mini" v-model="skuList[idx].Property_count"/></td>
+                  <td class="td"><el-input v-if="skuList[idx]" size="mini" v-model="skuList[idx].Supply_Price"/></td>
+                </tr>
+              </template>
+            </template>
+            <template v-if="skus.length==1">
+              <template v-for="(item,idx) in skuList">
+                <tr class="tr">
+                  <td class="td" >{{skuList[idx].Attr_Value}}</td>
+                  <td class="td"><el-input v-if="skuList[idx]" size="mini" v-model="skuList[idx].Attr_Price"/></td>
+                  <td class="td"><el-input v-if="skuList[idx]" size="mini" v-model="skuList[idx].Property_count"/></td>
+                  <td class="td"><el-input v-if="skuList[idx]" size="mini" v-model="skuList[idx].Supply_Price"/></td>
+                </tr>
+              </template>
             </template>
             <tr class="tr">
                <td class="td divTd" colspan="9">
@@ -276,7 +292,10 @@
     import BindCateComponents from '@/components/BindCateComponents.vue';
     import {calcDescartes, objTranslate} from "@/common/utils";
     import BindStoreComponent from "@/components/comm/BindStoreComponent.vue";
+    import {systemProdConfig} from '@/common/fetch'
     import fa from "element-ui/src/locale/lang/fa";
+
+    import _ from 'underscore';
 
     /**
      * 获取二维数组（一维数组的元素也是数组)的指定位置开始到最后的长度叠加成绩
@@ -320,8 +339,29 @@
         afterChange () {
         }
 
+        prodConfig={
+            prod_type_list:[]
+        };
+        created(){
+            systemProdConfig().then(res=>{
+                if(res.errorCode==0){
+                    this.prodConfig=res.data;
+                }
+            }).catch();
+        }
 
+        @Watch('specs', { deep: true,immediate:true })
+        handleWatch(){
+            // console.log('specs有变动')
+            //
+            // console.log(this.skuList.length,objTranslate(this.skusData))
+            if(this.skuList.length>1){
+                this.skusData=this.skuList
+            }
+            // console.log(objTranslate(this.skusData))
 
+            this.createSkuData();
+        }
         validateFn = {
             pass:(rule, value, callback) => {
 
@@ -375,9 +415,9 @@
         }
         spec_val_list = []
         specs = [
-            {title:'颜色',vals:['黑色','白色','红色']},
-            {title:'尺码',vals:['X','M','L']},
-            {title:'面料',vals:['羊毛','牛毛','鹅毛']},
+            // {title:'颜色',vals:['黑色','白色','红色']},
+            // {title:'尺码',vals:['X','M','L']},
+            // {title:'面料',vals:['羊毛','牛毛','鹅毛']},
             // {title:'产地',vals:['美国','台湾','大陆','泰国']},
         ]
 
@@ -399,22 +439,21 @@
         committedDel(index){
             this.committed.splice(index,1);
         }
-        @Watch('specs', { deep: true,immediate:true })
-        handleWatch(){
-            console.log('specs有变动')
-
-            console.log(this.skuList.length,objTranslate(this.skusData))
-            if(this.skuList.length>1){
-                this.skusData=this.skuList
+        @Watch('ruleForm.productTypes', { deep: true,immediate:true })
+        handle(){
+            for(let item of this.prodConfig.prod_type_list){
+                if(item.Type_ID===this.ruleForm.productTypes){
+                        this.specs=[];
+                        for(let it of item.Attr_Name){
+                           this.specs.push({title:it,vals:[]});
+                        }
+                }
             }
-            console.log(objTranslate(this.skusData))
-
-            this.createSkuData();
         }
 
         skuAdd(index){
         // .length++
-            this.specs[index].vals.push('');
+            this.specs[index].vals.push('默认规格');
             //this.createSkuData();
         }
         skuDel(i,j){
@@ -434,22 +473,59 @@
                 return sku.Attr_Value
             })
 
-            let nameStr,idx;
-            this.skuList = this.skus.map(sku=>{
-                //sku需要排序
-                nameStr = sku.join('|')
-                idx=name_list.indexOf(nameStr)
-                if(idx!=-1){
-                    return {...this.skusData[idx]}
-                }
+            console.log(name_list)
 
-                return {
-                    Attr_Value:nameStr,
-                    Attr_Price:'',
-                    Property_count:'',
-                    Supply_Price:''
+            let nameStr,idx;
+            if(this.skus.length===1){
+                if(_.isArray(this.skus[0])) {
+                    let arr = [];
+                    for (let item of this.skus[0]) {
+
+                        idx=name_list.indexOf(item);
+                        if(idx!=-1){
+                            arr.push({
+                                Attr_Value: item,
+                                Attr_Price: this.skusData[idx].Attr_Price,
+                                Property_count: this.skusData[idx].Property_count,
+                                Supply_Price: this.skusData[idx].Supply_Price
+                            })
+                        }else{
+                            arr.push({
+                                Attr_Value: item,
+                                Attr_Price: '',
+                                Property_count: '',
+                                Supply_Price: ''
+                            })
+                        }
+
+                    }
+                    this.skuList = arr;
                 }
-            });
+            }else{
+                this.skuList = this.skus.map(sku=>{
+                    console.log(sku)
+                    // if(_.isArray(sku)){
+                    //
+                    // }else{
+                    //     nameStr = sku
+                    // }
+                    nameStr = sku.join('|')
+                    //sku需要排序
+
+                    idx=name_list.indexOf(nameStr)
+                    if(idx!=-1){
+                        return {...this.skusData[idx]}
+                    }
+
+                    return {
+                        Attr_Value:nameStr,
+                        Attr_Price:'',
+                        Property_count:'',
+                        Supply_Price:''
+                    }
+                });
+            }
+
 
         }
 
@@ -497,7 +573,7 @@
             groupDate:'',//拼团时间
             commodityProfit:'',//商品利润
             productDescription:'',//商品简介
-            productTypes: 'shanghai',//商品类型
+            productTypes: '',//商品类型
             productWeight:'',//商品重量
             otherAttributes:[],//其他属性
             productStock:'',//商品库存
@@ -663,6 +739,22 @@
   padding-top:0px;
   margin:0px auto 0;
   background-color: #f2f2f2;
+  position: relative;
+  .setting{
+    position: fixed;
+    right: 15px;
+    top: 460px;
+    background-color: #428CF7;
+    border-radius: 2px;
+    font-size: 14px;
+    color: #FFFFFF;
+    padding: 15px 16px;
+    width: 60px;
+    height: 60px;
+    z-index: 999;
+    box-sizing: border-box;
+    line-height:18px;
+  }
   .menuset{
     box-sizing: border-box;
     width: 100%;
