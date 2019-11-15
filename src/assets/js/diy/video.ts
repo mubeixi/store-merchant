@@ -21,14 +21,6 @@ function setAttrData() {
   const data = {
     title: '视频设置',
     content: [
-      // {
-      //   type: 'color',
-      //   text: '背景颜色',
-      //   model: this.style.bgColor,
-      //   editType: 'style',
-      //   editKey: 'bgColor',
-      //   editCB: item => item.model,
-      // },
       {
         type: 'input',
         text: '视频地址',

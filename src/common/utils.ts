@@ -113,6 +113,7 @@ export function mixinStyle(defaultStyle, style) {
   return rt;
 }
 
+
 /**
  * 比较两个对象，并且将模板对象上的值覆盖目标对象
  * @param currentObj

@@ -1,7 +1,6 @@
 <template>
   <div @click.stop="setData({}, 0)"
-       :style="{height:style.height+'px',backgroundColor:style.bgColor}" class="space">
-    <!--    <div ></div>-->
+       :style="{height:style.height+'px',background:style.bgColor}" class="space">
   </div>
 </template>
 

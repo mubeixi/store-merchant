@@ -51,7 +51,9 @@ function setAttrData() {
         model: this.style.bgColor,
         editType: 'style',
         editKey: 'bgColor',
-        editCB: item => item.model,
+        editCB: item => {
+          return item.model?item.model:'none'
+        },
       },
       {
         type: 'addbtn',

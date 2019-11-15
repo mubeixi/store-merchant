@@ -1,17 +1,11 @@
 <template>
   <div @click.stop="setData({}, 0)" class="notice wrap">
-<!--    <div class="inner-container">-->
-<!--      <transition class="inner-container2" name="slide" mode="out-in">-->
-<!--        <div class="text2" :key="text.id"><span class="tip"><i class="el-icon-bell"/></span>-->
-<!--          <div class="content">{{text.val}}</div>-->
-<!--        </div>-->
-<!--      </transition>-->
-<!--    </div>-->
+
     <div class="flex content" :style="{background:notice.style.bgColor}">
-<!--      -->
-      <svg class="fun-icon icon" :style="{color:notice.style.iconColor}"  aria-hidden="true">
-        <use xlink:href="#icon-gonggao" ></use>
-      </svg>
+<!--      <svg class="fun-icon icon" :style="{color:notice.style.iconColor}"  aria-hidden="true">-->
+<!--        <use xlink:href="#icon-gonggao" ></use>-->
+<!--      </svg>-->
+      <i :style="{color:notice.style.iconColor}" class="el-icon-message-solid"></i>
 
       <div class="flex1 title"  :style="{color:notice.style.color}">
 
@@ -26,8 +20,7 @@
     import {Component, Vue} from 'vue-property-decorator';
     import {mapState} from 'vuex';
     import Notice from '@/assets/js/diy/notice';
-    import {deepCopy, deepCopyStrict} from '@/common/utils';
-    import {noticeIcon} from '@/assets/js/imgs';
+    import {deepCopy, mixinStyle} from '@/common/utils';
 
     @Component({
         props: {
@@ -49,9 +42,9 @@
             };
         },
         computed: {
-            style() {
-                return deepCopyStrict(this.notice.styleDefault, this.notice.style);
-            },
+            // style() {
+            //     return mixinStyle(this.notice.styleDefault, this.notice.style);
+            // },
             activeAttr: {
                 get() {
                     return this.$store.state.activeAttr;

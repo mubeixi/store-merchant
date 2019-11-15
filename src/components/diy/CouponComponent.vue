@@ -1,5 +1,5 @@
 <template>
-  <div @click.stop="setData({}, 0)" class="coupon coupon-list wrap">
+  <div @click.stop="setData({}, 0)" class="coupon coupon-list wrap" :style="{background:coupon.style.bgColor}">
     <div class="list style1" :class="[couponList.length<4?'style1flex':'style1block']" v-if="coupon.config.type===1 && couponList.length>0">
       <div class="item" v-for="(item,idx) in couponList">
         <p class="title">满{{item.Coupon_Condition}}享</p>
@@ -12,14 +12,7 @@
         <div class="c">
           <p v-if="item.Coupon_UseType == 0">满￥{{item.Coupon_Condition}} {{item.Coupon_Discount+'折'}}</p>
           <p v-else><span>满￥{{item.Coupon_Condition}} 减 {{item.Coupon_Cash+'元'}}</span></p>
-
-<!--          <p class="info line"> {{item.Coupon_UseArea==0?'实体店':'微商城'}}可用 |-->
-<!--            满￥{{item.Coupon_Condition}}可用</p>-->
-<!--          <p class="time graytext">{{item.Coupon_StartTime}}-{{item.Coupon_EndTime}}</p>-->
         </div>
-<!--        <div class="r">-->
-<!--          <div class="go">立即领取</div>-->
-<!--        </div>-->
       </div>
     </div>
     <div class="list style3"  v-if="coupon.config.type=== 3 && couponList.length>0">
@@ -27,10 +20,6 @@
         <div class="c">
           <p v-if="item.Coupon_UseType == 0">满￥{{item.Coupon_Condition}} {{item.Coupon_Discount+'折'}}</p>
           <p v-else><span>满￥{{item.Coupon_Condition}} 减 {{item.Coupon_Cash+'元'}}</span></p>
-
-<!--          <p class="info line"> {{item.Coupon_UseArea==0?'实体店':'微商城'}}可用 |-->
-<!--            满￥{{item.Coupon_Condition}}可用</p>-->
-<!--          <p class="time graytext">{{item.Coupon_StartTime}}-{{item.Coupon_EndTime}}</p>-->
         </div>
         <div class="r">
           <div class="go">立即领取</div>
@@ -44,14 +33,7 @@
             <p v-if="item.Coupon_UseType == 0">满￥{{item.Coupon_Condition}} {{item.Coupon_Discount+'折'}}</p>
             <p v-else><span>满￥{{item.Coupon_Condition}} 减 {{item.Coupon_Cash+'元'}}</span></p>
           </div>
-
-          <!--          <p class="info line"> {{item.Coupon_UseArea==0?'实体店':'微商城'}}可用 |-->
-          <!--            满￥{{item.Coupon_Condition}}可用</p>-->
-          <!--          <p class="time graytext">{{item.Coupon_StartTime}}-{{item.Coupon_EndTime}}</p>-->
         </div>
-<!--        <div class="r">-->
-<!--          <div class="go">立即领取</div>-->
-<!--        </div>-->
       </div>
     </div>
     <div v-if="couponList.length<1" class="text-center graytext font12 padding10-r">请先添加优惠券</div>

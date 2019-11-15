@@ -1,5 +1,6 @@
 <template>
-  <div @click.stop="setData({}, 0)" class="group wrap" id="goods" :style="{paddingLeft:goods.style.wrapmargin+'px',paddingRight:goods.style.wrapmargin+'px'}">
+  <div @click.stop="setData({}, 0)" class="group wrap" id="goods"
+       :style="{background:goods.style.bgColor,paddingLeft:goods.style.wrapmargin+'px',paddingRight:goods.style.wrapmargin+'px'}">
     <div class="box" :class="[className]">
       <ul class="list" >
         <li v-for="(item,idx) in goodsList" class="item"
@@ -323,7 +324,7 @@
   @import "~@/assets/css/fun.less";
 
   .wrap{
-    background: #f8f8f8;
+    /*background: #f8f8f8;*/
   }
   //无边框白底 有边框白底 无边框透明底
   /*'noborder-bgwhite','border-bgwhite','noborder-nobg'*/
