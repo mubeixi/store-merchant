@@ -17,13 +17,13 @@
           <div class="deco-component-title__msg">{{componentTitle.desc}}</div>
         </div>
         <set-attr-component v-show="mode=='attr'" ref="setAttr"></set-attr-component>
-        <common-attr-component v-show="mode=='system'" ref="setAttr"></common-attr-component>
+        <common-attr-component v-show="mode=='system'" ></common-attr-component>
         <right-component  v-show="mode=='plugin'"></right-component>
       </div>
     </div>
     <div class="handle">
       <el-button @click="saveData(0)" type="primary" size="small">保存</el-button>
-      <!--<el-button @click="saveData(1)" size="small">上架</el-button>-->
+      <el-button v-if="is_dev" @click="clearPlugin" size="small" type="danger">清空组件</el-button>
       <el-button @click="saveData(1)" size="small">保存并上架</el-button>
       <div class="preBox" >
         <el-button @click="saveData(0,1)" size="small">预览</el-button>
@@ -59,6 +59,7 @@
     import QrcodeVue from 'qrcode.vue';
     import {tmplDiyMixin} from '@/common/mixin';
     import {serialize} from '@/common/utils';
+    import {isDev} from '../common/env';
 
     @Component({
         mixins:[tmplDiyMixin],
@@ -71,8 +72,11 @@
             QrcodeVue
         }
     })
+
+
     export default class Home extends Vue {
 
+        is_dev = isDev
         preUrl = ''
         centerDialogVisible = false
         previewActiveIndex = null
@@ -83,6 +87,12 @@
         @State('activeAttr') activeAttr
         @State('mode') mode
         @State('componentTitle') componentTitle
+
+
+        clearPlugin(){
+            this.$refs.preview.clearPlugin()
+        }
+
 
         //vue的生命周期
         created(){

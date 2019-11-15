@@ -157,8 +157,7 @@ class Nav extends Common {
   // activeIndex = 0;
 
   style = {
-    bgColor: '',
-    // bgColor: '',
+    bgColor: '#fff',
     // height: 30,
     color: '',
     // inputBgColor: '',

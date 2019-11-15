@@ -337,6 +337,11 @@
             scrollFn:function(direction){
                 //console.log(direction)
             },
+
+            clearPlugin(){
+                this.templateData = [] //页面数据的二维数组。
+                this.templateList = [] //页面组件的二维数组。
+            },
             restTmplFun(defaultData){
 
                 if(!defaultData)return;

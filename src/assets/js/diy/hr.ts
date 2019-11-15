@@ -101,7 +101,7 @@ class Hr extends Common {
 
   style = {
     color: '',
-    bgColor: '',
+    //bgColor: '',
     margin: '',
     height: '',
   }

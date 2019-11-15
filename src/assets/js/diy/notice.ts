@@ -116,7 +116,7 @@ class Notice extends Common {
   // activeIndex = 0;
 
   style = {
-    bgColor: '',
+    bgColor: '#fff',
     // height: 30,
     color: '',
     iconColor: '',
