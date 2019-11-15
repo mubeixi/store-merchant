@@ -104,7 +104,7 @@
          <div class="specs_row" v-for="(row,idx_row) in specs" :key="idx_row">
            <span class="label">{{row.title}}</span>
            <div  style="width: 110px;margin-left: 10px;display: inline-block;position: relative" v-for="(val,idx_val) in row.vals" :key="idx_val">
-             <el-input  size="mini"   v-model="specs[idx_row].vals[idx_val]"/>
+             <el-input  size="mini"   v-model="specs[idx_row].vals[idx_val]" />
              <img src="@/assets/img/productAdd/del.png" class="imgDel" @click="skuDel(idx_row,idx_val)">
            </div>
            <span class="margin15-c" style="cursor: pointer;color: #428CF7" @click="skuAdd(idx_row)">添加规格值</span>
@@ -137,17 +137,21 @@
                 <td class="td"><el-input size="mini" v-model="skuList[idx].cost_price"/></td>
               </tr>
             </template>
-
+            <tr class="tr">
+               <td class="td divTd" colspan="9">
+                 批量设置：<span class="span">价格</span><span class="span">库存</span>
+               </td>
+            </tr>
           </table>
         </div>
       </el-form-item>
 
-      <el-form-item label="商品承诺" prop="productWeight">
-        <div  style="width: 110px;margin-left: 10px;display: inline-block;position: relative" >
-          <el-input  size="mini"   />
-          <img src="@/assets/img/productAdd/del.png" class="imgDel">
+      <el-form-item label="商品承诺" prop="committed">
+        <div  style="width: 110px;margin-left: 10px;display: inline-block;position: relative"  v-for="(item,index) of committed" :key="index">
+          <el-input  size="mini"   v-model="committed[index]" @focus="focusCommit(index)"/>
+          <img src="@/assets/img/productAdd/del.png" class="imgDel" @click="committedDel(index)">
         </div>
-        <span class="margin15-c" style="cursor: pointer;color: #428CF7">添加规格值</span>
+        <span class="margin15-c" style="cursor: pointer;color: #428CF7" @click="committedAdd">添加规格值</span>
       </el-form-item>
 
       <el-form-item label="商品重量" prop="productWeight">
@@ -290,6 +294,8 @@
         afterChange () {
         }
 
+
+
         validateFn = {
             pass:(rule, value, callback) => {
 
@@ -329,6 +335,17 @@
                 }
                 callback();
             },
+            committed:(rule, value, callback) => {
+                if(this.committed.length>0){
+                    for(let item of this.committed){
+                        if(!item){
+                            if(!this.ruleForm.freight)callback(new Error('商品承诺不能为空'))
+                        }
+                    }
+
+                }
+                callback();
+            },
         }
         spec_val_list = []
         specs = [
@@ -344,6 +361,18 @@
 
         skusData=[];
 
+        //商品承诺
+        committed=[''];
+        committedIndex='';
+        focusCommit(index){
+            this.committedIndex=index;
+        }
+        committedAdd(){
+            this.committed.push('');
+        }
+        committedDel(index){
+            this.committed.splice(index,1);
+        }
         @Watch('specs', { deep: true,immediate:true })
         handleWatch(){
             console.log('specs有变动')
@@ -359,7 +388,7 @@
 
         skuAdd(index){
         // .length++
-            this.specs[index].vals.push('规格名称');
+            this.specs[index].vals.push('');
             //this.createSkuData();
         }
         skuDel(i,j){
@@ -380,6 +409,7 @@
 
             let nameStr,idx;
             this.skuList = this.skus.map(sku=>{
+                //sku需要排序
                 nameStr = sku.join('|')
                 idx=name_list.indexOf(nameStr)
                 if(idx!=-1){
@@ -399,6 +429,7 @@
         getRowsSpan(specsIndex){
             return getArrayMulite(this.spec_val_list,specsIndex);
         }
+
 
         ruleForm =  {
             sort: '',//商品排序
@@ -474,6 +505,9 @@
             ],
             orderType:[
                 { required: true, message: '请选择订单类型', trigger: 'change' }
+            ],
+            committed:[
+                { validator:this.validateFn.committed, trigger: 'change' }
             ]
         }
 
@@ -693,6 +727,7 @@
 .specs_box{
   background-color: #f8f8f8;
   padding: 14px;
+  margin-right: 20px;
 }
 /*删除图片样式*/
 .imgDel{
@@ -702,5 +737,15 @@
   top: -1px;
   right: -7px;
 }
+  .divTd{
+    text-align: left !important;
+    font-size: 14px;
+    color: #666666;
+    .span{
+      color: #428CF7;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+  }
 
 </style>
