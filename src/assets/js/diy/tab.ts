@@ -428,7 +428,7 @@ class Tab extends Common {
   style = {
     wrapmargin: 15,//页面边距
     margin: 10,//商品距离
-    bgColor: '',
+    bgColor: '#fff',
     // height: 30,
     // color: '',
     // inputBgColor: '',

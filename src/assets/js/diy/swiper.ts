@@ -168,7 +168,7 @@ class Swiper extends Common {
   // activeIndex = 0;
 
   style = {
-    bgColor: '',
+    bgColor: '#fff',
     // height: 30,
     // color: '',
     // inputBgColor: '',

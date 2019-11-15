@@ -527,7 +527,7 @@ class Cube extends Common {
   style = {
     wrapmargin: 0,//页面边距
     margin: 0,//商品距离
-    bgColor: '',
+    bgColor: '#fff',
     // height: 30,
     // color: '',
     // inputBgColor: '',

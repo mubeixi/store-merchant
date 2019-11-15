@@ -241,7 +241,7 @@ class Title extends Common {
 
   style = {
     color: '',
-    bgColor: '',
+    bgColor: '#fff',
     padding:'',
     paddingc:'',
     fontSize:'',
