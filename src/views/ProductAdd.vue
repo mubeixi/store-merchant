@@ -103,15 +103,29 @@
        <div class="specs_box">
          <div class="specs_row" v-for="(row,idx_row) in specs" :key="idx_row">
            <span class="label">{{row.title}}</span>
-           <div  style="width: 110px;margin-left: 10px;display: inline-block;position: relative" v-for="(val,idx_val) in row.vals" :key="idx_val">
-             <el-input  size="mini"   v-model="specs[idx_row].vals[idx_val]" />
-             <img src="@/assets/img/productAdd/del.png" class="imgDel" @click="skuDel(idx_row,idx_val)">
+           <div class="input-wrap"  style="width: 110px;margin-left: 10px;display: inline-block;position: relative" v-for="(val,idx_val) in row.vals" :key="idx_val">
+<!--             <el-input  size="mini"   v-model="specs[idx_row].vals[idx_val]" />-->
+             <el-select
+               v-model="specs[idx_row].vals[idx_val]"
+               size="mini"
+
+               filterable
+               allow-create
+               
+               >
+               <el-option
+                 v-for="item in options"
+                 :key="item.value"
+                 :label="item.label"
+                 :value="item.value">
+               </el-option>
+             </el-select>
+             <div class="imgDel" @click="skuDel(idx_row,idx_val)">
+               <i class="el-icon-error"></i>
+             </div>
            </div>
            <span class="margin15-c" style="cursor: pointer;color: #428CF7" @click="skuAdd(idx_row)">添加规格值</span>
          </div>
-<!--         <div>-->
-<!--           <el-button size="small" type="primary" @click="createSkuData">生成skus</el-button>-->
-<!--         </div>-->
        </div>
       </el-form-item>
 
@@ -132,14 +146,20 @@
                     <td class="td" :rowspan="getRowsSpan(index,idx)">{{sku[index]}}</td>
                   </template>
                 </template>
-                <td class="td"><el-input size="mini" v-model="skuList[idx].price"/></td>
-                <td class="td"><el-input size="mini" v-model="skuList[idx].count"/></td>
-                <td class="td"><el-input size="mini" v-model="skuList[idx].cost_price"/></td>
+                <td class="td"><el-input size="mini" v-model="skuList[idx].Attr_Price"/></td>
+                <td class="td"><el-input size="mini" v-model="skuList[idx].Property_count"/></td>
+                <td class="td"><el-input size="mini" v-model="skuList[idx].Supply_Price"/></td>
               </tr>
             </template>
             <tr class="tr">
                <td class="td divTd" colspan="9">
-                 批量设置：<span class="span">价格</span><span class="span">库存</span>
+                 <span>批量设置：</span>
+                 <template v-if="allPrice">
+                   <span  class="span" @click="changePrice('price')">价格</span><span class="span" @click="changePrice('count')">库存</span><span class="span" @click="changePrice('supply')">成本价</span>
+                 </template>
+                 <template v-else="!allPrice">
+                   <span ><el-input v-model="allValue"  size="mini" style="width: 100px;"/><span class="spans" @click="saveAll">保存</span><span class="spans" @click="delAll">取消</span></span>
+                 </template>
                </td>
             </tr>
           </table>
@@ -147,9 +167,12 @@
       </el-form-item>
 
       <el-form-item label="商品承诺" prop="committed">
-        <div  style="width: 110px;margin-left: 10px;display: inline-block;position: relative"  v-for="(item,index) of committed" :key="index">
+        <div class="input-wrap"  style="width: 110px;margin-left: 10px;display: inline-block;position: relative"  v-for="(item,index) of committed" :key="index">
           <el-input  size="mini"   v-model="committed[index]" @focus="focusCommit(index)"/>
-          <img src="@/assets/img/productAdd/del.png" class="imgDel" @click="committedDel(index)">
+<!--          <img src="@/assets/img/productAdd/del.png" class="imgDel" @click="committedDel(index)">-->
+              <div class="imgDel" @click="committedDel(index)">
+                <i class="el-icon-error"></i>
+              </div>
         </div>
         <span class="margin15-c" style="cursor: pointer;color: #428CF7" @click="committedAdd">添加规格值</span>
       </el-form-item>
@@ -251,6 +274,7 @@
     import BindCateComponents from '@/components/BindCateComponents.vue';
     import {calcDescartes, objTranslate} from "@/common/utils";
     import BindStoreComponent from "@/components/comm/BindStoreComponent.vue";
+    import fa from "element-ui/src/locale/lang/fa";
 
     /**
      * 获取二维数组（一维数组的元素也是数组)的指定位置开始到最后的长度叠加成绩
@@ -392,6 +416,7 @@
             //this.createSkuData();
         }
         skuDel(i,j){
+            if(this.specs[i].vals.length<=1) return;
             this.specs[i].vals.splice(j,1);
             //this.createSkuData();
         }
@@ -404,7 +429,7 @@
             this.skus = calcDescartes(spec_arr)
 
             let name_list = this.skusData.map(sku=>{
-                return sku.name
+                return sku.Attr_Value
             })
 
             let nameStr,idx;
@@ -417,10 +442,10 @@
                 }
 
                 return {
-                    name:nameStr,
-                    price:'',
-                    count:'',
-                    cost_price:''
+                    Attr_Value:nameStr,
+                    Attr_Price:'',
+                    Property_count:'',
+                    Supply_Price:''
                 }
             });
 
@@ -430,6 +455,33 @@
             return getArrayMulite(this.spec_val_list,specsIndex);
         }
 
+        allPrice=true;
+        allType='';
+        allValue='';
+        changePrice(index){
+            this.allType=index;
+            this.allPrice=false;
+        }
+        saveAll(){
+            if(!this.allValue) return;
+            if(this.allType=='price'){
+                for(let item of this.skuList){
+                    item.Attr_Price=this.allValue;
+                }
+            }else if(this.allType=='count'){
+                for(let item of this.skuList){
+                    item.Property_count=this.allValue;
+                }
+            }else{
+                for(let item of this.skuList){
+                    item.Supply_Price=this.allValue;
+                }
+            }
+            this.allPrice=true;
+        }
+        delAll(){
+            this.allPrice=true;
+        }
 
         ruleForm =  {
             sort: '',//商品排序
@@ -729,14 +781,27 @@
   padding: 14px;
   margin-right: 20px;
 }
-/*删除图片样式*/
-.imgDel{
-  width: 16px;
-  height: 16px;
-  position: absolute;
-  top: -1px;
-  right: -7px;
+
+.input-wrap{
+  position: relative;
+  &:hover{
+    .imgDel{
+      visibility: visible;
+    }
+  }
+  /*删除图片样式*/
+  .imgDel{
+    visibility: hidden;
+    position: absolute;
+    top: -3px;
+    right: -10px;
+    font-size: 20px;
+    height: 20px;
+    line-height: 20px;
+    cursor: pointer;
+  }
 }
+
   .divTd{
     text-align: left !important;
     font-size: 14px;
@@ -746,6 +811,13 @@
       margin-right: 10px;
       cursor: pointer;
     }
+    .spans{
+      margin-left: 10px;
+      cursor: pointer;
+      color: #428CF7;
+    }
   }
-
+.el-icon-error:hover{
+  color: red;
+}
 </style>
