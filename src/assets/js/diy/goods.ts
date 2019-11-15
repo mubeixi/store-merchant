@@ -28,16 +28,7 @@ function setAttrData() {
   const data = {
     title: '商品信息设置',
     content: [
-      {
-        type: 'color',
-        text: '背景颜色',
-        model: this.style.bgColor,
-        editType: 'style',
-        editKey: 'bgColor',
-        editCB: item => {
-          return item.model?item.model:'none'
-        },
-      },
+
       {
         type: 'origin',
         text: '商品来源',
@@ -231,7 +222,16 @@ function setAttrData() {
           },
         ],
       },
-
+      {
+        type: 'color',
+        text: '背景颜色',
+        model: this.style.bgColor,
+        editType: 'style',
+        editKey: 'bgColor',
+        editCB: item => {
+          return item.model?item.model:'none'
+        },
+      },
       {
         type: 'checkbox',
         text: '显示内容',
@@ -411,7 +411,7 @@ class Goods extends Common {
       title: {show: true,readOnly:true},
       desc: {show: false},
       price: {show: true},
-      buybtn: {show: true, text: '购买', style: ''}, //样式1 样式2
+      buybtn: {show: true, text: '购买', style: '1'}, //样式1 样式2
       tag: {show: false, style: '', img: ''} //hot new diy 第三个是图片。 都是放在商品左上角
     }
     // loop:false,//是否循环

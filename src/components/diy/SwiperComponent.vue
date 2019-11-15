@@ -11,7 +11,7 @@
         :loop="swiper.config.loop" >
         <el-carousel-item v-for="(item,idx) in swiper.value.list" :key="idx">
             <h3 v-if="!item.img_src" class="small text-center">请上传图片</h3>
-            <div v-else class="cover-full" :style="{backgroundImage:'url('+domainFunc(item.img_src)+')'}"></div>
+            <div v-else class="cover-full" style="background-size: cover" :style="{backgroundImage:'url('+domainFunc(item.img_src)+')'}"></div>
         </el-carousel-item>
         </el-carousel>
 

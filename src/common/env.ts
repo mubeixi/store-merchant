@@ -1,5 +1,5 @@
-export const baseApiUrl = 'http://www.qiyeban.com';
-// export const baseApiUrl = 'https://new401.bafangka.com';
+// export const baseApiUrl = 'http://www.qiyeban.com';
+export const baseApiUrl = 'https://new401.bafangka.com';
 
 
 export const staticUrl = 'https://new401.bafangka.com';
