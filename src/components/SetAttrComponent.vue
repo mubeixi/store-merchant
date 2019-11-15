@@ -317,14 +317,16 @@
 
         </div>
 
-        <el-color-picker
-          @click="openColorPicker"
-          show-alpha
-          v-if="item.type === 'color'"
-          v-model="item.model"
-          class="inputcolor fun-color-pick"
-          @change="colorEv"
-        />
+        <div @click="openColorPicker">
+          <el-color-picker
+            show-alpha
+            v-if="item.type === 'color'"
+            v-model="item.model"
+            class="inputcolor fun-color-pick"
+            @change="colorEv"
+          />
+        </div>
+
 
 
 
