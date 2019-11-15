@@ -99,6 +99,10 @@ export const uploadImgByBase64 = (data,options) => fetch('upload_image', data, o
 
 export const getStoreList = (data,options) => fetch('get_store_list', data, options);
 
+//产品添加编辑所需配置
+export const systemProdConfig = (data,options) => fetch('system_prod_config', data, options);
+
+
 function get_Appid() {
   return 'xhh';
 }
