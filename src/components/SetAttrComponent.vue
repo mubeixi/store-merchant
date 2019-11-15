@@ -596,17 +596,6 @@
                     // config{} 或者style{}
                     const editObj = this.activeAttr[item.editType];
 
-                    // console.log('根据配置修改')
-
-
-                    // 就不要用这个了吧。如果涉及到复杂的话，就统一写在editCB里面好了
-                    // if (item.editObj){
-                    //     item.editObj.map(key => {
-                    //         editObj = editObj[key]
-                    //     })
-                    // }
-
-
                     //这个地方,只需要修改vuex中的vuex的组件即可。因为实例类中的简单值属性，已经通过数据双向绑定机制完成修改了
                     // 比如 item.model.text 然后通过el-input 的v-model双向绑定修改了，所以PreView中的实例组件对应的值已经修改，只需要修改vuex即可
 
@@ -623,42 +612,16 @@
 
                 } else if (item.editType === 'sort') {
                     item.editCB(item);
-                } else {
-                    // 这里最主要的就是一次回调
-
-                    // let index = item.index ? item.index : this.activeAttr.activeIndex
-
-                    // console.log(index,item,window.ActiveAttrObj,window.ActiveAttrObj.activeAttr.value[index][item.editKey])
-
-                    // 返回值就可以了。
-                    // if (this.activeAttr.tag && this.activeAttr.tag.indexOf('switchNav') != -1) {
-                    //
-                    //     this.activeAttr.value[index][item.editKey] = typeof item.editCB === 'function' ? item.editCB(item, imgUrl) : item.model
-                    //
-                    // } else {
-                    //
-                    //     //既然已经是model绑定了，为什么这里又改一遍?
-                    //     this.activeAttr.value[index][item.editKey] = typeof item.editCB === 'function' ? item.editCB(item, imgUrl) : item.model
-                    //
-                    // }
-
-                    // = rt
                 }
+
                 // debugger
                 if (item.removeData && this.uploadStatus === undefined) item.removeData(item);
 
-                // console.log(window.ActiveAttrObj)
             },
             colorEv(val) {
-                // this.color1 = val
-                // this.clickObj.model = val
-                // this.currentData.model = val
-
                 console.log('颜色改变了');
-
                 //解除锁定
                 this.isLockMouser = false;
-
                 // 用这个代替是一样的
                 this.change(this.currentData);
             },

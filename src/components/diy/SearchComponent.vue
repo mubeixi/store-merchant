@@ -3,9 +3,7 @@
        :style="[getWrapStyle]">
     <div class="box" :class="{'round':search.config.type==='round'}">
       <i class="el-icon-search icon"></i>
-      <!--      :placeholder="search.value.hot|placeholderStr"-->
       <input class="input" readonly :style="{height:style.height+'px',backgroundColor:style.inputBgColor,color:style.color}" />
-      <!--      <el-input  clearable size="small"  prefix-icon="el-icon-search" :placeholder="search.config.hot|placeholderStr" />-->
     </div>
   </div>
 </template>
@@ -38,7 +36,7 @@
             getWrapStyle(){
               if(this.search.style.position==='absolute'){
                   return {
-                      backgroundColor:this.style.bgColor,
+                      background:this.style.bgColor,
                       // left:this.search.style.x+'px',
                       top:this.style.y+'px',
                       position:'absolute'
@@ -46,7 +44,7 @@
               }
 
                 return {
-                    backgroundColor:this.style.bgColor,
+                    background:this.style.bgColor,
                     position:'inherit'
                 }
 

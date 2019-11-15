@@ -1,6 +1,6 @@
 <template>
   <div @click.stop="setData({}, 0)" class="tab wrap" :id="'tabwrap'+index" :class="tab.config.position"
-       :style="{margin:tab.config.position === 'left'?tab.style.wrapmargin:0+'px'}">
+       :style="{margin:tab.config.position === 'left'?tab.style.wrapmargin:0+'px',background:tab.style.bgColor}">
     <div class="tabs" id="tabs">
       <li :class="{active:tabActive===idx}" :id="'tab-item'+idx" @click="clickTab(item,idx)"
           v-for="(item,idx) in tab.value.list"><span>{{item.title}}</span></li>

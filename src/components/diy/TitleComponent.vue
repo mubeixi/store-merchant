@@ -1,6 +1,6 @@
 <template>
   <div @click.stop="setData({}, 0)" class="title"
-       :style="{color:title.style.color,background:title.style.bgColor?title.style.bgColor:'none',paddingLeft:title.style.padding+'px',paddingRight:title.style.padding+'px',paddingTop:title.style.paddingc+'px',paddingBottom:title.style.paddingc+'px'}">
+       :style="{color:title.style.color,background:title.style.bgColor,paddingLeft:title.style.padding+'px',paddingRight:title.style.padding+'px',paddingTop:title.style.paddingc+'px',paddingBottom:title.style.paddingc+'px'}">
     <!--    :class="{islink:title.value.link?1:0}"-->
     <div class="flex">
       <img class="icon" :style="{marginRight:10+'px'}" :src="domainFunc(title.config.icon)" />
@@ -18,7 +18,7 @@
     import {Component, Vue} from 'vue-property-decorator';
     import {mapState} from 'vuex';
     import Title from '@/assets/js/diy/title';
-    import {deepCopy, deepCopyStrict,mergeStyleObj} from '@/common/utils';
+    import {deepCopy,mixinStyle} from '@/common/utils';
     import {domain} from '@/common/utils';
 
     @Component({
@@ -44,7 +44,7 @@
                 // return this.title.value.more[0];//this.title.value?this.title.value.more[0]:{}
             },
             style() {
-                return mergeStyleObj(this.title.styleDefault, this.title.style);
+                return mixinStyle(this.title.styleDefault, this.title.style);
             },
             activeAttr: {
                 get() {

@@ -1,5 +1,5 @@
 <template>
-  <div @click.stop="setData({}, 0)" class="nav wrap" :style="{backgroundColor:style.bgColor}">
+  <div @click.stop="setData({}, 0)" class="nav wrap" :style="{background:style.bgColor}">
     <div class="box" :class="[className]" :style="{color:style.color}">
       <ul class="list" :class="displayStyle" :style="{display:nav.value.list.length<6?'flex':'block'}">
         <li v-for="(item,idx) in nav.value.list" class="item"
@@ -19,8 +19,7 @@
     import {mapState} from 'vuex';
     import Nav from '@/assets/js/diy/nav';
     import {deepCopy, domain} from '@/common/utils';
-    import _ from 'underscore'
-    import {objTranslate,mixinStyle} from '@/common/utils';
+    import {mixinStyle} from '@/common/utils';
 
     @Component({
         props: {

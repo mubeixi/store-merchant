@@ -114,15 +114,6 @@ export function mixinStyle(defaultStyle, style) {
 }
 
 
-export const mergeStyleObj = (tmpl,target)=>{
-  for(var i in target){
-    if(target.hasOwnProperty(i)){
-      Vue.set(tmpl,i,objTranslate(target[i]))
-    }
-  }
-  return tmpl
-}
-
 /**
  * 比较两个对象，并且将模板对象上的值覆盖目标对象
  * @param currentObj

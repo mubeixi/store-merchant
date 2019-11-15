@@ -1,5 +1,6 @@
 <template>
-  <div @click.stop="setData({}, 0)" class="flash wrap" id="goods" :style="{paddingLeft:goods.style.wrapmargin+'px',paddingRight:goods.style.wrapmargin+'px'}">
+  <div @click.stop="setData({}, 0)" class="flash wrap" id="goods"
+       :style="{paddingLeft:goods.style.wrapmargin+'px',paddingRight:goods.style.wrapmargin+'px',background:goods.style.bgColor}">
     <div class="box" :class="[className]">
       <ul class="list" >
         <li v-for="(item,idx) in goodsList" class="item"

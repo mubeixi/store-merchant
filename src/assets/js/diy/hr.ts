@@ -26,14 +26,6 @@ function setAttrData() {
     content: [
       {
         type: 'color',
-        text: '背景颜色',
-        model: this.style.bgColor,
-        editType: 'style',
-        editKey: 'bgColor',
-        editCB: item => item.model,
-      },
-      {
-        type: 'color',
         text: '线条颜色',
         model: this.style.color,
         editType: 'style',
