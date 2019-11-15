@@ -46,6 +46,14 @@ function setAttrData() {
     title: '分类商品设置',
     content: [
       {
+        type: 'color',
+        text: '背景颜色',
+        model: this.style.bgColor,
+        editType: 'style',
+        editKey: 'bgColor',
+        editCB: item => item.model,
+      },
+      {
         type: 'addbtn',
         text: '分类设置',
         label: '新增分类',
@@ -417,7 +425,7 @@ class Tab extends Common {
   style = {
     wrapmargin: 15,//页面边距
     margin: 10,//商品距离
-    // bgColor: '',
+    bgColor: '',
     // height: 30,
     // color: '',
     // inputBgColor: '',

@@ -11,6 +11,7 @@ function setConfig() {
   // 如果新对象，那么可以考虑用默认值替换掉。
   if (JSON.stringify(this.style) === JSON.stringify({
     color: '',
+    bgColor: '',
     margin: '',
     height: '',
   })) {
@@ -23,6 +24,14 @@ function setAttrData() {
   const data = {
     title: '辅助线设置',
     content: [
+      {
+        type: 'color',
+        text: '背景颜色',
+        model: this.style.bgColor,
+        editType: 'style',
+        editKey: 'bgColor',
+        editCB: item => item.model,
+      },
       {
         type: 'color',
         text: '线条颜色',
@@ -100,6 +109,7 @@ class Hr extends Common {
 
   style = {
     color: '',
+    bgColor: '',
     margin: '',
     height: '',
   }

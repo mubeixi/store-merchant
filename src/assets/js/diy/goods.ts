@@ -29,6 +29,14 @@ function setAttrData() {
     title: '商品信息设置',
     content: [
       {
+        type: 'color',
+        text: '背景颜色',
+        model: this.style.bgColor,
+        editType: 'style',
+        editKey: 'bgColor',
+        editCB: item => item.model,
+      },
+      {
         type: 'origin',
         text: '商品来源',
         editType: 'config',
@@ -370,7 +378,7 @@ class Goods extends Common {
   style = {
     wrapmargin: 15,//页面边距
     margin: 10,//商品距离
-    // bgColor: '',
+    bgColor: '',
     // height: 30,
     // color: '',
     // inputBgColor: '',
