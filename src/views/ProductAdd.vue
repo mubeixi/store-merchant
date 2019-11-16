@@ -144,6 +144,7 @@
               <th class="th">价格</th>
               <th class="th">库存</th>
               <th class="th">成本价</th>
+              <th class="th" v-if="ruleForm.pintuan_flag">拼团价</th>
             </tr>
             <template v-if="skus.length>1">
               <template v-for="(sku,idx) in skus">
@@ -156,6 +157,7 @@
                   <td class="td"><el-input v-if="skuList[idx]" size="mini" v-model="skuList[idx].Attr_Price"/></td>
                   <td class="td"><el-input v-if="skuList[idx]" size="mini" v-model="skuList[idx].Property_count"/></td>
                   <td class="td"><el-input v-if="skuList[idx]" size="mini" v-model="skuList[idx].Supply_Price"/></td>
+                  <td class="td" v-if="ruleForm.pintuan_flag"><el-input v-if="skuList[idx]" size="mini" v-model="skuList[idx].pt_pricex"/></td>
                 </tr>
               </template>
             </template>
@@ -166,6 +168,7 @@
                   <td class="td"><el-input v-if="skuList[idx]" size="mini" v-model="skuList[idx].Attr_Price"/></td>
                   <td class="td"><el-input v-if="skuList[idx]" size="mini" v-model="skuList[idx].Property_count"/></td>
                   <td class="td"><el-input v-if="skuList[idx]" size="mini" v-model="skuList[idx].Supply_Price"/></td>
+                  <td class="td" v-if="ruleForm.pintuan_flag"><el-input v-if="skuList[idx]" size="mini" v-model="skuList[idx].pt_pricex"/></td>
                 </tr>
               </template>
             </template>
@@ -173,7 +176,7 @@
                <td class="td divTd" colspan="9">
                  <span>批量设置：</span>
                  <template v-if="allPrice">
-                   <span  class="span" @click="changePrice('price')">价格</span><span class="span" @click="changePrice('count')">库存</span><span class="span" @click="changePrice('supply')">成本价</span>
+                   <span  class="span" @click="changePrice('price')">价格</span><span class="span" @click="changePrice('count')">库存</span><span class="span" @click="changePrice('supply')">成本价</span><span class="span" @click="changePrice('pintuan')">拼团价</span>
                  </template>
                  <template v-else="!allPrice">
                    <span ><el-input v-model="allValue"  size="mini" style="width: 100px;"/><span class="spans" @click="saveAll">保存</span><span class="spans" @click="delAll">取消</span></span>
@@ -298,7 +301,7 @@
           </div>
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-              <el-input  size="mini" style="width: 80px;margin-left: 19px;"></el-input>
+              <el-input  size="mini" v-model="platForm_Income_Reward" style="width: 80px;margin-left: 19px;"></el-input>
               % <span class="msg">（发放金额所占网站利润的百分比；小于100%大于0%）</span>
             </el-form-item>
           </div>
@@ -309,7 +312,7 @@
           </div>
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-              <el-input  size="mini" style="width: 80px;margin-left: 19px;"></el-input>
+              <el-input  size="mini" v-model="nobi_ratio" style="width: 80px;margin-left: 19px;"></el-input>
               % <span class="msg">（所占发放比例的百分比）</span>
             </el-form-item>
           </div>
@@ -320,7 +323,7 @@
           </div>
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-              <el-input  size="mini" style="width: 80px;margin-left: 19px;"></el-input>
+              <el-input  size="mini"  v-model="area_Proxy_Reward" style="width: 80px;margin-left: 19px;"></el-input>
               % <span class="msg">（所占发放比例的百分比）</span>
             </el-form-item>
           </div>
@@ -331,7 +334,7 @@
           </div>
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-              <el-input  size="mini" style="width: 80px;margin-left: 19px;"></el-input>
+              <el-input  size="mini" v-model="sha_Reward" style="width: 80px;margin-left: 19px;"></el-input>
               % <span class="msg">（所占发放比例的百分比）</span>
             </el-form-item>
           </div>
@@ -342,7 +345,7 @@
           </div>
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-              <el-input  size="mini" style="width: 80px;margin-left: 19px;"></el-input>
+              <el-input  size="mini" v-model="commission_ratio" style="width: 80px;margin-left: 19px;"></el-input>
               % <span class="msg">（下面佣金返利所占发放比例比例的百分比）</span>
             </el-form-item>
           </div>
@@ -352,67 +355,24 @@
             佣金返利 (全部统一)
           </div>
           <div class="aiHai">
-            <div class="fenxiaoshang">
-              <div class="fenTitle">普通分销商</div>
+            <div class="fenxiaoshang" v-for="(fen,fenIndex) of dis_level_list" :key="fenIndex">
+              <div class="fenTitle">{{fen.Level_Name}}</div>
               <div>
-                <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  <span class="label">一级</span>
-                  <el-input  size="mini" style="width: 70px"></el-input>
+                <el-form-item label="" prop="sort" style="margin-bottom: 0px;" v-for="(dis,disIndex) of Dis_Level_arr" :key="disIndex">
+                  <span class="label">{{dis}}</span>
+                  <el-input  size="mini" style="width: 70px" v-model="distriboutor_config[fenIndex][disIndex]"></el-input>
                   % <span class="msg">（佣金比例的百分比）</span>
                 </el-form-item>
-                <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  <span class="label">二级</span>
-                  <el-input  size="mini" style="width: 70px"></el-input>
-                  % <span class="msg">（佣金比例的百分比）</span>
-                </el-form-item>
-                <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
+                <el-form-item label="" prop="sort" style="margin-bottom: 0px;" v-if="prodConfig.Dis_Self_Bonus==1">
                   <span class="label">自销佣金</span>
-                  <el-input  size="mini" style="width: 70px"></el-input>
+                  <!--手动加了一个-->
+                  <el-input  size="mini" style="width: 70px" v-model="distriboutor_config[fenIndex][Dis_Level_arr.length]"></el-input>
                   % <span class="msg">（佣金比例的百分比）</span>
                 </el-form-item>
               </div>
             </div>
-            <div class="fenxiaoshang">
-              <div class="fenTitle">普通分销商</div>
-              <div>
-                <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  <span class="label">一级</span>
-                  <el-input  size="mini" style="width: 70px"></el-input>
-                  % <span class="msg">（佣金比例的百分比）</span>
-                </el-form-item>
-                <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  <span class="label">二级</span>
-                  <el-input  size="mini" style="width: 70px"></el-input>
-                  % <span class="msg">（佣金比例的百分比）</span>
-                </el-form-item>
-                <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  <span class="label">自销佣金</span>
-                  <el-input  size="mini" style="width: 70px"></el-input>
-                  % <span class="msg">（佣金比例的百分比）</span>
-                </el-form-item>
-              </div>
-            </div>
-            <div class="fenxiaoshang">
-              <div class="fenTitle">普通分销商</div>
-              <div>
-                <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  <span class="label">一级</span>
-                  <el-input  size="mini" style="width: 70px"></el-input>
-                  % <span class="msg">（佣金比例的百分比）</span>
-                </el-form-item>
-                <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  <span class="label">二级</span>
-                  <el-input  size="mini" style="width: 70px"></el-input>
-                  % <span class="msg">（佣金比例的百分比）</span>
-                </el-form-item>
-                <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  <span class="label">自销佣金</span>
-                  <el-input  size="mini" style="width: 70px"></el-input>
-                  % <span class="msg">（佣金比例的百分比）</span>
-                </el-form-item>
-              </div>
-            </div>
-          </div>
+
+           </div>
         </div>
 
 
@@ -498,12 +458,48 @@
 
         prodConfig={
             prod_type_list:[],
-            shipping_company_dropdown:{}
+            shipping_company_dropdown:{},
+            Shop_Commision_Reward_Json:{}
         };
+
+        distriboutor_config = null;
+        Dis_Level_arr = []
+        dis_level_list = []
         created(){
             systemProdConfig().then(res=>{
                 if(res.errorCode==0){
                     this.prodConfig=res.data;
+
+                    this.dis_level_list = res.data.dis_level_list
+                    this.Dis_Level_arr = res.data.Dis_Level_arr
+
+                    let tempArr = this.dis_level_list.map(item1=>{
+                        return []
+                    });
+                    for(var i in tempArr){
+                        tempArr[i] = this.Dis_Level_arr.map(item2=>{
+                            return ''
+                        })
+                        //加一个自定义的
+                        tempArr[i].push('')
+                    }
+
+                    this.$set(this,'distriboutor_config',tempArr);
+                    //this.distriboutor_config = tempArr;
+
+                    for(let item in this.prodConfig.Shop_Commision_Reward_Json.Distribute){
+                        for(let i=0;i<this.dis_level_list.length;i++){
+                            if(item==this.dis_level_list[i].Level_ID){
+                                this.distriboutor_config[i]=this.prodConfig.Shop_Commision_Reward_Json.Distribute[item];
+                            }
+                        }
+                    }
+
+                    this.platForm_Income_Reward=res.data.Shop_Commision_Reward_Json.platForm_Income_Reward;
+                    this.nobi_ratio=res.data.Shop_Commision_Reward_Json.noBi_Reward;
+                    this.sha_Reward=res.data.Shop_Commision_Reward_Json.sha_Reward;
+                    this.area_Proxy_Reward=res.data.Shop_Commision_Reward_Json.area_Proxy_Reward;
+                    this.commission_ratio=res.data.Shop_Commision_Reward_Json.commission_Reward;
                 }
             }).catch();
         }
@@ -656,14 +652,16 @@
                                 Attr_Value: item,
                                 Attr_Price: this.skusData[idx].Attr_Price,
                                 Property_count: this.skusData[idx].Property_count,
-                                Supply_Price: this.skusData[idx].Supply_Price
+                                Supply_Price: this.skusData[idx].Supply_Price,
+                                pt_pricex:this.skusData[idx].pt_pricex
                             })
                         }else{
                             arr.push({
                                 Attr_Value: item,
                                 Attr_Price: '',
                                 Property_count: '',
-                                Supply_Price: ''
+                                Supply_Price: '',
+                                pt_pricex:''
                             })
                         }
 
@@ -690,7 +688,8 @@
                         Attr_Value:nameStr,
                         Attr_Price:'',
                         Property_count:'',
-                        Supply_Price:''
+                        Supply_Price:'',
+                        pt_pricex:''
                     }
                 });
             }
@@ -747,6 +746,10 @@
             }else if(this.allType=='count'){
                 for(let item of this.skuList){
                     item.Property_count=this.allValue;
+                }
+            }else if(this.allType=='pintuan'){
+                for(let item of this.skuList){
+                    item.pt_pricex=this.allValue;
                 }
             }else{
                 for(let item of this.skuList){
@@ -871,6 +874,13 @@
         upVideoSuccessCall(file){
             this.video = file.path
         }
+        fenxiaoshang=[];
+
+        platForm_Income_Reward='';
+        nobi_ratio="";
+        area_Proxy_Reward="";
+        sha_Reward="";
+        commission_ratio="";
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
@@ -879,11 +889,11 @@
                             return alert('实体订单商品重量大于0')
                         }
                     }
-                    alert('submit!');
+
                     let productInfo={
                         Products_Index:this.ruleForm.Products_Index,//商品排序
                         Products_Name:this.ruleForm.Products_Name,//商品名称
-                        Products_Category:JSON.stringify({"1":["2","3"],"5":["7"]}),//商品分类
+                        Products_Category:this.cate_ids,//商品分类
                         Products_Sales:this.ruleForm.Products_Sales,//虚拟销量
                         Products_PriceY:this.ruleForm.Products_PriceY,//原价
                         Products_PriceX:this.ruleForm.Products_PriceX,//现价
@@ -897,6 +907,11 @@
                         prod_order_type:this.ruleForm.orderType,//订单类型
                         Products_Description:this.editorText,//富文本类型
                         Product_backup:this.ruleForm.refund,//退货id
+                        platForm_Income_Reward:this.platForm_Income_Reward,
+                        nobi_ratio:this.nobi_ratio,
+                        area_Proxy_Reward:this.area_Proxy_Reward,
+                        sha_Reward:this.sha_Reward,
+                        commission_ratio:this.commission_ratio,
                     };
                     if(this.thumb.length<1){
                         alert('商品主图不能为空');
@@ -949,7 +964,8 @@
                                 attrs[item.title]=ar;
                             }
                         }
-                        let skuList=this.skuList.concat();
+                        let arrM=this.skuList;
+                        let skuList= objTranslate(arrM);
                         for(let mbx of skuList){
                             if(typeof mbx.Attr_Value=='object' ){
 
@@ -959,7 +975,6 @@
                                 for(let i=0;i<this.specs.length;i++){
                                     objSku[this.specs[i].title]=splitArr[i];
                                 }
-                                console.log(objSku,"last")
                                 mbx.Attr_Value=objSku;
                             }
                         }
@@ -968,7 +983,19 @@
                             'values':skuList
                         })
                     }
+                    //分销商 价格
+                    if(this.dis_level_list.length>0){
+                        let disArr=this.dis_level_list;
+                        let disObj={};
+                        for(let dis=0;dis<disArr.length;dis++){
+                            let arr=disArr[dis].Level_ID;
+                            let arr2=this.distriboutor_config[dis];
+                            disObj[arr]=arr2;
+                        }
+                        productInfo.Products_Distributes=JSON.stringify(disObj);
+                    }
 
+                    alert('submit!');
                     systemOperateProd(productInfo).then(res=>{
                         console.log(res,"sss")
                     }).catch(e=>{
