@@ -5,7 +5,7 @@ import Diy from './views/Diy.vue';
 
 import Empty from './views/Empty.vue';
 import ProductAdd from "@/views/ProductAdd.vue";
-
+import UserList from '@/views/UserList.vue';
 Vue.use(Router);
 
 export default new Router({
@@ -29,6 +29,12 @@ export default new Router({
       path: '/productAdd',
       name: 'product',
       component: ProductAdd,
+    },
+    ,
+    {
+      path: '/userList',
+      name: 'userlist',
+      component: UserList,
     },
     // {
     //   path: '/about',
