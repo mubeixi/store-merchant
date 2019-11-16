@@ -533,7 +533,7 @@
                 if (value === '') {
                     callback(new Error('请输入现价'));
                 } else {
-                    if (value >= this.ruleForm.Products_PriceY) {
+                    if (Number(value) >= Number(this.ruleForm.Products_PriceY)) {
                         callback(new Error('现价应低于原价'));
                     }
                     callback();
@@ -766,8 +766,8 @@
             Products_Index: '',//商品排序
             Products_Name:'',//商品名称
             Products_Sales:'',//虚拟销量
-            Products_PriceY:'',//原价
-            Products_PriceX:'',//现价
+            Products_PriceY:0,//原价
+            Products_PriceX:0,//现价
             pintuan_people:'',//拼团人数
             pintuan_pricex:'',//拼团价格
             pintuan_end_time:'',//拼团时间
