@@ -12,6 +12,7 @@ window.funLoading = false
 
 const fetch = function (act: String, param: Object = {}, options = false, url: String = '/api/little_program/shopconfig.php', method: String = 'post') {
 
+  console.log(param)
   if (!act) Vue.$fun.warning('获取信息失败');
 
   // @ts-ignore
