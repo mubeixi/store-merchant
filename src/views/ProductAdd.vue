@@ -270,6 +270,8 @@
     <bind-cate-components
       :multiple="true"
       @cancel="bindCateCancel"
+      :strictly="false"
+      mode="productAdd"
       :onSuccess="bindCateSuccessCall"
       :pageEl="pageEl"
       :show="bindCateDialogShow"/>
@@ -354,37 +356,17 @@
               <div class="fenTitle">普通分销商</div>
               <div>
                 <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  一级
+                  <span class="label">一级</span>
                   <el-input  size="mini" style="width: 70px"></el-input>
                   % <span class="msg">（佣金比例的百分比）</span>
                 </el-form-item>
                 <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  二级
+                  <span class="label">二级</span>
                   <el-input  size="mini" style="width: 70px"></el-input>
                   % <span class="msg">（佣金比例的百分比）</span>
                 </el-form-item>
                 <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  自销佣金
-                  <el-input  size="mini" style="width: 70px"></el-input>
-                  % <span class="msg">（佣金比例的百分比）</span>
-                </el-form-item>
-              </div>
-            </div>
-            <div class="fenxiaoshang">
-              <div class="fenTitle">普通分销商</div>
-              <div>
-                <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  一级
-                  <el-input  size="mini" style="width: 70px"></el-input>
-                  % <span class="msg">（佣金比例的百分比）</span>
-                </el-form-item>
-                <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  二级
-                  <el-input  size="mini" style="width: 70px"></el-input>
-                  % <span class="msg">（佣金比例的百分比）</span>
-                </el-form-item>
-                <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  自销佣金
+                  <span class="label">自销佣金</span>
                   <el-input  size="mini" style="width: 70px"></el-input>
                   % <span class="msg">（佣金比例的百分比）</span>
                 </el-form-item>
@@ -394,17 +376,37 @@
               <div class="fenTitle">普通分销商</div>
               <div>
                 <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  一级
+                  <span class="label">一级</span>
                   <el-input  size="mini" style="width: 70px"></el-input>
                   % <span class="msg">（佣金比例的百分比）</span>
                 </el-form-item>
                 <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  二级
+                  <span class="label">二级</span>
                   <el-input  size="mini" style="width: 70px"></el-input>
                   % <span class="msg">（佣金比例的百分比）</span>
                 </el-form-item>
                 <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-                  自销佣金
+                  <span class="label">自销佣金</span>
+                  <el-input  size="mini" style="width: 70px"></el-input>
+                  % <span class="msg">（佣金比例的百分比）</span>
+                </el-form-item>
+              </div>
+            </div>
+            <div class="fenxiaoshang">
+              <div class="fenTitle">普通分销商</div>
+              <div>
+                <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
+                  <span class="label">一级</span>
+                  <el-input  size="mini" style="width: 70px"></el-input>
+                  % <span class="msg">（佣金比例的百分比）</span>
+                </el-form-item>
+                <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
+                  <span class="label">二级</span>
+                  <el-input  size="mini" style="width: 70px"></el-input>
+                  % <span class="msg">（佣金比例的百分比）</span>
+                </el-form-item>
+                <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
+                  <span class="label">自销佣金</span>
                   <el-input  size="mini" style="width: 70px"></el-input>
                   % <span class="msg">（佣金比例的百分比）</span>
                 </el-form-item>
@@ -447,6 +449,7 @@
     import fa from "element-ui/src/locale/lang/fa";
 
     import _ from 'underscore';
+    import {get_arr_column} from '@/common/utils';
 
     /**
      * 获取二维数组（一维数组的元素也是数组)的指定位置开始到最后的长度叠加成绩
@@ -464,6 +467,7 @@
         // console.log(rt)
         return rt;
     }
+
 
 
     @Component({
@@ -779,7 +783,6 @@
             freightGu:'',//固定运费
             Products_IsPaysBalance:'',//是否使用余额支付
         }
-
         rules = {
             Products_Index: [
                 {required: true,message: '请输入商品排序', trigger: 'blur' }
@@ -965,16 +968,41 @@
             this.bindCateDialogShow = false
         }
 
-        bindCateSuccessCall(dataType, type, path, tooltip, dataArr, pageEl, idx2){
+        bindCateSuccessCall(dataType, type, path, tooltip, dataArr, pageEl, idx2,ext){
+
+            let origin_cate_list = ext//获取所有的菜单数据，方便后面拼接。
+
+            let child_arr = [];
+            let cate_data = {}
+            for(var cate of origin_cate_list){
+                child_arr = [];
+
+                for(var item of dataArr){
+                    if(item.child)continue
+                    for(var child of cate.child){
+                        if(child.Category_ID === item.Category_ID){
+                            child_arr.push(item.Category_ID)
+                        }
+                    }
+                }
+
+                if(child_arr.length>0){
+                    cate_data[cate.Category_ID] = [...child_arr]
+                }
+
+            }
+
+            //console.log(cate_data)
+
             this.cate_list = dataArr.map(cate=>{
                 return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
             })
 
-            let ids = this.cate_list.map(cate=>{
-                return cate.Category_ID
-            })
+            // let ids = this.cate_list.map(cate=>{
+            //     return cate.Category_ID
+            // })
 
-            this.cate_ids = ids.join('|')
+            this.cate_ids = JSON.stringify(cate_data)//ids.join('|')
             this.bindCateDialogShow = false
         }
 
@@ -1016,9 +1044,10 @@
   margin:0px auto 0;
   background-color: #f2f2f2;
   position: relative;
+
   .setting{
     position: fixed;
-    right: 15px;
+    right: 46px;
     top: 460px;
     background-color: #428CF7;
     border-radius: 2px;
@@ -1242,6 +1271,12 @@
   background-color: #F8F8F8;
   /*width: 320px;*/
   margin-right: 15px;
+  .label{
+    display: inline-block;
+    min-width: 60px;
+    margin-right: 6px;
+    text-align: right;
+  }
 }
 .fenTitle{
   font-size: 16px;
