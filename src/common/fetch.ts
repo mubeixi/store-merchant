@@ -97,6 +97,14 @@ export const getProductCountInfo  = (data,options) => fetch('get_users_info', da
 
 export const uploadImgByBase64 = (data,options) => fetch('upload_image', data, options);
 
+export const getSysuser = (data,options) => fetch('get_sysuser', data, options);
+export const getSysorders = (data,options) => fetch('get_sysorders', data, options);
+export const getSysgrowths = (data,options) => fetch('get_sysgrowths', data, options);
+export const getSysbalances = (data,options) => fetch('get_sysbalances', data, options);
+export const getSysintegrals = (data,options) => fetch('get_sysintegrals', data, options);
+export const getSysloginLogs = (data,options) => fetch('get_syslogin_logs', data, options);
+export const getSysstatistics = (data,options) => fetch('get_sysstatistics', data, options);
+export const getAddress = (data,options) => fetch('get_address',data,options);
 export const getStoreList = (data,options) => fetch('get_store_list', data, options);
 
 //产品添加编辑所需配置
