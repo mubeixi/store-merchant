@@ -101,7 +101,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="商品规格">
+      <el-form-item label="商品规格" v-if="ruleForm.Products_Type">
        <div class="specs_box">
          <div class="specs_row" v-for="(row,idx_row) in specs" :key="idx_row">
            <span class="label">{{row.title}}</span>
@@ -405,7 +405,7 @@
     import {calcDescartes, objTranslate} from "@/common/utils";
     import BindStoreComponent from "@/components/comm/BindStoreComponent.vue";
     import SettingComponent from "@/components/comm/SettingComponent.vue";
-    import {systemProdConfig,systemOperateProd} from '@/common/fetch'
+    import {systemProdConfig,systemOperateProd,systemProdDetail} from '@/common/fetch'
     import fa from "element-ui/src/locale/lang/fa";
 
     import _ from 'underscore';
@@ -548,6 +548,7 @@
             groupPrice:(rule, value, callback) => {
 
                 if (this.ruleForm.pintuan_flag && !this.ruleForm.pintuan_pricex)callback(new Error('请输入拼团价格'))
+                if (this.ruleForm.pintuan_flag && Number(this.ruleForm.pintuan_pricex)>Number(this.ruleForm.Products_PriceX))callback(new Error('拼团价格不能大于现价'))
                 callback();
 
             },
@@ -766,8 +767,8 @@
             Products_Index: '',//商品排序
             Products_Name:'',//商品名称
             Products_Sales:'',//虚拟销量
-            Products_PriceY:0,//原价
-            Products_PriceX:0,//现价
+            Products_PriceY:'',//原价
+            Products_PriceX:'',//现价
             pintuan_people:'',//拼团人数
             pintuan_pricex:'',//拼团价格
             pintuan_end_time:'',//拼团时间
@@ -889,7 +890,6 @@
                             return alert('实体订单商品重量大于0')
                         }
                     }
-
                     let productInfo={
                         Products_Index:this.ruleForm.Products_Index,//商品排序
                         Products_Name:this.ruleForm.Products_Name,//商品名称
@@ -918,6 +918,10 @@
                         return ;
                     }else {
                         productInfo.Products_JSON=JSON.stringify({"ImgPath":this.thumb})
+                    }
+                    if(this.video){
+                        productInfo.video_url=this.video;
+                        productInfo.cover_url=this.imgs;
                     }
                     if(this.store_list.length>0){
                         let arr=[];
