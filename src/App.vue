@@ -62,4 +62,9 @@ input[type="number"]{
   }
 }
 
+.wzw-table th {
+  color: #333 !important;
+    background-color: #F9FAFC !important;
+}
+
 </style>

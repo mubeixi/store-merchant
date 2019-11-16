@@ -18,7 +18,7 @@
                             <div class="user-level">{{userInfo.level_name}}</div>
                         </div>
                         <div class="user-right">
-                            <table class="width:100%;height: 100%;" cellspacing="0" cellpadding="0">
+                            <table class="width:100%;height: 100%;color:#666;" cellspacing="0" cellpadding="0">
                                 <tr class="first">
                                     <td>手机</td>
                                     <td>{{userInfo.User_Mobile}}</td>
@@ -65,6 +65,7 @@
                         统计信息
                     </div>
                     <el-table
+                        class="wzw-table"
                         :data="statData"
                         border
                         
@@ -138,6 +139,7 @@
                         地址管理
                     </div>
                     <el-table
+                    class="wzw-table"
                         :data="addData"
                         border
                         >
@@ -168,6 +170,7 @@
                         订单记录
                     </div>
                     <el-table
+                    class="wzw-table"
                         :data="orderData"
                         border
                         >
@@ -266,6 +269,7 @@
             <template v-if="item == 2">
                 <div class="logs-wrap">
                     <el-table
+                    class="wzw-table"
                         :data="loginData"
                         border
                         :row-style="rowStyle"
@@ -303,6 +307,7 @@
             <template v-if="item ==3">
                     <div class="detail-wrap">
                     <el-table
+                    class="wzw-table"
                         :data="detailData"
                         border
                         :row-style="rowStyle"
@@ -346,6 +351,7 @@
             <template v-if="item ==4">
                 <div class="detail-wrap">
                     <el-table
+                    class="wzw-table"
                         :data="moneyData"
                         border
                         :row-style="rowStyle"
@@ -389,6 +395,7 @@
              <template v-if="item ==5">
                     <div class="detail-wrap">
                     <el-table
+                    class="wzw-table"
                         :data="groupData"
                         border
                         :row-style="rowStyle"
@@ -517,7 +524,8 @@
                 return 'color: #666;'
             }
             headerStyle() {
-                return 'color: #333;background-Color:#EAEAEA;'
+                return '';
+                //return 'background-color:red;color:red;'
             }
             prev(page){
                 this.page = page;
@@ -569,13 +577,13 @@
             }
             // 用户信息
             getSysuser(){
-                getSysuser({User_ID: USER_ID}).then(res=>{
+                getSysuser({User_ID}).then(res=>{
                     this.userInfo = res.data;
                 })
             }
             // 统计信息
             get_sysstatistics(){
-                getSysstatistics({User_ID:USER_ID}).then(res=>{
+                getSysstatistics({User_ID}).then(res=>{
                     this.statData[0].mount = res.data.con_money;
                     this.statData[0].amount = res.data.ord_count;
                     this.statData[0].balance = res.data.user.User_Money;
@@ -759,12 +767,15 @@
             .user-right {
                 flex: 1;
                 td {
-                    border: 1px solid #EAEAEA;
-                }
-                td {
                     height: 45px;
                     line-height: 45px;
                     text-align: center;
+                    color: #666;
+                    border-left: 1px solid #EAEAEA;
+                    border-bottom: 1px solid #EAEAEA;
+                    // border: 1px solid #EAEAEA;
+                    border-top: 0;
+                    box-sizing: border-box;
                 }
                 & td:nth-child(2n+1) {
                     background: #F9FAFC;
@@ -772,13 +783,15 @@
                 }
                 & td:nth-child(2n) {
                     width: 307px;
-                }
-                td {
-                    border-top: 0;
+                    text-align: left;
+                    padding-left: 34px;
                     box-sizing: border-box;
                 }
                 .first td {
                     border-top: 1px solid #eaeaea;
+                }
+                & td:nth-child(4n) {
+                    border-right: 1px solid #eaeaea;
                 }
             }
         }
@@ -856,6 +869,14 @@
         .endtime {
             margin-right: 24px;
         }
-        
+        // .el-table--border {
+        //     border: 0;
+        // }
+        // .el-table::before {
+        //     width:0;
+        // }
+        // .el-table--border th {
+        //     border-top:1px solid #eaeaea;
+        // }
     }
 </style>
