@@ -174,10 +174,7 @@
   border:1px solid @border;
   border-bottom: 0px;
 }
-.sortInput{
-  margin-bottom: 0px;
-  margin-left: 0px;
-}
+
   .titles{
     width: 220px;
     text-align: center;

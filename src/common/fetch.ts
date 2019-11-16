@@ -101,6 +101,8 @@ export const getStoreList = (data,options) => fetch('get_store_list', data, opti
 
 //产品添加编辑所需配置
 export const systemProdConfig = (data,options) => fetch('system_prod_config', data, options);
+//产品添加编辑所需配置
+export const systemOperateProd = (data,options) => fetch('system_operate_prod', data, options);
 
 
 function get_Appid() {
