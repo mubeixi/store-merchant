@@ -258,6 +258,7 @@
 
     import html2canvas from 'html2canvas';
     import {Canvas2Image} from '@/assets/js/diy/tool/canvas2img';
+    import {trim} from 'vue-resource/src/util';
 
 
     @Component({
@@ -336,6 +337,11 @@
         methods: {
             scrollFn:function(direction){
                 //console.log(direction)
+            },
+
+            clearPlugin(){
+                this.templateData = [] //页面数据的二维数组。
+                this.templateList = [] //页面组件的二维数组。
             },
             restTmplFun(defaultData){
 
@@ -1003,8 +1009,9 @@
 
 
         dropEv(e: any) {
-            const templateName = e.dataTransfer.getData('text/plain');
-            //console.log(templateName);
+            let templateName = e.dataTransfer.getData('text/plain');
+            templateName = trim(templateName);
+            console.log(templateName);
             if (templateName === '') return; // 在页面内拖动时，无需添加组件
 
             // 如果是switchNav组件，特殊操作。虽然我也不知道为什么要这样
@@ -1072,7 +1079,8 @@
                 //     newClass = new ScaleJS()
                 //     break
                 default:
-                    this.$fun.error({msg:'组件不存在'});
+                    this.$fun.error({msg:'只允许拖入组件'});
+                    return;
                     break;
             }
 

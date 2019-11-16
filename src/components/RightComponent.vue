@@ -5,9 +5,10 @@
         <transition-group>
           <li :key="key" @click.stop="emitPreviewPlugin(key)" :data-label="item.label"
               v-for="(item,key) in pluginList">
-            <svg class="fun-icon icon sorticon"  aria-hidden="true">
-              <use xlink:href="#icon-paixu" ></use>
-            </svg>
+<!--            <svg class="fun-icon icon sorticon"  aria-hidden="true">-->
+<!--              <use xlink:href="#icon-paixu" ></use>-->
+<!--            </svg>-->
+            <i class="el-icon-sort" style="margin-left: 6px"></i>
             {{item.tag|getTitleByTag}}
             <div class="right" @click.stop="removePlugin(key)">
               <i  class="el-icon-delete"></i>

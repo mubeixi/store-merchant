@@ -1,5 +1,6 @@
 <template>
-  <div @click.stop="setData({}, 0)" class="goods wrap" id="goods" :style="{paddingLeft:goods.style.wrapmargin+'px',paddingRight:goods.style.wrapmargin+'px'}">
+  <div @click.stop="setData({}, 0)" class="goods wrap" id="goods"
+       :style="{background:goods.style.bgColor,paddingLeft:goods.style.wrapmargin+'px',paddingRight:goods.style.wrapmargin+'px'}">
     <div class="box" :class="[className]">
       <ul class="list" >
         <li v-for="(item,idx) in goodsList" class="item"
@@ -68,7 +69,7 @@
     import {Component, Vue} from 'vue-property-decorator';
     import {mapState} from 'vuex';
     import Goods from '@/assets/js/diy/goods';
-    import {deepCopy, domain} from '@/common/utils';
+    import {deepCopy, domain,mixinStyle} from '@/common/utils';
     import {getProductList} from '@/common/fetch';
 
     @Component({
@@ -168,7 +169,7 @@
                 return 'style' + this.goods.config.style
             },
             style() {
-                // return deepCopyStrict(this.coupon.styleDefault, this.coupon.style);
+                //return mixinStyle(this.goods.styleDefault, this.goods.style);
             },
             activeAttr: {
                 get() {

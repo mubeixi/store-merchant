@@ -1,6 +1,7 @@
 // @ts-nocheck
 import Vue from 'vue';
 import {staticUrl} from "@/common/env";
+import _ from 'underscore';
 
 /**
  * 获取指定的样式值
@@ -113,6 +114,7 @@ export function mixinStyle(defaultStyle, style) {
   return rt;
 }
 
+
 /**
  * 比较两个对象，并且将模板对象上的值覆盖目标对象
  * @param currentObj
@@ -209,7 +211,12 @@ export const serialize = obj=>{
  * @param array
  */
 export const calcDescartes = (array)=>{
-  if (array.length < 2) return array[0] || [];
+  console.log(array)
+  if (array.length < 1) return [];
+  if (array.length < 2){
+    //if(array[0].length) return []
+    return [array[0]]
+  }
   return [].reduce.call(array, function (col, set) {
     var res = [];
     col.forEach(function (c) {
@@ -222,4 +229,22 @@ export const calcDescartes = (array)=>{
     console.log(res)
     return res;
   });
+}
+
+
+export const get_arr_column = (arr,column)=>{
+  if(!_.isArray(arr)){
+    throw new Error('数据必传')
+  }
+  if(typeof column !='string'){
+    throw new Error('键名为字符串')
+  }
+  let rt = []
+  for(var k in arr){
+    if(typeof arr[k] == 'object'){
+      throw new Error('获取的数值不为简单值')
+    }
+    rt.push(arr[k])
+  }
+  return rt
 }

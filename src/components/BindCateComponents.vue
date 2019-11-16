@@ -98,6 +98,10 @@
         type: Boolean,
         default: false,
       },
+      mode:{
+        type:String,
+        default:'productAdd'
+      },
       strictly: {
         type: Boolean,
         default: true,
@@ -404,6 +408,7 @@
         let tooltip = '';
         let dataItem = {};
         let type = '';
+        let ext = null;
         if (this.innerDialog.index === 'customize') {
           path = this.innerDialog.customizeStart + this.innerDialog.customizeLink;
           tooltip = `自定义链接：${path}`;
@@ -417,7 +422,9 @@
               type = 'page';
               break;
             case '2':
+
               if(this.multiple){
+
                 var arr = this.$refs.treeForm.getCheckedNodes();
                 console.log(arr)
                 if (arr.length<1) return this.$message('请先选择分类');
@@ -427,6 +434,11 @@
                 tooltip = `多个分类：`+nameArr.join(';');
                 dataItem = arr;
                 type = 'multiple_cate';
+
+                if(this.mode=='productAdd'){
+                  ext = this.innerDialog.classify.data
+                }
+
 
               }else{
                 var data = this.$refs.treeForm.getCheckedNodes()[0];
@@ -476,7 +488,7 @@
           type,
           path,
           tooltip,
-          dataItem, this.pageEl, this.idx2);
+          dataItem, this.pageEl, this.idx2,ext);
         // this.$emit('change', {
         //     dataType,
         //     type,

@@ -40,10 +40,11 @@ import {
   TimePicker,
   Tooltip,
   Tree,
-  Upload
+  Upload,
+  Autocomplete
 } from 'element-ui';
 
-
+Vue.use(Autocomplete);
 Vue.use(Input);
 Vue.use(Button);
 Vue.use(Pagination);

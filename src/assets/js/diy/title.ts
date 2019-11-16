@@ -88,7 +88,9 @@ function setAttrData() {
         model: this.style.bgColor,
         editType: 'style',
         editKey: 'bgColor',
-        editCB: item => item.model,
+        editCB: item => {
+          return item.model?item.model:'none'
+        },
       },
       {
         type: 'radio',
@@ -239,7 +241,7 @@ class Title extends Common {
 
   style = {
     color: '',
-    bgColor: '',
+    bgColor: '#fff',
     padding:'',
     paddingc:'',
     fontSize:'',

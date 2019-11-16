@@ -66,12 +66,12 @@ class Video extends Common {
   // activeIndex = 0;
 
   style = {
-    bgColor: '',
+    //bgColor: '',
     height: '',
   }
 
   styleDefault = {
-    bgColor: '#fff',
+    //bgColor: '#fff',
     height: '0',
   }
 

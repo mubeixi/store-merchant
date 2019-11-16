@@ -11,6 +11,7 @@ function setConfig() {
   // 如果新对象，那么可以考虑用默认值替换掉。
   if (JSON.stringify(this.style) === JSON.stringify({
     color: '',
+    bgColor: '',
     margin: '',
     height: '',
   })) {
@@ -100,6 +101,7 @@ class Hr extends Common {
 
   style = {
     color: '',
+    //bgColor: '',
     margin: '',
     height: '',
   }

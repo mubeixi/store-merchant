@@ -25,6 +25,14 @@ function setAttrData() {
     title: '图片Banner',
     labelSize:'L',
     content: [
+      // {
+      //   type: 'color',
+      //   text: '背景颜色',
+      //   model: this.style.bgColor,
+      //   editType: 'style',
+      //   editKey: 'bgColor',
+      //   editCB: item => item.model,
+      // },
       {
         type: 'addbtn',
         text: '图片管理',
@@ -160,7 +168,7 @@ class Swiper extends Common {
   // activeIndex = 0;
 
   style = {
-    // bgColor: '',
+    bgColor: '#fff',
     // height: 30,
     // color: '',
     // inputBgColor: '',

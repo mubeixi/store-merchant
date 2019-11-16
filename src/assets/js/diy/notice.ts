@@ -38,7 +38,9 @@ function setAttrData() {
         model: this.style.bgColor,
         editType: 'style',
         editKey: 'bgColor',
-        editCB: item => item.model,
+        editCB: item => {
+          return item.model?item.model:'none'
+        },
       },
       {
         type: 'color',
@@ -114,7 +116,7 @@ class Notice extends Common {
   // activeIndex = 0;
 
   style = {
-    bgColor: '',
+    bgColor: '#fff',
     // height: 30,
     color: '',
     iconColor: '',

@@ -1,7 +1,7 @@
 <template>
   <div @click.stop="setData({}, 0)" class="text">
     <div :class="{islink:text.value.link?1:0}"
-         :style="{fontSize:text.style.fontSize+'px',color:text.style.color,backgroundColor:text.style.bgColor,textAlign:text.style.textAlign}"
+         :style="{fontSize:text.style.fontSize+'px',color:text.style.color,background:text.style.bgColor,textAlign:text.style.textAlign}"
          class="text">{{text.value.content}}
     </div>
   </div>
@@ -11,7 +11,7 @@
     import {Component, Vue} from 'vue-property-decorator';
     import {mapState} from 'vuex';
     import Text from '@/assets/js/diy/text';
-    import {deepCopy, deepCopyStrict} from '@/common/utils';
+    import {deepCopy, mixinStyle} from '@/common/utils';
 
     @Component({
         props: {
@@ -30,7 +30,7 @@
         },
         computed: {
             style() {
-                return deepCopyStrict(this.text.styleDefault, this.text.style);
+                return mixinStyle(this.text.styleDefault, this.text.style);
             },
             activeAttr: {
                 get() {

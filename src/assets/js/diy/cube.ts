@@ -269,6 +269,16 @@ function setAttrData() {
     title: '图片混排',
     content: [
       {
+        type: 'color',
+        text: '背景颜色',
+        model: this.style.bgColor,
+        editType: 'style',
+        editKey: 'bgColor',
+        editCB: item => {
+          return item.model?item.model:'none'
+        },
+      },
+      {
         type: 'slider',
         text: '页面边距',
         max:30,
@@ -517,7 +527,7 @@ class Cube extends Common {
   style = {
     wrapmargin: 0,//页面边距
     margin: 0,//商品距离
-    // bgColor: '',
+    bgColor: '#fff',
     // height: 30,
     // color: '',
     // inputBgColor: '',

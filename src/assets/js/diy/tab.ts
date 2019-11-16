@@ -45,6 +45,7 @@ function setAttrData() {
   const data = {
     title: '分类商品设置',
     content: [
+
       {
         type: 'addbtn',
         text: '分类设置',
@@ -269,6 +270,16 @@ function setAttrData() {
           },
         ],
       },
+      {
+        type: 'color',
+        text: '背景颜色',
+        model: this.style.bgColor,
+        editType: 'style',
+        editKey: 'bgColor',
+        editCB: item => {
+          return item.model?item.model:'none'
+        },
+      },
 
       {
         type: 'checkbox',
@@ -417,7 +428,7 @@ class Tab extends Common {
   style = {
     wrapmargin: 15,//页面边距
     margin: 10,//商品距离
-    // bgColor: '',
+    bgColor: '#fff',
     // height: 30,
     // color: '',
     // inputBgColor: '',
@@ -447,7 +458,7 @@ class Tab extends Common {
       title: {show: true,readOnly:true},
       desc: {show: false},
       price: {show: true},
-      buybtn: {show: true, text: '购买', style: ''}, //样式1 样式2
+      buybtn: {show: true, text: '购买', style: '1'}, //样式1 样式2
       tag: {show: false, style: '', img: ''} //hot new diy 第三个是图片。 都是放在商品左上角
     }
     // loop:false,//是否循环

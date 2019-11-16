@@ -25,6 +25,16 @@ function setAttrData() {
     title: '优惠券设置',
     content: [
       {
+        type: 'color',
+        text: '背景颜色',
+        model: this.style.bgColor,
+        editType: 'style',
+        editKey: 'bgColor',
+        editCB: item => {
+          return item.model?item.model:'none'
+        },
+      },
+      {
         type: 'radio',
         text: '样式',
         editType: 'config',
@@ -117,7 +127,7 @@ class Coupon extends Common {
   // activeIndex = 0;
 
   style = {
-    // bgColor: '',
+    bgColor: '#fff',
     // height: 30,
     // color: '',
     // inputBgColor: '',

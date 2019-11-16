@@ -58,7 +58,9 @@ function setAttrData() {
         model: this.style.bgColor,
         editType: 'style',
         editKey: 'bgColor',
-        editCB: item => item.model,
+        editCB: item => {
+          return item.model?item.model:'none'
+        },
       },
       {
         type: 'addbtn',
@@ -155,8 +157,7 @@ class Nav extends Common {
   // activeIndex = 0;
 
   style = {
-    bgColor: '',
-    // bgColor: '',
+    bgColor: '#fff',
     // height: 30,
     color: '',
     // inputBgColor: '',

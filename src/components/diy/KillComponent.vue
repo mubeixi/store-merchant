@@ -1,5 +1,6 @@
 <template>
-  <div @click.stop="setData({}, 0)" class="kill wrap" id="goods" :style="{paddingLeft:goods.style.wrapmargin+'px',paddingRight:goods.style.wrapmargin+'px'}">
+  <div @click.stop="setData({}, 0)" class="kill wrap" id="goods"
+       :style="{background:goods.style.bgColor,paddingLeft:goods.style.wrapmargin+'px',paddingRight:goods.style.wrapmargin+'px'}">
     <div class="box" :class="[className]">
       <ul class="list" >
         <li v-for="(item,idx) in goodsList" class="item"

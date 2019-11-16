@@ -1,5 +1,5 @@
 <template>
-  <div @click.stop="setData({}, 0)" class="cube wrap">
+  <div @click.stop="setData({}, 0)" class="cube wrap" :style="{background:cube.style.bgColor}">
     <div class="box" :style="{width:fullW+'px'}">
       <div class="postion-wrap" :style="[getWrapStyle()]">
         <!--所有热区用绝对定位实现-->
