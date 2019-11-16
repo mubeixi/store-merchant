@@ -405,7 +405,7 @@
     import {calcDescartes, objTranslate} from "@/common/utils";
     import BindStoreComponent from "@/components/comm/BindStoreComponent.vue";
     import SettingComponent from "@/components/comm/SettingComponent.vue";
-    import {systemProdConfig,systemOperateProd} from '@/common/fetch'
+    import {systemProdConfig,systemOperateProd,systemProdDetail} from '@/common/fetch'
     import fa from "element-ui/src/locale/lang/fa";
 
     import _ from 'underscore';
