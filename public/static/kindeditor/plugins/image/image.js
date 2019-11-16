@@ -215,6 +215,7 @@ KindEditor.plugin('image', function(K) {
 			}
 		});
 		uploadbutton.fileBox.change(function(e) {
+		  console.log(uploadbutton)
 			localUrlBox.val(uploadbutton.fileBox.val());
 		});
 		if (allowFileManager) {

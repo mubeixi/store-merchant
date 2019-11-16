@@ -67,7 +67,7 @@
                     <el-table
                         :data="statData"
                         border
-                        
+
                         style="width: 100%">
                         <el-table-column
                         prop="mount"
@@ -249,7 +249,7 @@
                             value-format='yyyy-MM-dd HH:mm:ss'>
                             </el-date-picker>
                         </div>
-                        <span class="cut-line">—</span> 
+                        <span class="cut-line">—</span>
                         <div class="inline-block endtime">
                             <!-- <span class="demonstration">默认</span> -->
                             <el-date-picker
@@ -429,7 +429,7 @@
             </template>
             <!-- 成长值end -->
             <el-pagination
-               
+
                 :current-page.sync ="page"
                 layout="prev, pager, next"
                 :page-size = "pageSize"
@@ -456,7 +456,9 @@
     } from '../common/fetch'
     import Component from 'vue-class-component'
     import {GetQueryByString} from '../common/utils';
+
     const User_ID = GetQueryByString(location.href,'user_id');
+    console.log(User_ID);
 
     @Component
     export default class UserList extends Vue{
@@ -511,7 +513,7 @@
             handleClick(index,rows) {
                 console.log(index,rows)
                 let i = index.$index;
-                window.location.href = rows[i].link; 
+                window.location.href = rows[i].link;
             }
             rowStyle(){
                 return 'color: #666;'
@@ -569,13 +571,13 @@
             }
             // 用户信息
             getSysuser(){
-                getSysuser({User_ID: USER_ID}).then(res=>{
+                getSysuser({User_ID}).then(res=>{
                     this.userInfo = res.data;
                 })
             }
             // 统计信息
             get_sysstatistics(){
-                getSysstatistics({User_ID:USER_ID}).then(res=>{
+                getSysstatistics({User_ID}).then(res=>{
                     this.statData[0].mount = res.data.con_money;
                     this.statData[0].amount = res.data.ord_count;
                     this.statData[0].balance = res.data.user.User_Money;
@@ -856,6 +858,6 @@
         .endtime {
             margin-right: 24px;
         }
-        
+
     }
 </style>
