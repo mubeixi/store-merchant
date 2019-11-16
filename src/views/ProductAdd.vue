@@ -890,8 +890,10 @@
                         Products_Count:this.ruleForm.Products_Count,//库存
                         Products_Type:this.ruleForm.Products_Type,//商品类型id
                         Products_Weight:this.ruleForm.Products_Weight,//商品重量
-                        goods:this.ruleForm.goods,//运费选择
+                        Products_IsShippingFree:this.ruleForm.goods,//运费选择
                         prod_order_type:this.ruleForm.orderType,//订单类型
+                        Products_Description:this.editorText,//富文本类型
+                        Product_backup:this.ruleForm.refund,//退货id
                     };
                     if(this.thumb.length<1){
                         alert('商品主图不能为空');
@@ -899,14 +901,16 @@
                     }else {
                         productInfo.Products_JSON=JSON.stringify({"ImgPath":this.thumb})
                     }
-
-                    for(let item of this.store_list){
+                    if(this.store_list.length>0){
                         let arr=[];
-                          arr.push(item.Stores_ID);
-                          if(arr.length>0){
-                              productInfo.Products_Stores=arr;
-                          }
+                        for(let item of this.store_list){
+                            arr.push(item.Stores_ID);
+                        }
+                        if(arr.length>0){
+                            productInfo.Products_Stores=JSON.stringify(arr);
+                        }
                     }
+
                     for(let item of  this.ruleForm.otherAttributes){
                         if(item=='下架') productInfo.Products_SoldOut=1;
                         if(item=='新品')productInfo.Products_IsNew=1;
@@ -942,7 +946,24 @@
                                 attrs[item.title]=ar;
                             }
                         }
-                        console.log(attrs,"ssssssss")
+                        let skuList=this.skuList.concat();
+                        for(let mbx of skuList){
+                            if(typeof mbx.Attr_Value=='object' ){
+
+                            }else{
+                                let splitArr=mbx.Attr_Value.split("|");
+                                let objSku={};
+                                for(let i=0;i<this.specs.length;i++){
+                                    objSku[this.specs[i].title]=splitArr[i];
+                                }
+                                console.log(objSku,"last")
+                                mbx.Attr_Value=objSku;
+                            }
+                        }
+                        productInfo.prod_attrval=JSON.stringify({
+                            'attrs':attrs,
+                            'values':skuList
+                        })
                     }
 
                     systemOperateProd(productInfo).then(res=>{
