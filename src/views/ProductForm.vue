@@ -484,6 +484,7 @@
         distriboutor_config = null;
         Dis_Level_arr = []
         dis_level_list = []
+        initialSku=[];
         async created(){
             await systemProdConfig().then(res=>{
                 if(res.errorCode==0){
@@ -534,6 +535,23 @@
                 await systemProdDetail({prod_id:id}).then(res=>{
 
                     productInfo=res.data;
+                    for(let item in productInfo.prod_attrval.attrs){
+                        for(let it of this.specs){
+                            if(it.title==item){
+                                it.vals=productInfo.prod_attrval.attrs[item];
+                            }
+                        }
+                    }
+                    let arrProd=productInfo.prod_attrval.values;
+                    for(let pro of arrProd){
+                        let arr=[];
+                        for(let pr in pro.Attr_Value){
+                            arr.push(pro.Attr_Value[pr]);
+                        }
+                        console.log(arr,"qqqq")
+                        pro['Attr_Value']=arr.join("|");
+                    }
+                    this.initialSku=arrProd;
                     this.ruleForm.Products_Index=productInfo.Products_Index;//商品排序
                     this.ruleForm.Products_Name=productInfo.Products_Name;//商品名称
                     select_cate_ids = productInfo.Products_Category;//商品分类
