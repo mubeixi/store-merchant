@@ -12,7 +12,7 @@
         <el-input v-model="ruleForm.Products_Name" size="mini"  class="nameInput"></el-input>
       </el-form-item>
 
-      <el-form-item label="商品分类" prop="classification">
+      <el-form-item label="商品分类">
           <span class="classificationSpan" @click="bindCateDialogShow=true">选择分类</span>
       </el-form-item>
       <div class="group cate_list" style="margin-left: 120px;margin-bottom: 22px;" v-if="cate_list.length>0">
@@ -382,6 +382,17 @@
         <span class="spans" @click="settingSuccessCall">确认</span>
       </div>
     </el-dialog>
+
+    <el-dialog
+      title="卡密设置"
+      width="90%"
+      @close="cardCancel"
+      append-to-body
+      :visible.sync="ruleForm.orderType==2"
+      class="setting"
+    >
+
+    </el-dialog>
     <div class="setting" @click="commission=true">
       佣金设置
     </div>
@@ -465,8 +476,8 @@
         distriboutor_config = null;
         Dis_Level_arr = []
         dis_level_list = []
-        created(){
-            systemProdConfig().then(res=>{
+        async created(){
+            await systemProdConfig().then(res=>{
                 if(res.errorCode==0){
                     this.prodConfig=res.data;
 
@@ -502,6 +513,63 @@
                     this.commission_ratio=res.data.Shop_Commision_Reward_Json.commission_Reward;
                 }
             }).catch();
+
+
+            await systemProdDetail({prod_id:'629'}).then(res=>{
+                  console.log(res,"sss")
+                    let productInfo=res.data;
+                    this.ruleForm.Products_Index=productInfo.Products_Index;//商品排序
+                    this.ruleForm.Products_Name=productInfo.Products_Name;//商品名称
+                    this.cate_ids=productInfo.Products_Category;//商品分类
+                    this.ruleForm.Products_Sales=productInfo.Products_Sales;//虚拟销量
+                    this.ruleForm.Products_PriceY=productInfo.Products_PriceY;//原价
+                    this.ruleForm.Products_PriceX=productInfo.Products_PriceX;//现价
+                    this.ruleForm.pintuan_flag=productInfo.pintuan_flag?true:false;//是否拼团
+                    this.ruleForm.Products_Profit=productInfo.Products_Profit;//产品利润
+                    this.ruleForm.Products_BriefDescription=productInfo.Products_BriefDescription;//产品简介
+                    this.ruleForm.Products_Count=productInfo.Products_Count;//库存
+                    this.ruleForm.Products_Type=productInfo.Products_Type;//商品类型id
+                    this.ruleForm.Products_Weight=productInfo.Products_Weight;//商品重量
+                    this.ruleForm.goods=String(productInfo.Products_Shipping);//运费选择
+                    this.ruleForm.freight=String(productInfo.Shipping_Free_Company);
+                    this.ruleForm.orderType=String(productInfo.prod_order_type);//订单类型
+                    this.editorText=productInfo.Products_Description;//富文本类型
+                    this.ruleForm.refund=productInfo.Product_backup;//退货id
+                    this.ruleForm.Products_IsPaysBalance=productInfo.Products_IsPaysBalance?true:false;//是否使用余额
+                    this.distriboutor_config=[];
+                    for(let item in productInfo.Products_Distributes){
+                       this.distriboutor_config.push(productInfo.Products_Distributes[item]);
+                    }
+                    //佣金设置
+                    this.platForm_Income_Reward=productInfo.platForm_Income_Reward;
+                    this.nobi_ratio=productInfo.nobi_ratio;
+                    this.area_Proxy_Reward=productInfo.area_Proxy_Reward;
+                    this.sha_Reward=productInfo.sha_Reward;
+                    this.commission_ratio=productInfo.commission_ratio;
+                    this.Products_Promise=[];
+                    if(productInfo.Products_SoldOut){
+                        this.ruleForm.otherAttributes.push('下架')
+                    }
+                    if(productInfo.Products_IsNew){
+                        this.ruleForm.otherAttributes.push('新品')
+                    }
+                    if(productInfo.Products_IsHot){
+                        this.ruleForm.otherAttributes.push('热卖')
+                    }
+                    if(productInfo.Products_IsRecommend){
+                        this.ruleForm.otherAttributes.push('推荐')
+                    }
+                    for(let item of productInfo.Products_Promise){
+                        this.Products_Promise.push(item.name);
+                    }
+
+                    if(this.ruleForm.pintuan_flag){
+                        this.ruleForm.pintuan_people=productInfo.pintuan_people;
+                        this.ruleForm.pintuan_pricex=productInfo.pintuan_pricex;
+                        this.ruleForm.pintuan_end_time=new  Date(productInfo.pintuan_end_time*1000);
+                    }
+
+            })
         }
 
         @Watch('specs', { deep: true,immediate:true })
@@ -517,14 +585,15 @@
             this.createSkuData();
         }
         validateFn = {
-            classification:(rule, value, callback) => {
-                if (this.cate_ids === ''){
-                    callback(new Error('请选择商品分类'));
-                }else{
-                    callback();
-                }
-
-            },
+            // classification:(rule, value, callback) => {
+            //     console.log(this.cate_ids,value,"ss")
+            //     if (this.cate_ids === ''){
+            //         callback(new Error('请选择商品分类'));
+            //     }else{
+            //         callback();
+            //     }
+            //
+            // },
             ProductsType:(rule, value, callback) => {
                 if (this.ruleForm.Products_Type === ''){
                     callback(new Error('请选择商品类型'));
@@ -711,6 +780,10 @@
             }
 
 
+        }
+        //卡密取消
+        cardCancel(){
+            this.ruleForm.orderType='0';
         }
 
         querySearchAsync(queryString, cb) {
@@ -903,10 +976,13 @@
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    if(this.ruleForm.orderType==0){
+                    if(this.ruleForm.orderType<=0){
                         if(this.ruleForm.Products_Weight<=0){
                             return alert('实体订单商品重量大于0')
                         }
+                    }
+                    if (this.cate_ids === ''){
+                        return alert('请选择商品分类');
                     }
                     if(!this.ruleForm.Products_Type){
                         return alert('请选择商品类型')
@@ -934,6 +1010,12 @@
                         sha_Reward:this.sha_Reward,
                         commission_ratio:this.commission_ratio,
                     };
+                    let objPromise={};
+                    for(let item of this.Products_Promise){
+                        objPromise.name=item;
+                        this.Products_Promise.push(objPromise);
+                    }
+                    productInfo.Products_Promise=this.Products_Promise;
                     if(this.thumb.length<1){
                         alert('商品主图不能为空');
                         return ;
