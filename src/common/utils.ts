@@ -248,3 +248,22 @@ export const get_arr_column = (arr,column)=>{
   }
   return rt
 }
+
+/**
+ * 指定key，铺平二维数组，一般用于将树状的菜单、分类（数据结构一致，但是利用child这种来标识上下级)
+ * 使平铺城1维数组
+ */
+
+export const plainArray = (arr,key,newArr)=>{
+
+  if(!arr || !key)return false;
+
+  for(var item of arr){
+    if(item && item[key] && _.isArray(item[key])){
+      plainArray(item[key],key,newArr);
+      continue;
+    }
+    newArr.push(item)
+  }
+
+}

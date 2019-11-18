@@ -3,6 +3,7 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import './registerServiceWorker';
+import {baseApiUrl} from "./common/env";
 
 import VueResource from 'vue-resource';
 import Common from './common/index';
@@ -15,6 +16,8 @@ Vue.use(VueResource);
 // import './assets/kindeditor/themes/default/default.css'
 // import './assets/kindeditor/kindeditor-all.js'
 // import './assets/kindeditor/lang/zh-CN.js'
+
+window.editorBaseUrl = baseApiUrl;
 import VueKindEditor from '@/components/kindeditor/index';
 Vue.use(VueKindEditor)
 

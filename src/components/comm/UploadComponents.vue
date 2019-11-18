@@ -60,9 +60,10 @@
               },
           },
           ajaxData() {
+              let act = this.type==='video'?'upload_video':'upload_image'
               let param = {
                   Users_ID: get_Users_ID(),
-                  act: 'upload_image',
+                  act: act,
                   env : 'wx_mp'
               };
               let ajaxData = createToken(param);

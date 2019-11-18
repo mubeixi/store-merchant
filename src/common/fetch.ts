@@ -47,73 +47,73 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
 };
 
 
-export const login = (data: Object, options) => fetch('users_login', data, options)
+export const login = (data:object={},options:object={}) => fetch('users_login', data, options)
 
-export const getCouponList = (data, options) => fetch('get_unaccalimed_coupon', data, options)
+export const getCouponList = (data:object={},options:object={}) => fetch('get_unaccalimed_coupon', data, options)
 
-export const getProductList = (data, options) => fetch('get_prod', data, options)
+export const getProductList = (data:object={},options:object={}) => fetch('get_prod', data, options)
 
-export const getShopSkinList = (data, options) => fetch('get_shopskin', data, options)
+export const getShopSkinList = (data:object={},options:object={}) => fetch('get_shopskin', data, options)
 
-export const chooseShopSkin = (data, options) => fetch('choose_shopskin', data, options)
+export const chooseShopSkin = (data:object={},options:object={}) => fetch('choose_shopskin', data, options)
 
 //获取商城的配置
 //get_shophome
-export const getSkinConfig = (data, options) => fetch('get_skin_data', data, options)
+export const getSkinConfig = (data:object={},options:object={}) => fetch('get_skin_data', data, options)
 
-export const getDiySkinConfig = (data, options) => fetch('get_makeup_home_data', data, options)
+export const getDiySkinConfig = (data:object={},options:object={}) => fetch('get_makeup_home_data', data, options)
 
 
 //获取自定义页面的列表
-export const getDiyPageList = (data, options) => fetch('get_makeup_home', data, options)
+export const getDiyPageList = (data:object={},options:object={}) => fetch('get_makeup_home', data, options)
 
 //获取自定义URL列表
-export const getDiyUlrList = (data, options) => fetch('get_makeup_home', data, options)
+export const getDiyUlrList = (data:object={},options:object={}) => fetch('get_makeup_home', data, options)
 
 //获取系统url列表
-export const getSystemUrl = (data,options) => fetch('system_url', data, options)
+export const getSystemUrl = (data:object={},options:object={}) => fetch('system_url', data, options)
 
 //获取diy url列表
-export const getDiyUrl = (data,options) => fetch('system_diy_url', data, options)
+export const getDiyUrl = (data:object={},options:object={}) => fetch('system_diy_url', data, options)
 
 //更新商城的配置
 //update_shophome
-export const setSkinConfig = (data, options) => fetch('save_skin_date', data, options)
+export const setSkinConfig = (data:object={},options:object={}) => fetch('save_skin_date', data, options)
 
-export const setDiySkinConfig = (data, options) => fetch('save_makeup_home_data', data, options)
+export const setDiySkinConfig = (data:object={},options:object={}) => fetch('save_makeup_home_data', data, options)
 
 //秒杀列表
-export const getFlashSaleList = (data, options) => fetch('get_flashsale', data, options)
+export const getFlashSaleList = (data:object={},options:object={}) => fetch('get_flashsale', data, options)
 
 //获取限时抢购
-export const getSpikeList = (data, options) => fetch('get_spike_list', data, options)
+export const getSpikeList = (data:object={},options:object={}) => fetch('get_spike_list', data, options)
 
-export const getSpikeProd = (data, options) => fetch('get_spike_prod', data, options)
+export const getSpikeProd = (data:object={},options:object={}) => fetch('get_spike_prod', data, options)
 
-export const getProductCategory = (data, options) => fetch('pro_cate', data, options)
+export const getProductCategory = (data:object={},options:object={}) => fetch('pro_cate', data, options)
 
-export const getUsersInfo = (data, options) => fetch('get_users_info', data, options)
+export const getUsersInfo = (data:object={},options:object={}) => fetch('get_users_info', data, options)
 
-export const getProductCountInfo  = (data,options) => fetch('get_users_info', data, options);
+export const getProductCountInfo  = (data:object={},options:object={}) => fetch('get_users_info', data, options);
 
-export const uploadImgByBase64 = (data,options) => fetch('upload_image', data, options);
+export const uploadImgByBase64 = (data:object={},options:object={}) => fetch('upload_image', data, options);
 
-export const getSysuser = (data,options) => fetch('get_sysuser', data, options);
-export const getSysorders = (data,options) => fetch('get_sysorders', data, options);
-export const getSysgrowths = (data,options) => fetch('get_sysgrowths', data, options);
-export const getSysbalances = (data,options) => fetch('get_sysbalances', data, options);
-export const getSysintegrals = (data,options) => fetch('get_sysintegrals', data, options);
-export const getSysloginLogs = (data,options) => fetch('get_syslogin_logs', data, options);
-export const getSysstatistics = (data,options) => fetch('get_sysstatistics', data, options);
-export const getAddress = (data,options) => fetch('get_address',data,options);
-export const getStoreList = (data,options) => fetch('get_store_list', data, options);
+export const getSysuser = (data:object={},options:object={}) => fetch('get_sysuser', data, options);
+export const getSysorders = (data:object={},options:object={}) => fetch('get_sysorders', data, options);
+export const getSysgrowths = (data:object={},options:object={}) => fetch('get_sysgrowths', data, options);
+export const getSysbalances = (data:object={},options:object={}) => fetch('get_sysbalances', data, options);
+export const getSysintegrals = (data:object={},options:object={}) => fetch('get_sysintegrals', data, options);
+export const getSysloginLogs = (data:object={},options:object={}) => fetch('get_syslogin_logs', data, options);
+export const getSysstatistics = (data:object={},options:object={}) => fetch('get_sysstatistics', data, options);
+export const getAddress = (data:object={},options:object={}) => fetch('get_address',data,options);
+export const getStoreList = (data:object={},options:object={}) => fetch('get_store_list', data, options);
 
 //产品添加编辑所需配置
-export const systemProdConfig = (data,options) => fetch('system_prod_config', data, options);
-//产品添加编辑所需配置
-export const systemOperateProd = (data,options) => fetch('system_operate_prod', data, options);
+export const systemProdConfig = (data:object={},options:object={}) => fetch('system_prod_config', data, options);
+//产品添加
+export const systemOperateProd = (data:object={},options:object={}) => fetch('system_operate_prod', data, options);
 //获取产品具体信息
-export const systemProdDetail = (data,options) => fetch('system_prod_detail', data, options);
+export const systemProdDetail = (data:object={},options:object={}) => fetch('system_prod_detail', data, options);
 
 
 
@@ -153,7 +153,7 @@ function ObjectToArr(object, addkey) {
         }
       }
     } else {
-      this.ObjectToArr(object[i], newkey);
+        ObjectToArr(object[i], newkey);
     }
   }
   var newkey_1 = Object.keys(arrs).sort();
@@ -177,7 +177,7 @@ function ObjectToString(object, arrs) {
         }
       }
     } else {
-      arrs += this.ObjectToString(object[i], arrs);
+      arrs += ObjectToString(object[i], arrs);
     }
   }
   return arrs;

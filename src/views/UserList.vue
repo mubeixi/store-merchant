@@ -439,10 +439,21 @@
                     @current-change="current">
                 </el-pagination>
             </div>
+          </div>
+        <div style="width: 100%;background:#fff">
+            <el-pagination
+            background
+            :current-page.sync ="page"
+            layout="prev, pager, next"
+            :page-size = "pageSize"
+            :total="total"
+            @prev-click="prev"
+            @next-click="next"
+            @current-change="current">
+            </el-pagination>
         </div>
     </div>
 </template>
-
 <script lang="ts">
     import Vue from 'vue'
     import {
@@ -458,224 +469,223 @@
     import Component from 'vue-class-component'
     import {GetQueryByString} from '../common/utils';
     const User_ID = GetQueryByString(location.href,'user_id');
-
     @Component
     export default class UserList extends Vue{
-                item = 1;
-                des = {
-                    '3': '积分',
-                    '4': '余额',
-                    '5': '成长值'
-                }
-                type = ''
-                types = {}
-                userInfo = {};
-                statInfo = {};
-                total = 0; //总条数
-                page = 1;
-                pageSize = 10;
-                switchValue = true;
-                start_time = '';
-                end_time = '';
-                statData = [{
-                        mount: '',
-                        amount: '',
-                        balance: '',
-                        integral: '',
-                        grow: '',
-                        tickets: '',
-                        comments: '',
-                        backorder: '',
-                        loginTimes: '',
-                        collect: ''
-                        }]
-                orderData = [{
-                        Order_ID: '',
-                        Order_TotalPrice: '',
-                        Order_PaymentInfo: '',
-                        env: '',
-                        status_txt: '',
-                        Order_CreateTime: '',
-                        Order_Store: '',
-                        link:''
-                    }]
-                addData = []
-                     // 登录日志
-                loginData = []
-                    // 积分明细
-                detailData = []
-                options = []
-                    // 余额明细
-                moneyData = []
-                    // 成长值
-                groupData = []
-            handleClick(index,rows) {
-                console.log(index,rows)
-                let i = index.$index;
-                window.location.href = rows[i].link; 
+        item = 1;
+        des = {
+            '3': '积分',
+            '4': '余额',
+            '5': '成长值'
+        }
+        type = ''
+        types = {}
+        userInfo = {};
+        statInfo = {};
+        total = 0; //总条数
+        page = 1;
+        pageSize = 10;
+        switchValue = true;
+        start_time = '';
+        end_time = '';
+        statData = [{
+            mount: '',
+            amount: '',
+            balance: '',
+            integral: '',
+            grow: '',
+            tickets: '',
+            comments: '',
+            backorder: '',
+            loginTimes: '',
+            collect: ''
+        }]
+        orderData = [{
+            Order_ID: '',
+            Order_TotalPrice: '',
+            Order_PaymentInfo: '',
+            env: '',
+            status_txt: '',
+            Order_CreateTime: '',
+            Order_Store: '',
+            link:''
+        }]
+        addData = []
+        // 登录日志
+        loginData = []
+        // 积分明细
+        detailData = []
+        options = []
+        // 余额明细
+        moneyData = []
+        // 成长值
+        groupData = []
+        handleClick(index,rows) {
+            console.log(index,rows)
+            let i = index.$index;
+            window.location.href = rows[i].link;
+        }
+        rowStyle(){
+            return 'color: #666;'
+        }
+        headerStyle() {
+            return '';
+            //return 'background-color:red;color:red;'
+        }
+        prev(page){
+            this.page = page;
+            if(this.item == 2) {
+                // 请求日志
+                this.get_syslogin_logs();
+            }else if(this.item == 3) {
+                // 积分明细
+                this.get_sysintegrals();
+            }else if(this.item == 4) {
+                // 资金流水
+                this.get_sysbalances();
+            }else if(this.item == 5) {
+                // 成长值明细
+                this.get_sysgrowths();
             }
-            rowStyle(){
-                return 'color: #666;'
+        }
+        next(page){
+            this.page = page;
+            if(this.item == 2) {
+                // 请求日志
+                this.get_syslogin_logs();
+            }else if(this.item == 3) {
+                // 积分明细
+                this.get_sysintegrals();
+            }else if(this.item == 4) {
+                // 资金流水
+                this.get_sysbalances();
+            }else if(this.item == 5) {
+                // 成长值明细
+                this.get_sysgrowths();
             }
-            headerStyle() {
-                return '';
-                //return 'background-color:red;color:red;'
+        }
+        current(page){
+            this.page = page;
+            if(this.item == 2) {
+                // 请求日志
+                this.get_syslogin_logs();
+            }else if(this.item == 3) {
+                // 积分明细
+                this.get_sysintegrals();
+            }else if(this.item == 4) {
+                // 资金流水
+                this.get_sysbalances();
+            }else if(this.item == 5) {
+                // 成长值明细
+                this.get_sysgrowths();
             }
-            prev(page){
-                this.page = page;
-                if(this.item == 2) {
-                    // 请求日志
-                    this.get_syslogin_logs();
-                }else if(this.item == 3) {
-                    // 积分明细
-                    this.get_sysintegrals();
-                }else if(this.item == 4) {
-                    // 资金流水
-                    this.get_sysbalances();
-                }else if(this.item == 5) {
-                    // 成长值明细
-                    this.get_sysgrowths();
-                }
+        }
+        // 用户信息
+        getSysuser(){
+            getSysuser({User_ID}).then(res=>{
+                this.userInfo = res.data;
+            })
+        }
+        // 统计信息
+        get_sysstatistics(){
+            getSysstatistics({User_ID}).then(res=>{
+                this.statData[0].mount = res.data.con_money;
+                this.statData[0].amount = res.data.ord_count;
+                this.statData[0].balance = res.data.user.User_Money;
+                this.statData[0].integral = res.data.user.User_Integral;
+                this.statData[0].grow = res.data.user.User_Grow;
+                this.statData[0].tickets = res.data.cou_count;
+                this.statData[0].comments = res.data.com_count;
+                this.statData[0].backorder = res.data.bac_count;
+                this.statData[0].loginTimes = res.data.log_count;
+                this.statData[0].collect = res.data.fav_count;
+            })
+        }
+        query(){
+            if(this.item == 2) {
+                // 请求日志
+                this.get_syslogin_logs();
+            }else if(this.item == 3) {
+                // 积分明细
+                this.get_sysintegrals();
+            }else if(this.item == 4) {
+                // 资金流水
+                this.get_sysbalances();
+            }else if(this.item == 5) {
+                // 成长值明细
+                this.get_sysgrowths();
             }
-            next(page){
-                this.page = page;
-                if(this.item == 2) {
-                    // 请求日志
-                    this.get_syslogin_logs();
-                }else if(this.item == 3) {
-                    // 积分明细
-                    this.get_sysintegrals();
-                }else if(this.item == 4) {
-                    // 资金流水
-                    this.get_sysbalances();
-                }else if(this.item == 5) {
-                    // 成长值明细
-                    this.get_sysgrowths();
-                }
+        }
+        changeItem(num) {
+            if(this.item == num) return;
+            // 切换的时候 type变为空，时间变为0
+            this.type = '';
+            this.start_time = '';
+            this.end_time = '';
+            this.page = 1;
+            this.item = num;
+            if(num == 2) {
+                // 请求日志
+                this.get_syslogin_logs();
+            }else if(num == 3) {
+                // 积分明细
+                this.get_sysintegrals();
+            }else if(num == 4) {
+                // 资金流水
+                this.get_sysbalances();
+            }else if(num == 5) {
+                // 成长值明细
+                this.get_sysgrowths();
             }
-            current(page){
-                this.page = page;
-                if(this.item == 2) {
-                    // 请求日志
-                    this.get_syslogin_logs();
-                }else if(this.item == 3) {
-                    // 积分明细
-                    this.get_sysintegrals();
-                }else if(this.item == 4) {
-                    // 资金流水
-                    this.get_sysbalances();
-                }else if(this.item == 5) {
-                    // 成长值明细
-                    this.get_sysgrowths();
-                }
-            }
-            // 用户信息
-            getSysuser(){
-                getSysuser({User_ID}).then(res=>{
-                    this.userInfo = res.data;
+        }
+        // 订单记录
+        get_sysorders(){
+            getSysorders({User_ID,page:this.page}).then(res=>{
+                this.orderData = res.data;
+                this.total = res.totalCount
+            })
+        }
+        // 日志
+        get_syslogin_logs(){
+            getSysloginLogs({User_ID,start_time: this.start_time,end_time:this.end_time,page:this.page}).then(res=>{
+                this.loginData = res.data;
+                this.total = res.totalCount
+            })
+        }
+        // 积分
+        get_sysintegrals(){
+            getSysintegrals({User_ID,start_time: this.start_time,end_time:this.end_time,type:this.type,page:this.page}).then(res=>{
+                this.detailData = res.data;
+                this.types = res.types;
+                this.total = res.totalCount
+            })
+        }
+        // 资金
+        get_sysbalances(){
+            // 余额type需要+1 ，后台约定
+            getSysbalances({User_ID,start_time: this.start_time,end_time:this.end_time,type:this.type + 1,page:this.page}).then(res=>{
+                this.moneyData = res.data;
+                this.types = res.types;
+                this.total = res.totalCount
+            })
+        }
+        // 成长值
+        get_sysgrowths(){
+            getSysgrowths({User_ID,start_time: this.start_time,end_time:this.end_time,type:this.type,page:this.page}).then(res=>{
+                this.groupData = res.data;
+                this.types = res.types;
+                this.total = res.totalCount
+            })
+        }
+        // 获取收货地址
+        getAddress(){
+            getAddress({User_ID}).then(res=>{
+                this.addData = res.data;
+                this.addData.forEach(item=>{
+                    item.addinfo = item.Address_Province_name + item.Address_City_name + item.Address_Area_name + item.Address_Town_name;
                 })
-            }
-            // 统计信息
-            get_sysstatistics(){
-                getSysstatistics({User_ID}).then(res=>{
-                    this.statData[0].mount = res.data.con_money;
-                    this.statData[0].amount = res.data.ord_count;
-                    this.statData[0].balance = res.data.user.User_Money;
-                    this.statData[0].integral = res.data.user.User_Integral;
-                    this.statData[0].grow = res.data.user.User_Grow;
-                    this.statData[0].tickets = res.data.cou_count;
-                    this.statData[0].comments = res.data.com_count;
-                    this.statData[0].backorder = res.data.bac_count;
-                    this.statData[0].loginTimes = res.data.log_count;
-                    this.statData[0].collect = res.data.fav_count;
-                })
-            }
-            query(){
-                if(this.item == 2) {
-                    // 请求日志
-                    this.get_syslogin_logs();
-                }else if(this.item == 3) {
-                    // 积分明细
-                    this.get_sysintegrals();
-                }else if(this.item == 4) {
-                    // 资金流水
-                    this.get_sysbalances();
-                }else if(this.item == 5) {
-                    // 成长值明细
-                    this.get_sysgrowths();
-                }
-            }
-            changeItem(num) {
-                if(this.item == num) return;
-                // 切换的时候 type变为空，时间变为0
-                this.type = '';
-                this.start_time = '';
-                this.end_time = '';
-                this.page = 1;
-                this.item = num;
-                if(num == 2) {
-                    // 请求日志
-                    this.get_syslogin_logs();
-                }else if(num == 3) {
-                    // 积分明细
-                    this.get_sysintegrals();
-                }else if(num == 4) {
-                    // 资金流水
-                    this.get_sysbalances();
-                }else if(num == 5) {
-                    // 成长值明细
-                    this.get_sysgrowths();
-                }
-            }
-            // 订单记录
-            get_sysorders(){
-                getSysorders({User_ID,page:this.page}).then(res=>{
-                    this.orderData = res.data;
-                    this.total = res.totalCount
-                })
-            }
-            // 日志
-            get_syslogin_logs(){
-                getSysloginLogs({User_ID,start_time: this.start_time,end_time:this.end_time,page:this.page}).then(res=>{
-                    this.loginData = res.data;
-                    this.total = res.totalCount
-                })
-            }
-            // 积分
-            get_sysintegrals(){
-                getSysintegrals({User_ID,start_time: this.start_time,end_time:this.end_time,type:this.type,page:this.page}).then(res=>{
-                    this.detailData = res.data;
-                    this.types = res.types;
-                    this.total = res.totalCount
-                })
-            }
-            // 资金
-            get_sysbalances(){
-                // 余额type需要+1 ，后台约定
-                getSysbalances({User_ID,start_time: this.start_time,end_time:this.end_time,type:this.type + 1,page:this.page}).then(res=>{
-                    this.moneyData = res.data;
-                    this.types = res.types;
-                    this.total = res.totalCount
-                })
-            }
-            // 成长值
-            get_sysgrowths(){
-                getSysgrowths({User_ID,start_time: this.start_time,end_time:this.end_time,type:this.type,page:this.page}).then(res=>{
-                    this.groupData = res.data;
-                    this.types = res.types;
-                    this.total = res.totalCount
-                })
-            }
-            // 获取收货地址
-            getAddress(){
-                getAddress({User_ID}).then(res=>{
-                    this.addData = res.data;
-                    this.addData.forEach(item=>{
-                        item.addinfo = item.Address_Province_name + item.Address_City_name + item.Address_Area_name + item.Address_Town_name;
-                    })
-                    console.log(this.addData);
-                })
-            }
+                console.log(this.addData);
+            })
+        }
         created(){
             this.getSysuser()
             this.get_sysstatistics();
@@ -684,188 +694,186 @@
         }
     }
 </script>
-
 <style scoped lang="less">
-* {
+  * {
     box-sizing: border-box;
-}
-    .wrap {
-        width:100%;
-        padding: 20px 0 0 20px;
+  }
+  .wrap {
+    width:100%;
+    padding: 20px 0 0 20px;
+  }
+  .inline-block {
+    display: inline-block;
+  }
+  .title {
+    display: flex;
+    margin-bottom: 15px;
+    .item {
+      width: 100px;
+      height: 30px;
+      line-height: 30px;
+      font-size: 14px;
+      color: #666;
+      margin-right: 10px;
+      background: #f8f8f8;
+      text-align: center;
+      cursor: pointer;
     }
-    .inline-block {
-        display: inline-block;
+    .item.active {
+      background: #428CF7;
+      color: #fff;
     }
-    .title {
+  }
+  .content {
+    background: #f6f6f6;
+    padding: 20px 0 20px 20px;
+    // 用户信息start
+    .user-msg-wrap {
+      background: #fff;
+      padding: 20px 0 25px 20px;
+    }
+    .user-msg {
+      display: flex;
+      width: 100%;
+      height: 277px;
+      box-sizing: border-box;
+      overflow: hidden;
+      .user-left {
+        width: 306px;
+        height: 100%;
         display: flex;
-        margin-bottom: 15px;
-        .item {
-            width: 100px;
-            height: 30px;
-            line-height: 30px;
-            font-size: 14px;
-            color: #666;
-            margin-right: 10px;
-            background: #f8f8f8;
-            text-align: center;
-            cursor: pointer;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #EAEAEA;
+        border-right: 0;
+        box-sizing: border-box;
+        .user-avator {
+          width: 75px;
+          height: 75px;
+          border-radius: 80px;
+          margin-bottom: 14px;
         }
-        .item.active {
-            background: #428CF7;
-            color: #fff;
+        .user-phone {
+          font-size: 16px;
+          color: #666;
         }
+        .user-level {
+          background: #428CF7;
+          color: #fff;
+          font-size: 14px;
+          width: 92px;
+          height: 30px;
+          line-height: 30px;
+          text-align: center;
+          margin-top: 15px;
+          border-radius: 15px;
+        }
+      }
+      .user-right {
+        flex: 1;
+        td {
+          height: 45px;
+          line-height: 45px;
+          text-align: center;
+          color: #666;
+          border-left: 1px solid #EAEAEA;
+          border-bottom: 1px solid #EAEAEA;
+          // border: 1px solid #EAEAEA;
+          border-top: 0;
+          box-sizing: border-box;
+        }
+        & td:nth-child(2n+1) {
+          background: #F9FAFC;
+          width: 159px;
+        }
+        & td:nth-child(2n) {
+          width: 307px;
+          text-align: left;
+          padding-left: 34px;
+          box-sizing: border-box;
+        }
+        .first td {
+          border-top: 1px solid #eaeaea;
+        }
+        & td:nth-child(4n) {
+          border-right: 1px solid #eaeaea;
+        }
+      }
     }
-    .content {
-        background: #f6f6f6;
-        padding: 20px 0 20px 20px;
-        // 用户信息start
-        .user-msg-wrap {
-            background: #fff;
-            padding: 20px 0 25px 20px;
-        }
-        .user-msg {
-            display: flex;
-            width: 100%;
-            height: 277px;
-            box-sizing: border-box;
-            overflow: hidden;
-            .user-left {
-                width: 306px;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                border: 1px solid #EAEAEA;
-                border-right: 0;
-                box-sizing: border-box;
-                .user-avator {
-                    width: 75px;
-                    height: 75px;
-                    border-radius: 80px;
-                    margin-bottom: 14px;
-                }
-                .user-phone {
-                    font-size: 16px;
-                    color: #666;
-                }
-                .user-level {
-                    background: #428CF7;
-                    color: #fff;
-                    font-size: 14px;
-                    width: 92px;
-                    height: 30px;
-                    line-height: 30px;
-                    text-align: center;
-                    margin-top: 15px;
-                    border-radius: 15px;
-                }
-            }
-            .user-right {
-                flex: 1;
-                td {
-                    height: 45px;
-                    line-height: 45px;
-                    text-align: center;
-                    color: #666;
-                    border-left: 1px solid #EAEAEA;
-                    border-bottom: 1px solid #EAEAEA;
-                    // border: 1px solid #EAEAEA;
-                    border-top: 0;
-                    box-sizing: border-box;
-                }
-                & td:nth-child(2n+1) {
-                    background: #F9FAFC;
-                    width: 159px;
-                }
-                & td:nth-child(2n) {
-                    width: 307px;
-                    text-align: left;
-                    padding-left: 34px;
-                    box-sizing: border-box;
-                }
-                .first td {
-                    border-top: 1px solid #eaeaea;
-                }
-                & td:nth-child(4n) {
-                    border-right: 1px solid #eaeaea;
-                }
-            }
-        }
-        // 用户信息 end
-        // 统计信息 start
-        .stat,
-        .address-msg,
-        .order-msg {
-            padding: 20px 0 25px 20px;
-            margin-top: 20px;
-            background: #fff;
-            color: #333;
-            .order-title {
-                width: 1240px;
-                text-align: center;
-                font-size: 16px;
-                margin-bottom: 20px;
-            }
-        }
-        // 统计信息 end
-        .el-pagination {
-            padding: 7px 0 62px 20px;
-            background: #fff;
-            text-align: center;
-            width: 1240px;
-        }
-
-        // 登录日志, 积分明细
-        .logs-wrap,
-        .detail-wrap {
-            padding:20px 0 20px 20px;
-            background: #fff;
-        }
-        .condition {
-            height: 60px;
-            line-height: 60px;
-            margin-bottom: 10px;
-            background: #fff;
-            padding-left: 30px;
-            .el-button--primary {
-                height: 30px;
-                line-height: 30px;
-                vertical-align: middle;
-                padding: 0;
-                text-align: center;
-            }
-            .query {
-                width: 60px;
-            }
-            .export {
-                width: 75px;
-            }
-        }
-        .el-dropdown-link {
-            cursor: pointer;
-            color: #409EFF;
-        }
-        .el-icon-arrow-down {
-            font-size: 12px;
-        }
-        .el-select {
-            width: 175px;
-            height: 35px;
-            margin-right: 40px;
-        }
-        .el-date-editor.el-input {
-            width: 175px;
-            height: 35px;
-        }
-        .cut-line {
-            display: inline-block;
-            width: 30px;
-            text-align: center;
-            color: #B4B4B4;
-        }
-        .endtime {
-            margin-right: 24px;
-        }
+    // 用户信息 end
+    // 统计信息 start
+    .stat,
+    .address-msg,
+    .order-msg {
+      padding: 20px 0 25px 20px;
+      margin-top: 20px;
+      background: #fff;
+      color: #333;
+      .order-title {
+        width: 1240px;
+        text-align: center;
+        font-size: 16px;
+        margin-bottom: 20px;
+      }
     }
+    // 统计信息 end
+    .el-pagination {
+      padding: 7px 0 62px 20px;
+      background: #fff;
+      text-align: center;
+      width: 1240px;
+    }
+    // 登录日志, 积分明细
+    .logs-wrap,
+    .detail-wrap {
+      padding:20px 0 20px 20px;
+      background: #fff;
+    }
+    .condition {
+      height: 60px;
+      line-height: 60px;
+      margin-bottom: 10px;
+      background: #fff;
+      padding-left: 30px;
+      .el-button--primary {
+        height: 30px;
+        line-height: 30px;
+        vertical-align: middle;
+        padding: 0;
+        text-align: center;
+      }
+      .query {
+        width: 60px;
+      }
+      .export {
+        width: 75px;
+      }
+    }
+    .el-dropdown-link {
+      cursor: pointer;
+      color: #409EFF;
+    }
+    .el-icon-arrow-down {
+      font-size: 12px;
+    }
+    .el-select {
+      width: 175px;
+      height: 35px;
+      margin-right: 40px;
+    }
+    .el-date-editor.el-input {
+      width: 175px;
+      height: 35px;
+    }
+    .cut-line {
+      display: inline-block;
+      width: 30px;
+      text-align: center;
+      color: #B4B4B4;
+    }
+    .endtime {
+      margin-right: 24px;
+    }
+  }
 </style>

@@ -5,6 +5,8 @@
 </template>
 
 <script>
+  import {baseApiUrl} from '@/common/env';
+  const upbaseUrl = baseApiUrl;
   export default {
     name: 'kindeditor',
     data () {
@@ -194,10 +196,12 @@
         type: Function
       },
       uploadJson: {
-        type: String
+        type: String,
+        default:upbaseUrl+'/member/upload_json.php'
       },
       fileManagerJson: {
-        type: Function
+        type: String|Function,
+        default:upbaseUrl+'/member/file_manager_json.php'
       },
       allowPreviewEmoticons: {
         type: Boolean,
@@ -221,7 +225,7 @@
       },
       allowFileManager: {
         type: Boolean,
-        default: false
+        default: true
       },
       fontSizeTable: {
         type: Array,
@@ -290,6 +294,7 @@
     mounted () {
       var _this = this
       _this.editor = window.KindEditor.create('#' + this.id, {
+
         width: _this.width,
         height: _this.height,
         minWidth: _this.minWidth,
@@ -354,6 +359,29 @@
         fixToolBar: _this.fixToolBar,
         tabIndex: _this.tabIndex
       })
+
+      // window.KindEditor.
+      //
+      // KindEditor.ready(function(K) {
+      //   var editor1 = K.create('textarea[name="content1"]', {
+      //     cssPath : '../plugins/code/prettify.css',
+      //     uploadJson : '../php/upload_json.php',
+      //     fileManagerJson : '../php/file_manager_json.php',
+      //     allowFileManager : true,
+      //     afterCreate : function() {
+      //       var self = this;
+      //       K.ctrl(document, 13, function() {
+      //         self.sync();
+      //         K('form[name=example]')[0].submit();
+      //       });
+      //       K.ctrl(self.edit.doc, 13, function() {
+      //         self.sync();
+      //         K('form[name=example]')[0].submit();
+      //       });
+      //     }
+      //   });
+      //   prettyPrint();
+      // });
     }
   }
 </script>
