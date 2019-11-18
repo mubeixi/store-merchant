@@ -519,8 +519,6 @@
                 this.addText="提交保存";
                 await systemProdDetail({prod_id:id}).then(res=>{
                     let productInfo=res.data;
-                    if(productInfo.)
-
                     this.ruleForm.Products_Index=productInfo.Products_Index;//商品排序
                     this.ruleForm.Products_Name=productInfo.Products_Name;//商品名称
                     this.cate_ids=productInfo.Products_Category;//商品分类
