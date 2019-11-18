@@ -68,66 +68,65 @@
                         class="wzw-table"
                         :data="statData"
                         border
-                        
                         style="width: 100%">
                         <el-table-column
                         prop="mount"
                         label="消费金额"
-                        width="123"
+                        width="124"
                         align="center">
                         </el-table-column>
                         <el-table-column
                         prop="amount"
                         label="订单总数"
-                        width="123"
+                        width="124"
                         align="center">
                         </el-table-column>
                         <el-table-column
                         prop="balance"
                         label="可用余额"
-                        width="123"
+                        width="124"
                         align="center">
                         </el-table-column>
                         <el-table-column
                         prop="integral"
                         label="可用积分"
-                        width="123"
+                        width="124"
                         align="center">
                         </el-table-column>
                         <el-table-column
                         prop="grow"
                         label="成长值"
-                        width="123"
+                        width="124"
                         align="center">
                         </el-table-column>
                         <el-table-column
                         prop="tickets"
                         label="剩余优惠券"
-                        width="123"
+                        width="124"
                         align="center">
                         </el-table-column>
                         <el-table-column
                         prop="comments"
                         align="center"
-                        width="123"
+                        width="124"
                         label="商品评价">
                         </el-table-column>
                         <el-table-column
                         prop="backorder"
                         align="center"
-                        width="123"
+                        width="124"
                         label="退货记录">
                         </el-table-column>
                         <el-table-column
                         prop="loginTimes"
                         align="center"
-                        width="123"
+                        width="124"
                         label="登录次数">
                         </el-table-column>
                         <el-table-column
                         prop="collect"
                         align="center"
-                        width="123"
+                        width="124"
                         label="收藏产品">
                         </el-table-column>
                     </el-table>
@@ -157,7 +156,7 @@
                         </el-table-column>
                         <el-table-column
                         prop="addinfo"
-                        width="634"
+                        width="851"
                         align="center"
                         label="详细地址">
                         </el-table-column>
@@ -435,16 +434,18 @@
                 </div>
             </template>
             <!-- 成长值end -->
-            <el-pagination
-               
-                :current-page.sync ="page"
-                layout="prev, pager, next"
-                :page-size = "pageSize"
-                :total="total"
-                @prev-click="prev"
-                @next-click="next"
-                @current-change="current">
-            </el-pagination>
+            <div style="width: 100%;background:#fff">
+                <el-pagination
+                    background
+                    :current-page.sync ="page"
+                    layout="prev, pager, next"
+                    :page-size = "pageSize"
+                    :total="total"
+                    @prev-click="prev"
+                    @next-click="next"
+                    @current-change="current">
+                </el-pagination>
+            </div>
         </div>
     </div>
 </template>
@@ -692,6 +693,9 @@
 </script>
 
 <style scoped lang="less">
+* {
+    box-sizing: border-box;
+}
     .wrap {
         width:100%;
         padding: 20px 0 0 20px;
@@ -724,7 +728,7 @@
         // 用户信息start
         .user-msg-wrap {
             background: #fff;
-            padding: 20px 0 20px 20px;
+            padding: 20px 0 25px 20px;
         }
         .user-msg {
             display: flex;
@@ -805,7 +809,7 @@
             background: #fff;
             color: #333;
             .order-title {
-                width: 1150px;
+                width: 1240px;
                 text-align: center;
                 font-size: 16px;
                 margin-bottom: 20px;
@@ -813,9 +817,10 @@
         }
         // 统计信息 end
         .el-pagination {
-            padding: 32px 0;
+            padding: 7px 0 62px 20px;
             background: #fff;
             text-align: center;
+            width: 1240px;
         }
 
         // 登录日志, 积分明细
@@ -869,14 +874,5 @@
         .endtime {
             margin-right: 24px;
         }
-        // .el-table--border {
-        //     border: 0;
-        // }
-        // .el-table::before {
-        //     width:0;
-        // }
-        // .el-table--border th {
-        //     border-top:1px solid #eaeaea;
-        // }
     }
 </style>

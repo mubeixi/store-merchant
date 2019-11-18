@@ -65,6 +65,32 @@ input[type="number"]{
 .wzw-table th {
   color: #333 !important;
     background-color: #F9FAFC !important;
+    border: none !important;
+    border-top: 1px solid #EAEAEA !important;
+    border-left: 1px solid #EAEAEA !important;
 }
-
+.wzw-table tr th:nth-last-of-type(2) {
+  border-right: 1px solid #EAEAEA !important;
+}
+.el-table__body {
+  border-bottom: 1px solid #EAEAEA !important;
+}
+.el-table__body tr td:nth-last-child(1) {
+  border-right: 1px solid #EAEAEA !important;
+}
+.el-table--border {
+  border: 0 !important;
+}
+.el-table::before {
+  width: 0 !important;
+}
+.el-table td {
+  border-top: 1px solid #eaeaea !important;
+  border-left: 1px solid #eaeaea !important;
+}
+.el-table__empty-block {
+  border: 1px solid #EAEAEA !important;
+  border-top: 0 !important;
+  box-sizing: border-box !important;
+}
 </style>
