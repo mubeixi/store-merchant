@@ -187,7 +187,7 @@
         </div>
       </el-form-item>
 
-      <el-form-item label="商品承诺" prop="Products_Promise">
+      <el-form-item label="商品承诺" >
         <div class="input-wrap"  style="width: 110px;margin-left: 10px;display: inline-block;position: relative"  v-for="(item,index) of Products_Promise" :key="index">
           <el-input  size="mini"   v-model="Products_Promise[index]" @focus="focusCommit(index)"/>
 <!--          <img src="@/assets/img/productAdd/del.png" class="imgDel" @click="committedDel(index)">-->
@@ -265,7 +265,7 @@
         </div>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')">{{addText}}</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -383,16 +383,16 @@
       </div>
     </el-dialog>
 
-    <el-dialog
-      title="卡密设置"
-      width="90%"
-      @close="cardCancel"
-      append-to-body
-      :visible.sync="ruleForm.orderType==2"
-      class="setting"
-    >
+<!--    <el-dialog-->
+<!--      title="卡密设置"-->
+<!--      width="90%"-->
+<!--      @close="cardCancel"-->
+<!--      append-to-body-->
+<!--      :visible.sync="ruleForm.orderType==2"-->
+<!--      class="setting"-->
+<!--    >-->
 
-    </el-dialog>
+<!--    </el-dialog>-->
     <div class="setting" @click="commission=true">
       佣金设置
     </div>
@@ -459,7 +459,7 @@
         commission=false
         editorText =  '' // 双向同步的变量
         editorTextCopy =  ''  // content-change 事件回掉改变的对象
-
+        addText="立即添加";
         onContentChange (val) {
             this.ruleForm.content = val;
         }
@@ -514,10 +514,13 @@
                 }
             }).catch();
 
-
-            await systemProdDetail({prod_id:'629'}).then(res=>{
-                  console.log(res,"sss")
+            let id = this.$route.query.prod_id;
+            if(id){
+                this.addText="提交保存";
+                await systemProdDetail({prod_id:id}).then(res=>{
                     let productInfo=res.data;
+                    if(productInfo.)
+
                     this.ruleForm.Products_Index=productInfo.Products_Index;//商品排序
                     this.ruleForm.Products_Name=productInfo.Products_Name;//商品名称
                     this.cate_ids=productInfo.Products_Category;//商品分类
@@ -538,7 +541,7 @@
                     this.ruleForm.Products_IsPaysBalance=productInfo.Products_IsPaysBalance?true:false;//是否使用余额
                     this.distriboutor_config=[];
                     for(let item in productInfo.Products_Distributes){
-                       this.distriboutor_config.push(productInfo.Products_Distributes[item]);
+                        this.distriboutor_config.push(productInfo.Products_Distributes[item]);
                     }
                     //佣金设置
                     this.platForm_Income_Reward=productInfo.platForm_Income_Reward;
@@ -569,7 +572,9 @@
                         this.ruleForm.pintuan_end_time=new  Date(productInfo.pintuan_end_time*1000);
                     }
 
-            })
+                })
+            }
+
         }
 
         @Watch('specs', { deep: true,immediate:true })
@@ -651,17 +656,7 @@
                     if(!this.ruleForm.freightGu)callback(new Error('请输入运费'))
                 }
                 callback();
-            },
-            committed:(rule, value, callback) => {
-
-                    for(let item of this.Products_Promise){
-                        if(item==''){
-                            if(!this.ruleForm.freight)callback(new Error('商品承诺不能为空'))
-                        }
-                    }
-
-                callback();
-            },
+            }
         }
         spec_val_list = []
         specs = [
@@ -926,12 +921,9 @@
             orderType:[
                 { required: true, message: '请选择订单类型', trigger: 'change' }
             ],
-            Products_Promise:[
-                { validator:this.validateFn.committed, trigger: 'change' }
-            ],
-            classification:[
-                { validator:this.validateFn.classification, trigger: 'change' }
-            ]
+            // classification:[
+            //     { validator:this.validateFn.classification, trigger: 'change' }
+            // ]
         }
 
         imgs = '';//展示图
@@ -976,6 +968,8 @@
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
+                    let id = this.$route.query.prod_id;
+
                     if(this.ruleForm.orderType<=0){
                         if(this.ruleForm.Products_Weight<=0){
                             return alert('实体订单商品重量大于0')
@@ -1010,12 +1004,15 @@
                         sha_Reward:this.sha_Reward,
                         commission_ratio:this.commission_ratio,
                     };
-                    let objPromise={};
-                    for(let item of this.Products_Promise){
-                        objPromise.name=item;
-                        this.Products_Promise.push(objPromise);
+                    if(id){
+                      productInfo.prod_id=id;
                     }
-                    productInfo.Products_Promise=this.Products_Promise;
+                    let arrPromise=[];
+                    for(let item of this.Products_Promise){
+                        arrPromise.push({'name':item});
+                    }
+                    productInfo.Products_Promise=JSON.stringify(arrPromise);
+
                     if(this.thumb.length<1){
                         alert('商品主图不能为空');
                         return ;
@@ -1103,7 +1100,8 @@
                     }
 
                     alert('submit!');
-                    systemOperateProd(productInfo).then(res=>{
+                    console.log(productInfo)
+                    systemOperateProd(productInfo,{}).then(res=>{
                         console.log(res,"sss")
                     }).catch(e=>{
                         console.log(e)

@@ -110,7 +110,7 @@ export const getStoreList = (data,options) => fetch('get_store_list', data, opti
 
 //产品添加编辑所需配置
 export const systemProdConfig = (data,options) => fetch('system_prod_config', data, options);
-//产品添加编辑所需配置
+//产品添加
 export const systemOperateProd = (data,options) => fetch('system_operate_prod', data, options);
 //获取产品具体信息
 export const systemProdDetail = (data,options) => fetch('system_prod_detail', data, options);
@@ -153,7 +153,7 @@ function ObjectToArr(object, addkey) {
         }
       }
     } else {
-      this.ObjectToArr(object[i], newkey);
+        ObjectToArr(object[i], newkey);
     }
   }
   var newkey_1 = Object.keys(arrs).sort();
@@ -177,7 +177,7 @@ function ObjectToString(object, arrs) {
         }
       }
     } else {
-      arrs += this.ObjectToString(object[i], arrs);
+      arrs += ObjectToString(object[i], arrs);
     }
   }
   return arrs;
