@@ -5,6 +5,8 @@
 </template>
 
 <script>
+  import {baseApiUrl} from '@/common/env';
+  const upbaseUrl = baseApiUrl;
   export default {
     name: 'kindeditor',
     data () {
@@ -195,11 +197,11 @@
       },
       uploadJson: {
         type: String,
-        default:'https://new401.bafangka.com/member/upload_json.php'
+        default:upbaseUrl+'/member/upload_json.php'
       },
       fileManagerJson: {
         type: String|Function,
-        default:'https://new401.bafangka.com/member/file_manager_json.php'
+        default:upbaseUrl+'/member/file_manager_json.php'
       },
       allowPreviewEmoticons: {
         type: Boolean,

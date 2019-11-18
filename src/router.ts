@@ -4,7 +4,7 @@ import Home from './views/Home.vue';
 import Diy from './views/Diy.vue';
 
 import Empty from './views/Empty.vue';
-import ProductAdd from "@/views/ProductAdd.vue";
+import ProductForm from "@/views/ProductForm.vue";
 import UserList from '@/views/UserList.vue';
 Vue.use(Router);
 
@@ -26,10 +26,10 @@ export default new Router({
       component: Empty,
     },
     {
-      path: '/productAdd',
+      path: '/ProductForm',
       name: 'product',
-      component: ProductAdd,
-    },
+      component: ProductForm,
+    }
     ,
     {
       path: '/userList',

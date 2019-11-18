@@ -303,7 +303,7 @@
     position: relative;
     min-height: 20px;
     overflow: hidden;
-    .border();
+
     /*box-sizing: border-box;*/
 
     .row {

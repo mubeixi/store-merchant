@@ -115,6 +115,11 @@
   export default {
     name: 'BindStoreComponent',
     props: {
+      //store_id_list,只包含id
+      has:{
+        type:Array,
+        default:[]
+      },
       pageEl: {
         type: Object
       },
