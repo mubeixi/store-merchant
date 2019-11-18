@@ -1,453 +1,458 @@
 <template>
-  <div class="wrap">
-    <div class="title">
-      <div class="item" :class="item==1?'active':''" @click="changeItem(1)">用户详情</div>
-      <div class="item" :class="item==2?'active':''" @click="changeItem(2)">登录日志</div>
-      <div class="item" :class="item==3?'active':''" @click="changeItem(3)">积分明细</div>
-      <div class="item" :class="item==4?'active':''" @click="changeItem(4)">资金流水</div>
-      <div class="item" :class="item==5?'active':''" @click="changeItem(5)">成长值明细</div>
-    </div>
-    <div class="content">
-      <template v-if="item ==1">
-        <!-- 用户信息 -->
-        <div class="user-msg-wrap">
-          <div class="user-msg">
-            <div class="user-left">
-              <img class="user-avator" :src="userInfo.User_HeadImg" alt="">
-              <div class="user-phone">{{userInfo.User_Mobile}}</div>
-              <div class="user-level">{{userInfo.level_name}}</div>
+    <div class="wrap">
+        <div class="title">
+            <div class="item" :class="item==1?'active':''" @click="changeItem(1)">用户详情</div>
+            <div class="item" :class="item==2?'active':''" @click="changeItem(2)">登录日志</div>
+            <div class="item" :class="item==3?'active':''" @click="changeItem(3)">积分明细</div>
+            <div class="item" :class="item==4?'active':''" @click="changeItem(4)">资金流水</div>
+            <div class="item" :class="item==5?'active':''" @click="changeItem(5)">成长值明细</div>
+        </div>
+        <div class="content">
+            <template v-if="item ==1">
+                <!-- 用户信息 -->
+                <div class="user-msg-wrap">
+                    <div class="user-msg">
+                        <div class="user-left">
+                            <img class="user-avator" :src="userInfo.User_HeadImg" alt="">
+                            <div class="user-phone">{{userInfo.User_Mobile}}</div>
+                            <div class="user-level">{{userInfo.level_name}}</div>
+                        </div>
+                        <div class="user-right">
+                            <table class="width:100%;height: 100%;color:#666;" cellspacing="0" cellpadding="0">
+                                <tr class="first">
+                                    <td>手机</td>
+                                    <td>{{userInfo.User_Mobile}}</td>
+                                    <td>姓名</td>
+                                    <td>{{userInfo.User_Name}}</td>
+                                </tr>
+                                <tr>
+                                    <td>性别</td>
+                                    <td>{{userInfo.User_Gender}}</td>
+                                    <td>年龄</td>
+                                    <td>{{userInfo.User_Age}}</td>
+                                </tr>
+                                <tr>
+                                    <td>昵称</td>
+                                    <td>{{userInfo.User_NickName}}</td>
+                                    <td>身份证号</td>
+                                    <td>{{userInfo.User_IDNum}}</td>
+                                </tr>
+                                <tr>
+                                    <td>传真</td>
+                                    <td>{{userInfo.User_Fax}}</td>
+                                    <td>QQ</td>
+                                    <td>{{userInfo.User_QQ}}</td>
+                                </tr>
+                                <tr>
+                                    <td>邮箱</td>
+                                    <td>{{userInfo.User_Email}}</td>
+                                    <td>公司</td>
+                                    <td>{{userInfo.User_Company}}</td>
+                                </tr>
+                                <tr>
+                                    <td>地区</td>
+                                    <td>{{userInfo.area}}</td>
+                                    <td>详细地址</td>
+                                    <td>{{userInfo.User_Address}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- 统计信息start -->
+                <div class="stat wzw-table">
+                    <div class="order-title">
+                        统计信息
+                    </div>
+                    <el-table
+                        :data="statData"
+                        border
+                        style="width: 100%">
+                        <el-table-column
+                        prop="mount"
+                        label="消费金额"
+                        width="124"
+                        align="center">
+                        </el-table-column>
+                        <el-table-column
+                        prop="amount"
+                        label="订单总数"
+                        width="124"
+                        align="center">
+                        </el-table-column>
+                        <el-table-column
+                        prop="balance"
+                        label="可用余额"
+                        width="124"
+                        align="center">
+                        </el-table-column>
+                        <el-table-column
+                        prop="integral"
+                        label="可用积分"
+                        width="124"
+                        align="center">
+                        </el-table-column>
+                        <el-table-column
+                        prop="grow"
+                        label="成长值"
+                        width="124"
+                        align="center">
+                        </el-table-column>
+                        <el-table-column
+                        prop="tickets"
+                        label="剩余优惠券"
+                        width="124"
+                        align="center">
+                        </el-table-column>
+                        <el-table-column
+                        prop="comments"
+                        align="center"
+                        width="124"
+                        label="商品评价">
+                        </el-table-column>
+                        <el-table-column
+                        prop="backorder"
+                        align="center"
+                        width="124"
+                        label="退货记录">
+                        </el-table-column>
+                        <el-table-column
+                        prop="loginTimes"
+                        align="center"
+                        width="124"
+                        label="登录次数">
+                        </el-table-column>
+                        <el-table-column
+                        prop="collect"
+                        align="center"
+                        width="124"
+                        label="收藏产品">
+                        </el-table-column>
+                    </el-table>
+                </div>
+                <!-- 统计信息end -->
+                <!-- 地址信息start -->
+                <div class="address-msg wzw-table">
+                    <div class="order-title">
+                        地址管理
+                    </div>
+                    <el-table
+                        :data="addData"
+                        border
+                        >
+                        <el-table-column
+                        prop="Address_Name"
+                        label="姓名"
+                        align="center"
+                        width="187">
+                        </el-table-column>
+                        <el-table-column
+                        prop="Address_Mobile"
+                        label="手机号"
+                        align="center"
+                        width="202">
+                        </el-table-column>
+                        <el-table-column
+                        prop="addinfo"
+                        width="851"
+                        align="center"
+                        label="详细地址">
+                        </el-table-column>
+                    </el-table>
+                </div>
+                <!-- 地址信息end -->
+                <!-- 订单记录start -->
+                <div class="order-msg wzw-table">
+                    <div class="order-title">
+                        订单记录
+                    </div>
+                    <el-table
+                        :data="orderData"
+                        border
+                        >
+                        <el-table-column
+                        prop="Order_No"
+                        label="订单号"
+                        align="center"
+                        width="187">
+                        </el-table-column>
+                        <el-table-column
+                        prop="Order_TotalPrice"
+                        label="订单金额"
+                        align="center"
+                        width="155">
+                        </el-table-column>
+                        <el-table-column
+                        prop="Order_PaymentInfo"
+                        width="148"
+                        align="center"
+                        label="支付方式">
+                        </el-table-column>
+                        <el-table-column
+                        prop="env"
+                        width="148"
+                        align="center"
+                        label="订单来源">
+                        </el-table-column>
+                        <el-table-column
+                        prop="status_txt"
+                        width="148"
+                        align="center"
+                        label="订单状态">
+                        </el-table-column>
+                        <el-table-column
+                        prop="Order_CreateTime"
+                        width="160"
+                        align="center"
+                        label="下单时间">
+                        </el-table-column>
+                        <el-table-column
+                        prop="Order_Store"
+                        width="148"
+                        align="center"
+                        label="所属门店">
+                        </el-table-column>
+                        <el-table-column
+                        prop="hand"
+                        width="148"
+                        align="center"
+                        label="操作">
+                        <template slot-scope="scope">
+                            <el-button @click="handleClick(scope,orderData)" type="text" size="small">查看订单</el-button>
+                        </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+                <!-- 订单记录end -->
+            </template>
+            <!-- 登录日志 -->
+            <template v-if="item !=1">
+                <div class="condition">
+                    <template v-if="des[item]">
+                        <span>{{des[item]}}来源：</span>
+                        <el-select v-model="type" :placeholder="'请选择'+des[item]+'来源'" popper-class="my-select">
+                            <el-option
+                                v-for="(item,index) in types"
+                                :key="index"
+                                :label="item"
+                                :value="index">
+                            </el-option>
+                        </el-select>
+                    </template>
+                        <div class="inline-block">
+                            <span class="demonstration">变化时间：</span>
+                            <el-date-picker
+                            v-model="start_time"
+                            type="datetime"
+                            placeholder="选择开始时间"
+                            value-format='yyyy-MM-dd HH:mm:ss'>
+                            </el-date-picker>
+                        </div>
+                        <span class="cut-line">—</span> 
+                        <div class="inline-block endtime">
+                            <!-- <span class="demonstration">默认</span> -->
+                            <el-date-picker
+                            v-model="end_time"
+                            type="datetime"
+                            placeholder="选择结束时间"
+                            value-format='yyyy-MM-dd HH:mm:ss'>
+                            </el-date-picker>
+                        </div>
+                        <el-button type="primary" class="query" @click="query">查询</el-button>
+                        <!-- <el-button type="primary" class="export">导出数据</el-button> -->
+                    </div>
+            </template>
+            <template v-if="item == 2">
+                <div class="logs-wrap wzw-table">
+                    <el-table
+                        :data="loginData"
+                        border
+                        :row-style="rowStyle"
+                        :header-row-style="headerStyle"
+                        >
+                        <el-table-column
+                            prop="login_time"
+                            label="时间"
+                            align="center"
+                            width="310">
+                        </el-table-column>
+                        <el-table-column
+                            prop="login_ip"
+                            label="IP"
+                            align="center"
+                            width="310">
+                        </el-table-column>
+                        <el-table-column
+                            prop="area"
+                            width="310"
+                            align="center"
+                            label="地区">
+                        </el-table-column>
+                        <el-table-column
+                            prop="source"
+                            width="310"
+                            align="center"
+                            label="登录方式">
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </template>
+            <!-- 登录日志end -->
+            <!-- 积分明细start -->
+            <template v-if="item ==3">
+                    <div class="detail-wrap wzw-table">
+                    <el-table
+                        :data="detailData"
+                        border
+                        :row-style="rowStyle"
+                        :header-row-style="headerStyle"
+                        >
+                        <el-table-column
+                            prop="source"
+                            label="积分来源"
+                            align="center"
+                            width="206">
+                        </el-table-column>
+                        <el-table-column
+                            prop="num"
+                            label="积分变化"
+                            align="center"
+                            width="167">
+                        </el-table-column>
+                        <el-table-column
+                            prop="surplus_num"
+                            width="167"
+                            align="center"
+                            label="变化后剩余">
+                        </el-table-column>
+                        <el-table-column
+                            prop="created_at"
+                            width="224"
+                            align="center"
+                            label="变化时间">
+                        </el-table-column>
+                        <el-table-column
+                            prop="descr"
+                            width="262"
+                            align="center"
+                            label="备注">
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </template>
+            <!-- 积分明细end -->
+            <!-- 资金流水start -->
+            <template v-if="item ==4">
+                <div class="detail-wrap wzw-table">
+                    <el-table
+                        :data="moneyData"
+                        border
+                        :row-style="rowStyle"
+                        :header-row-style="headerStyle"
+                        >
+                        <el-table-column
+                            prop="source"
+                            label="余额来源"
+                            align="center"
+                            width="206">
+                        </el-table-column>
+                        <el-table-column
+                            prop="num"
+                            label="余额变化"
+                            align="center"
+                            width="167">
+                        </el-table-column>
+                        <el-table-column
+                            prop="surplus_num"
+                            width="167"
+                            align="center"
+                            label="变化后剩余">
+                        </el-table-column>
+                        <el-table-column
+                            prop="created_at"
+                            width="224"
+                            align="center"
+                            label="变化时间">
+                        </el-table-column>
+                        <el-table-column
+                            prop="descr"
+                            width="262"
+                            align="center"
+                            label="备注">
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </template>
+            <!-- 资金流水end -->
+            <!-- 成长值start -->
+             <template v-if="item ==5">
+                    <div class="detail-wrap wzw-table">
+                    <el-table
+                        :data="groupData"
+                        border
+                        :row-style="rowStyle"
+                        :header-row-style="headerStyle"
+                        >
+                        <el-table-column
+                            prop="source"
+                            label="成长值来源"
+                            align="center"
+                            width="206">
+                        </el-table-column>
+                        <el-table-column
+                            prop="num"
+                            label="成长值变化"
+                            align="center"
+                            width="167">
+                        </el-table-column>
+                        <el-table-column
+                            prop="surplus_num"
+                            width="167"
+                            align="center"
+                            label="变化后剩余">
+                        </el-table-column>
+                        <el-table-column
+                            prop="created_at"
+                            width="224"
+                            align="center"
+                            label="变化时间">
+                        </el-table-column>
+                        <el-table-column
+                            prop="descr"
+                            width="262"
+                            align="center"
+                            label="备注">
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </template>
+            <!-- 成长值end -->
+            <div style="width: 100%;background:#fff">
+                <el-pagination
+                    background
+                    :current-page.sync ="page"
+                    layout="prev, pager, next,jumper"
+                    :page-size = "pageSize"
+                    :total="total"
+                    @prev-click="prev"
+                    @next-click="next"
+                    @current-change="current">
+                </el-pagination>
             </div>
-            <div class="user-right">
-              <table class="width:100%;height: 100%;color:#666;" cellspacing="0" cellpadding="0">
-                <tr class="first">
-                  <td>手机</td>
-                  <td>{{userInfo.User_Mobile}}</td>
-                  <td>姓名</td>
-                  <td>{{userInfo.User_Name}}</td>
-                </tr>
-                <tr>
-                  <td>性别</td>
-                  <td>{{userInfo.User_Gender}}</td>
-                  <td>年龄</td>
-                  <td>{{userInfo.User_Age}}</td>
-                </tr>
-                <tr>
-                  <td>昵称</td>
-                  <td>{{userInfo.User_NickName}}</td>
-                  <td>身份证号</td>
-                  <td>{{userInfo.User_IDNum}}</td>
-                </tr>
-                <tr>
-                  <td>传真</td>
-                  <td>{{userInfo.User_Fax}}</td>
-                  <td>QQ</td>
-                  <td>{{userInfo.User_QQ}}</td>
-                </tr>
-                <tr>
-                  <td>邮箱</td>
-                  <td>{{userInfo.User_Email}}</td>
-                  <td>公司</td>
-                  <td>{{userInfo.User_Company}}</td>
-                </tr>
-                <tr>
-                  <td>地区</td>
-                  <td>{{userInfo.area}}</td>
-                  <td>详细地址</td>
-                  <td>{{userInfo.User_Address}}</td>
-                </tr>
-              </table>
-            </div>
           </div>
+        <div style="width: 100%;background:#fff">
+            <el-pagination
+            background
+            :current-page.sync ="page"
+            layout="prev, pager, next"
+            :page-size = "pageSize"
+            :total="total"
+            @prev-click="prev"
+            @next-click="next"
+            @current-change="current">
+            </el-pagination>
         </div>
-        <!-- 统计信息start -->
-        <div class="stat">
-          <div class="order-title">
-            统计信息
-          </div>
-          <el-table
-            class="wzw-table"
-            :data="statData"
-            border
-            style="width: 100%">
-            <el-table-column
-              prop="mount"
-              label="消费金额"
-              width="124"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              prop="amount"
-              label="订单总数"
-              width="124"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              prop="balance"
-              label="可用余额"
-              width="124"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              prop="integral"
-              label="可用积分"
-              width="124"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              prop="grow"
-              label="成长值"
-              width="124"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              prop="tickets"
-              label="剩余优惠券"
-              width="124"
-              align="center">
-            </el-table-column>
-            <el-table-column
-              prop="comments"
-              align="center"
-              width="124"
-              label="商品评价">
-            </el-table-column>
-            <el-table-column
-              prop="backorder"
-              align="center"
-              width="124"
-              label="退货记录">
-            </el-table-column>
-            <el-table-column
-              prop="loginTimes"
-              align="center"
-              width="124"
-              label="登录次数">
-            </el-table-column>
-            <el-table-column
-              prop="collect"
-              align="center"
-              width="124"
-              label="收藏产品">
-            </el-table-column>
-          </el-table>
-        </div>
-        <!-- 统计信息end -->
-        <!-- 地址信息start -->
-        <div class="address-msg">
-          <div class="order-title">
-            地址管理
-          </div>
-          <el-table
-            class="wzw-table"
-            :data="addData"
-            border
-          >
-            <el-table-column
-              prop="Address_Name"
-              label="姓名"
-              align="center"
-              width="187">
-            </el-table-column>
-            <el-table-column
-              prop="Address_Mobile"
-              label="手机号"
-              align="center"
-              width="202">
-            </el-table-column>
-            <el-table-column
-              prop="addinfo"
-              width="851"
-              align="center"
-              label="详细地址">
-            </el-table-column>
-          </el-table>
-        </div>
-        <!-- 地址信息end -->
-        <!-- 订单记录start -->
-        <div class="order-msg">
-          <div class="order-title">
-            订单记录
-          </div>
-          <el-table
-            class="wzw-table"
-            :data="orderData"
-            border
-          >
-            <el-table-column
-              prop="Order_No"
-              label="订单号"
-              align="center"
-              width="187">
-            </el-table-column>
-            <el-table-column
-              prop="Order_TotalPrice"
-              label="订单金额"
-              align="center"
-              width="155">
-            </el-table-column>
-            <el-table-column
-              prop="Order_PaymentInfo"
-              width="148"
-              align="center"
-              label="支付方式">
-            </el-table-column>
-            <el-table-column
-              prop="env"
-              width="148"
-              align="center"
-              label="订单来源">
-            </el-table-column>
-            <el-table-column
-              prop="status_txt"
-              width="148"
-              align="center"
-              label="订单状态">
-            </el-table-column>
-            <el-table-column
-              prop="Order_CreateTime"
-              width="160"
-              align="center"
-              label="下单时间">
-            </el-table-column>
-            <el-table-column
-              prop="Order_Store"
-              width="148"
-              align="center"
-              label="所属门店">
-            </el-table-column>
-            <el-table-column
-              prop="hand"
-              width="148"
-              align="center"
-              label="操作">
-              <template slot-scope="scope">
-                <el-button @click="handleClick(scope,orderData)" type="text" size="small">查看订单</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-        <!-- 订单记录end -->
-      </template>
-      <!-- 登录日志 -->
-      <template v-if="item !=1">
-        <div class="condition">
-          <template v-if="des[item]">
-            <span>{{des[item]}}来源：</span>
-            <el-select v-model="type" :placeholder="'请选择'+des[item]+'来源'" popper-class="my-select">
-              <el-option
-                v-for="(item,index) in types"
-                :key="index"
-                :label="item"
-                :value="index">
-              </el-option>
-            </el-select>
-          </template>
-          <div class="inline-block">
-            <span class="demonstration">变化时间：</span>
-            <el-date-picker
-              v-model="start_time"
-              type="datetime"
-              placeholder="选择开始时间"
-              value-format='yyyy-MM-dd HH:mm:ss'>
-            </el-date-picker>
-          </div>
-          <span class="cut-line">—</span>
-          <div class="inline-block endtime">
-            <!-- <span class="demonstration">默认</span> -->
-            <el-date-picker
-              v-model="end_time"
-              type="datetime"
-              placeholder="选择结束时间"
-              value-format='yyyy-MM-dd HH:mm:ss'>
-            </el-date-picker>
-          </div>
-          <el-button type="primary" class="query" @click="query">查询</el-button>
-          <!-- <el-button type="primary" class="export">导出数据</el-button> -->
-        </div>
-      </template>
-      <template v-if="item == 2">
-        <div class="logs-wrap">
-          <el-table
-            class="wzw-table"
-            :data="loginData"
-            border
-            :row-style="rowStyle"
-            :header-row-style="headerStyle"
-          >
-            <el-table-column
-              prop="login_time"
-              label="时间"
-              align="center"
-              width="310">
-            </el-table-column>
-            <el-table-column
-              prop="login_ip"
-              label="IP"
-              align="center"
-              width="310">
-            </el-table-column>
-            <el-table-column
-              prop="area"
-              width="310"
-              align="center"
-              label="地区">
-            </el-table-column>
-            <el-table-column
-              prop="source"
-              width="310"
-              align="center"
-              label="登录方式">
-            </el-table-column>
-          </el-table>
-        </div>
-      </template>
-      <!-- 登录日志end -->
-      <!-- 积分明细start -->
-      <template v-if="item ==3">
-        <div class="detail-wrap">
-          <el-table
-            class="wzw-table"
-            :data="detailData"
-            border
-            :row-style="rowStyle"
-            :header-row-style="headerStyle"
-          >
-            <el-table-column
-              prop="source"
-              label="积分来源"
-              align="center"
-              width="206">
-            </el-table-column>
-            <el-table-column
-              prop="num"
-              label="积分变化"
-              align="center"
-              width="167">
-            </el-table-column>
-            <el-table-column
-              prop="surplus_num"
-              width="167"
-              align="center"
-              label="变化后剩余">
-            </el-table-column>
-            <el-table-column
-              prop="created_at"
-              width="224"
-              align="center"
-              label="变化时间">
-            </el-table-column>
-            <el-table-column
-              prop="descr"
-              width="262"
-              align="center"
-              label="备注">
-            </el-table-column>
-          </el-table>
-        </div>
-      </template>
-      <!-- 积分明细end -->
-      <!-- 资金流水start -->
-      <template v-if="item ==4">
-        <div class="detail-wrap">
-          <el-table
-            class="wzw-table"
-            :data="moneyData"
-            border
-            :row-style="rowStyle"
-            :header-row-style="headerStyle"
-          >
-            <el-table-column
-              prop="source"
-              label="余额来源"
-              align="center"
-              width="206">
-            </el-table-column>
-            <el-table-column
-              prop="num"
-              label="余额变化"
-              align="center"
-              width="167">
-            </el-table-column>
-            <el-table-column
-              prop="surplus_num"
-              width="167"
-              align="center"
-              label="变化后剩余">
-            </el-table-column>
-            <el-table-column
-              prop="created_at"
-              width="224"
-              align="center"
-              label="变化时间">
-            </el-table-column>
-            <el-table-column
-              prop="descr"
-              width="262"
-              align="center"
-              label="备注">
-            </el-table-column>
-          </el-table>
-        </div>
-      </template>
-      <!-- 资金流水end -->
-      <!-- 成长值start -->
-      <template v-if="item ==5">
-        <div class="detail-wrap">
-          <el-table
-            class="wzw-table"
-            :data="groupData"
-            border
-            :row-style="rowStyle"
-            :header-row-style="headerStyle"
-          >
-            <el-table-column
-              prop="source"
-              label="成长值来源"
-              align="center"
-              width="206">
-            </el-table-column>
-            <el-table-column
-              prop="num"
-              label="成长值变化"
-              align="center"
-              width="167">
-            </el-table-column>
-            <el-table-column
-              prop="surplus_num"
-              width="167"
-              align="center"
-              label="变化后剩余">
-            </el-table-column>
-            <el-table-column
-              prop="created_at"
-              width="224"
-              align="center"
-              label="变化时间">
-            </el-table-column>
-            <el-table-column
-              prop="descr"
-              width="262"
-              align="center"
-              label="备注">
-            </el-table-column>
-          </el-table>
-        </div>
-      </template>
-      <!-- 成长值end -->
-      <div style="width: 100%;background:#fff">
-        <el-pagination
-          background
-          :current-page.sync ="page"
-          layout="prev, pager, next"
-          :page-size = "pageSize"
-          :total="total"
-          @prev-click="prev"
-          @next-click="next"
-          @current-change="current">
-        </el-pagination>
-      </div>
     </div>
-  </div>
 </template>
 <script lang="ts">
     import Vue from 'vue'

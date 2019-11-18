@@ -6,6 +6,8 @@ import Diy from './views/Diy.vue';
 import Empty from './views/Empty.vue';
 import ProductForm from "@/views/ProductForm.vue";
 import UserList from '@/views/UserList.vue';
+import Marketing from '@/views/Marketing.vue';
+import DayMark from '@/views/DayMark.vue';
 Vue.use(Router);
 
 export default new Router({
@@ -36,6 +38,16 @@ export default new Router({
       name: 'userlist',
       component: UserList,
     },
+    {
+      path: '/marketing',
+      name: 'marketing',
+      component: Marketing,
+    },
+    {
+      path: '/daymark',
+      name: 'daymark',
+      component: DayMark
+    }
     // {
     //   path: '/about',
     //   name: 'about',
