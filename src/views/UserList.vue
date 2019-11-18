@@ -60,12 +60,11 @@
                     </div>
                 </div>
                 <!-- 统计信息start -->
-                <div class="stat">
+                <div class="stat wzw-table">
                     <div class="order-title">
                         统计信息
                     </div>
                     <el-table
-                        class="wzw-table"
                         :data="statData"
                         border
                         style="width: 100%">
@@ -133,12 +132,11 @@
                 </div>
                 <!-- 统计信息end -->
                 <!-- 地址信息start -->
-                <div class="address-msg">
+                <div class="address-msg wzw-table">
                     <div class="order-title">
                         地址管理
                     </div>
                     <el-table
-                    class="wzw-table"
                         :data="addData"
                         border
                         >
@@ -164,12 +162,11 @@
                 </div>
                 <!-- 地址信息end -->
                 <!-- 订单记录start -->
-                <div class="order-msg">
+                <div class="order-msg wzw-table">
                     <div class="order-title">
                         订单记录
                     </div>
                     <el-table
-                    class="wzw-table"
                         :data="orderData"
                         border
                         >
@@ -266,9 +263,8 @@
                     </div>
             </template>
             <template v-if="item == 2">
-                <div class="logs-wrap">
+                <div class="logs-wrap wzw-table">
                     <el-table
-                    class="wzw-table"
                         :data="loginData"
                         border
                         :row-style="rowStyle"
@@ -304,9 +300,8 @@
             <!-- 登录日志end -->
             <!-- 积分明细start -->
             <template v-if="item ==3">
-                    <div class="detail-wrap">
+                    <div class="detail-wrap wzw-table">
                     <el-table
-                    class="wzw-table"
                         :data="detailData"
                         border
                         :row-style="rowStyle"
@@ -348,9 +343,8 @@
             <!-- 积分明细end -->
             <!-- 资金流水start -->
             <template v-if="item ==4">
-                <div class="detail-wrap">
+                <div class="detail-wrap wzw-table">
                     <el-table
-                    class="wzw-table"
                         :data="moneyData"
                         border
                         :row-style="rowStyle"
@@ -392,9 +386,8 @@
             <!-- 资金流水end -->
             <!-- 成长值start -->
              <template v-if="item ==5">
-                    <div class="detail-wrap">
+                    <div class="detail-wrap wzw-table">
                     <el-table
-                    class="wzw-table"
                         :data="groupData"
                         border
                         :row-style="rowStyle"
@@ -438,7 +431,7 @@
                 <el-pagination
                     background
                     :current-page.sync ="page"
-                    layout="prev, pager, next"
+                    layout="prev, pager, next,jumper"
                     :page-size = "pageSize"
                     :total="total"
                     @prev-click="prev"
