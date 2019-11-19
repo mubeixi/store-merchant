@@ -10,6 +10,7 @@ import Marketing from '@/views/Marketing.vue';
 import DayMark from '@/views/DayMark.vue';
 import LabelManagement from '@/views/LabelManagement.vue'
 import LabelAdd from '@/views/LabelAdd.vue'
+import CrowdName from '@/views/CrowdName.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -59,7 +60,13 @@ export default new Router({
       path: '/LabelAdd',
       name: 'LabelAdd',
       component: LabelAdd
+    },
+    {
+      path: '/CrowdName',
+      name: 'CrowdName',
+      component: CrowdName
     }
+
     // {
     //   path: '/about',
     //   name: 'about',
