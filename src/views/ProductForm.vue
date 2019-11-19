@@ -243,7 +243,7 @@
         <el-radio-group v-model="ruleForm.orderType" >
           <el-radio label="0" style="display: block;margin-bottom: 15px" >实物订单  <span class="font12">( 买家下单 -> 买家付款 -> 商家发货 -> 买家收货 -> 订单完成 )</span> </el-radio>
           <el-radio label="1" style="display: block;margin-bottom: 15px" >虚拟订单  <span class="font12">( 买家下单 -> 买家付款 -> 系统发送消费券码到买家手机 -> 商家认证消费 -> 订单完成 )</span></el-radio>
-          <el-radio label="2"  style="display: block;margin-bottom: 15px" >其他  <span class="font12">( 买家下单 -> 买家付款 -> 订单完成 )</span> </el-radio>
+          <el-radio label="2"  style="display: block;margin-bottom: 15px" ><span @click="clickRadio">其他  <span class="font12">( 买家下单 -> 买家付款 -> 订单完成 )</span></span> </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="商品库存" prop="Products_Count">
@@ -397,21 +397,21 @@
     >
         <div class="cardTitle">
               <div class="cardTitle" style="margin-right: 10px">
-                卡号： <el-input size="mini" v-model="ruleForm.Products_Count"  class="sortInput" style="width: 100px"></el-input>
+                卡号： <el-input size="mini" v-model="CardIdSelect"  class="sortInput" style="width: 100px"></el-input>
               </div>
               <div class="cardTitle" style="margin-right: 10px">
                 栏目：
-                <el-select size="mini" v-model="ruleForm.refund" placeholder="请选择类型"  style="width: 100px">
-                  <template v-for="(shop,shopIn) in prodConfig.shop_damage">
-                    <el-option :label="shop.Damage_Name" :value="shop.Damage_ID"></el-option>
+                <el-select size="mini" v-model="CardTypeSelect" placeholder="请选择类型"  style="width: 130px">
+                  <template v-for="(shop,shopIn) in CardType">
+                    <el-option :label="shop.Type_Name" :value="shop.Type_Id"></el-option>
                   </template>
                 </el-select>
               </div>
-              <el-button size="mini" type="primary">搜索</el-button>
+              <el-button size="mini" type="primary" @click="searchCard">搜索</el-button>
         </div>
         <el-table
           ref="multipleTable"
-          :data="tableData"
+          :data="CardList"
           tooltip-effect="dark"
           style="width: 100%"
           @selection-change="handleSelectionChange">
@@ -422,21 +422,21 @@
           </el-table-column>
           <el-table-column
             label="虚拟卡号"
+            prop="Card_Name"
             width="120">
-            <template slot-scope="scope">{{ scope.row.date }}</template>
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="Card_Password"
             label="密码"
             width="120">
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="Card_CreateTime"
             label="添加时间"
             show-overflow-tooltip>
           </el-table-column>
         </el-table>
-
+        <el-button size="mini" type="primary" style="margin-top: 10px" @click="sureCard">确定</el-button>
     </el-dialog>
 
     <div class="setting" @click="commission=true">
@@ -696,18 +696,25 @@
 
             }
 
-            await  virtualCardList().then(res=>{
+
+            let idDate={}
+            if(id){
+                idDate.prod_id=id;
+            }
+            await  virtualCardList(idDate).then(res=>{
                 this.CardList=res.data;
+                this.multipleSelection=[];
+                for(let item of this.CardList){
+                    if(item.Products_Relation_ID==id){
+                        this.multipleSelection.push(item)
+                    }
+                }
             })
             await virtualCardType().then(res=>{
                 this.CardType=res.data;
             })
         }
         isShow=false;
-        @Watch('ruleForm.orderType', { deep: true,immediate:true })
-        handleWatchR(){
-            if(this.ruleForm.orderType==2) this.isShow=true;
-        }
 
         @Watch('specs', { deep: true,immediate:true })
         handleWatch(){
@@ -936,6 +943,42 @@
             }
 
 
+        }
+        multipleSelection=[];
+        handleSelectionChange(val){
+            this.multipleSelection = val;
+        }
+
+        CardTypeSelect='';
+        CardIdSelect='';
+        clickRadio(){
+            this.isShow=true;
+        }
+        searchCard(){
+            let data={
+                card_name:this.CardIdSelect,
+                type_id:this.CardTypeSelect
+            }
+            let id = this.$route.query.prod_id;
+            if(id){
+                data.prod_id=id;
+            }
+            virtualCardList(data).then(res=>{
+                this.CardList=res.data;
+                for(let item of this.CardList){
+                    if(item.Products_Relation_ID==id){
+                        this.multipleSelection.push(item)
+                    }
+                }
+            })
+        }
+        sureCard(){
+            if(this.multipleSelection.length>0){
+                this.isShow=false;
+            }else{
+                this.isShow=false;
+                this.ruleForm.orderType='0';
+            }
         }
         //卡密取消
         cardCancel(){
