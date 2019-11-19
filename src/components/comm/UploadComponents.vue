@@ -26,7 +26,7 @@
 
         <div slot="file"  slot-scope="{file}">
           <template v-if="file.status!='success'">
-            <el-progress :width="78" style="width: 100%" type="circle" :percentage="file.percentage|percent"></el-progress>
+            <el-progress :width="width-2" style="width: 100%" type="circle" :percentage="file.percentage|percent"></el-progress>
           </template>
          <template v-if="file.status=='success'">
            <video
@@ -39,7 +39,7 @@
                 class="el-upload-list__item-thumbnail"
                 :src="domainFn(file.url)" />
            <span class="el-upload-list__item-actions">
-            <span
+            <span v-if="size!='minimal'"
               class="el-upload-list__item-preview"
               @click="onPreview(file)"
             >
@@ -64,7 +64,7 @@
 <!--        <div>{{file_temp_list[0]}}</div>-->
 <!--&lt;!&ndash;        <video :src="file_temp_list[0]|domain"></video>&ndash;&gt;-->
 <!--      </template>-->
-      <div slot="tip" class="el-upload__tip ">{{tip}} <i @click="remove" style="position: absolute;right: 0;top: 0;font-size: 22px;cursor: pointer;" v-if="showDelIcon && imgUrl" class="el-icon-circle-close del-icon"></i> </div>
+      <div slot="tip" v-if="tip" class="el-upload__tip ">{{tip}} <i @click="remove" style="position: absolute;right: 0;top: 0;font-size: 22px;cursor: pointer;" v-if="showDelIcon && imgUrl" class="el-icon-circle-close del-icon"></i> </div>
     </el-upload>
 
     <el-dialog  title="预览素材" :visible.sync="preShow">
@@ -92,6 +92,10 @@
 
   @Component({
       computed: {
+          width(){
+              const conf = {mini:80,minimal:32,small:100}
+              return conf[this.size]?conf[this.size]:80
+          },
           activeAttr: {
               get() {
                   return this.$store.state.activeAttr;
@@ -331,7 +335,7 @@
       }
       change(file, fileList) {
 
-          //this.Len = fileList.length
+          this.Len = fileList.length
           //this.file_temp_list = fileList
           // let _self = this
           // for(var fileItem of fileList){

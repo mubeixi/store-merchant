@@ -267,3 +267,31 @@ export const plainArray = (arr,key,newArr)=>{
   }
 
 }
+
+/**
+ * 获取二维数组（一维数组的元素也是数组)的指定位置开始到最后的长度叠加成绩
+ * @param arr
+ * @param startIdx
+ */
+export const getArrayMulite = (arr,startIdx)=>{
+
+  let rt = 1;
+
+  for(var i=startIdx+1;i<arr.length;i++){
+    rt *= arr[i].length
+  }
+
+  // console.log(rt)
+  return rt;
+}
+
+/**
+ * 批量创建数组
+ */
+export const createTmplArray = (item,len)=>{
+  let rt = []
+  for(var i=0;i<len;i++){
+    rt.push(item)
+  }
+  return rt
+}
