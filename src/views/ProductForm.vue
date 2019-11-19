@@ -111,20 +111,6 @@
          <div class="specs_row" v-for="(row,idx_row) in specs" :key="idx_row">
            <span class="label">{{row.title}}</span>
            <div class="input-wrap"  style="width: 110px;margin-left: 10px;display: inline-block;position: relative" v-for="(val,idx_val) in row.vals" :key="idx_val">
-<!--             <el-input  size="mini"   v-model="specs[idx_row].vals[idx_val]" />-->
-<!--             <el-select-->
-<!--               v-model="specs[idx_row].vals[idx_val]"-->
-<!--               size="mini"-->
-<!--               filterable-->
-<!--               allow-create-->
-<!--               >-->
-<!--               <el-option-->
-<!--                 v-for="item in options"-->
-<!--                 :key="item.value"-->
-<!--                 :label="item.label"-->
-<!--                 :value="item.value">-->
-<!--               </el-option>-->
-<!--             </el-select>-->
              <el-autocomplete size="mini"
                class="inline-input"
                :fetch-suggestions="querySearchAsync"
@@ -1343,10 +1329,14 @@
                         productInfo.Products_Distributes=JSON.stringify(disObj);
                     }
 
-                    alert('submit!');
-                    console.log(productInfo)
-                    systemOperateProd(productInfo,{}).then(res=>{
 
+
+                    systemOperateProd(productInfo,{}).then(res=>{
+                        if(id){
+                          alert("修改成功")
+                        }else{
+                            alert("添加成功")
+                        }
                     }).catch(e=>{
                         console.log(e)
                     })
