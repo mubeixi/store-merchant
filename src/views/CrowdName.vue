@@ -9,19 +9,60 @@
             行为关系
           </div>
       <el-form>
-        <el-form-item>
           <el-form-item>
               <el-checkbox label="lastTime" name="consumptionTimes">
                 最近有消费
-                <el-input size="mini" class="marginLR" style="width: 70px"></el-input> 天内
+                <el-input size="mini" class="marginLR" style="width: 70px;margin-left: 26px;margin-right: 8px;"></el-input><span style="color: #B3B3B3">天内</span>
               </el-checkbox>
           </el-form-item>
-<!--          <el-checkbox-group v-model="consumptionTimes">-->
-<!--            <el-checkbox label="lastTime" name="consumptionTimes">-->
-<!--              累计消费金额-->
-<!--              <el-input size="mini" class="marginLR" style="width: 70px"></el-input>元<span style="margin-left: 10px">一</span><el-input class="marginLR" size="mini" style="width: 70px"></el-input>元-->
-<!--            </el-checkbox>-->
-<!--          </el-checkbox-group>-->
+          <el-form-item>
+            <el-checkbox label="lastTime" name="consumptionTimes">
+              最近无消费
+              <el-input size="mini" class="marginLR" style="width: 70px;margin-left: 26px;margin-right: 8px;"></el-input><span style="color: #B3B3B3">天内</span>
+            </el-checkbox>
+          </el-form-item>
+          <el-form-item>
+            <el-checkbox label="lastTime" name="consumptionTimes">
+              最近有下单
+              <el-input size="mini" class="marginLR" style="width: 70px;margin-left: 26px;margin-right: 8px;"></el-input><span style="color: #B3B3B3">天内</span>
+            </el-checkbox>
+          </el-form-item>
+
+        <el-form-item>
+        <el-checkbox label="lastTime" name="consumptionTimes">
+          最近消费次数
+          <el-input size="mini" class="marginLR" ></el-input><span style="color: #B3B3B3">次</span>
+          <span style="margin-left: 10px">一</span>
+          <el-input size="mini" class="marginLR"  ></el-input><span style="color: #B3B3B3">次</span>
+        </el-checkbox>
+      </el-form-item>
+
+        <el-form-item>
+          <el-checkbox label="lastTime" name="consumptionTimes">
+            最近消费金额
+            <el-input size="mini" class="marginLR" ></el-input><span style="color: #B3B3B3">元</span>
+            <span style="margin-left: 10px">一</span>
+            <el-input size="mini" class="marginLR"  ></el-input><span style="color: #B3B3B3">元</span>
+          </el-checkbox>
+        </el-form-item>
+
+        <el-form-item>
+          <el-checkbox label="lastTime" name="consumptionTimes">
+            累计获得积分
+            <el-input size="mini" class="marginLR" ></el-input><span style="color: #B3B3B3">分</span>
+            <span style="margin-left: 10px">一</span>
+            <el-input size="mini" class="marginLR"  ></el-input><span style="color: #B3B3B3">分</span>
+          </el-checkbox>
+        </el-form-item>
+
+
+        <el-form-item>
+          <el-checkbox label="lastTime" name="consumptionTimes">
+            订单均价
+            <el-input size="mini" class="marginLR" ></el-input><span style="color: #B3B3B3">元</span>
+            <span style="margin-left: 10px">一</span>
+            <el-input size="mini" class="marginLR"  ></el-input><span style="color: #B3B3B3">元</span>
+          </el-checkbox>
         </el-form-item>
       </el-form>
     </div>
@@ -93,4 +134,7 @@
   margin-top: 30px;
   margin-bottom: 30px;
 }
+  .marginLR{
+    width: 70px;margin-left: 8px;margin-right: 8px;
+  }
 </style>
