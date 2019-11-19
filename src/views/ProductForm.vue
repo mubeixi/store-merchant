@@ -3,6 +3,7 @@
     <div class="menuset">
         <span class="menusetText">发布商品</span>
     </div>
+
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="ruleForm">
       <el-form-item label="商品排序" prop="Products_Index">
         <el-input v-model="ruleForm.Products_Index" size="mini" class="sortInput"></el-input>
@@ -56,13 +57,13 @@
         <el-input v-model="ruleForm.Products_Profit" size="mini"  class="sortInput sortInputs" ></el-input>
         <span class="sortMsg">注：**********************</span>
       </el-form-item>
-
+<!--      :onRemove="removeThumbCall"-->
       <el-form-item label="商品主图">
         <upload-components
           size="mini"
           ref="thumb"
           :limit="5"
-          :onRemove="removeThumbCall"
+
           :onSuccess="upThumbSuccessCall"
         />
       </el-form-item>
@@ -70,23 +71,24 @@
       <el-form-item label="主图视频及封面" v-if="prodConfig.is_upload_video==1">
         <div class="flex">
           <div>
+<!--            :onRemove="removeVideoCall"-->
             <upload-components
               type="video"
               ref="video"
-              :showFileList="false"
               elName="video"
               accept="video/*"
               size="mini"
-              :onRemove="removeVideoCall"
+
               :onSuccess="upVideoSuccessCall"
             />
           </div>
+<!--          :onRemove="removeImgsCall"-->
           <div class="margin15-c">
             <upload-components
               ref="video_cover"
               :limit="1"
               size="mini"
-              :onRemove="removeImgsCall"
+
               :onSuccess="upImgsSuccessCall"
             />
           </div>
@@ -491,6 +493,7 @@
         return rt;
     }
 
+    import {fun} from '@/common';
 
 
     @Component({
@@ -654,7 +657,7 @@
 
                     if(this.video){
                         //@ts-ignore
-                        this.$refs.video.handleInitHas([this.video])
+                        this.$refs.video.handleInitHas([this.video],'video')
                     }
 
                     if(this.imgs){
@@ -958,10 +961,10 @@
                     }
                 });
             }
-            console.log(this.skuList,"ssss1")
+            // console.log(this.skuList,"ssss1")
             for(let item of this.skuList){
                 for(let it of this.initialSku){
-                    console.log(item,it,"ssss")
+                    // console.log(item,it,"ssss")
                     if(item.Attr_Value==it.Attr_Value){
                         item.Supply_Price=it.Supply_Price;
                         item.Attr_Price=it.Attr_Price;
@@ -1165,39 +1168,58 @@
         cate_list = []
         cate_ids = ''
 
-        removeThumbCall(file){
-            let idx = this.thumb.indexOf(file.path);
-            if(idx!=-1){
-                this.thumb.splice(idx,1);
+        // removeThumbCall(idx,path){
+        //     console.log('removeThumbCall',idx,path)
+        //     //let idx = this.thumb.indexOf(path);
+        //     if(idx>=0 && idx<this.thumb.length){
+        //         this.thumb.splice(idx,1);
+        //     }
+        // }
+
+        upThumbSuccessCall(url_list){
+            if(_.isArray(url_list)){
+                this.thumb = url_list.map(item=>{
+                    return item.url
+                })
             }
+
         }
 
-        upThumbSuccessCall(file){
-            this.thumb.push(file.path);
-        }
-
-        removeImgsCall(file){
-            this.imgs='';
-        }
+        // removeImgsCall(idx){
+        //     this.imgs='';
+        // }
 
         upImgsSuccessCall(file){
             this.imgs=file.path;
         }
 
-        removeVideoCall(file){
-            this.video = ''
-        }
+        // removeVideoCall(file){
+        //     this.video = ''
+        // }
 
         upVideoSuccessCall(file){
-            let {video_url,video_img} = file
+
+            if(!file || !file[0] || !file[0].video_url)return;
+            let {video_url,video_img} = file[0]
             if(!video_url){
-                this.$fun.error({msg:'视频地址错误'})
+                fun.error({msg:'视频地址错误'})
             }
             if(!video_img){
-                this.$fun.error({msg:'视频封面错误'})
+                fun.error({msg:'视频封面错误'})
             }
             this.video = video_url
             this.imgs = video_img
+
+            if(this.video){
+                //@ts-ignore
+                this.$refs.video.handleInitHas([this.video])
+            }
+
+            if(this.imgs){
+                //@ts-ignore
+                this.$refs.video_cover.handleInitHas([this.imgs])
+            }
+
         }
         fenxiaoshang=[];
 
