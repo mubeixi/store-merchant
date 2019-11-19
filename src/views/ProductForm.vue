@@ -125,7 +125,7 @@
                   v-if="idx_row==0"
                   class="uploadThumb"
                   :key="idx_val"
-                  :ref="specPic+idx_val"
+                  ref="specPic"
                   size="minimal"
                   @click.native="saveCurrentSpecItem(idx_val)"
                   :onSuccess="upSpecPicSuccessCall"
@@ -789,7 +789,7 @@
                 });
             }
 
-            // console.log(this.skuList,"ssss1")
+            console.log("初始化规格")
             for(let item of this.skuList){
                 for(let it of this.initialSku){
                     if(item.Attr_Value==it.Attr_Value){
@@ -1159,6 +1159,28 @@
         settingSuccessCall(){
             this.commission=false;
         }
+        initSpecItemPic(){
+            if(this.specs[0] && this.specs[0].imgs && this.specs[0].imgs.length>0){
+                let imgs = this.specs[0].imgs
+                console.log(imgs)
+               for(var idx in imgs){
+                   console.log(imgs[idx])
+                   if(!imgs[idx])continue
+                   //初始化一下
+
+                   var _self = this;
+
+                   if(_self.$refs.specPic && _self.$refs.specPic[idx]){
+                       _self.$refs.specPic[idx].handleInitHas([imgs[idx]])
+                   }
+
+
+
+
+
+               }
+            }
+        }
 
 
         @Watch('specs', { deep: true,immediate:true })
@@ -1167,6 +1189,8 @@
                 this.skusData=this.skuList
             }
             this.createSkuData();
+
+
         }
 
         @Watch('ruleForm.Products_Type', { deep: true,immediate:true })
@@ -1181,19 +1205,15 @@
                 }
             }
 
-            if(this.initialPro.prod_attrval && this.initialPro.prod_attrval.attrs){
+              if(this.initialPro.prod_attrval && this.initialPro.prod_attrval.attrs){
+
                 for(let idx in this.initialPro.prod_attrval.attrs){
+
                     for(let i in this.specs){
                         let item = this.specs[i];
-
-                        if(item.title==item){
+                        if(item.title==idx){
                             item.vals = this.initialPro.prod_attrval.attrs[idx];
-
-
-
                         }
-
-
                     }
                 }
             }
@@ -1201,28 +1221,38 @@
 
             if(this.initialPro.prod_attrval && this.initialPro.prod_attrval.values){
                 let arrProd=this.initialPro.prod_attrval.values;
-                console.log('arrProdarrProdarrProdarrProdarrProdarrProdarrProd',arrProd)
                 for(let pro of arrProd){
-
-                    //去拼接
-                    // if(pro === this.specs[0].title){
-                    //     let idx = this.specs[0].vals.indexOf(pro);
-                    //     if(idx!=-1){
-                    //         //初始化规格图片
-                    //         if(!this.specs[0].imgs){
-                    //             this.$set(this.specs[0],'imgs',[])
-                    //
-                    //         }
-                    //         this.specs[0].imgs[idx] = pro.Attr_Image
-                    //     }
-                    // }
-
                     let arr=[];
                     for(let pr in pro.Attr_Value){
+
+                        //去拼接
+                        if(pr === this.specs[0].title){
+                            let idx = this.specs[0].vals.indexOf(pro.Attr_Value[pr]);
+                            if(idx!=-1){
+                                //初始化规格图片
+                                if(!this.specs[0].imgs){
+                                    this.$set(this.specs[0],'imgs',[])
+                                }
+                                if(!this.specs[0].imgs[idx]){
+                                    this.specs[0].imgs[idx] = pro.Attr_Image
+                                }
+
+                            }
+                        }
+
                         arr.push(pro.Attr_Value[pr]);
                     }
                     pro['Attr_Value']=arr.join("|");
                 }
+
+                console.log(this.specs[0] && this.specs[0].imgs && this.specs[0].imgs.length>0)
+
+
+                var _self = this
+                setTimeout(function () {
+                    _self.initSpecItemPic()
+                },1000)
+
                 this.initialSku=arrProd;
             }
 

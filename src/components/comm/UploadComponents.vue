@@ -281,6 +281,7 @@
           return domain(url)
       }
       handleInitHas(list){
+          console.log(list)
           this.fileList = list.map((url,idx)=>{
               return {
                   url:url,
