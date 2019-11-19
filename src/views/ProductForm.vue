@@ -60,7 +60,9 @@
       <el-form-item label="商品主图">
         <upload-components
           size="mini"
-          :limit="999999"
+          ref="thumb"
+          :hasList="thumb"
+          :limit="5"
           :onRemove="removeThumbCall"
           :onSuccess="upThumbSuccessCall"
         />
@@ -71,6 +73,7 @@
           <div>
             <upload-components
               type="video"
+              ref="video"
               elName="video"
               accept="video/*"
               size="mini"
@@ -80,6 +83,7 @@
           </div>
           <div class="margin15-c">
             <upload-components
+              ref="video_cover"
               :limit="1"
               size="mini"
               :onRemove="removeImgsCall"
@@ -633,6 +637,31 @@
                         this.ruleForm.pintuan_pricex=productInfo.pintuan_pricex;
                         this.ruleForm.pintuan_end_time = new Date(productInfo.pintuan_end_time*1000);
                     }
+
+
+                    //缩略图
+                    //@ts-ignore
+                    this.thumb = productInfo.Products_JSON.ImgPath
+
+                    //@ts-ignore
+                    this.video = productInfo.video_url;
+                    //@ts-ignore
+                    this.imgs =  productInfo.cover_url;
+
+                    //组件里面初始化
+                    //@ts-ignore
+                    this.$refs.thumb.handleInitHas(this.thumb)
+
+                    if(this.video){
+                        //@ts-ignore
+                        this.$refs.video.handleInitHas([this.video])
+                    }
+
+                    if(this.imgs){
+                        //@ts-ignore
+                        this.$refs.video_cover.handleInitHas([this.imgs])
+                    }
+
 
                     Products_Stores = res.data.Products_Stores
 
