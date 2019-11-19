@@ -211,7 +211,7 @@ export const serialize = obj=>{
  * @param array
  */
 export const calcDescartes = (array)=>{
-  // console.log(array)
+  console.log(array)
   if (array.length < 1) return [];
   if (array.length < 2){
     //if(array[0].length) return []
@@ -226,7 +226,7 @@ export const calcDescartes = (array)=>{
         res.push(t);
       })
     });
-    // console.log(res)
+    console.log(res)
     return res;
   });
 }

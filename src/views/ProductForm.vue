@@ -4,13 +4,13 @@
         <span class="menusetText">发布商品</span>
     </div>
 
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="ruleForm">
+    <el-form size="small" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="ruleForm">
       <el-form-item label="商品排序" prop="Products_Index">
-        <el-input v-model="ruleForm.Products_Index" size="mini" class="sortInput"></el-input>
+        <el-input v-model="ruleForm.Products_Index"  class="sortInput"></el-input>
         <span class="sortMsg">注：数字越大，越往前（必须大于0）</span>
       </el-form-item>
       <el-form-item label="商品名称" prop="Products_Name">
-        <el-input v-model="ruleForm.Products_Name" size="mini"  class="nameInput"></el-input>
+        <el-input v-model="ruleForm.Products_Name"   class="nameInput"></el-input>
       </el-form-item>
 
       <el-form-item label="商品分类">
@@ -20,31 +20,31 @@
         <span class="cate_item" v-for="(cate,idx) in cate_list">{{cate.Category_Name}}</span>
       </div>
       <el-form-item label="虚拟销量" prop="Products_Sales">
-        <el-input v-model.number="ruleForm.Products_Sales" size="mini" class="sortInput"></el-input>
+        <el-input v-model.number="ruleForm.Products_Sales"  class="sortInput"></el-input>
         <span class="sortMsg">注：**********************</span>
       </el-form-item>
 
       <el-form-item label="产品价格">
         <el-form-item prop="Products_PriceY" style="display: inline-block">
-          <el-input v-model="ruleForm.Products_PriceY"  size="mini" placeholder="原价:¥" class="sortInput"></el-input>
+          <el-input v-model="ruleForm.Products_PriceY"   placeholder="原价:¥" class="sortInput"></el-input>
         </el-form-item>
         <el-form-item  prop="Products_PriceX" style="display: inline-block">
-          <el-input v-model="ruleForm.Products_PriceX" size="mini"  placeholder="现价:¥" class="sortInput" style="margin-left: 18px"></el-input>
+          <el-input v-model="ruleForm.Products_PriceX"   placeholder="现价:¥" class="sortInput" style="margin-left: 18px"></el-input>
         </el-form-item>
       </el-form-item>
 
       <el-form-item label="拼团" prop="type" style="margin-bottom: 10px">
-        <el-checkbox v-model="ruleForm.pintuan_flag" size="mini" name="group">是否参与拼团</el-checkbox>
+        <el-checkbox v-model="ruleForm.pintuan_flag"  name="group">是否参与拼团</el-checkbox>
       </el-form-item>
       <div class="group" style="margin-left: 120px;margin-bottom: 22px;" v-if="ruleForm.pintuan_flag">
         <el-form-item label="拼团人数" prop="pintuan_people" style="margin-bottom: 0px">
-          <el-input v-model.number="ruleForm.pintuan_people"  size="mini" class="sortInput"></el-input>
+          <el-input v-model.number="ruleForm.pintuan_people"   class="sortInput"></el-input>
         </el-form-item>
         <el-form-item label="拼团价格" prop="pintuan_pricex"  style="margin-left: 43px;margin-bottom: 0px">
-          <el-input v-model="ruleForm.pintuan_pricex"  size="mini" class="sortInput"></el-input>
+          <el-input v-model="ruleForm.pintuan_pricex"   class="sortInput"></el-input>
         </el-form-item>
         <el-form-item label="截止时间" prop="pintuan_end_time" style="margin-left: 43px;margin-bottom: 0px">
-          <el-date-picker size="mini"
+          <el-date-picker
             v-model="ruleForm.pintuan_end_time"
             type="datetime"
             placeholder="选择日期时间"
@@ -54,16 +54,15 @@
       </div>
 
       <el-form-item label="商品利润" prop="Products_Profit">
-        <el-input v-model="ruleForm.Products_Profit" size="mini"  class="sortInput sortInputs" ></el-input>
+        <el-input v-model="ruleForm.Products_Profit"   class="sortInput sortInputs" ></el-input>
         <span class="sortMsg">注：**********************</span>
       </el-form-item>
-<!--      :onRemove="removeThumbCall"-->
+
       <el-form-item label="商品主图">
         <upload-components
           size="mini"
           ref="thumb"
           :limit="5"
-
           :onSuccess="upThumbSuccessCall"
         />
       </el-form-item>
@@ -71,24 +70,20 @@
       <el-form-item label="主图视频及封面" v-if="prodConfig.is_upload_video==1">
         <div class="flex">
           <div>
-<!--            :onRemove="removeVideoCall"-->
             <upload-components
               type="video"
               ref="video"
               elName="video"
               accept="video/*"
               size="mini"
-
               :onSuccess="upVideoSuccessCall"
             />
           </div>
-<!--          :onRemove="removeImgsCall"-->
           <div class="margin15-c">
             <upload-components
               ref="video_cover"
               :limit="1"
               size="mini"
-
               :onSuccess="upImgsSuccessCall"
             />
           </div>
@@ -98,10 +93,10 @@
       </el-form-item>
 
       <el-form-item label="商品简介" prop="Products_BriefDescription">
-        <el-input size="mini" type="textarea" v-model="ruleForm.Products_BriefDescription" style="width: 600px"></el-input>
+        <el-input  type="textarea" v-model="ruleForm.Products_BriefDescription" style="width: 600px"></el-input>
       </el-form-item>
       <el-form-item label="商品类型" prop="Products_Type">
-        <el-select size="mini" v-model="ruleForm.Products_Type" placeholder="请选择类型"  style="width: 600px">
+        <el-select  v-model="ruleForm.Products_Type" placeholder="请选择类型"  style="width: 600px">
           <template v-for="(it,ind_con) of prodConfig.prod_type_list">
             <el-option :label="it.Type_Name" :value="it.Type_ID" ></el-option>
           </template>
@@ -113,7 +108,7 @@
          <div class="specs_row" v-for="(row,idx_row) in specs" :key="idx_row">
            <span class="label">{{row.title}}</span>
            <div class="input-wrap"  style="width: 110px;margin-left: 10px;display: inline-block;position: relative" v-for="(val,idx_val) in row.vals" :key="idx_val">
-             <el-autocomplete size="mini"
+             <el-autocomplete
                class="inline-input"
                :fetch-suggestions="querySearchAsync"
                v-model="specs[idx_row].vals[idx_val]"
@@ -147,23 +142,25 @@
                       <td class="td" :rowspan="getRowsSpan(index,idx)">{{sku[index]}}</td>
                     </template>
                   </template>
-                  <td class="td"><el-input size="mini" v-if="skuList[idx]"  v-model="skuList[idx].Attr_Price"/></td>
-                  <td class="td"><el-input size="mini"  v-if="skuList[idx]"  v-model="skuList[idx].Property_count"/></td>
-                  <td class="td"><el-input size="mini" v-if="skuList[idx]"  v-model="skuList[idx].Supply_Price"/></td>
-                  <td class="td" v-if="ruleForm.pintuan_flag"><el-input v-if="skuList[idx]" size="mini" v-model="skuList[idx].pt_pricex"/></td>
+                  <td class="td"><el-input  v-if="skuList[idx]"  v-model="skuList[idx].Attr_Price"/></td>
+                  <td class="td"><el-input   v-if="skuList[idx]"  v-model="skuList[idx].Property_count"/></td>
+                  <td class="td"><el-input  v-if="skuList[idx]"  v-model="skuList[idx].Supply_Price"/></td>
+                  <td class="td" v-if="ruleForm.pintuan_flag"><el-input v-if="skuList[idx]"  v-model="skuList[idx].pt_pricex"/></td>
                 </tr>
               </template>
             </template>
             <template v-if="skus.length==1">
-              <template v-for="(item,idx) in skuList">
+
                 <tr class="tr">
-                  <td class="td" >{{skuList[idx].Attr_Value}}</td>
-                  <td class="td"><el-input size="mini" v-if="skuList[idx]"  v-model="skuList[idx].Attr_Price"/></td>
-                  <td class="td"><el-input size="mini" v-if="skuList[idx]"  v-model="skuList[idx].Property_count"/></td>
-                  <td class="td"><el-input size="mini" v-if="skuList[idx]"  v-model="skuList[idx].Supply_Price"/></td>
-                  <td class="td" v-if="ruleForm.pintuan_flag"><el-input  v-if="skuList[idx]" size="mini" v-model="skuList[idx].pt_pricex"/></td>
+                  <template v-for="(item,idx) in skus[0]">
+                  <td class="td" >{{item}}</td>
+                  </template>
+                  <td class="td"><el-input  v-if="skuList[0]"  v-model="skuList[0].Attr_Price"/></td>
+                  <td class="td"><el-input  v-if="skuList[0]"  v-model="skuList[0].Property_count"/></td>
+                  <td class="td"><el-input  v-if="skuList[0]"  v-model="skuList[0].Supply_Price"/></td>
+                  <td class="td" v-if="ruleForm.pintuan_flag"><el-input  v-if="skuList[0]"  v-model="skuList[0].pt_pricex"/></td>
                 </tr>
-              </template>
+
             </template>
             <tr class="tr">
                <td class="td divTd" colspan="9">
@@ -172,7 +169,7 @@
                    <span  class="span" @click="changePrice('price')">价格</span><span class="span" @click="changePrice('count')">库存</span><span class="span" @click="changePrice('supply')">成本价</span><span v-if="ruleForm.pintuan_flag" class="span" @click="changePrice('pintuan')">拼团价</span>
                  </template>
                  <template v-else="!allPrice">
-                   <span ><el-input v-model="allValue"  size="mini" style="width: 100px;"/><span class="spans" @click="saveAll">保存</span><span class="spans" @click="delAll">取消</span></span>
+                   <span ><el-input v-model="allValue"   style="width: 100px;"/><span class="spans" @click="saveAll">保存</span><span class="spans" @click="delAll">取消</span></span>
                  </template>
                </td>
             </tr>
@@ -182,7 +179,7 @@
 
       <el-form-item label="商品承诺" >
         <div class="input-wrap"  style="width: 110px;margin-left: 10px;display: inline-block;position: relative"  v-for="(item,index) of Products_Promise" :key="index">
-          <el-input  size="mini"   v-model="Products_Promise[index]" @focus="focusCommit(index)"/>
+          <el-input     v-model="Products_Promise[index]" @focus="focusCommit(index)"/>
 <!--          <img src="@/assets/img/productAdd/del.png" class="imgDel" @click="committedDel(index)">-->
               <div class="imgDel" @click="committedDel(index)">
                 <i class="el-icon-error"></i>
@@ -192,31 +189,31 @@
       </el-form-item>
 
       <el-form-item label="商品重量" prop="Products_Weight">
-        <el-input v-model="ruleForm.Products_Weight"  size="mini" class="sortInput" ></el-input>
+        <el-input v-model="ruleForm.Products_Weight"   class="sortInput" ></el-input>
       </el-form-item>
       <el-form-item label="运费计算" prop="goods">
         <el-radio-group v-model="ruleForm.goods">
-          <el-radio label="0" style="display: block;margin-bottom: 15px" size="mini">
+          <el-radio label="0" style="display: block;margin-bottom: 15px" >
             免运费
-              <el-select  size="mini" v-model="ruleForm.freight" placeholder="请选择类型"  style="width: 200px;margin-left: 37px;">
+              <el-select   v-model="ruleForm.freight" placeholder="请选择类型"  style="width: 200px;margin-left: 37px;">
                 <template v-for="(prod,prodIn) of prodConfig.shipping_company_dropdown">
-                  <el-option size="mini" :label="prodConfig.shipping_company_dropdown[prodIn]" :value="prodIn"></el-option>
+                  <el-option  :label="prodConfig.shipping_company_dropdown[prodIn]" :value="prodIn"></el-option>
                 </template>
               </el-select>
           </el-radio>
-          <el-radio size="mini" label="1" style="display: block;margin-bottom: 15px" >物流模板</el-radio>
-          <el-radio size="mini" label="2" style="display: block;margin-bottom: 15px" >
+          <el-radio  label="1" style="display: block;margin-bottom: 15px" >物流模板</el-radio>
+          <el-radio  label="2" style="display: block;margin-bottom: 15px" >
             固定运费
-            <el-input size="mini"  v-model="ruleForm.freightGu"  class="sortInput" placeholder="运费金额：¥" style="width: 200px;margin-left: 23px;"></el-input>
+            <el-input   v-model="ruleForm.freightGu"  class="sortInput" placeholder="运费金额：¥" style="width: 200px;margin-left: 23px;"></el-input>
           </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="其他属性" prop="otherAttributes">
         <el-checkbox-group v-model="ruleForm.otherAttributes">
-          <el-checkbox size="mini" label="下架" name="otherAttributes"></el-checkbox>
-          <el-checkbox size="mini" label="新品" name="otherAttributes"></el-checkbox>
-          <el-checkbox size="mini" label="热卖" name="otherAttributes"></el-checkbox>
-          <el-checkbox size="mini" label="推荐" name="otherAttributes"></el-checkbox>
+          <el-checkbox  label="下架" name="otherAttributes"></el-checkbox>
+          <el-checkbox  label="新品" name="otherAttributes"></el-checkbox>
+          <el-checkbox  label="热卖" name="otherAttributes"></el-checkbox>
+          <el-checkbox  label="推荐" name="otherAttributes"></el-checkbox>
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="关联门店" >
@@ -239,11 +236,11 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="商品库存" prop="Products_Count">
-        <el-input size="mini" v-model="ruleForm.Products_Count"  class="sortInput"></el-input>
+        <el-input  v-model="ruleForm.Products_Count"  class="sortInput"></el-input>
         <span class="sortMsg">注:若不限则填写10000</span>
       </el-form-item>
       <el-form-item label="退货损坏说明" prop="refund">
-        <el-select size="mini" v-model="ruleForm.refund" placeholder="请选择类型"  style="width: 600px">
+        <el-select  v-model="ruleForm.refund" placeholder="请选择类型"  style="width: 600px">
           <template v-for="(shop,shopIn) in prodConfig.shop_damage">
             <el-option :label="shop.Damage_Name" :value="shop.Damage_ID"></el-option>
           </template>
@@ -297,7 +294,7 @@
           </div>
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-              <el-input  size="mini" v-model="platForm_Income_Reward" style="width: 80px;margin-left: 19px;"></el-input>
+              <el-input   v-model="platForm_Income_Reward" style="width: 80px;margin-left: 19px;"></el-input>
               % <span class="msg">（发放金额所占网站利润的百分比；小于100%大于0%）</span>
             </el-form-item>
           </div>
@@ -308,7 +305,7 @@
           </div>
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-              <el-input  size="mini" v-model="nobi_ratio" style="width: 80px;margin-left: 19px;"></el-input>
+              <el-input   v-model="nobi_ratio" style="width: 80px;margin-left: 19px;"></el-input>
               % <span class="msg">（所占发放比例的百分比）</span>
             </el-form-item>
           </div>
@@ -319,7 +316,7 @@
           </div>
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-              <el-input  size="mini"  v-model="area_Proxy_Reward" style="width: 80px;margin-left: 19px;"></el-input>
+              <el-input    v-model="area_Proxy_Reward" style="width: 80px;margin-left: 19px;"></el-input>
               % <span class="msg">（所占发放比例的百分比）</span>
             </el-form-item>
           </div>
@@ -330,7 +327,7 @@
           </div>
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-              <el-input  size="mini" v-model="sha_Reward" style="width: 80px;margin-left: 19px;"></el-input>
+              <el-input   v-model="sha_Reward" style="width: 80px;margin-left: 19px;"></el-input>
               % <span class="msg">（所占发放比例的百分比）</span>
             </el-form-item>
           </div>
@@ -341,7 +338,7 @@
           </div>
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
-              <el-input  size="mini" v-model="commission_ratio" style="width: 80px;margin-left: 19px;"></el-input>
+              <el-input   v-model="commission_ratio" style="width: 80px;margin-left: 19px;"></el-input>
               % <span class="msg">（下面佣金返利所占发放比例比例的百分比）</span>
             </el-form-item>
           </div>
@@ -356,13 +353,13 @@
               <div>
                 <el-form-item label="" prop="sort" style="margin-bottom: 0px;" v-for="(dis,disIndex) of Dis_Level_arr" :key="disIndex">
                   <span class="label">{{dis}}</span>
-                  <el-input  size="mini" style="width: 70px" v-model="distriboutor_config[fenIndex][disIndex]"></el-input>
+                  <el-input   style="width: 70px" v-model="distriboutor_config[fenIndex][disIndex]"></el-input>
                   % <span class="msg">（佣金比例的百分比）</span>
                 </el-form-item>
                 <el-form-item label="" prop="sort" style="margin-bottom: 0px;" v-if="prodConfig.Dis_Self_Bonus==1">
                   <span class="label">自销佣金</span>
                   <!--手动加了一个-->
-                  <el-input  size="mini" style="width: 70px" v-model="distriboutor_config[fenIndex][Dis_Level_arr.length]"></el-input>
+                  <el-input   style="width: 70px" v-model="distriboutor_config[fenIndex][Dis_Level_arr.length]"></el-input>
                   % <span class="msg">（佣金比例的百分比）</span>
                 </el-form-item>
               </div>
@@ -389,17 +386,17 @@
     >
         <div class="cardTitle">
               <div class="cardTitle" style="margin-right: 10px">
-                卡号： <el-input size="mini" v-model="CardIdSelect"  class="sortInput" style="width: 100px"></el-input>
+                卡号： <el-input  v-model="CardIdSelect"  class="sortInput" style="width: 100px"></el-input>
               </div>
               <div class="cardTitle" style="margin-right: 10px">
                 栏目：
-                <el-select size="mini" v-model="CardTypeSelect" placeholder="请选择类型"  style="width: 130px">
+                <el-select  v-model="CardTypeSelect" placeholder="请选择类型"  style="width: 130px">
                   <template v-for="(shop,shopIn) in CardType">
                     <el-option :label="shop.Type_Name" :value="shop.Type_Id"></el-option>
                   </template>
                 </el-select>
               </div>
-              <el-button size="mini" type="primary" @click="searchCard">搜索</el-button>
+              <el-button  type="primary" @click="searchCard">搜索</el-button>
         </div>
         <el-table
           ref="multipleTable"
@@ -429,7 +426,7 @@
             show-overflow-tooltip>
           </el-table-column>
         </el-table>
-        <el-button size="mini" type="primary" style="margin-top: 10px" @click="sureCard">确定</el-button>
+        <el-button  type="primary" style="margin-top: 10px" @click="sureCard">确定</el-button>
     </el-dialog>
 
     <div class="setting" @click="commission=true">
@@ -741,13 +738,10 @@
         }
         @Watch('specs', { deep: true,immediate:true })
         handleWatch(){
-            //console.log('specs有变动')
-            //
-            // console.log(this.skuList.length,objTranslate(this.skusData))
+
             if(this.skuList.length>1){
                 this.skusData=this.skuList
             }
-            // console.log(objTranslate(this.skusData))
 
             this.createSkuData();
         }
@@ -847,7 +841,8 @@
             this.Products_Promise.splice(index,1);
         }
         @Watch('ruleForm.Products_Type', { deep: true,immediate:true })
-        handle(){
+        handle(val){
+            if(!val)return;
             for(let item of this.prodConfig.prod_type_list){
                 if(item.Type_ID===this.ruleForm.Products_Type){
                         this.specs=[];
@@ -857,22 +852,28 @@
                 }
             }
 
-            for(let item in this.initialPro.prod_attrval.attrs){
-                for(let it of this.specs){
-                    if(it.title==item){
-                        it.vals=this.initialPro.prod_attrval.attrs[item];
+            if(this.initialPro.prod_attrval && this.initialPro.prod_attrval.attrs){
+                for(let item in this.initialPro.prod_attrval.attrs){
+                    for(let it of this.specs){
+                        if(it.title==item){
+                            it.vals=this.initialPro.prod_attrval.attrs[item];
+                        }
                     }
                 }
             }
-            let arrProd=this.initialPro.prod_attrval.values;
-            for(let pro of arrProd){
-                let arr=[];
-                for(let pr in pro.Attr_Value){
-                    arr.push(pro.Attr_Value[pr]);
+
+            if(this.initialPro.prod_attrval && this.initialPro.prod_attrval.values){
+                let arrProd=this.initialPro.prod_attrval.values;
+                for(let pro of arrProd){
+                    let arr=[];
+                    for(let pr in pro.Attr_Value){
+                        arr.push(pro.Attr_Value[pr]);
+                    }
+                    pro['Attr_Value']=arr.join("|");
                 }
-                pro['Attr_Value']=arr.join("|");
+                this.initialSku=arrProd;
             }
-            this.initialSku=arrProd;
+
         }
 
         skuAdd(index){
@@ -886,6 +887,7 @@
             //this.createSkuData();
         }
         createSkuData(){
+
             let spec_arr = this.specs.map(item=>{
                 return item.vals
             })
@@ -897,35 +899,50 @@
                 return sku.Attr_Value
             })
 
-
-
             let nameStr,idx;
+            //就是只有一行的时候
             if(this.skus.length===1){
                 if(_.isArray(this.skus[0])) {
-                    let arr = [];
-                    for (let item of this.skus[0]) {
+                    //let arr = [];
+                    // for (let item of this.skus[0]) {
+                    //
+                    //     idx=name_list.indexOf(item);
+                    //     if(idx!=-1){
+                    //         arr.push({
+                    //             Attr_Value: item,
+                    //             Attr_Price: this.skusData[idx].Attr_Price,
+                    //             Property_count: this.skusData[idx].Property_count,
+                    //             Supply_Price: this.skusData[idx].Supply_Price,
+                    //             pt_pricex:this.skusData[idx].pt_pricex
+                    //         })
+                    //     }else{
+                    //         arr.push({
+                    //             Attr_Value: item,
+                    //             Attr_Price: '',
+                    //             Property_count: '',
+                    //             Supply_Price: '',
+                    //             pt_pricex:''
+                    //         })
+                    //     }
+                    //
+                    // }
+                    let nameStr = this.skus[0].join('|')
 
-                        idx=name_list.indexOf(item);
-                        if(idx!=-1){
-                            arr.push({
-                                Attr_Value: item,
-                                Attr_Price: this.skusData[idx].Attr_Price,
-                                Property_count: this.skusData[idx].Property_count,
-                                Supply_Price: this.skusData[idx].Supply_Price,
-                                pt_pricex:this.skusData[idx].pt_pricex
-                            })
-                        }else{
-                            arr.push({
-                                Attr_Value: item,
-                                Attr_Price: '',
-                                Property_count: '',
-                                Supply_Price: '',
-                                pt_pricex:''
-                            })
+                    let idx= name_list.indexOf(nameStr)
+                    let obj = null;
+                    if(idx!=-1){
+                        obj = {...this.skusData[idx]}
+                    }else{
+                        obj ={
+                            Attr_Value: nameStr,
+                            Attr_Price:'',
+                            Property_count:'',
+                            Supply_Price:'',
+                            pt_pricex:''
                         }
-
                     }
-                    this.skuList = arr;
+
+                    this.skuList = [obj];
                 }
             }else{
                 this.skuList = this.skus.map(sku=>{
@@ -1577,8 +1594,7 @@
   .tr{
 
     .td,.th{
-      padding: 0 20px;
-
+      padding: 4px 20px;
       border-right: 1px solid @borderColor;
       border-bottom: 1px solid @borderColor;
       text-align: center;
