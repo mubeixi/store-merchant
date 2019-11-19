@@ -12,6 +12,7 @@
       :data.sync='ajaxData'
       :action="baseURL+'/api/little_program/shopconfig.php'"
       list-type="picture-card"
+      :file-list="fileList"
       :show-file-list='showFileList'
       :on-preview="onPreview"
       :on-success='success'
@@ -70,6 +71,20 @@
               return ajaxData;
           }
 
+      },
+      watch:{
+          // hasList:{
+          //     immediate:true,
+          //     deep:true,
+          //     handler(val){
+          //         this.fileList = val.map((img,idx)=>{
+          //             return {
+          //                 url:domain(img),
+          //                 name:(new Date()).getTime()+idx
+          //             }
+          //         })
+          //     }
+          // }
       }
   })
 
@@ -150,6 +165,12 @@
       @Prop(Boolean)
       cropper:boolean
 
+      @Prop({
+          type:Array,
+          default:()=>[]
+      })
+      hasList:any
+
       fileList = []
 
       file_temp_list = []
@@ -158,6 +179,16 @@
 
       preShow = false
       dialogImageUrl = ''
+
+      handleInitHas(list){
+
+          this.fileList = list.map((img,idx)=>{
+              return {
+                  url:domain(img),
+                  name:(new Date()).getTime()+idx
+              }
+          })
+      }
 
       onPreview(file){
 
@@ -169,6 +200,7 @@
           this.file_temp_list = fileList.map(file=>{
               return file.url
           })
+          console.log(file)
 
           let call = this.onRemove
           call && call(file.response.data);
@@ -203,6 +235,10 @@
       success(response, file, fileList) {
           let call = this.onSuccess
           call && call(response.data);
+      }
+
+      created(){
+          //this.fileList = this.hasList
       }
   }
 
