@@ -114,6 +114,11 @@ export const systemProdConfig = (data:object={},options:object={}) => fetch('sys
 export const systemOperateProd = (data:object={},options:object={}) => fetch('system_operate_prod', data, options);
 //获取产品具体信息
 export const systemProdDetail = (data:object={},options:object={}) => fetch('system_prod_detail', data, options);
+//获取卡密列表
+export const virtualCardList = (data:object={},options:object={}) => fetch('virtual_card_list', data, options);
+
+//获取卡密类型
+export const virtualCardType = (data:object={},options:object={}) => fetch('virtual_card_type', data, options);
 
 
 
