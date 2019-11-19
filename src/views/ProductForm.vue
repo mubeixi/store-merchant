@@ -1207,15 +1207,15 @@
             if(!video_img){
                 fun.error({msg:'视频封面错误'})
             }
-            this.video = video_url
-            this.imgs = video_img
 
-            if(this.video){
+            if(video_url){
+                this.video = video_url
                 //@ts-ignore
                 this.$refs.video.handleInitHas([this.video])
             }
 
-            if(this.imgs){
+            if(video_img){
+                this.imgs = video_img
                 //@ts-ignore
                 this.$refs.video_cover.handleInitHas([this.imgs])
             }
@@ -1282,7 +1282,7 @@
                     }else {
                         productInfo.Products_JSON=JSON.stringify({"ImgPath":this.thumb})
                     }
-                    if(his.video){
+                    if(this.video){
                         productInfo.video_url=this.video;
                         productInfo.cover_url=this.imgs;
                     }
