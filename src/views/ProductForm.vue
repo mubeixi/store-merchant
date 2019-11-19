@@ -150,7 +150,6 @@
               </template>
             </template>
             <template v-if="skus.length==1">
-
                 <tr class="tr">
                   <template v-for="(item,idx) in skus[0]">
                   <td class="td" >{{item}}</td>
