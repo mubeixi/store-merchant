@@ -41,9 +41,12 @@ import {
   Tooltip,
   Tree,
   Upload,
-  Autocomplete
+  Autocomplete,
+  Progress
 } from 'element-ui';
 
+
+Vue.use(Progress);
 Vue.use(Autocomplete);
 Vue.use(Input);
 Vue.use(Button);

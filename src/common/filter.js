@@ -10,6 +10,12 @@ export default [
     },
   },
   {
+    name:'percent',
+    methods: (val) => {
+      return parseInt(val*100)/100
+    },
+  },
+  {
     name:'cutstr',
     methods: (str,len,tip) => {
       if(!str)return '';
