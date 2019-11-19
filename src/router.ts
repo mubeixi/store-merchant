@@ -8,6 +8,8 @@ import ProductForm from "@/views/ProductForm.vue";
 import UserList from '@/views/UserList.vue';
 import Marketing from '@/views/Marketing.vue';
 import DayMark from '@/views/DayMark.vue';
+import LabelManagement from '@/views/LabelManagement.vue'
+import LabelAdd from '@/views/LabelAdd.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -47,6 +49,16 @@ export default new Router({
       path: '/daymark',
       name: 'daymark',
       component: DayMark
+    },
+    {
+      path: '/LabelManagement',
+      name: 'LabelManagement',
+      component: LabelManagement
+    },
+    {
+      path: '/LabelAdd',
+      name: 'LabelAdd',
+      component: LabelAdd
     }
     // {
     //   path: '/about',
