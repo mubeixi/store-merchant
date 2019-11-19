@@ -22,11 +22,12 @@
       :before-upload='beforeUpload'
       :on-change='change'>
       <i class="el-icon-plus"></i>
-<!--      <template v-if="file_temp_list.length>0">-->
+      <template v-if="type==='vidoe' &&file_temp_list.length>0">
+        {{file_temp_list[0]}}
 <!--        <div v-for="(img,idx) in file_temp_list" class="file-item">-->
 <!--          <div class="cover" :style="{backgroundImage:'url('+img.url+')'}"></div>-->
 <!--        </div>-->
-<!--      </template>-->
+      </template>
       <div slot="tip" class="el-upload__tip ">{{tip}} <i @click="remove" style="position: absolute;right: 0;top: 0;font-size: 22px;cursor: pointer;" v-if="showDelIcon && imgUrl" class="el-icon-circle-close del-icon"></i> </div>
     </el-upload>
 
@@ -212,6 +213,7 @@
           fun.error({ msg: '最多上传' + this.limit + '个文件' });
       }
       error(err, file, fileList) {
+          console.log('上传失败了')
           fun.error({
               msg: JSON.stringify(err),
               title: '上传失败',
@@ -225,16 +227,25 @@
           // this.onSuccess.apply(this, mock);
       }
       change(file, fileList) {
-          this.file_temp_list = fileList.map(file=>{
-              return file.url
-          })
+          console.log(fileList)
+          for(var file of fileList){
+              if(file.response && file.response.data){
+                  this.file_temp_list.push(file.url)
+              }
+          }
+          // this.file_temp_list = fileList.map(file=>{
+          //     return file.url
+          // })
       }
       beforeUpload() {
 
       }
       success(response, file, fileList) {
           let call = this.onSuccess
-          call && call(response.data);
+          if(response && response.data){
+              call && call(response.data);
+          }
+
       }
 
       created(){

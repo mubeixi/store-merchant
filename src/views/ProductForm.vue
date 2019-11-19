@@ -61,7 +61,6 @@
         <upload-components
           size="mini"
           ref="thumb"
-          :hasList="thumb"
           :limit="5"
           :onRemove="removeThumbCall"
           :onSuccess="upThumbSuccessCall"
@@ -74,6 +73,7 @@
             <upload-components
               type="video"
               ref="video"
+              :showFileList="false"
               elName="video"
               accept="video/*"
               size="mini"
@@ -1146,7 +1146,15 @@
         }
 
         upVideoSuccessCall(file){
-            this.video = file.path
+            let {video_url,video_img} = file
+            if(!video_url){
+                this.$fun.error({msg:'视频地址错误'})
+            }
+            if(!video_img){
+                this.$fun.error({msg:'视频封面错误'})
+            }
+            this.video = video_url
+            this.imgs = video_img
         }
         fenxiaoshang=[];
 
@@ -1209,7 +1217,7 @@
                     }else {
                         productInfo.Products_JSON=JSON.stringify({"ImgPath":this.thumb})
                     }
-                    if(this.video){
+                    if(his.video){
                         productInfo.video_url=this.video;
                         productInfo.cover_url=this.imgs;
                     }
