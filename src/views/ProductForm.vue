@@ -113,20 +113,6 @@
          <div class="specs_row" v-for="(row,idx_row) in specs" :key="idx_row">
            <span class="label">{{row.title}}</span>
            <div class="input-wrap"  style="width: 110px;margin-left: 10px;display: inline-block;position: relative" v-for="(val,idx_val) in row.vals" :key="idx_val">
-<!--             <el-input  size="mini"   v-model="specs[idx_row].vals[idx_val]" />-->
-<!--             <el-select-->
-<!--               v-model="specs[idx_row].vals[idx_val]"-->
-<!--               size="mini"-->
-<!--               filterable-->
-<!--               allow-create-->
-<!--               >-->
-<!--               <el-option-->
-<!--                 v-for="item in options"-->
-<!--                 :key="item.value"-->
-<!--                 :label="item.label"-->
-<!--                 :value="item.value">-->
-<!--               </el-option>-->
-<!--             </el-select>-->
              <el-autocomplete size="mini"
                class="inline-input"
                :fetch-suggestions="querySearchAsync"
@@ -420,6 +406,7 @@
           :data="CardList"
           tooltip-effect="dark"
           style="width: 100%"
+          @row-click="handleRow"
           @selection-change="handleSelectionChange">
           <el-table-column
             type="selection"
@@ -674,7 +661,7 @@
 
                 //初始化商品分类
                 await getProductCategory({}).then(res=>{
-                    console.log(res.data)
+
 
                     let origin_cate_list = res.data
                     let cates = []
@@ -748,6 +735,10 @@
         }
         isShow=false;
 
+        //单击某一行
+        handleRow(row, column, event) {
+            this.$refs.multipleTable.toggleRowSelection(row);
+        }
         @Watch('specs', { deep: true,immediate:true })
         handleWatch(){
             //console.log('specs有变动')
@@ -964,7 +955,6 @@
             // console.log(this.skuList,"ssss1")
             for(let item of this.skuList){
                 for(let it of this.initialSku){
-                    // console.log(item,it,"ssss")
                     if(item.Attr_Value==it.Attr_Value){
                         item.Supply_Price=it.Supply_Price;
                         item.Attr_Price=it.Attr_Price;
@@ -1267,6 +1257,13 @@
                         sha_Reward:this.sha_Reward,
                         commission_ratio:this.commission_ratio,
                     };
+                    if(this.ruleForm.orderType==2){
+                        let arr=[];
+                        for(let item of this.multipleSelection){
+                            arr.push(item.Card_Id);
+                        }
+                        productInfo.virtual_card_ids=JSON.stringify(arr);
+                    }
                     if(id){
                       productInfo.prod_id=id;
                     }
@@ -1362,10 +1359,14 @@
                         productInfo.Products_Distributes=JSON.stringify(disObj);
                     }
 
-                    alert('submit!');
-                    console.log(productInfo)
+
+
                     systemOperateProd(productInfo,{}).then(res=>{
-                        console.log(res,"sss")
+                        if(id){
+                          alert("修改成功")
+                        }else{
+                            alert("添加成功")
+                        }
                     }).catch(e=>{
                         console.log(e)
                     })
