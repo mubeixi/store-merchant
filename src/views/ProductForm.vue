@@ -418,6 +418,7 @@
           :data="CardList"
           tooltip-effect="dark"
           style="width: 100%"
+          @row-click="handleRow"
           @selection-change="handleSelectionChange">
           <el-table-column
             type="selection"
@@ -671,7 +672,7 @@
 
                 //初始化商品分类
                 await getProductCategory({}).then(res=>{
-                    console.log(res.data)
+
 
                     let origin_cate_list = res.data
                     let cates = []
@@ -745,6 +746,10 @@
         }
         isShow=false;
 
+        //单击某一行
+        handleRow(row, column, event) {
+            this.$refs.multipleTable.toggleRowSelection(row);
+        }
         @Watch('specs', { deep: true,immediate:true })
         handleWatch(){
             //console.log('specs有变动')
@@ -961,7 +966,6 @@
             console.log(this.skuList,"ssss1")
             for(let item of this.skuList){
                 for(let it of this.initialSku){
-                    console.log(item,it,"ssss")
                     if(item.Attr_Value==it.Attr_Value){
                         item.Supply_Price=it.Supply_Price;
                         item.Attr_Price=it.Attr_Price;
@@ -1237,6 +1241,13 @@
                         sha_Reward:this.sha_Reward,
                         commission_ratio:this.commission_ratio,
                     };
+                    if(this.ruleForm.orderType==2){
+                        let arr=[];
+                        for(let item of this.multipleSelection){
+                            arr.push(item.Card_Id);
+                        }
+                        productInfo.virtual_card_ids=JSON.stringify(arr);
+                    }
                     if(id){
                       productInfo.prod_id=id;
                     }
@@ -1335,7 +1346,7 @@
                     alert('submit!');
                     console.log(productInfo)
                     systemOperateProd(productInfo,{}).then(res=>{
-                        console.log(res,"sss")
+
                     }).catch(e=>{
                         console.log(e)
                     })
