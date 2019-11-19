@@ -242,10 +242,10 @@
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="订单类型" prop="orderType" >
-        <el-radio-group v-model="ruleForm.orderType" >
+        <el-radio-group v-model="ruleForm.orderType" @change="changeRadio">
           <el-radio label="0" style="display: block;margin-bottom: 15px" >实物订单  <span class="font12">( 买家下单 -> 买家付款 -> 商家发货 -> 买家收货 -> 订单完成 )</span> </el-radio>
           <el-radio label="1" style="display: block;margin-bottom: 15px" >虚拟订单  <span class="font12">( 买家下单 -> 买家付款 -> 系统发送消费券码到买家手机 -> 商家认证消费 -> 订单完成 )</span></el-radio>
-          <el-radio label="2"  style="display: block;margin-bottom: 15px" ><span @click="clickRadio">其他  <span class="font12">( 买家下单 -> 买家付款 -> 订单完成 )</span></span> </el-radio>
+          <el-radio label="2"  style="display: block;margin-bottom: 15px" ><span @click="clickRadio">其他  <span class="font12">( 买家下单 -> 买家付款 -> 订单完成 ) <el-button type="primary" sizi="small">设置</el-button></span></span> </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="商品库存" prop="Products_Count">
@@ -806,6 +806,11 @@
         handleSelectionChange(val){
             this.multipleSelection = val;
         }
+        changeRadio(){
+            if(this.ruleForm.orderType==2){
+                this.isShow=true;
+            }
+        }
         clickRadio(){
             this.isShow=true;
         }
@@ -836,7 +841,12 @@
             }
         }
         cardCancel(){
-            this.isShow=false;
+            if(this.multipleSelection.length>0){
+                this.isShow=false;
+            }else{
+                this.isShow=false;
+                this.ruleForm.orderType='0';
+            }
         }
         querySearchAsync(queryString, cb) {
             cb(this.queryArr);
@@ -951,7 +961,7 @@
                         Products_Index:this.ruleForm.Products_Index,//商品排序
                         Products_Name:this.ruleForm.Products_Name,//商品名称
                         Products_Category:this.cate_ids,//商品分类
-                        Products_Sales:this.ruleForm.Products_Sales,//虚拟销量
+                         Products_Sales:this.ruleForm.Products_Sales,//虚拟销量
                         Products_PriceY:this.ruleForm.Products_PriceY,//原价
                         Products_PriceX:this.ruleForm.Products_PriceX,//现价
                         pintuan_flag:this.ruleForm.pintuan_flag?'1':'0',//是否拼团
