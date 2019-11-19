@@ -239,11 +239,11 @@
         </el-checkbox-group>
       </el-form-item>
 
-      <el-form-item label="订单类型" prop="orderType">
-        <el-radio-group v-model="ruleForm.orderType">
+      <el-form-item label="订单类型" prop="orderType" >
+        <el-radio-group v-model="ruleForm.orderType" >
           <el-radio label="0" style="display: block;margin-bottom: 15px" >实物订单  <span class="font12">( 买家下单 -> 买家付款 -> 商家发货 -> 买家收货 -> 订单完成 )</span> </el-radio>
           <el-radio label="1" style="display: block;margin-bottom: 15px" >虚拟订单  <span class="font12">( 买家下单 -> 买家付款 -> 系统发送消费券码到买家手机 -> 商家认证消费 -> 订单完成 )</span></el-radio>
-          <el-radio label="2" style="display: block;margin-bottom: 15px" >其他  <span class="font12">( 买家下单 -> 买家付款 -> 订单完成 )</span> </el-radio>
+          <el-radio label="2"  style="display: block;margin-bottom: 15px" >其他  <span class="font12">( 买家下单 -> 买家付款 -> 订单完成 )</span> </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="商品库存" prop="Products_Count">
@@ -387,16 +387,58 @@
       </div>
     </el-dialog>
 
-<!--    <el-dialog-->
-<!--      title="卡密设置"-->
-<!--      width="90%"-->
-<!--      @close="cardCancel"-->
-<!--      append-to-body-->
-<!--      :visible.sync="ruleForm.orderType==2"-->
-<!--      class="setting"-->
-<!--    >-->
+    <el-dialog
+      title="卡密设置"
+      width="90%"
+      @close="cardCancel"
+      append-to-body
+      :visible.sync="isShow"
+      class="setting"
+    >
+        <div class="cardTitle">
+              <div class="cardTitle" style="margin-right: 10px">
+                卡号： <el-input size="mini" v-model="ruleForm.Products_Count"  class="sortInput" style="width: 100px"></el-input>
+              </div>
+              <div class="cardTitle" style="margin-right: 10px">
+                栏目：
+                <el-select size="mini" v-model="ruleForm.refund" placeholder="请选择类型"  style="width: 100px">
+                  <template v-for="(shop,shopIn) in prodConfig.shop_damage">
+                    <el-option :label="shop.Damage_Name" :value="shop.Damage_ID"></el-option>
+                  </template>
+                </el-select>
+              </div>
+              <el-button size="mini" type="primary">搜索</el-button>
+        </div>
+        <el-table
+          ref="multipleTable"
+          :data="tableData"
+          tooltip-effect="dark"
+          style="width: 100%"
+          @selection-change="handleSelectionChange">
+          <el-table-column
+            type="selection"
+            label="#"
+            width="55">
+          </el-table-column>
+          <el-table-column
+            label="虚拟卡号"
+            width="120">
+            <template slot-scope="scope">{{ scope.row.date }}</template>
+          </el-table-column>
+          <el-table-column
+            prop="name"
+            label="密码"
+            width="120">
+          </el-table-column>
+          <el-table-column
+            prop="address"
+            label="添加时间"
+            show-overflow-tooltip>
+          </el-table-column>
+        </el-table>
 
-<!--    </el-dialog>-->
+    </el-dialog>
+
     <div class="setting" @click="commission=true">
       佣金设置
     </div>
@@ -422,7 +464,7 @@
     import {calcDescartes, objTranslate, plainArray} from "@/common/utils";
     import BindStoreComponent from "@/components/comm/BindStoreComponent.vue";
     import SettingComponent from "@/components/comm/SettingComponent.vue";
-    import {systemProdConfig,systemOperateProd,systemProdDetail} from '@/common/fetch'
+    import {systemProdConfig,systemOperateProd,systemProdDetail,virtualCardType,virtualCardList} from '@/common/fetch'
     import fa from "element-ui/src/locale/lang/fa";
 
     import _ from 'underscore';
@@ -484,7 +526,11 @@
         distriboutor_config = null;
         Dis_Level_arr = []
         dis_level_list = []
+        initialPro=[];
         initialSku=[];
+
+        CardList=[];
+        CardType=[];
         async created(){
             await systemProdConfig().then(res=>{
                 if(res.errorCode==0){
@@ -533,25 +579,8 @@
 
                 this.addText="提交保存";
                 await systemProdDetail({prod_id:id}).then(res=>{
-
+                    this.initialPro=res.data;
                     productInfo=res.data;
-                    for(let item in productInfo.prod_attrval.attrs){
-                        for(let it of this.specs){
-                            if(it.title==item){
-                                it.vals=productInfo.prod_attrval.attrs[item];
-                            }
-                        }
-                    }
-                    let arrProd=productInfo.prod_attrval.values;
-                    for(let pro of arrProd){
-                        let arr=[];
-                        for(let pr in pro.Attr_Value){
-                            arr.push(pro.Attr_Value[pr]);
-                        }
-                        console.log(arr,"qqqq")
-                        pro['Attr_Value']=arr.join("|");
-                    }
-                    this.initialSku=arrProd;
                     this.ruleForm.Products_Index=productInfo.Products_Index;//商品排序
                     this.ruleForm.Products_Name=productInfo.Products_Name;//商品名称
                     select_cate_ids = productInfo.Products_Category;//商品分类
@@ -596,6 +625,8 @@
                     for(let item of productInfo.Products_Promise){
                         this.Products_Promise.push(item.name);
                     }
+
+
 
                     if(this.ruleForm.pintuan_flag){
                         this.ruleForm.pintuan_people=productInfo.pintuan_people;
@@ -665,11 +696,22 @@
 
             }
 
+            await  virtualCardList().then(res=>{
+                this.CardList=res.data;
+            })
+            await virtualCardType().then(res=>{
+                this.CardType=res.data;
+            })
+        }
+        isShow=false;
+        @Watch('ruleForm.orderType', { deep: true,immediate:true })
+        handleWatchR(){
+            if(this.ruleForm.orderType==2) this.isShow=true;
         }
 
         @Watch('specs', { deep: true,immediate:true })
         handleWatch(){
-            // console.log('specs有变动')
+            //console.log('specs有变动')
             //
             // console.log(this.skuList.length,objTranslate(this.skusData))
             if(this.skuList.length>1){
@@ -784,6 +826,23 @@
                         }
                 }
             }
+
+            for(let item in this.initialPro.prod_attrval.attrs){
+                for(let it of this.specs){
+                    if(it.title==item){
+                        it.vals=this.initialPro.prod_attrval.attrs[item];
+                    }
+                }
+            }
+            let arrProd=this.initialPro.prod_attrval.values;
+            for(let pro of arrProd){
+                let arr=[];
+                for(let pr in pro.Attr_Value){
+                    arr.push(pro.Attr_Value[pr]);
+                }
+                pro['Attr_Value']=arr.join("|");
+            }
+            this.initialSku=arrProd;
         }
 
         skuAdd(index){
@@ -863,12 +922,24 @@
                     }
                 });
             }
+            console.log(this.skuList,"ssss1")
+            for(let item of this.skuList){
+                for(let it of this.initialSku){
+                    console.log(item,it,"ssss")
+                    if(item.Attr_Value==it.Attr_Value){
+                        item.Supply_Price=it.Supply_Price;
+                        item.Attr_Price=it.Attr_Price;
+                        item.pt_pricex=it.pt_pricex;
+                        item.Property_count=it.Property_count;
+                    }
+                }
+            }
 
 
         }
         //卡密取消
         cardCancel(){
-            this.ruleForm.orderType='0';
+            this.isShow=false;
         }
 
         querySearchAsync(queryString, cb) {
@@ -1526,6 +1597,11 @@
   line-height: 41px;
   text-align: center;
   border-bottom: 1px dotted #C0C0C0;
+}
+
+.cardTitle{
+  display: flex;
+  align-items: center;
 }
 
 .sure{
