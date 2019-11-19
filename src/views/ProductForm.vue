@@ -107,28 +107,33 @@
        <div class="specs_box">
          <div class="specs_row" v-for="(row,idx_row) in specs" :key="idx_row">
            <span class="label">{{row.title}}</span>
-           <template v-for="(val,idx_val) in row.vals">
-             <div class="input-wrap"  style="width: 110px;margin-left: 10px;display: inline-block;position: relative" >
-               <el-autocomplete
-                 class="inline-input"
-                 :fetch-suggestions="querySearchAsync"
-                 v-model="specs[idx_row].vals[idx_val]"
-                 @focus="queryIndex(idx_row)"
-               ></el-autocomplete>
-               <div class="imgDel" @click="skuDel(idx_row,idx_val)">
-                 <i class="el-icon-error"></i>
-               </div>
-             </div>
-             <upload-components
-               :key="idx_val"
-               size="mini"
-               @mouseenter.native="saveCurrentSpecItem(idx_val)"
-               :limit="5"
-               :onSuccess="upSpecPicSuccessCall"
-             />
-           </template>
+            <div class="specs-item-list">
+              <div v-for="(val,idx_val) in row.vals" class="spec-item-box">
+                <div class="input-wrap"  style="width: 110px;margin-left: 10px;display: inline-block;position: relative" >
+                  <el-autocomplete
+                    class="inline-input"
+                    :fetch-suggestions="querySearchAsync"
+                    v-model="specs[idx_row].vals[idx_val]"
+                    @focus="queryIndex(idx_row)"
+                  ></el-autocomplete>
+                  <div class="imgDel" @click="skuDel(idx_row,idx_val)">
+                    <i class="el-icon-error"></i>
+                  </div>
+                </div>
+                <!--ref用来初始化-->
+                <upload-components
+                  v-if="idx_row==0"
+                  class="uploadThumb"
+                  :key="idx_val"
+                  :ref="specPic+idx_val"
+                  size="minimal"
+                  @click.native="saveCurrentSpecItem(idx_val)"
+                  :onSuccess="upSpecPicSuccessCall"
+                />
+              </div>
 
-           <span class="margin15-c" style="cursor: pointer;color: #428CF7" @click="skuAdd(idx_row)">添加规格值</span>
+              <span class="margin15-c" style="cursor: pointer;color: #428CF7" @click="skuAdd(idx_row)">添加规格值</span>
+            </div>
          </div>
        </div>
       </el-form-item>
@@ -449,17 +454,31 @@
         Action,
         State
     } from 'vuex-class'
-
     import UploadComponents from "@/components/comm/UploadComponents.vue";
     import BindCateComponents from '@/components/BindCateComponents.vue';
     import BindStoreComponent from "@/components/comm/BindStoreComponent.vue";
     import SettingComponent from "@/components/comm/SettingComponent.vue";
-
-    import {getProductCategory, getStoreList,systemProdConfig,systemOperateProd,systemProdDetail,virtualCardType,virtualCardList} from '@/common/fetch'
-    //import fa from "element-ui/src/locale/lang/fa";
+    import {
+        getProductCategory,
+        getStoreList,
+        systemProdConfig,
+        systemOperateProd,
+        systemProdDetail,
+        virtualCardType,
+        virtualCardList
+    } from '@/common/fetch'
     import _ from 'underscore';
-    import {calcDescartes, objTranslate, plainArray,getArrayMulite,get_arr_column} from '@/common/utils';
+    import {
+        calcDescartes,
+        objTranslate,
+        plainArray,
+        getArrayMulite,
+        createTmplArray,
+        get_arr_column
+    } from '@/common/utils';
     import {fun} from '@/common';
+
+
 
     @Component({
         mixins:[],
@@ -673,13 +692,23 @@
         store_list = []
         store_id_list = []
         multipleSelection=[]
-        currentSpecItem = null //当前激活的规格可选值索引，从0开始
+        currentSpecItemIdx = null //当前激活的规格可选值索引，从0开始
 
         saveCurrentSpecItem(idx){
-            this.currentSpecItem = idx
+            console.log('鼠标点击'+idx)
+            this.currentSpecItemIdx = idx
         }
-        upSpecPicSuccessCall(){
+        upSpecPicSuccessCall(url_list){
 
+            if(url_list[0] && url_list[0].url){
+                //创建数组组
+                if(!this.specs[0].imgs){
+                    this.$set(this.specs[0],'imgs',[])
+                }
+                let url = url_list[0].url
+                this.specs[0].imgs[this.currentSpecItemIdx] = url
+            }
+            console.log(url_list,this.currentSpecItemIdx)
         }
         onContentChange (val) {
             this.ruleForm.content = val
@@ -723,31 +752,7 @@
             //就是只有一行的时候
             if(this.skus.length===1){
                 if(_.isArray(this.skus[0])) {
-                    //let arr = [];
-                    // for (let item of this.skus[0]) {
-                    //
-                    //     idx=name_list.indexOf(item);
-                    //     if(idx!=-1){
-                    //         arr.push({
-                    //             Attr_Value: item,
-                    //             Attr_Price: this.skusData[idx].Attr_Price,
-                    //             Property_count: this.skusData[idx].Property_count,
-                    //             Supply_Price: this.skusData[idx].Supply_Price,
-                    //             pt_pricex:this.skusData[idx].pt_pricex
-                    //         })
-                    //     }else{
-                    //         arr.push({
-                    //             Attr_Value: item,
-                    //             Attr_Price: '',
-                    //             Property_count: '',
-                    //             Supply_Price: '',
-                    //             pt_pricex:''
-                    //         })
-                    //     }
-                    //
-                    // }
                     let nameStr = this.skus[0].join('|')
-
                     let idx= name_list.indexOf(nameStr)
                     let obj = null;
                     if(idx!=-1){
@@ -766,12 +771,6 @@
                 }
             }else{
                 this.skuList = this.skus.map(sku=>{
-
-                    // if(_.isArray(sku)){
-                    //
-                    // }else{
-                    //     nameStr = sku
-                    // }
                     nameStr = sku.join('|')
                     //sku需要排序
 
@@ -789,6 +788,7 @@
                     }
                 });
             }
+
             // console.log(this.skuList,"ssss1")
             for(let item of this.skuList){
                 for(let it of this.initialSku){
@@ -1043,7 +1043,8 @@
                         }
                         let arrM=this.skuList;
                         let skuList= objTranslate(arrM);
-                        for(let mbx of skuList){
+                        for(let idx in skuList){
+                            let mbx = skuList[idx]
                             if(typeof mbx.Attr_Value=='object' ){
 
                             }else{
@@ -1053,8 +1054,23 @@
                                     objSku[this.specs[i].title]=splitArr[i];
                                 }
                                 mbx.Attr_Value=objSku;
+
+
+
                             }
+
+                            //批量新增图片
+                            //利用对应的规格获取在第一个规格可选值的vals的索引
+                            let specItemIdx = this.specs[0].vals.indexOf(this.skus[idx][0])
+                            if(specItemIdx!=-1 && this.specs[0].imgs[specItemIdx]){
+                                mbx.Attr_Image = this.specs[0].imgs[specItemIdx]
+                            }else{
+                                mbx.Attr_Image = ''
+                            }
+
                         }
+                        console.log(skuList)
+                        // @ts-ignore
                         productInfo.prod_attrval=JSON.stringify({
                             'attrs':attrs,
                             'values':skuList
@@ -1166,18 +1182,41 @@
             }
 
             if(this.initialPro.prod_attrval && this.initialPro.prod_attrval.attrs){
-                for(let item in this.initialPro.prod_attrval.attrs){
-                    for(let it of this.specs){
-                        if(it.title==item){
-                            it.vals=this.initialPro.prod_attrval.attrs[item];
+                for(let idx in this.initialPro.prod_attrval.attrs){
+                    for(let i in this.specs){
+                        let item = this.specs[i];
+
+                        if(item.title==item){
+                            item.vals = this.initialPro.prod_attrval.attrs[idx];
+
+
+
                         }
+
+
                     }
                 }
             }
 
+
             if(this.initialPro.prod_attrval && this.initialPro.prod_attrval.values){
                 let arrProd=this.initialPro.prod_attrval.values;
+                console.log('arrProdarrProdarrProdarrProdarrProdarrProdarrProd',arrProd)
                 for(let pro of arrProd){
+
+                    //去拼接
+                    // if(pro === this.specs[0].title){
+                    //     let idx = this.specs[0].vals.indexOf(pro);
+                    //     if(idx!=-1){
+                    //         //初始化规格图片
+                    //         if(!this.specs[0].imgs){
+                    //             this.$set(this.specs[0],'imgs',[])
+                    //
+                    //         }
+                    //         this.specs[0].imgs[idx] = pro.Attr_Image
+                    //     }
+                    // }
+
                     let arr=[];
                     for(let pr in pro.Attr_Value){
                         arr.push(pro.Attr_Value[pr]);
@@ -1189,7 +1228,15 @@
 
         }
 
+
         async created(){
+
+            const loadingObj = this.$loading({
+                lock: true,
+                text: '拼命加载中',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.3)'
+            })
 
             await systemProdConfig().then(res=>{
                 this.prodConfig=res.data;
@@ -1227,11 +1274,6 @@
             }).catch();
 
             let id = this.$route.query.prod_id;
-
-            let idDate={}
-            if(id){
-                idDate.prod_id= id;
-            }
             await  virtualCardList({prod_id:id}).then(res=>{
                 this.CardList=res.data;
                 this.multipleSelection=[];
@@ -1245,151 +1287,154 @@
                 this.CardType=res.data;
             })
 
-            if(!id)return
             let productInfo = {}
             let Products_Stores = []
             let select_cate_ids = []
 
-            this.addText="提交保存";
-            await systemProdDetail({prod_id:id}).then(res=>{
+            if(id){
+                this.addText="提交保存";
+                await systemProdDetail({prod_id:id}).then(res=>{
 
-                productInfo=res.data;
+                    productInfo=res.data;
 
-                this.initialPro=res.data;
+                    this.initialPro=res.data;
 
-                this.ruleForm.Products_Index=productInfo.Products_Index;//商品排序
-                this.ruleForm.Products_Name=productInfo.Products_Name;//商品名称
+                    this.ruleForm.Products_Index=productInfo.Products_Index;//商品排序
+                    this.ruleForm.Products_Name=productInfo.Products_Name;//商品名称
 
-                select_cate_ids = productInfo.Products_Category;//商品分类
-                this.ruleForm.Products_Sales=productInfo.Products_Sales;//虚拟销量
-                this.ruleForm.Products_PriceY=productInfo.Products_PriceY;//原价
-                this.ruleForm.Products_PriceX=productInfo.Products_PriceX;//现价
-                this.ruleForm.pintuan_flag=productInfo.pintuan_flag?true:false;//是否拼团
-                this.ruleForm.Products_Profit=productInfo.Products_Profit;//产品利润
-                this.ruleForm.Products_BriefDescription=productInfo.Products_BriefDescription;//产品简介
-                this.ruleForm.Products_Count=productInfo.Products_Count;//库存
-                this.ruleForm.Products_Type=productInfo.Products_Type;//商品类型id
-                this.ruleForm.Products_Weight=productInfo.Products_Weight;//商品重量
-                this.ruleForm.goods=String(productInfo.Products_Shipping);//运费选择
-                this.ruleForm.freight=String(productInfo.Shipping_Free_Company);
-                this.ruleForm.orderType=String(productInfo.prod_order_type);//订单类型
-                this.editorText=productInfo.Products_Description;//富文本类型
-                this.ruleForm.refund=productInfo.Product_backup;//退货id
-                this.ruleForm.Products_IsPaysBalance=productInfo.Products_IsPaysBalance?true:false;//是否使用余额
+                    select_cate_ids = productInfo.Products_Category;//商品分类
+                    this.ruleForm.Products_Sales=productInfo.Products_Sales;//虚拟销量
+                    this.ruleForm.Products_PriceY=productInfo.Products_PriceY;//原价
+                    this.ruleForm.Products_PriceX=productInfo.Products_PriceX;//现价
+                    this.ruleForm.pintuan_flag=productInfo.pintuan_flag?true:false;//是否拼团
+                    this.ruleForm.Products_Profit=productInfo.Products_Profit;//产品利润
+                    this.ruleForm.Products_BriefDescription=productInfo.Products_BriefDescription;//产品简介
+                    this.ruleForm.Products_Count=productInfo.Products_Count;//库存
+                    this.ruleForm.Products_Type=productInfo.Products_Type;//商品类型id
+                    this.ruleForm.Products_Weight=productInfo.Products_Weight;//商品重量
+                    this.ruleForm.goods=String(productInfo.Products_Shipping);//运费选择
+                    this.ruleForm.freight=String(productInfo.Shipping_Free_Company);
+                    this.ruleForm.orderType=String(productInfo.prod_order_type);//订单类型
+                    this.editorText=productInfo.Products_Description;//富文本类型
+                    this.ruleForm.refund=productInfo.Product_backup;//退货id
+                    this.ruleForm.Products_IsPaysBalance=productInfo.Products_IsPaysBalance?true:false;//是否使用余额
 
-                this.distriboutor_config=[];
-                for(let item in productInfo.Products_Distributes){
-                    this.distriboutor_config.push(productInfo.Products_Distributes[item]);
-                }
-
-                //佣金设置
-                this.platForm_Income_Reward=productInfo.platForm_Income_Reward;
-                this.nobi_ratio=productInfo.nobi_ratio;
-                this.area_Proxy_Reward=productInfo.area_Proxy_Reward;
-                this.sha_Reward=productInfo.sha_Reward;
-                this.commission_ratio=productInfo.commission_ratio;
-
-                this.Products_Promise=[];
-                if(productInfo.Products_SoldOut){
-                    this.ruleForm.otherAttributes.push('下架')
-                }
-                if(productInfo.Products_IsNew){
-                    this.ruleForm.otherAttributes.push('新品')
-                }
-                if(productInfo.Products_IsHot){
-                    this.ruleForm.otherAttributes.push('热卖')
-                }
-                if(productInfo.Products_IsRecommend){
-                    this.ruleForm.otherAttributes.push('推荐')
-                }
-                for(let item of productInfo.Products_Promise){
-                    this.Products_Promise.push(item.name);
-                }
-
-
-                if(this.ruleForm.pintuan_flag){
-                    this.ruleForm.pintuan_people=productInfo.pintuan_people;
-                    this.ruleForm.pintuan_pricex=productInfo.pintuan_pricex;
-                    this.ruleForm.pintuan_end_time = new Date(productInfo.pintuan_end_time*1000);
-                }
-
-
-                //缩略图
-                //@ts-ignore
-                this.thumb = productInfo.Products_JSON.ImgPath
-
-                //@ts-ignore
-                this.video = productInfo.video_url;
-                //@ts-ignore
-                this.imgs =  productInfo.cover_url;
-
-                //组件里面初始化
-                //@ts-ignore
-                this.$refs.thumb.handleInitHas(this.thumb)
-
-                if(this.video){
-                    //@ts-ignore
-                    this.$refs.video.handleInitHas([this.video],'video')
-                }
-
-                if(this.imgs){
-                    //@ts-ignore
-                    this.$refs.video_cover.handleInitHas([this.imgs])
-                }
-
-                Products_Stores = res.data.Products_Stores
-            })
-
-            //初始化商品分类
-            await getProductCategory({}).then(res=>{
-
-                let origin_cate_list = res.data
-                let cates = []
-                plainArray(res.data,'child',cates)
-
-                for(var cate of cates){
-                    if(select_cate_ids.indexOf(cate.Category_ID+'')!=-1){
-                        this.cate_list.push(cate)
+                    this.distriboutor_config=[];
+                    for(let item in productInfo.Products_Distributes){
+                        this.distriboutor_config.push(productInfo.Products_Distributes[item]);
                     }
-                }
 
-                //模拟选择菜单后的
-                let dataArr = this.cate_list
+                    //佣金设置
+                    this.platForm_Income_Reward=productInfo.platForm_Income_Reward;
+                    this.nobi_ratio=productInfo.nobi_ratio;
+                    this.area_Proxy_Reward=productInfo.area_Proxy_Reward;
+                    this.sha_Reward=productInfo.sha_Reward;
+                    this.commission_ratio=productInfo.commission_ratio;
 
-                let child_arr = [];
-                let cate_data = {}
+                    this.Products_Promise=[];
+                    if(productInfo.Products_SoldOut){
+                        this.ruleForm.otherAttributes.push('下架')
+                    }
+                    if(productInfo.Products_IsNew){
+                        this.ruleForm.otherAttributes.push('新品')
+                    }
+                    if(productInfo.Products_IsHot){
+                        this.ruleForm.otherAttributes.push('热卖')
+                    }
+                    if(productInfo.Products_IsRecommend){
+                        this.ruleForm.otherAttributes.push('推荐')
+                    }
+                    for(let item of productInfo.Products_Promise){
+                        this.Products_Promise.push(item.name);
+                    }
 
-                for(var cate of origin_cate_list){
-                    child_arr = [];
 
-                    for(var item of dataArr){
-                        if(item.child)continue
-                        for(var child of cate.child){
-                            if(child.Category_ID === item.Category_ID){
-                                child_arr.push(item.Category_ID)
-                            }
+                    if(this.ruleForm.pintuan_flag){
+                        this.ruleForm.pintuan_people=productInfo.pintuan_people;
+                        this.ruleForm.pintuan_pricex=productInfo.pintuan_pricex;
+                        this.ruleForm.pintuan_end_time = new Date(productInfo.pintuan_end_time*1000);
+                    }
+
+
+                    //缩略图
+                    //@ts-ignore
+                    this.thumb = productInfo.Products_JSON.ImgPath
+
+                    //@ts-ignore
+                    this.video = productInfo.video_url;
+                    //@ts-ignore
+                    this.imgs =  productInfo.cover_url;
+
+                    //组件里面初始化
+                    //@ts-ignore
+                    this.$refs.thumb.handleInitHas(this.thumb)
+
+                    if(this.video){
+                        //@ts-ignore
+                        this.$refs.video.handleInitHas([this.video],'video')
+                    }
+
+                    if(this.imgs){
+                        //@ts-ignore
+                        this.$refs.video_cover.handleInitHas([this.imgs])
+                    }
+
+                    Products_Stores = res.data.Products_Stores
+                })
+                //初始化商品分类
+                await getProductCategory({}).then(res=>{
+
+                    let origin_cate_list = res.data
+                    let cates = []
+                    plainArray(res.data,'child',cates)
+
+                    for(var cate of cates){
+                        if(select_cate_ids.indexOf(cate.Category_ID+'')!=-1){
+                            this.cate_list.push(cate)
                         }
                     }
 
-                    if(child_arr.length>0){
-                        cate_data[cate.Category_ID] = [...child_arr]
+                    //模拟选择菜单后的
+                    let dataArr = this.cate_list
+
+                    let child_arr = [];
+                    let cate_data = {}
+
+                    for(var cate of origin_cate_list){
+                        child_arr = [];
+
+                        for(var item of dataArr){
+                            if(item.child)continue
+                            for(var child of cate.child){
+                                if(child.Category_ID === item.Category_ID){
+                                    child_arr.push(item.Category_ID)
+                                }
+                            }
+                        }
+
+                        if(child_arr.length>0){
+                            cate_data[cate.Category_ID] = [...child_arr]
+                        }
+
                     }
 
-                }
+                    this.cate_ids = JSON.stringify(cate_data)//ids.join('|')
 
-                this.cate_ids = JSON.stringify(cate_data)//ids.join('|')
-
-            })
-
-            //初始化店铺列表
-            await getStoreList().then(res=>{
-                let stores = res.data
-                for(var item of stores){
-                    if(Products_Stores.indexOf(item.Stores_ID)!=-1){
-                        this.store_list.push(item)
+                })
+                //初始化店铺列表
+                await getStoreList().then(res=>{
+                    let stores = res.data
+                    for(var item of stores){
+                        if(Products_Stores.indexOf(item.Stores_ID)!=-1){
+                            this.store_list.push(item)
+                        }
                     }
-                }
-            })
+                })
+            }
+
+            this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
+                loadingObj.close()
+            });
 
         }
 
@@ -1560,27 +1605,45 @@
   }
 }
 
-  .divTd{
-    text-align: left !important;
-    font-size: 14px;
-    color: #666666;
-    .span{
-      color: #428CF7;
-      margin-right: 10px;
-      cursor: pointer;
-    }
-    .spans{
-      margin-left: 10px;
-      cursor: pointer;
-      color: #428CF7;
-    }
+.divTd{
+  text-align: left !important;
+  font-size: 14px;
+  color: #666666;
+  .span{
+    color: #428CF7;
+    margin-right: 10px;
+    cursor: pointer;
   }
+  .spans{
+    margin-left: 10px;
+    cursor: pointer;
+    color: #428CF7;
+  }
+}
 .el-icon-error:hover{
   color: red;
 }
-  .specs_row{
-    margin-bottom: 10px;
+.specs_row{
+  margin-bottom: 10px;
+  display: flex;
+  .label{
+    width: 100px;
   }
+  .specs-item-list{
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    .spec-item-box{
+      margin-bottom: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      .uploadThumb{
+        margin: 0 10px;
+      }
+    }
+  }
+}
 
 @border:#DBDBDB;
 .setting{
