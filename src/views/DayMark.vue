@@ -3,13 +3,13 @@
         <div class="content">
             <el-form ref="form" :model="form">
                 <div class="title">基本信息</div>
-                <el-form-item label="活动名称：">
+                <el-form-item label="活动名称：" prop="name">
                     <el-input v-model="form.name" class="input-name"></el-input>
                 </el-form-item>
                 <el-form-item label="活动时间：" class="time">
-                    每月 <el-date-picker type="date" placeholder="选择开始日期" v-model="form.start_time"></el-date-picker>
+                    每月 <el-date-picker type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择开始日期" v-model="form.start_time"></el-date-picker>
                     <span class="line" ></span>
-                    <el-date-picker type="date" placeholder="选择结束日期" v-model="form.end_time"></el-date-picker>
+                    <el-date-picker type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择结束日期" v-model="form.end_time"></el-date-picker>
                 </el-form-item>
                 <div class="title">权益</div>
                 <el-form-item label="会员等级规则：">
@@ -18,7 +18,7 @@
                         <div v-if="form.rule_type==0">
                             <el-table
                                 class="wzw-table"
-                                :data="oneruleData"
+                                :data="form.oneruleData"
                                 style="width: 100%"
                                 >
                                 <el-table-column
@@ -28,45 +28,55 @@
                                     align="center">
                                 </el-table-column>
                                 <el-table-column
-                                    prop="right"
                                     label="权益"
                                     width="373"
                                     align="center">
                                     <template slot-scope="scope">
                                         <div style="text-align:left;padding-left:78px;">
                                             <div class="userinput baoyou">
-                                                <el-checkbox name="isOpenMsg" v-model="form.rights[0].shipping.checked"></el-checkbox>包邮
+                                                <label>
+                                                  <el-checkbox v-model="form.rights[0].rights[0].shipping.checked"></el-checkbox>包邮
+                                                </label>
                                             </div>
                                             <div class="userinput xiaofei">
-                                                <el-checkbox name="isOpenMsg" v-model="form.rights[0].discount.checked"></el-checkbox>消费折扣
-                                                <el-input v-model="form.rights[0].discount.value"></el-input>折
+                                                <label >
+                                                  <el-checkbox v-model="form.rights[0].rights[0].discount.checked"></el-checkbox>消费折扣
+                                                </label>
+                                                <el-input :disabled="!form.rights[0].rights[0].discount.checked" v-model="form.rights[0].rights[0].discount.value"></el-input>折
                                             </div>
                                             <div class="userinput jifenbei">
-                                                <el-checkbox name="isOpenMsg" v-model="form.rights[0].requite.checked"></el-checkbox>积分倍率
-                                                <el-input v-model="form.rights[0].requite.value"></el-input>倍
+                                                <label>
+                                                  <el-checkbox v-model="form.rights[0].rights[0].requite.checked"></el-checkbox>积分倍率
+                                                </label>
+                                                <el-input :disabled="!form.rights[0].rights[0].requite.checked" v-model="form.rights[0].rights[0].requite.value"></el-input>倍
                                             </div>
                                         </div>
                                     </template>
                                 </el-table-column>
                                 <el-table-column
-                                    prop="gift"
                                     label="礼包"
                                     width="376"
                                     align="center">
                                     <template slot-scope="scope">
                                         <div style="padding-left: 47px;text-align:left">
                                             <div class="giftbag songjifen">
-                                                <el-checkbox name="isOpenMsg" v-model="form.rights[0].score.checked"></el-checkbox>送积分
-                                                <el-input v-model="form.rights[0].score.value"></el-input>积分
+                                              <label>
+                                                <el-checkbox v-model="form.rights[0].rights[0].score.checked"></el-checkbox>送积分
+                                              </label>
+                                                <el-input :disabled="!form.rights[0].rights[0].score.checked" v-model="form.rights[0].rights[0].score.value"></el-input>积分
                                             </div>
                                             <div class="giftbag song">
-                                                <el-checkbox name="isOpenMsg" v-model="form.rights[0].gift.checked"></el-checkbox>送赠品
+                                                <label>
+                                                  <el-checkbox v-model="form.rights[0].rights[0].gift.checked"></el-checkbox>送赠品
+                                                </label>
                                                 <span>选择赠品</span>
                                             </div>
                                             <div class="giftbag jifenbei">
-                                                <el-checkbox name="isOpenMsg" v-model="form.rights[0].coupon.checked"></el-checkbox>送优惠券
-                                                <el-select v-model="form.tickets"></el-select>
-                                                <el-input v-model="form.rights[0].coupon.value"></el-input>张
+                                                <label>
+                                                  <el-checkbox v-model="form.rights[0].rights[0].coupon.checked"></el-checkbox>送优惠券
+                                                </label>
+                                                <el-select :disabled="!form.rights[0].rights[0].coupon.checked" v-model="form.tickets"></el-select>
+                                                <el-input :disabled="!form.rights[0].rights[0].coupon.checked" v-model="form.rights[0].rights[0].coupon.value"></el-input>张
                                             </div>
                                         </div>
                                     </template>
@@ -78,7 +88,7 @@
                         <div v-if="form.rule_type== 1">
                             <el-table
                                 class="wzw-table"
-                                :data="levels"
+                                :data="form.levels"
                                 style="width: 100%">
                                 <el-table-column
                                     prop="level_name"
@@ -87,22 +97,25 @@
                                     align="center">
                                 </el-table-column>
                                 <el-table-column
-                                    prop="right"
                                     label="权益"
                                     width="373"
                                     align="center">
                                     <template slot-scope="scope">
                                         <div style="padding-left: 78px;text-align:left">
-                                            <div class="userinput baoyou" @click="see(scope)">
-                                                <el-checkbox name="isOpenMsg" v-model="form.morerights[scope.$index].rights.shipping.checked"></el-checkbox>包邮
+                                            <div class="userinput baoyou" >
+                                              <label><el-checkbox :disabled="!form.morerights[scope.$index].enable" v-model="form.morerights[scope.$index].rights[0].shipping.checked" ></el-checkbox>包邮</label>
                                             </div>
                                             <div class="userinput xiaofei">
-                                                <el-checkbox name="isOpenMsg" v-model="form.morerights[scope.$index].rights.discount.checked"></el-checkbox>消费折扣
-                                                <el-input v-model="form.morerights[scope.$index].rights.discount.value"></el-input>折
+                                              <label>
+                                                <el-checkbox :disabled="!form.morerights[scope.$index].enable" v-model="form.morerights[scope.$index].rights[0].discount.checked" ></el-checkbox>消费折扣
+                                              </label>
+                                                <el-input :disabled="!form.morerights[scope.$index].rights[0].discount.checked" v-model="form.morerights[scope.$index].rights[0].discount.value" ></el-input>折
                                             </div>
                                             <div class="userinput jifenbei">
-                                                <el-checkbox name="isOpenMsg" v-model="form.morerights[scope.$index].rights.requite.checked"></el-checkbox>积分倍率
-                                                <el-input v-model="form.morerights[scope.$index].rights.requite.value"></el-input>倍
+                                              <label>
+                                                <el-checkbox :disabled="!form.morerights[scope.$index].enable" v-model="form.morerights[scope.$index].rights[0].requite.checked" ></el-checkbox>积分倍率
+                                              </label>
+                                                <el-input :disabled="!form.morerights[scope.$index].rights[0].requite.checked" v-model="form.morerights[scope.$index].rights[0].requite.value" ></el-input>倍
                                             </div>
                                         </div>
                                     </template>
@@ -115,17 +128,23 @@
                                     <template slot-scope="scope">
                                         <div style="padding-left:47px;text-align:left;">
                                             <div class="giftbag songjifen">
-                                                <el-checkbox name="isOpenMsg" v-model="form.morerights[scope.$index].rights.score.checked"></el-checkbox>送积分
-                                                <el-input v-model="form.morerights[scope.$index].rights.score.value"></el-input>积分
+                                                <label>
+                                                  <el-checkbox :disabled="!form.morerights[scope.$index].enable" v-model="form.morerights[scope.$index].rights[0].score.checked" ></el-checkbox>送积分
+                                                </label>
+                                                <el-input :disabled="!form.morerights[scope.$index].rights[0].score.checked" v-model="form.morerights[scope.$index].rights[0].score.value" ></el-input>积分
                                             </div>
                                             <div class="giftbag song">
-                                                <el-checkbox name="isOpenMsg" v-model="form.morerights[scope.$index].rights.gift.checked"></el-checkbox>送赠品
+                                                <label>
+                                                  <el-checkbox :disabled="!form.morerights[scope.$index].enable" v-model="form.morerights[scope.$index].rights[0].gift.checked" ></el-checkbox>送赠品
+                                                </label>
                                                 <span>选择赠品</span>
                                             </div>
                                             <div class="giftbag jifenbei">
-                                                <el-checkbox name="isOpenMsg" v-model="form.morerights[scope.$index].rights.coupon.checked"></el-checkbox>送优惠券
-                                                <el-select v-model="form.morerights[scope.$index].rights.coupon.value"></el-select>
-                                                <el-input v-model="form.morerights[scope.$index].rights.coupon.count"></el-input>张
+                                              <label>
+                                                <el-checkbox :disabled="!form.morerights[scope.$index].enable" v-model="form.morerights[scope.$index].rights[0].coupon.checked" ></el-checkbox>送优惠券
+                                              </label>
+                                                <el-select :disabled="!form.morerights[scope.$index].rights[0].coupon.checked"></el-select>
+                                                <el-input :disabled="!form.morerights[scope.$index].rights[0].coupon.checked" v-model="form.morerights[scope.$index].rights[0].coupon.count" ></el-input>张
                                             </div>
                                         </div>
                                     </template>
@@ -149,15 +168,16 @@
                 </el-form-item>
                 <div class="title">通知配置</div>
                 <el-form-item class="is-open-msg">
-                    <el-checkbox label="是否启用短信通知" name="isOpenMsg" v-model="form.sms_che"></el-checkbox>
-                    <span class="peizhi">配置短信内容</span>
+                    <el-checkbox label="是否启用短信通知" v-model="form.sms_che"></el-checkbox>
+                    <el-input placeholder="配置短信内容" v-model="form.sms_content" :disabled="!form.sms_che"></el-input>
+<!--                    <span class="peizhi">配置短信内容</span>-->
                 </el-form-item>
                 <div class="title">时间设置</div>
                 <el-form-item label="发放权益、通知时间：" class="time-choose">
                     <span>在活动生效</span>
                     <el-select v-model="form.day" placeholder="前一天">
                         <el-option
-                        v-for="item in days"
+                        v-for="item in form.days"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
@@ -166,7 +186,7 @@
                     <span>的</span>
                     <el-select v-model="form.time" placeholder="08：30">
                         <el-option
-                        v-for="item in times"
+                        v-for="item in form.times"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
@@ -179,7 +199,7 @@
                     <el-checkbox v-model="form.mobile_che" label="通过短信提醒我" name="remindByMsg"></el-checkbox>
                     <div class="recive-number">
                         <span>接收短信的手机号</span>
-                        <el-input type="text" v-model="form.mobile"></el-input>
+                        <el-input type="text" :disabled="!form.mobile_che" v-model="form.mobile"></el-input>
                     </div>
                 </el-form-item>
                 <el-form-item class="submit">
@@ -193,15 +213,50 @@
 <script lang="ts">
     import Component from 'vue-class-component'
     import Vue from 'vue'
-    import {initScene} from '../common/fetch'
+    import {initScene,addScene} from '../common/fetch'
+    import {createTmplArray} from '@/common/utils';
+
+
+    const tmpl_data = {
+            level: 1,
+            enable: 0,
+            rights: [
+                {
+                    gift: {
+                        checked: false,
+                        value: 7
+                    },
+                    score: {
+                        checked: false,
+                        value: 10
+                    },
+                    coupon: {
+                        checked: false,
+                        value: 5,
+                        count: 5
+                    },
+                    requite: {
+                        checked: false,
+                        value: 1.1
+                    },
+                    shipping: {
+                        checked: false,
+                    },
+                    discount: {
+                        checked: 0,
+                        value: 9
+                    }
+                }
+            ]
+        }
     @Component
     export default class DayMark extends Vue{
         form = {
             name: '',
             type: 3,
             rule_type: 0, // 1是都不一样，0是都一样
-            rights: [
-                {
+            rights: [{
+                rights: [{
                     gift: {
                         checked:false,
                         value: 7
@@ -226,87 +281,44 @@
                         checked: 0,
                         value: 9
                     }
-                }
+                }]
+            }
             ],
-            morerights: [
-                {
-                    level: 1,
-                    enable: 0,
-                    rights: [
-                       {
-                            gift: {
-                                checked: false,
-                                value: 7
-                            },
-                            score: {
-                                checked: false,
-                                value: 10
-                            },
-                            coupon: {
-                                checked: false,
-                                value: 5,
-                                count: 5
-                            },
-                            requite: {
-                                checked: false,
-                                value: 1.1
-                            },
-                            shipping: {
-                                checked: false,
-                            },
-                            discount: {
-                                checked: 0,
-                                value: 9
-                            }
-                        } 
-                    ]
-                },
-            ],
-            value: true,
+            morerights: [],
             levels: [],
             start_time: '',
             end_time: '',
-            notify_day: 1,
-            notify_time: '08:30',
             mobile_che: true,   //通过短信提醒我开关
             mobile: '13946878984', // 短信提醒的手机号
             sms_che: true,  //是否启用短信通知
             sms_content: '活动开始了,请及时参加', // 短信通知内容
-            delivery: false,
-            resource: '',
-            desc: '',
-            isOpenMsg: true,
             day: '',
             time: '',
-            isBaoyou: false,
-            isDiscount: true, // 是否开启折扣
-            isJifen: false, // 是否开启积分倍率
-            discount: 0,
-            multiple: 0, // 积分倍率
-            isSendJifen: false, // 是否赠送积分
-            isSendGift: false, // 是否送赠品
-            isSendTickets: true, // 是否送优惠券
-            sendjifen: 10, // 输入的积分
-            tickets: 2, //优惠券
+            days: [],
+            times: [],
+            oneruleData: [
+                {
+                    level: '所有等级会员',
+                }
+            ],
         }
-        days = []
-        times = []
-        oneruleData = [
-            {
-                level: '所有等级会员',
-                right: '权益',
-                gift: '232'
-            }
-        ]
-        moreruleData = [
-            {
-                level: 'VIP1',
-                right: '权益',
-                gift: '232'
-            },
-        ]
         onSubmit(e){
-            console.log(e)
+            addScene({
+                name: this.form.name,
+                type: this.form.type,
+                rule_type: this.form.rule_type,
+                rights: JSON.stringify(this.form.rule_type == 0 ? this.form.rights : this.form.morerights) ,
+                start_time: this.form.start_time,
+                end_time: this.form.end_time,
+                notify_day: this.form.day,
+                notify_time: this.form.time,
+                mobile_che: this.form.mobile_che,
+                mobile: this.form.mobile,
+                sms_che: this.form.sms_che,
+                sms_content: this.form.sms_content
+            }).then(res=>{
+                console.log(res)
+            })
         }
         change(scope,index){
             console.log(scope)
@@ -325,7 +337,7 @@
                         value: i
                     })
                 }
-                this.days = temArr
+                this.form.days = temArr
                 // 转换 时间为需要的格式
                 let timeslist = res.data.times;
                 let arr = [];
@@ -335,8 +347,16 @@
                         value: i
                     })
                 }
-                this.times = arr
-                this.levels = res.data.levels
+                this.form.times = arr
+                this.form.levels = res.data.levels
+
+                //以指定数据为模板，创建指定长度的数组
+                this.form.morerights = createTmplArray(tmpl_data,this.form.levels.length)
+                console.log(this.form.morerights)
+                this.form.morerights.forEach((item,index)=>{
+                    item.level = index + 1;
+                })
+                console.log(this.form.morerights)
             })
         }
     }
@@ -351,6 +371,7 @@
         background: #f6f6f6;
         padding: 20px 0 0 20px;
         .content {
+            min-width: 1200px;
             color: #666;
             height: 100%;
             background: #fff;
@@ -368,18 +389,18 @@
                 padding-left: 20px;
             }
             /deep/ .input-name {
-                width: 353px;
+                width: 470px;
                 height: 40px;
                 line-height: 40px;
             }
             .time {
                 /deep/ .el-input__inner  {
-                    width: 140px;
+                    width: 200px;
                     height: 40px;
                     padding: 0 27px;
                 }
                 /deep/ .el-date-editor.el-input {
-                    width: 140px;
+                    width: 200px;
                     height: 40px;
                 }
             }
@@ -387,9 +408,8 @@
                 display: inline-block;
                 width: 14px;
                 height: 1px;
-                margin: 0 10px;
+                margin: 0 10px 5px;
                 background: #B4B4B4;
-                margin-bottom: 5px;
             }
             .rule-radio {
                 /deep/ .el-radio {
@@ -405,16 +425,20 @@
                     color: #79B0FF;
                     margin-left: 20px;
                 }
+              .el-input {
+                width: 200px;
+                margin-left: 10px;
+              }
             }
             .recive-number {
                 padding-left: 104px;
                 .el-input {
                     width: 167px;
-                    height: 35px;   
+                    height: 35px;
                     margin-left: 8px;
                     .el-input__inner {
                         height: 35px;
-                    } 
+                    }
                 }
             }
             .time-choose {
@@ -462,7 +486,7 @@
                 }
                 .el-input {
                     width: 69px;
-                    height: 30px;    
+                    height: 30px;
                 }
                 /deep/ .el-input__inner {
                     height: 30px;
