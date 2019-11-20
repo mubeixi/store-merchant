@@ -4,7 +4,7 @@
     <el-upload
       ref="upload"
       class="upload"
-      :class="[imgUrl?'isHas':'',limit>1?'multiple':'',size,file_temp_list.length==limit?'is_full':'']"
+      :class="[imgUrl?'isHas':'',limit>1?'multiple':'',size,Len==limit?'is_full':'']"
       :multiple="limit>1"
       :accept="accept"
       :name="elName"
@@ -12,25 +12,65 @@
       :data.sync='ajaxData'
       :action="baseURL+'/api/little_program/shopconfig.php'"
       list-type="picture-card"
+      :file-list="fileList"
       :show-file-list='showFileList'
       :on-preview="onPreview"
       :on-success='success'
       :on-error="error"
       :on-exceed="exceedFunc"
       :on-remove="handleRemove"
+      :on-progress="progressFn"
       :before-upload='beforeUpload'
       :on-change='change'>
-      <i class="el-icon-plus"></i>
-<!--      <template v-if="file_temp_list.length>0">-->
-<!--        <div v-for="(img,idx) in file_temp_list" class="file-item">-->
-<!--          <div class="cover" :style="{backgroundImage:'url('+img.url+')'}"></div>-->
-<!--        </div>-->
+      <i class="el-icon-plus" v-if="Len<limit"></i>
+
+        <div slot="file"  slot-scope="{file}">
+          <template v-if="file.status!='success'">
+            <el-progress :width="width-2" style="width: 100%" type="circle" :percentage="file.percentage|percent"></el-progress>
+          </template>
+         <template v-if="file.status=='success'">
+           <video
+             v-if="type==='video'"
+             class="el-upload-list__item-thumbnail"
+             :src="file.url"
+           >
+           </video>
+           <img v-if="type==='image'"
+                class="el-upload-list__item-thumbnail"
+                :src="domainFn(file.url)" />
+           <span class="el-upload-list__item-actions">
+            <span v-if="size!='minimal'"
+              class="el-upload-list__item-preview"
+              @click="onPreview(file)"
+            >
+              <i class="el-icon-zoom-in"></i>
+            </span>
+
+            <span
+              class="el-upload-list__item-delete"
+              @click="doRemove(file)"
+            >
+              <i class="el-icon-delete"></i>
+            </span>
+          </span>
+         </template>
+
+
+        </div>
+
+
+
+<!--      <template v-if="type==='vidoe' &&file_temp_list.length>0">-->
+<!--        <div>{{file_temp_list[0]}}</div>-->
+<!--&lt;!&ndash;        <video :src="file_temp_list[0]|domain"></video>&ndash;&gt;-->
 <!--      </template>-->
-      <div slot="tip" class="el-upload__tip ">{{tip}} <i @click="remove" style="position: absolute;right: 0;top: 0;font-size: 22px;cursor: pointer;" v-if="showDelIcon && imgUrl" class="el-icon-circle-close del-icon"></i> </div>
+      <div slot="tip" v-if="tip" class="el-upload__tip ">{{tip}} <i @click="remove" style="position: absolute;right: 0;top: 0;font-size: 22px;cursor: pointer;" v-if="showDelIcon && imgUrl" class="el-icon-circle-close del-icon"></i> </div>
     </el-upload>
 
-    <el-dialog :visible.sync="preShow">
-      <img width="100%" :src="dialogImageUrl" alt="">
+    <el-dialog  title="预览素材" :visible.sync="preShow">
+      <video width="100%" controls
+             autoplay :src="domainFn(dialogImageUrl)" v-if="type==='video'"></video>
+      <img width="100%" :src="domainFn(dialogImageUrl)"  v-if="type==='image'" alt="">
     </el-dialog>
 
   </div>
@@ -40,10 +80,10 @@
 
   import {Component, Vue, Prop} from 'vue-property-decorator';
   import {mapActions, mapState} from 'vuex';
-
   import { baseApiUrl } from '@/common/env';
   import { createToken, get_Users_ID } from '@/common/fetch';
-  import {domain, objTranslate} from '@/common/utils';
+  import { domain,objTranslate} from '@/common/utils';
+
 
   function noop() {
   }
@@ -52,6 +92,10 @@
 
   @Component({
       computed: {
+          width(){
+              const conf = {mini:80,minimal:32,small:100}
+              return conf[this.size]?conf[this.size]:80
+          },
           activeAttr: {
               get() {
                   return this.$store.state.activeAttr;
@@ -70,6 +114,20 @@
               return ajaxData;
           }
 
+      },
+      watch:{
+          // hasList:{
+          //     immediate:true,
+          //     deep:true,
+          //     handler(val){
+          //         this.fileList = val.map((img,idx)=>{
+          //             return {
+          //                 url:domain(img),
+          //                 name:(new Date()).getTime()+idx
+          //             }
+          //         })
+          //     }
+          // }
       }
   })
 
@@ -81,7 +139,16 @@
       })
       elName:string
 
-      @Prop(String)
+      @Prop({
+          type:String,
+          default:'image'
+      })
+      type:string
+
+      @Prop({
+          type:String,
+          default:''
+      })
       tip:string
 
       @Prop(String)
@@ -99,8 +166,6 @@
       })
       imgs:object
 
-      @Prop(String)
-      type:string
 
       @Prop({
           type:Number,
@@ -150,28 +215,104 @@
       @Prop(Boolean)
       cropper:boolean
 
+      @Prop({
+          type:Array,
+          default:()=>[]
+      })
+      hasList:any
+
       fileList = []
 
-      file_temp_list = []
+      //file_temp_list = []
+      Len = 0
+
 
       baseURL = baseApiUrl
 
       preShow = false
       dialogImageUrl = ''
 
-      onPreview(file){
+      restFileList(files){
+          let rt = []
+          if(!files){
+              files = this.$refs.upload.uploadFiles;
+          }
 
+          console.log(files)
+
+          let url,video_url,video_img;
+          for(var item of files ){
+
+              //cover_url如果不是第一次上传是没有的
+              video_url = item.url
+
+              if(this.type==='video'){
+                  if(item.url.indexOf('blob')!=-1){
+                      if(item.status==='success' && item.response && item.response.data){
+                          video_url = item.response.data.video_url
+                          video_img = item.response.data.video_img
+                      }else{
+                          continue;
+                      }
+                  }
+                  rt.push({video_url:video_url,video_img:video_img})
+              }else if(this.type === 'image'){
+
+                  url = item.url
+                  if(item.url.indexOf('blob')!=-1){
+
+                      if(item.status==='success' && item.response && item.response.data){
+                          url = item.response.data.path
+                      }else{
+                          continue;
+                      }
+
+                  }
+                  rt.push({url:url})
+
+              }
+
+          }
+          this.Len = rt.length;
+          return rt;
+      }
+
+      domainFn(url){
+          return domain(url)
+      }
+      handleInitHas(list){
+          console.log(list)
+          this.fileList = list.map((url,idx)=>{
+              return {
+                  url:url,
+                  name:Date.now()+idx
+              }
+          })
+          this.Len = this.fileList.length
+      }
+      progressFn(event, file, fileList){
+          console.log(event,file,fileList)
+      }
+      onPreview(file){
+          console.log(file)
           this.dialogImageUrl = file.url;
           this.preShow = true;
       }
-
+      doRemove(file){
+          //直接调组件内部的方法
+          this.$refs.upload.handleRemove(file)
+      }
       handleRemove(file, fileList){
-          this.file_temp_list = fileList.map(file=>{
-              return file.url
-          })
-
-          let call = this.onRemove
-          call && call(file.response.data);
+          console.log(file, fileList)
+          let call = this.onSuccess
+          // let idx = null;
+          // for(var i of fileList){
+          //     if(fileList[i].url == file.url){
+          //         idx =i ;
+          //         break;
+          //     }
+          // }
+          call && call(this.restFileList(fileList));
       }
       domainFunc(url) {
           return domain(url);
@@ -180,6 +321,7 @@
           fun.error({ msg: '最多上传' + this.limit + '个文件' });
       }
       error(err, file, fileList) {
+          console.log('上传失败了')
           fun.error({
               msg: JSON.stringify(err),
               title: '上传失败',
@@ -193,16 +335,36 @@
           // this.onSuccess.apply(this, mock);
       }
       change(file, fileList) {
-          this.file_temp_list = fileList.map(file=>{
-              return file.url
-          })
+
+          this.Len = fileList.length
+          //this.file_temp_list = fileList
+          // let _self = this
+          // for(var fileItem of fileList){
+          //     if(fileItem.response && fileItem.response.data){
+          //         console.log(fileItem)
+          //         fileItem.type = _self.type
+          //         //this.file_temp_list.push(file.url)
+          //     }
+          // }
+          // console.log(fileList)
+          // this.file_temp_list = fileList.map(file=>{
+          //     return file.url
+          // })
       }
       beforeUpload() {
 
       }
       success(response, file, fileList) {
+          console.log('response is ',response,fileList)
           let call = this.onSuccess
-          call && call(response.data);
+          if(response && response.data){
+              call && call(this.restFileList(fileList));
+          }
+
+      }
+
+      created(){
+          //this.fileList = this.hasList
       }
   }
 

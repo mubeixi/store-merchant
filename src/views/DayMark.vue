@@ -342,7 +342,7 @@
     }
 </script>
 
-<style scoped lang="less">
+<style scoped lang="less" >
     html,body {
         height: 100%;
     }

@@ -5,7 +5,6 @@
 </template>
 <style lang="stylus">
   @import "assets/css/app.styl";
-
 </style>
 <style lang="less">
 
@@ -57,6 +56,44 @@ input[type="number"]{
         /*transform: translateY(-50%);*/
         /*height: auto;*/
 
+      }
+    }
+  }
+}
+
+
+.upload.minimal{
+
+  height: 32px !important;
+  .el-upload__tip{
+
+  }
+  &.is_full{
+    .el-upload--picture-card{
+      display: none !important;
+    }
+  }
+  .el-upload--picture-card{
+    width: 32px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+    i.el-icon-plus{
+      /*font-size: 22px;*/
+      /*line-height: 30px;*/
+    }
+  }
+  .el-upload-list--picture-card{
+
+    .el-upload-list__item{
+      width: 32px !important;
+      height: 32px !important;
+      margin: 0 !important;
+      //position: revert;
+      img{
+        /*position: absolute;*/
+        /*top: 50%;*/
+        /*transform: translateY(-50%);*/
+        /*height: auto;*/
       }
     }
   }

@@ -22,7 +22,7 @@
               <div v-show="goods.config.attr.desc.show" class="font12 graytext desc">
                 {{item.Products_BriefDescription||'暂无介绍'}}
               </div>
-              <div v-show="goods.config.attr.price.show" class="price"><span class="sign">￥</span>{{item.Products_PriceX}}
+              <div v-show="goods.config.attr.price.show" class="price"><span class="sign">￥</span>{{item.attr_json.price}}
               </div>
             </div>
             <div v-show="goods.config.attr.buybtn.show" class="buybtn" :class="'theme'+goods.config.attr.buybtn.style">
@@ -70,7 +70,7 @@
     import {mapState} from 'vuex';
     import Kill from '@/assets/js/diy/kill';
     import {deepCopy, domain} from '@/common/utils';
-    import {getProductList} from '@/common/fetch';
+    import {getProductList,getFlashSaleList} from '@/common/fetch';
 
     @Component({
         props: {
@@ -210,7 +210,7 @@
                         param.Products_ID = list.join(',')
                     }
 
-                    getProductList(param).then(res => {
+                    getFlashSaleList(param).then(res => {
                         this.goodsList = res.data
                     })
 
