@@ -11,6 +11,7 @@ import DayMark from '@/views/DayMark.vue';
 import LabelManagement from '@/views/LabelManagement.vue'
 import LabelAdd from '@/views/LabelAdd.vue'
 import CrowdName from '@/views/CrowdName.vue'
+import CrowdClient from '@/views/CrowdClient.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -65,7 +66,14 @@ export default new Router({
       path: '/CrowdName',
       name: 'CrowdName',
       component: CrowdName
+    },
+    {
+      path: '/CrowdClient',
+      name: 'CrowdClient',
+      component: CrowdClient
     }
+
+
 
     // {
     //   path: '/about',

@@ -169,7 +169,7 @@
                   <template v-for="(item,idx) in skus[0]">
                   <td class="td" >{{item}}</td>
                   </template>
-                  <td class="td"><el-input  v-if="skuList[0]"  v-model="skuList[0].Attr_Price"/></td>
+                  <td class="td"><el-input  v-if="skuList[0]"  type="number" v-model="skuList[0].Attr_Price"/></td>
                   <td class="td"><el-input  v-if="skuList[0]"  v-model="skuList[0].Property_count"/></td>
                   <td class="td"><el-input  v-if="skuList[0]"  v-model="skuList[0].Supply_Price"/></td>
                   <td class="td" v-if="ruleForm.pintuan_flag"><el-input  v-if="skuList[0]"  v-model="skuList[0].pt_pricex"/></td>
@@ -216,10 +216,10 @@
               </el-select>
           </el-radio>
           <el-radio  label="1" style="display: block;margin-bottom: 15px" >物流模板</el-radio>
-          <el-radio  label="2" style="display: block;margin-bottom: 15px" >
-            固定运费
-            <el-input   v-model="ruleForm.freightGu"  class="sortInput" placeholder="运费金额：¥" style="width: 200px;margin-left: 23px;"></el-input>
-          </el-radio>
+<!--          <el-radio  label="2" style="display: block;margin-bottom: 15px" >-->
+<!--            固定运费-->
+<!--            <el-input   v-model="ruleForm.freightGu"  class="sortInput" placeholder="运费金额：¥" style="width: 200px;margin-left: 23px;"></el-input>-->
+<!--          </el-radio>-->
         </el-radio-group>
       </el-form-item>
       <el-form-item label="其他属性" prop="otherAttributes">
@@ -1052,6 +1052,11 @@
                             }
                         }
                         let arrM=this.skuList;
+                        for(let arrList of arrM){
+                            if(arrList.Property_count<=0){
+                                return  alert("库存不能为空")
+                            }
+                        }
                         let skuList= objTranslate(arrM);
                         for(let idx in skuList){
                             let mbx = skuList[idx]
@@ -1352,7 +1357,7 @@
                     this.ruleForm.Products_Count=productInfo.Products_Count;//库存
                     this.ruleForm.Products_Type=productInfo.Products_Type;//商品类型id
                     this.ruleForm.Products_Weight=productInfo.Products_Weight;//商品重量
-                    this.ruleForm.goods=String(productInfo.Products_Shipping);//运费选择
+                    this.ruleForm.goods=String(productInfo.Products_IsShippingFree);//运费选择
                     this.ruleForm.freight=String(productInfo.Shipping_Free_Company);
                     this.ruleForm.orderType=String(productInfo.prod_order_type);//订单类型
                     this.editorText=productInfo.Products_Description;//富文本类型
