@@ -263,7 +263,6 @@
         <div>
           <wzw-editor id="container" height="400px" width="800px" :content.sync="editorText"
                       :afterChange="afterChange()"
-                      pluginsPath="../../../static/kindeditor/plugins/"
                       :loadStyleMode="false"
                       @on-content-change="onContentChange"></wzw-editor>
         </div>
@@ -1358,6 +1357,7 @@
 
             if(id){
                 this.addText="提交保存";
+                //编辑模式，需要加载商品信息
                 await systemProdDetail({prod_id:id}).then(res=>{
 
                     productInfo=res.data;

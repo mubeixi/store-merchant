@@ -5517,6 +5517,8 @@ function _editor(options) {
 _instances = [];
 function _create(expr, options) {
 	options = options || {};
+
+  console.log('optionsoptionsoptionsoptionsoptionsoptionsoptionsoptionsoptionsoptionsoptions',options)
 	options.basePath = _undef(options.basePath, K.basePath);
 	options.themesPath = _undef(options.themesPath, options.basePath + 'themes/');
 	options.langPath = _undef(options.langPath, options.basePath + 'lang/');
