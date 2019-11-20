@@ -295,3 +295,25 @@ export const createTmplArray = (item,len)=>{
   }
   return rt
 }
+
+
+export class Fun{
+
+  static fn = (str)=>new Promise((resolve, reject) => {
+    setTimeout(function () {
+      resolve(str);
+    },100)
+  })
+  static fn2 = (str)=>new Promise((resolve, reject) => {
+    setTimeout(function () {
+      resolve(str);
+    },100)
+  })
+  static fn3 = (str)=>new Promise((resolve, reject) => {
+    setTimeout(function () {
+      resolve(str);
+    },100)
+  })
+
+}
+

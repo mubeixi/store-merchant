@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 // 局部模式
-const shell = require('shelljs')
+const shell = require('shelljs');
 
 
 // 全局模式下，就不需要用shell开头了。
@@ -18,7 +18,7 @@ const options = {
   port: '21',
   user: 'dev_jingjin_sit',
   password: 'NCERzbAsZ6xez7Xt',
-}
+};
 
 let FtpDeploy = require('ftp-deploy');
 let ftpDeploy = new FtpDeploy();
@@ -42,15 +42,21 @@ ftpDeploy
   .deploy(config)
   .then(res => console.log('finished:', res))
   .catch(err => {
-    let {message,name} = err
-    console.log({name,message})
+    let { message, name } = err;
+    console.log({
+      name,
+      message
+    });
   });
 
 // use with callback
 ftpDeploy.deploy(config, (err, res) => {
-  if (err) console.log(err);
-  else console.log('finished:', res);
-})
+  if (err) {
+    console.log(err);
+  } else {
+    console.log('finished:', res);
+  }
+});
 
 // var c= new ftpClient()
 //
@@ -132,3 +138,25 @@ ftpDeploy.deploy(config, (err, res) => {
 //
 //
 // shell.echo('commit to ftp successfully');
+
+
+// const data = {
+//   amount_data: {
+//     lists: [],
+//     total: 0,
+//     page: 0,
+//     pageSize: 20,
+//   },
+//   order_data: {
+//     lists: [],
+//     total: 0,
+//     page: 0,
+//     pageSize: 20,
+//   },
+//   point_data: {
+//     lists: [],
+//     total: 0,
+//     page: 0,
+//     pageSize: 20,
+//   },
+// }

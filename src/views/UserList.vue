@@ -248,7 +248,7 @@
                             value-format='yyyy-MM-dd HH:mm:ss'>
                             </el-date-picker>
                         </div>
-                        <span class="cut-line">—</span> 
+                        <span class="cut-line">—</span>
                         <div class="inline-block endtime">
                             <!-- <span class="demonstration">默认</span> -->
                             <el-date-picker
