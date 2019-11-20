@@ -203,13 +203,17 @@
                     //     return;
                     // }
 
-                    let param = {pageSize: cate_id.length===0 && limit ? limit : 6}
+                    let param = {pageSize: (cate_id.length===0 && limit) ? limit : 6}
                     if (cate_id.length>0) {
                         param.Cate_ID = cate_id.join(',')
                     }
 
                     if (list.length>0) {
                         param.Products_ID = list.join(',')
+                    }
+
+                    if(list.length===0 && cate_id.length===0){
+                        param.pageSize = 6
                     }
 
                     getProductList(param).then(res => {

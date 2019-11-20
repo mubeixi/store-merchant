@@ -5,7 +5,6 @@
 </template>
 <style lang="stylus">
   @import "assets/css/app.styl";
-
 </style>
 <style lang="less">
 

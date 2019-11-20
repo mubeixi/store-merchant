@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap">
+  <div class="home-wrap">
     <div class="flex main">
       <div class="plugins">
         <plugins-component></plugins-component>
@@ -158,7 +158,7 @@
     justify-content center
     border-top 1px solid #e7e7e7
 
-  .wrap
+  .home-wrap
     padding-top 0px
     margin 0px auto 0
 
@@ -207,7 +207,7 @@
   //  height:0px;
   //}
 </style>
-<style lang="less">
+<style lang="less"  scoped>
 
 .preBox{
   margin-left: 10px;
