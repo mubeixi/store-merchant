@@ -199,14 +199,16 @@
 
                     //如果值还没有设置的话
                     //取消注释，拉取默认的商品。这样的话，方便有主题让人应用
-                    if(list.length===0 && cate_id.length===0){
-                        return;
-                    }
+                    // if(list.length===0 && cate_id.length===0){
+                    //     return;
+                    // }
 
                     let param = {pageSize: cate_id.length===0 && limit ? limit : 6}
                     if (cate_id.length>0) {
                         param.Cate_ID = cate_id.join(',')
-                    } else {
+                    }
+
+                    if (list.length>0) {
                         param.Products_ID = list.join(',')
                     }
 
