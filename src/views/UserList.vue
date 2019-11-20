@@ -259,7 +259,7 @@
                             </el-date-picker>
                         </div>
                         <el-button type="primary" class="query" @click="query">查询</el-button>
-                        <el-button type="primary" class="export" @click="query('output')">导出数据</el-button>
+                        <el-button type="primary" class="export" @click="query('output')" v-if="item != 2">导出数据</el-button>
                     </div>
             </template>
             <template v-if="item == 2">
