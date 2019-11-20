@@ -291,7 +291,7 @@ export const getArrayMulite = (arr,startIdx)=>{
 export const createTmplArray = (item,len)=>{
   let rt = []
   for(var i=0;i<len;i++){
-    rt.push(item)
+    rt.push(objTranslate(item))
   }
   return rt
 }
