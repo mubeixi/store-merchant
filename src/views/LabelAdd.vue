@@ -1,9 +1,9 @@
 <template>
   <div class="labelManagement">
     <div class="labelMain">
-      <el-form>
+      <el-form size="small">
         <el-form-item label="标签名称:">
-          <el-input size="mini" style="width: 350px" ></el-input>
+          <el-input  style="width: 350px" ></el-input>
         </el-form-item>
         <el-form-item label="标签类型:">
           <el-radio-group v-model="LabelRadio">
@@ -30,10 +30,10 @@
 
                 <el-radio-group :disabled="!lastTime"  v-model="timeInterval" style="margin-left: 30px;margin-top: 25px;margin-bottom: 16px;">
                   <el-radio label="zuijin">最近
-                    <el-input size="mini" class="marginLR"></el-input>天
+                    <el-input  class="marginLR"></el-input>天
                   </el-radio>
                   <el-radio label="zi">自定义
-                    <el-form-item size="mini" style="display: inline-block">
+                    <el-form-item  style="display: inline-block">
                       <el-date-picker
                         type="datetime"
                         placeholder="选择开始时间"
@@ -55,7 +55,7 @@
                   <el-checkbox-group v-model="consumptionTimes">
                     <el-checkbox label="lastTime" name="consumptionTimes">
                       累计消费金额
-                      <el-input size="mini" class="marginLR" style="width: 70px"></el-input>元<span style="margin-left: 10px">一</span><el-input class="marginLR" size="mini" style="width: 70px"></el-input>元
+                      <el-input  class="marginLR" style="width: 70px"></el-input>元<span style="margin-left: 10px">一</span><el-input class="marginLR"  style="width: 70px"></el-input>元
                     </el-checkbox>
                   </el-checkbox-group>
                 </el-form-item>
@@ -64,7 +64,7 @@
                   <el-checkbox-group v-model="consumptionMoney">
                     <el-checkbox label="lastTime" name="consumptionMoney">
                       累计消费金额
-                      <el-input size="mini" class="marginLR" style="width: 70px"></el-input>元<span style="margin-left: 10px">一</span><el-input class="marginLR" size="mini" style="width: 70px"></el-input>元
+                      <el-input  class="marginLR" style="width: 70px"></el-input>元<span style="margin-left: 10px">一</span><el-input class="marginLR"  style="width: 70px"></el-input>元
                     </el-checkbox>
                   </el-checkbox-group>
                 </el-form-item>

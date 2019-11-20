@@ -4,7 +4,7 @@
         <span class="menusetText">发布商品</span>
     </div>
 
-    <el-form size="small" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="ruleForm">
+    <el-form size="small" :model="ruleForm" :rules="rules" ref="ruleForm" :inline-message="true" label-width="120px"   class="ruleForm">
       <el-form-item label="商品排序" prop="Products_Index">
         <el-input v-model="ruleForm.Products_Index"  class="sortInput"></el-input>
         <span class="sortMsg">注：数字越大，越往前（必须大于0）</span>
@@ -19,16 +19,16 @@
       <div class="group cate_list" style="margin-left: 120px;margin-bottom: 22px;" v-if="cate_list.length>0">
         <span class="cate_item" v-for="(cate,idx) in cate_list">{{cate.Category_Name}}</span>
       </div>
-      <el-form-item label="虚拟销量" prop="Products_Sales">
+      <el-form-item label="销量" prop="Products_Sales">
         <el-input v-model.number="ruleForm.Products_Sales"  class="sortInput"></el-input>
-        <span class="sortMsg">注：**********************</span>
+        <span class="sortMsg">注：消费者看到的销量</span>
       </el-form-item>
 
-      <el-form-item label="产品价格">
-        <el-form-item prop="Products_PriceY" style="display: inline-block">
+      <el-form-item label="产品价格" >
+        <el-form-item prop="Products_PriceY" style="display: inline-block;margin-bottom: 0px" >
           <el-input v-model="ruleForm.Products_PriceY"   placeholder="原价:¥" class="sortInput"></el-input>
         </el-form-item>
-        <el-form-item  prop="Products_PriceX" style="display: inline-block">
+        <el-form-item  prop="Products_PriceX" style="display: inline-block;margin-bottom: 0px">
           <el-input v-model="ruleForm.Products_PriceX"   placeholder="现价:¥" class="sortInput" style="margin-left: 18px"></el-input>
         </el-form-item>
       </el-form-item>
@@ -55,7 +55,7 @@
 
       <el-form-item label="商品利润" prop="Products_Profit">
         <el-input v-model="ruleForm.Products_Profit"   class="sortInput sortInputs" ></el-input>
-        <span class="sortMsg">注：**********************</span>
+        <span class="sortMsg">注：佣金将从商品利润中取出一部分发放</span>
       </el-form-item>
 
       <el-form-item label="商品主图">
@@ -96,7 +96,7 @@
         <el-input  type="textarea" v-model="ruleForm.Products_BriefDescription" style="width: 600px"></el-input>
       </el-form-item>
       <el-form-item label="商品类型" prop="Products_Type">
-        <el-select  v-model="ruleForm.Products_Type" placeholder="请选择类型"  style="width: 600px">
+        <el-select  v-model="ruleForm.Products_Type" placeholder="请选择类型"  style="width: 160px">
           <template v-for="(it,ind_con) of prodConfig.prod_type_list">
             <el-option :label="it.Type_Name" :value="it.Type_ID" ></el-option>
           </template>
@@ -122,17 +122,17 @@
                 </div>
                 <!--ref用来初始化-->
                 <upload-components
-                  v-if="idx_row==0"
+                  v-if="idx_row==0&&skuImg"
                   class="uploadThumb"
                   :key="idx_val"
                   ref="specPic"
-                  size="minimal"
+                  size="mini"
                   @click.native="saveCurrentSpecItem(idx_val)"
                   :onSuccess="upSpecPicSuccessCall"
                 />
               </div>
 
-              <span class="margin15-c" style="cursor: pointer;color: #428CF7" @click="skuAdd(idx_row)">添加规格值</span>
+              <span class="margin15-c" style="cursor: pointer;color: #428CF7" @click="skuAdd(idx_row)">添加规格值</span><el-checkbox style="margin-left: 5px" v-if="idx_row==0" v-model="skuImg"  name="sku">添加规格图片</el-checkbox>
             </div>
          </div>
        </div>
@@ -144,9 +144,9 @@
           <table class="table" cellspacing="0" cellpadding="0" >
             <tr class="tr">
               <th class="th" v-for="(spec,idx) in specs">{{spec.title}}</th>
-              <th class="th">价格</th>
+              <th class="th">价格(元)</th>
               <th class="th">库存</th>
-              <th class="th">成本价</th>
+              <th class="th">成本价(元)</th>
               <th class="th" v-if="ruleForm.pintuan_flag">拼团价</th>
             </tr>
             <template v-if="skus.length>1">
@@ -157,9 +157,9 @@
                       <td class="td" :rowspan="getRowsSpan(index,idx)">{{sku[index]}}</td>
                     </template>
                   </template>
-                  <td class="td"><el-input  v-if="skuList[idx]"  v-model="skuList[idx].Attr_Price"/></td>
-                  <td class="td"><el-input   v-if="skuList[idx]"  v-model="skuList[idx].Property_count"/></td>
-                  <td class="td"><el-input  v-if="skuList[idx]"  v-model="skuList[idx].Supply_Price"/></td>
+                  <td class="td"><el-input  style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Attr_Price"/></td>
+                  <td class="td"><el-input  style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Property_count"/></td>
+                  <td class="td"><el-input  style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Supply_Price"/></td>
                   <td class="td" v-if="ruleForm.pintuan_flag"><el-input v-if="skuList[idx]"  v-model="skuList[idx].pt_pricex"/></td>
                 </tr>
               </template>
@@ -169,9 +169,9 @@
                   <template v-for="(item,idx) in skus[0]">
                   <td class="td" >{{item}}</td>
                   </template>
-                  <td class="td"><el-input  v-if="skuList[0]"  type="number" v-model="skuList[0].Attr_Price"/></td>
-                  <td class="td"><el-input  v-if="skuList[0]"  v-model="skuList[0].Property_count"/></td>
-                  <td class="td"><el-input  v-if="skuList[0]"  v-model="skuList[0].Supply_Price"/></td>
+                  <td class="td"><el-input style="width: 160px"  v-if="skuList[0]"  type="number" v-model="skuList[0].Attr_Price"/></td>
+                  <td class="td"><el-input style="width: 160px" v-if="skuList[0]"  v-model="skuList[0].Property_count"/></td>
+                  <td class="td"><el-input style="width: 160px" v-if="skuList[0]"  v-model="skuList[0].Supply_Price"/></td>
                   <td class="td" v-if="ruleForm.pintuan_flag"><el-input  v-if="skuList[0]"  v-model="skuList[0].pt_pricex"/></td>
                 </tr>
 
@@ -192,24 +192,24 @@
       </el-form-item>
 
       <el-form-item label="商品承诺" >
-        <div class="input-wrap"  style="width: 110px;margin-left: 10px;display: inline-block;position: relative"  v-for="(item,index) of Products_Promise" :key="index">
+        <div class="input-wrap"  style="width: 160px;margin-left: 10px;display: inline-block;position: relative"  v-for="(item,index) of Products_Promise" :key="index">
           <el-input     v-model="Products_Promise[index]" @focus="focusCommit(index)"/>
 <!--          <img src="@/assets/img/productAdd/del.png" class="imgDel" @click="committedDel(index)">-->
               <div class="imgDel" @click="committedDel(index)">
                 <i class="el-icon-error"></i>
               </div>
         </div>
-        <span class="margin15-c" style="cursor: pointer;color: #428CF7" @click="committedAdd">添加规格值</span>
+        <span class="margin15-c" style="cursor: pointer;color: #428CF7" @click="committedAdd">添加承诺</span>
       </el-form-item>
 
       <el-form-item label="商品重量" prop="Products_Weight">
-        <el-input v-model="ruleForm.Products_Weight"   class="sortInput" ></el-input>
+        <el-input v-model="ruleForm.Products_Weight"   class="sortInput" ></el-input> kg
       </el-form-item>
       <el-form-item label="运费计算" prop="goods">
         <el-radio-group v-model="ruleForm.goods">
           <el-radio label="0" style="display: block;margin-bottom: 15px" >
             免运费
-              <el-select   v-model="ruleForm.freight" placeholder="请选择类型"  style="width: 200px;margin-left: 37px;">
+              <el-select   v-model="ruleForm.freight" placeholder="请选择类型"  style="width: 160px;margin-left: 37px;">
                 <template v-for="(prod,prodIn) of prodConfig.shipping_company_dropdown">
                   <el-option  :label="prodConfig.shipping_company_dropdown[prodIn]" :value="prodIn"></el-option>
                 </template>
@@ -230,9 +230,9 @@
           <el-checkbox  label="推荐" name="otherAttributes"></el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="关联门店" >
-        <span class="classificationSpan" @click="dialogStoreShow=true" >选择门店</span>
-      </el-form-item>
+<!--      <el-form-item label="关联门店" >-->
+<!--        <span class="classificationSpan" @click="dialogStoreShow=true" >选择门店</span>-->
+<!--      </el-form-item>-->
       <div class="group store_list" style="margin-left: 120px;margin-bottom: 22px;" v-if="store_list.length>0">
         <div class="store_item" v-for="(store,idx) in store_list">{{store.Stores_Name}}</div>
       </div>
@@ -253,7 +253,7 @@
         <span class="sortMsg">注:若不限则填写10000</span>
       </el-form-item>
       <el-form-item label="退货损坏说明" prop="refund">
-        <el-select  v-model="ruleForm.refund" placeholder="请选择类型"  style="width: 600px">
+        <el-select  v-model="ruleForm.refund" placeholder="请选择类型"  style="width: 160px">
           <template v-for="(shop,shopIn) in prodConfig.shop_damage">
             <el-option :label="shop.Damage_Name" :value="shop.Damage_ID"></el-option>
           </template>
@@ -263,7 +263,6 @@
         <div>
           <wzw-editor id="container" height="400px" width="800px" :content.sync="editorText"
                       :afterChange="afterChange()"
-                      pluginsPath="../../../static/kindeditor/plugins/"
                       :loadStyleMode="false"
                       @on-content-change="onContentChange"></wzw-editor>
         </div>
@@ -298,7 +297,7 @@
       class="setting"
     >
 
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="ruleForm">
+      <el-form :model="ruleForm" :rules="rules" size="small" ref="ruleForm" label-width="0px" class="ruleForm">
         <div class="commissionDiv">
           <div class="titles">
             发放比例
@@ -306,7 +305,7 @@
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
               <el-input   v-model="platForm_Income_Reward" style="width: 80px;margin-left: 19px;"></el-input>
-              % <span class="msg">（发放金额所占网站利润的百分比；小于100%大于0%）</span>
+              % <span class="msg">（发放金额所占网站利润百分比；小于100%大于0%）</span>
             </el-form-item>
           </div>
         </div>
@@ -317,7 +316,7 @@
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
               <el-input   v-model="nobi_ratio" style="width: 80px;margin-left: 19px;"></el-input>
-              % <span class="msg">（所占发放比例的百分比）</span>
+              % <span class="msg">(所占发放比例百分比)</span>
             </el-form-item>
           </div>
         </div>
@@ -328,7 +327,7 @@
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
               <el-input    v-model="area_Proxy_Reward" style="width: 80px;margin-left: 19px;"></el-input>
-              % <span class="msg">（所占发放比例的百分比）</span>
+              % <span class="msg">(所占发放比例百分比)</span>
             </el-form-item>
           </div>
         </div>
@@ -339,7 +338,7 @@
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
               <el-input   v-model="sha_Reward" style="width: 80px;margin-left: 19px;"></el-input>
-              % <span class="msg">（所占发放比例的百分比）</span>
+              % <span class="msg">(所占发放比例百分比)</span>
             </el-form-item>
           </div>
         </div>
@@ -350,12 +349,12 @@
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
               <el-input   v-model="commission_ratio" style="width: 80px;margin-left: 19px;"></el-input>
-              % <span class="msg">（下面佣金返利所占发放比例比例的百分比）</span>
+              % <span class="msg">(下面佣金返利所占发放比例比例百分比)</span>
             </el-form-item>
           </div>
         </div>
         <div class="commissionLast">
-          <div class="titles" style="width: 20%;border-right: 0px">
+          <div class="titles" style="width: 15%;">
             佣金返利 (全部统一)
           </div>
           <div class="aiHai">
@@ -365,13 +364,13 @@
                 <el-form-item label="" prop="sort" style="margin-bottom: 0px;" v-for="(dis,disIndex) of Dis_Level_arr" :key="disIndex">
                   <span class="label">{{dis}}</span>
                   <el-input   style="width: 70px" v-model="distriboutor_config[fenIndex][disIndex]"></el-input>
-                  % <span class="msg">（佣金比例的百分比）</span>
+                  % <span class="msg">(佣金比例百分比)</span>
                 </el-form-item>
                 <el-form-item label="" prop="sort" style="margin-bottom: 0px;" v-if="prodConfig.Dis_Self_Bonus==1">
-                  <span class="label">自销佣金</span>
+                  <span class="label">自销</span>
                   <!--手动加了一个-->
                   <el-input   style="width: 70px" v-model="distriboutor_config[fenIndex][Dis_Level_arr.length]"></el-input>
-                  % <span class="msg">（佣金比例的百分比）</span>
+                  % <span class="msg">(佣金比例百分比)</span>
                 </el-form-item>
               </div>
             </div>
@@ -438,7 +437,7 @@
         </el-table>
         <el-button  type="primary" style="margin-top: 10px" @click="sureCard">确定</el-button>
     </el-dialog>
-    <div class="setting" @click="commission=true">
+    <div class="setting ponint" @click="commission=true">
       佣金设置
     </div>
   </div>
@@ -503,7 +502,7 @@
             shipping_company_dropdown:{},
             Shop_Commision_Reward_Json:{}
         }
-        distriboutor_config = null
+        distriboutor_config = []
         Dis_Level_arr = []
         dis_level_list = []
         initialPro=[]
@@ -511,6 +510,7 @@
         CardList=[]
         CardType=[]
         isShow=false
+        skuImg=false
         validateFn = {
             // classification:(rule, value, callback) => {
             //     console.log(this.cate_ids,value,"ss")
@@ -946,14 +946,26 @@
 
                     if(this.ruleForm.orderType<=0){
                         if(this.ruleForm.Products_Weight<=0){
-                            return alert('实体订单商品重量大于0')
+                            this.$message({
+                                type: 'error',
+                                message: `实体订单商品重量大于0`
+                            });
+                            return
                         }
                     }
                     if (this.cate_ids === ''){
-                        return alert('请选择商品分类');
+                        this.$message({
+                            type: 'error',
+                            message: `请选择商品分类`
+                        });
+                        return
                     }
                     if(!this.ruleForm.Products_Type){
-                        return alert('请选择商品类型')
+                        this.$message({
+                            type: 'error',
+                            message: `请选择商品类型`
+                        });
+                        return
                     }
                     let productInfo={
                         Products_Index:this.ruleForm.Products_Index,//商品排序
@@ -995,7 +1007,10 @@
                     productInfo.Products_Promise=JSON.stringify(arrPromise);
 
                     if(this.thumb.length<1){
-                        alert('商品主图不能为空');
+                        this.$message({
+                            type: 'error',
+                            message: `商品主图不能为空`
+                        });
                         return ;
                     }else {
                         productInfo.Products_JSON=JSON.stringify({"ImgPath":this.thumb})
@@ -1052,7 +1067,11 @@
                         let arrM=this.skuList;
                         for(let arrList of arrM){
                             if(arrList.Property_count<=0){
-                                return  alert("库存不能为空")
+                                this.$message({
+                                    type: 'error',
+                                    message: `库存不能为空`
+                                });
+                                return;
                             }
                         }
                         let skuList= objTranslate(arrM);
@@ -1105,15 +1124,20 @@
 
                     systemOperateProd(productInfo,{}).then(res=>{
                         if(id){
-                          alert("修改成功")
+                            this.$message({
+                                message: '修改成功',
+                                type: 'success'
+                            });
                         }else{
-                            alert("添加成功")
+                            this.$message({
+                                message: '添加成功',
+                                type: 'success'
+                            });
                         }
                     }).catch(e=>{
                         console.log(e)
                     })
                 } else {
-                    alert('您还有未填写的商品');
                     return false;
                 }
             });
@@ -1336,6 +1360,7 @@
 
             if(id){
                 this.addText="提交保存";
+                //编辑模式，需要加载商品信息
                 await systemProdDetail({prod_id:id}).then(res=>{
 
                     productInfo=res.data;
@@ -1363,8 +1388,13 @@
                     this.ruleForm.Products_IsPaysBalance=productInfo.Products_IsPaysBalance?true:false;//是否使用余额
 
                     this.distriboutor_config=[];
-                    for(let item in productInfo.Products_Distributes){
-                        this.distriboutor_config.push(productInfo.Products_Distributes[item]);
+                    const tmpl_child_data = createTmplArray(0,(this.Dis_Level_arr.length+1))
+                    this.distriboutor_config = createTmplArray(tmpl_child_data,this.dis_level_list.length)
+
+                    for(let i in productInfo.Products_Distributes){
+                        for(let j in productInfo.Products_Distributes[i]){
+                            this.distriboutor_config[i-1][j-0] = productInfo.Products_Distributes[i][j]
+                        }
                     }
 
                     //佣金设置
@@ -1666,6 +1696,9 @@
 .el-icon-error:hover{
   color: red;
 }
+.ponint{
+  cursor: pointer;
+}
 .specs_row{
   margin-bottom: 10px;
   display: flex;
@@ -1678,11 +1711,13 @@
     flex-wrap: wrap;
     .spec-item-box{
       margin-bottom: 15px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
+      /*display: flex;*/
+      /*flex-wrap: wrap;*/
+      /*align-items: center;*/
       .uploadThumb{
         margin: 0 10px;
+        margin-top: 20px;
+        margin-left: 24px;
       }
     }
   }
@@ -1704,14 +1739,14 @@
 }
 
 .titles{
-  width: 20%;
+  width: 15%;
   text-align: center;
   line-height: 50px;
   height: 50px;
   border-right: 1px solid @border;
 }
 .rightTitle{
-  width: 80%;
+  width: 85%;
 }
 .msg{
   color: #999999;
@@ -1737,7 +1772,8 @@
   margin-right: 15px;
   .label{
     display: inline-block;
-    min-width: 60px;
+    /*min-width: 60px;*/
+    min-width: 30px;
     margin-right: 6px;
     text-align: right;
   }

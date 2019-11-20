@@ -5,7 +5,8 @@
 </template>
 
 <script>
-  import {baseApiUrl} from '@/common/env';
+  import {baseApiUrl } from '../../common/env';
+
   const upbaseUrl = baseApiUrl;
   export default {
     name: 'kindeditor',
@@ -108,14 +109,15 @@
         default: false
       },
       basePath: {
-        type: String
+        type: String,
+        default:'/member/shop/setting/diy/static/kindeditor/'
       },
       themesPath: {
         type: String
       },
       pluginsPath: {
         type: String,
-        default: ''
+        default:'/member/shop/setting/diy/static/kindeditor/plugins/'
       },
       langPath: {
         type: String
@@ -293,6 +295,9 @@
     },
     mounted () {
       var _this = this
+
+
+console.log('_this.pluginsPath_this.pluginsPath_this.pluginsPath_this.pluginsPath',_this.pluginsPath)
       _this.editor = window.KindEditor.create('#' + this.id, {
 
         width: _this.width,
@@ -359,29 +364,8 @@
         fixToolBar: _this.fixToolBar,
         tabIndex: _this.tabIndex
       })
-
-      // window.KindEditor.
-      //
-      // KindEditor.ready(function(K) {
-      //   var editor1 = K.create('textarea[name="content1"]', {
-      //     cssPath : '../plugins/code/prettify.css',
-      //     uploadJson : '../php/upload_json.php',
-      //     fileManagerJson : '../php/file_manager_json.php',
-      //     allowFileManager : true,
-      //     afterCreate : function() {
-      //       var self = this;
-      //       K.ctrl(document, 13, function() {
-      //         self.sync();
-      //         K('form[name=example]')[0].submit();
-      //       });
-      //       K.ctrl(self.edit.doc, 13, function() {
-      //         self.sync();
-      //         K('form[name=example]')[0].submit();
-      //       });
-      //     }
-      //   });
-      //   prettyPrint();
-      // });
+      
+      console.log(_this.editor,_this.basePath,_this.pluginsPath)
     }
   }
 </script>
