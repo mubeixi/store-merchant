@@ -64,7 +64,69 @@
             <el-input size="mini" class="marginLR"  ></el-input><span style="color: #B3B3B3">元</span>
           </el-checkbox>
         </el-form-item>
+
+        <el-form-item>
+          <el-checkbox label="lastTime" name="consumptionTimes">
+            会员等级
+            <el-select class="marginLR"   size="mini" style="width:90px">
+              <el-option label="区域一" value="shanghai"></el-option>
+              <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+          </el-checkbox>
+        </el-form-item>
+
+        <el-form-item>
+          <el-checkbox label="lastTime" name="consumptionTimes">
+            关注公众号时间
+            <el-input size="mini" class="marginLR" style="width: 70px;margin-left: 26px;margin-right: 8px;"></el-input><span style="color: #B3B3B3">天内</span>
+          </el-checkbox>
+        </el-form-item>
+
+        <el-form-item>
+          <el-checkbox label="lastTime" name="consumptionTimes">
+            最近有访问
+            <el-input size="mini" class="marginLR" style="width: 70px;margin-left: 26px;margin-right: 8px;"></el-input><span style="color: #B3B3B3">天内</span>
+          </el-checkbox>
+        </el-form-item>
+
+        <el-form-item>
+          <el-checkbox label="lastTime" name="consumptionTimes">
+            最近无访问
+            <el-input size="mini" class="marginLR" style="width: 70px;margin-left: 26px;margin-right: 8px;"></el-input><span style="color: #B3B3B3">天内</span>
+          </el-checkbox>
+        </el-form-item>
+
+        <el-form-item>
+          <el-checkbox label="lastTime" name="consumptionTimes">
+            退款订单数
+            <el-input size="mini" class="marginLR" ></el-input><span style="color: #B3B3B3">笔</span>
+            <span style="margin-left: 10px">一</span>
+            <el-input size="mini" class="marginLR"  ></el-input><span style="color: #B3B3B3">笔</span>
+          </el-checkbox>
+        </el-form-item>
+
+        <el-form-item>
+          <el-checkbox label="lastTime" name="consumptionTimes">
+            无退款订单数
+            <el-input size="mini" class="marginLR" ></el-input><span style="color: #B3B3B3">笔</span>
+            <span style="margin-left: 10px">一</span>
+            <el-input size="mini" class="marginLR"  ></el-input><span style="color: #B3B3B3">笔</span>
+          </el-checkbox>
+        </el-form-item>
+
+        <el-form-item>
+          <el-checkbox label="lastTime" name="consumptionTimes">
+            客户标签
+            <el-select class="marginLR"   size="mini" style="width:90px">
+              <el-option label="区域一" value="shanghai"></el-option>
+              <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+          </el-checkbox>
+        </el-form-item>
+
       </el-form>
+
+      <div class="submit">保存</div>
     </div>
   </div>
 </template>
@@ -136,5 +198,16 @@
 }
   .marginLR{
     width: 70px;margin-left: 8px;margin-right: 8px;
+  }
+  .submit{
+    width:92px;
+    height:38px;
+    background:rgba(66,140,247,1);
+    font-size: 14px;
+    color: #F3F3F3;
+    text-align: center;
+    line-height: 38px;
+    margin-top: 42px;
+    margin-left: 10%;
   }
 </style>
