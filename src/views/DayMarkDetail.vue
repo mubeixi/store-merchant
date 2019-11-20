@@ -77,7 +77,7 @@
 <script lang="ts">
     import Component from 'vue-class-component'
     import Vue from 'vue'
-    import {getScene} from '../common/fetch'
+    import {getScene} from '@/common/fetch'
     @Component
     export default class DayMark extends Vue{
         form = {

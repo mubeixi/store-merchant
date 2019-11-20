@@ -39,32 +39,32 @@
                     <img src="../assets/img/marketing/bg3.png" alt="">
                 </div>
             </div>
-            <!-- 筛选start -->
+<!--             筛选start-->
             <div class="condition">
-                <el-select v-model="type" placeholder="请选择活动类型">
+                <el-select v-model="typeValue" placeholder="请选择活动类型">
+                  <template  v-for="(item,index) in types">
                     <el-option
-                    v-for="item in types"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                </el-option>
+                      :label="item"
+                      :value="index">
+                    </el-option>
+                  </template>
             </el-select>
             <el-select class="select2" v-model="state" placeholder="请选择活动状态">
+              <template  v-for="(it,ind) in statuss">
                 <el-option
-                v-for="item in states"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                  :label="it"
+                  :value="ind">
                 </el-option>
+              </template>
             </el-select>
             <el-input class="input-name" v-model="active_name" placeholder="请输入活动名称"></el-input>
-            <el-button type="primary" >查询</el-button>
+            <el-button type="primary" @click="searchList">查询</el-button>
             </div>
             <!-- 筛选end -->
             <!-- 列表start -->
             <div class="list">
                 <el-table
-                    :data="tableData"
+                    :data="scenesList"
                     style="width: 100%">
                     <el-table-column
                         prop="name"
@@ -77,12 +77,12 @@
                         width="187">
                     </el-table-column>
                     <el-table-column
-                        prop="time"
+                        prop="act_time"
                         label="活动时间"
-                        width="219">
+                        width="300">
                     </el-table-column>
                     <el-table-column
-                        prop="area"
+                        prop="rights"
                         label="会员范围"
                         width="191">
                     </el-table-column>
@@ -110,7 +110,7 @@
                 <el-pagination
                     background
                     layout="prev, pager, next"
-                    :total="1000">
+                    :total="totalCount/pageSize">
                 </el-pagination>
             </div>
             <!-- 分页end -->
@@ -122,33 +122,36 @@
 <script lang="ts">
     import Vue from 'vue'
     import Component from 'vue-class-component'
+    import  {getScenes} from '@/common/fetch'
     @Component
     export default class Marketing extends  Vue{
         active_name = ''
-        types = [{
-          value: 'type1',
-          label: '类型1'
-        }, {
-          value: 'type2',
-          label: '类型2'
-        }]
-        states = [{
-            value: 'state1',
-            label: '状态1'
-        },{
-            value: 'state2',
-            label: '状态2'
-        }]
-        type = ''
-        state = ''
-        tableData = [{
-            name:'会员日回馈老用户活动',
-            type: '会员日营销',
-            time: '每周 周一',
-            area: '全部等级会员',
-            state: '未开始',
-            handle: '删除'
-        }]
+
+        scenesList=[];//列表数据
+        totalCount=0;//数量
+        statuss={};//活动状态列表
+        state='';//活动状态值
+        types={};//活动类型列表
+        typeValue='';//活动列表值
+        pageSize=10;
+
+        searchList(){
+            let data={
+                page:1,
+                pageSize:this.pageSize,
+                name:this.active_name,
+                state
+            }
+        }
+
+        created(){
+            getScenes().then(res=>{
+                this.scenesList=res.data;
+                this.totalCount=res.totalCount;
+                this.statuss=res.statuss;
+                this.types=res.types;
+            })
+        }
     }
 </script>
 
