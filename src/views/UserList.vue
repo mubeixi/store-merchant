@@ -259,7 +259,7 @@
                             </el-date-picker>
                         </div>
                         <el-button type="primary" class="query" @click="query">查询</el-button>
-                        <el-button type="primary" class="export" @click="query('output')">导出数据</el-button>
+                        <el-button type="primary" class="export" @click="query('output')" v-if="item != 2">导出数据</el-button>
                     </div>
             </template>
             <template v-if="item == 2">
@@ -606,7 +606,7 @@
                 this.statData[0].collect = res.data.fav_count;
             })
         }
-        query(arg){
+        query(arg = ''){
             if(this.item == 2) {
                 // 请求日志
                 this.get_syslogin_logs();
@@ -615,10 +615,10 @@
                 this.get_sysintegrals(arg);
             }else if(this.item == 4) {
                 // 资金流水
-                this.get_sysbalances();
+                this.get_sysbalances(arg);
             }else if(this.item == 5) {
                 // 成长值明细
-                this.get_sysgrowths();
+                this.get_sysgrowths(arg);
             }
         }
         changeItem(num) {
@@ -658,28 +658,40 @@
             })
         }
         // 积分
-        get_sysintegrals(arg){
+        get_sysintegrals(arg = ''){
             getSysintegrals({User_ID,start_time: this.start_time,end_time:this.end_time,type:this.type,page:this.page, output: arg === 'output' ? 1 : 0}).then(res=>{
-                this.detailData = res.data;
-                this.types = res.types;
-                this.total = res.totalCount
+                if (arg === 'output') {
+                  res.data.file_path && window.open(res.data.file_path, '_self');
+                } else {
+                  this.detailData = res.data;
+                  this.types = res.types;
+                  this.total = res.totalCount;
+                }
             })
         }
         // 资金
-        get_sysbalances(){
+        get_sysbalances(arg = ''){
             // 余额type需要+1 ，后台约定
-            getSysbalances({User_ID,start_time: this.start_time,end_time:this.end_time,type:this.type + 1,page:this.page}).then(res=>{
-                this.moneyData = res.data;
-                this.types = res.types;
-                this.total = res.totalCount
+            getSysbalances({User_ID,start_time: this.start_time,end_time:this.end_time,type:this.type + 1,page:this.page, output: arg === 'output' ? 1 : 0}).then(res=>{
+                if (arg === 'output') {
+                  res.data.file_path && window.open(res.data.file_path, '_self');
+                } else {
+                  this.moneyData = res.data;
+                  this.types = res.types;
+                  this.total = res.totalCount;
+                }
             })
         }
         // 成长值
-        get_sysgrowths(){
-            getSysgrowths({User_ID,start_time: this.start_time,end_time:this.end_time,type:this.type,page:this.page}).then(res=>{
-                this.groupData = res.data;
-                this.types = res.types;
-                this.total = res.totalCount
+        get_sysgrowths(arg = ''){
+            getSysgrowths({User_ID,start_time: this.start_time,end_time:this.end_time,type:this.type,page:this.page, output: arg === 'output' ? 1 : 0}).then(res=>{
+                if (arg === 'output') {
+                  res.data.file_path && window.open(res.data.file_path, '_self');
+                } else {
+                  this.groupData = res.data;
+                  this.types = res.types;
+                  this.total = res.totalCount;
+                }
             })
         }
         // 获取收货地址

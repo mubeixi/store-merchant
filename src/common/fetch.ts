@@ -127,6 +127,8 @@ export const getScenes = (data:object={},options:any=false) => fetch('get_scenes
 
 // 获取初始化数据
 export const initScene = (data:object={},options:object={}) => fetch('init_scene', data , options);
+//更新活动信息
+export const addScene = (data:object={},options:object={}) => fetch('add_scene', data , options);
 
 function get_Appid() {
   return 'xhh';
