@@ -115,7 +115,8 @@ export const systemOperateProd = (data:object={},options:object={}) => fetch('sy
 //获取产品具体信息
 export const systemProdDetail = (data:object={},options:object={}) => fetch('system_prod_detail', data, options);
 
-
+// 获取初始化数据
+export const initScene = (data:object={},options:object={}) => fetch('init_scene', data , options);
 
 function get_Appid() {
   return 'xhh';
