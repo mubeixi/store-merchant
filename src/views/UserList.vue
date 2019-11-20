@@ -8,6 +8,7 @@
             <div class="item" :class="item==5?'active':''" @click="changeItem(5)">成长值明细</div>
         </div>
         <div class="content">
+            <div style="background: #fff;width: 100%;">
             <template v-if="item ==1">
                 <!-- 用户信息 -->
                 <div class="user-msg-wrap">
@@ -66,8 +67,7 @@
                     </div>
                     <el-table
                         :data="statData"
-                        border
-                        style="width: 100%">
+                        >
                         <el-table-column
                         prop="mount"
                         label="消费金额"
@@ -131,6 +131,7 @@
                     </el-table>
                 </div>
                 <!-- 统计信息end -->
+                <div class="line"></div>
                 <!-- 地址信息start -->
                 <div class="address-msg wzw-table">
                     <div class="order-title">
@@ -138,7 +139,6 @@
                     </div>
                     <el-table
                         :data="addData"
-                        border
                         >
                         <el-table-column
                         prop="Address_Name"
@@ -161,6 +161,7 @@
                     </el-table>
                 </div>
                 <!-- 地址信息end -->
+                 <div class="line"></div>
                 <!-- 订单记录start -->
                 <div class="order-msg wzw-table">
                     <div class="order-title">
@@ -168,7 +169,6 @@
                     </div>
                     <el-table
                         :data="orderData"
-                        border
                         >
                         <el-table-column
                         prop="Order_No"
@@ -259,14 +259,13 @@
                             </el-date-picker>
                         </div>
                         <el-button type="primary" class="query" @click="query">查询</el-button>
-                        <!-- <el-button type="primary" class="export">导出数据</el-button> -->
+                        <el-button type="primary" class="export" @click="query('output')">导出数据</el-button>
                     </div>
             </template>
             <template v-if="item == 2">
                 <div class="logs-wrap wzw-table">
                     <el-table
                         :data="loginData"
-                        border
                         :row-style="rowStyle"
                         :header-row-style="headerStyle"
                         >
@@ -303,7 +302,6 @@
                     <div class="detail-wrap wzw-table">
                     <el-table
                         :data="detailData"
-                        border
                         :row-style="rowStyle"
                         :header-row-style="headerStyle"
                         >
@@ -346,7 +344,6 @@
                 <div class="detail-wrap wzw-table">
                     <el-table
                         :data="moneyData"
-                        border
                         :row-style="rowStyle"
                         :header-row-style="headerStyle"
                         >
@@ -389,7 +386,6 @@
                     <div class="detail-wrap wzw-table">
                     <el-table
                         :data="groupData"
-                        border
                         :row-style="rowStyle"
                         :header-row-style="headerStyle"
                         >
@@ -440,7 +436,7 @@
                 </el-pagination>
             </div>
           </div>
-        <div style="width: 100%;background:#fff">
+        <!-- <div style="width: 100%;background:#fff">
             <el-pagination
             background
             :current-page.sync ="page"
@@ -451,6 +447,7 @@
             @next-click="next"
             @current-change="current">
             </el-pagination>
+        </div> -->
         </div>
     </div>
 </template>
@@ -545,6 +542,9 @@
             }else if(this.item == 5) {
                 // 成长值明细
                 this.get_sysgrowths();
+            }else {
+                // 首页订单记录
+                this.get_sysorders();
             }
         }
         next(page){
@@ -561,6 +561,9 @@
             }else if(this.item == 5) {
                 // 成长值明细
                 this.get_sysgrowths();
+            }else {
+                // 首页订单记录
+                this.get_sysorders();
             }
         }
         current(page){
@@ -577,6 +580,9 @@
             }else if(this.item == 5) {
                 // 成长值明细
                 this.get_sysgrowths();
+            }else {
+                // 首页订单记录
+                this.get_sysorders();
             }
         }
         // 用户信息
@@ -600,13 +606,13 @@
                 this.statData[0].collect = res.data.fav_count;
             })
         }
-        query(){
+        query(arg){
             if(this.item == 2) {
                 // 请求日志
                 this.get_syslogin_logs();
             }else if(this.item == 3) {
                 // 积分明细
-                this.get_sysintegrals();
+                this.get_sysintegrals(arg);
             }else if(this.item == 4) {
                 // 资金流水
                 this.get_sysbalances();
@@ -652,8 +658,8 @@
             })
         }
         // 积分
-        get_sysintegrals(){
-            getSysintegrals({User_ID,start_time: this.start_time,end_time:this.end_time,type:this.type,page:this.page}).then(res=>{
+        get_sysintegrals(arg){
+            getSysintegrals({User_ID,start_time: this.start_time,end_time:this.end_time,type:this.type,page:this.page, output: arg === 'output' ? 1 : 0}).then(res=>{
                 this.detailData = res.data;
                 this.types = res.types;
                 this.total = res.totalCount
@@ -727,10 +733,17 @@
   .content {
     background: #f6f6f6;
     padding: 20px 0 20px 20px;
+    // 分割线
+    .line {
+        width: 100%;
+        height: 20px;
+        background: #F6F6F6;
+    }
     // 用户信息start
     .user-msg-wrap {
       background: #fff;
       padding: 20px 0 25px 20px;
+      border-bottom: 20px solid #F6F6F6;
     }
     .user-msg {
       display: flex;
@@ -806,16 +819,16 @@
     .stat,
     .address-msg,
     .order-msg {
-      padding: 20px 0 25px 20px;
-      margin-top: 20px;
-      background: #fff;
-      color: #333;
-      .order-title {
-        width: 1240px;
-        text-align: center;
-        font-size: 16px;
-        margin-bottom: 20px;
-      }
+        display: inline-block;
+        padding: 20px 0 25px 20px;
+        background: #fff;
+        color: #333;
+        .order-title {
+            width: 1240px;
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
     }
     // 统计信息 end
     .el-pagination {
@@ -827,8 +840,9 @@
     // 登录日志, 积分明细
     .logs-wrap,
     .detail-wrap {
-      padding:20px 0 20px 20px;
-      background: #fff;
+        display: inline-block;
+        padding:20px 0 20px 20px;
+        background: #fff;
     }
     .condition {
       height: 60px;

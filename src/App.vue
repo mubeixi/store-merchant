@@ -113,15 +113,13 @@ input[type="number"]{
   .el-table__body tr td:nth-last-child(1) {
     border-right: 1px solid #EAEAEA !important;
   }
-  .el-table--border {
-    border: 0 !important;
-  }
-  .el-table::before {
-    width: 0 !important;
-  }
   .el-table td {
+    border-bottom: 0;
     border-top: 1px solid #eaeaea !important;
     border-left: 1px solid #eaeaea !important;
+  }
+  .el-table__body tr:nth-last-child(1) {
+    border-bottom: 1px solid #eaeaea !important;
   }
   .el-table__empty-block {
     border: 1px solid #EAEAEA !important;
