@@ -120,6 +120,9 @@ export const virtualCardList = (data:object={},options:any=false) => fetch('virt
 //获取卡密类型
 export const virtualCardType = (data:object={},options:any=false) => fetch('virtual_card_type', data, options);
 
+//获取会员日营销详情
+export const getScene = (data:object={},options:any=false) => fetch('get_scene', data, options);
+
 // 获取初始化数据
 export const initScene = (data:object={},options:object={}) => fetch('init_scene', data , options);
 
