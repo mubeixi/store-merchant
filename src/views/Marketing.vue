@@ -87,7 +87,7 @@
                         width="191">
                     </el-table-column>
                     <el-table-column
-                        prop="state"
+                        prop="status_txt"
                         label="状态"
                         width="145">
                     </el-table-column>
@@ -96,7 +96,7 @@
                         label="操作"
                         width="254">
                          <template slot-scope="scope">
-                            <el-button @click="handleClick(scope.row)" type="text" size="small">详情</el-button>
+                            <el-button @click="handleClick(scope.$index)" type="text" size="small">详情</el-button>
                             <el-button type="text" size="small">编辑</el-button>
                             <el-button type="text" size="small">删除</el-button>
                             <el-button type="text" size="small">终止</el-button>
@@ -135,13 +135,30 @@
         typeValue='';//活动列表值
         pageSize=10;
 
+        //详情
+        handleClick(index){
+            let id= this.scenesList[index].id;
+            this.$router.push({
+                name: 'DayMarkDetail',
+                params: {
+                    id: id
+                }
+            })
+        }
         searchList(){
             let data={
                 page:1,
                 pageSize:this.pageSize,
                 name:this.active_name,
-                state
+                state:this.state,
+                type:this.typeValue
             }
+            getScenes(data).then(res=>{
+                this.scenesList=res.data;
+                this.totalCount=res.totalCount;
+                this.statuss=res.statuss;
+                this.types=res.types;
+            })
         }
 
         created(){

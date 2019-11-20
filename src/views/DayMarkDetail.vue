@@ -191,7 +191,8 @@
             },
         ]
         created(){
-            getScene({id:142}).then(res=>{
+            let id=this.$route.params.id;
+            getScene({id:id}).then(res=>{
                 this.vipDate=res.data;
             })
         }
