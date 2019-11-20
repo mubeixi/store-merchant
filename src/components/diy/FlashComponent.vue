@@ -22,7 +22,7 @@
               <div v-show="goods.config.attr.desc.show" class="font12 graytext desc">
                 {{item.Products_BriefDescription||'暂无介绍'}}
               </div>
-              <div v-show="goods.config.attr.price.show" class="price"><span class="sign">￥</span>{{item.Products_PriceX}}
+              <div v-show="goods.config.attr.price.show" class="price"><span class="sign">￥</span>{{item.price}}
               </div>
             </div>
             <div v-show="goods.config.attr.buybtn.show" class="buybtn" :class="'theme'+goods.config.attr.buybtn.style">
