@@ -861,10 +861,8 @@
                         for(let it in item.Attr_Values){
                             if(it==titles){
                                 let arrs=item.Attr_Values[it]
-                                let myobj={}
                                 for(let item of  arrs){
-                                    myobj['value']=item;
-                                    this.queryArr.push(myobj);
+                                    this.queryArr.push({'value':item});
                                 }
                             }
                         }
