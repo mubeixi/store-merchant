@@ -19,7 +19,7 @@
       <div class="group cate_list" style="margin-left: 120px;margin-bottom: 22px;" v-if="cate_list.length>0">
         <span class="cate_item" v-for="(cate,idx) in cate_list">{{cate.Category_Name}}</span>
       </div>
-      <el-form-item label="销量" prop="Products_Sales">
+      <el-form-item label="销量" >
         <el-input v-model.number="ruleForm.Products_Sales"  class="sortInput"></el-input>
         <span class="sortMsg">注：消费者看到的销量</span>
       </el-form-item>
@@ -92,8 +92,8 @@
 
       </el-form-item>
 
-      <el-form-item label="商品简介" prop="Products_BriefDescription">
-        <el-input  type="textarea" v-model="ruleForm.Products_BriefDescription" style="width: 600px"></el-input>
+      <el-form-item label="商品简介">
+        <el-input  type="textarea" v-model="ruleForm.Products_BriefDescription" style="width: 600px;" :rows="4"></el-input>
       </el-form-item>
       <el-form-item label="商品类型" prop="Products_Type">
         <el-select  v-model="ruleForm.Products_Type" placeholder="请选择类型"  style="width: 160px">
@@ -109,7 +109,7 @@
            <span class="label">{{row.title}}</span>
             <div class="specs-item-list">
               <div v-for="(val,idx_val) in row.vals" class="spec-item-box">
-                <div class="input-wrap"  style="width: 110px;margin-left: 10px;display: inline-block;position: relative" >
+                <div class="input-wrap"   style="width: 110px;margin-left: 10px;display: inline-block;position: relative" >
                   <el-autocomplete
                     class="inline-input"
                     :fetch-suggestions="querySearchAsync"
@@ -144,10 +144,10 @@
           <table class="table" cellspacing="0" cellpadding="0" >
             <tr class="tr">
               <th class="th" v-for="(spec,idx) in specs">{{spec.title}}</th>
-              <th class="th">价格(元)</th>
-              <th class="th">库存</th>
-              <th class="th">成本价(元)</th>
-              <th class="th" v-if="ruleForm.pintuan_flag">拼团价</th>
+              <th class="th borderRight" >价格(元)</th>
+              <th class="th borderRight" >库存</th>
+              <th class="th borderRight" >成本价(元)</th>
+              <th class="th borderRight" v-if="ruleForm.pintuan_flag" >拼团价</th>
             </tr>
             <template v-if="skus.length>1">
               <template v-for="(sku,idx) in skus">
@@ -157,10 +157,10 @@
                       <td class="td" :rowspan="getRowsSpan(index,idx)">{{sku[index]}}</td>
                     </template>
                   </template>
-                  <td class="td"><el-input  style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Attr_Price"/></td>
-                  <td class="td"><el-input  style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Property_count"/></td>
-                  <td class="td"><el-input  style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Supply_Price"/></td>
-                  <td class="td" v-if="ruleForm.pintuan_flag"><el-input v-if="skuList[idx]"  v-model="skuList[idx].pt_pricex"/></td>
+                  <td class="td borderRight inputSku" ><el-input   style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Attr_Price"/></td>
+                  <td class="td borderRight inputSku" ><el-input  style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Property_count"/></td>
+                  <td class="td borderRight inputSku" ><el-input style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Supply_Price"/></td>
+                  <td class="td borderRight"  v-if="ruleForm.pintuan_flag"><el-input v-if="skuList[idx]"  v-model="skuList[idx].pt_pricex"/></td>
                 </tr>
               </template>
             </template>
@@ -169,10 +169,10 @@
                   <template v-for="(item,idx) in skus[0]">
                   <td class="td" >{{item}}</td>
                   </template>
-                  <td class="td"><el-input style="width: 160px"  v-if="skuList[0]"  type="number" v-model="skuList[0].Attr_Price"/></td>
-                  <td class="td"><el-input style="width: 160px" v-if="skuList[0]"  v-model="skuList[0].Property_count"/></td>
-                  <td class="td"><el-input style="width: 160px" v-if="skuList[0]"  v-model="skuList[0].Supply_Price"/></td>
-                  <td class="td" v-if="ruleForm.pintuan_flag"><el-input  v-if="skuList[0]"  v-model="skuList[0].pt_pricex"/></td>
+                  <td class="td borderRight inputSku"><el-input  style="width: 160px"  v-if="skuList[0]"  type="number" v-model="skuList[0].Attr_Price"/></td>
+                  <td class="td borderRight inputSku"><el-input style="width: 160px" v-if="skuList[0]"  v-model="skuList[0].Property_count"/></td>
+                  <td class="td borderRight inputSku"><el-input  style="width: 160px" v-if="skuList[0]"  v-model="skuList[0].Supply_Price"/></td>
+                  <td class="td borderRight" v-if="ruleForm.pintuan_flag"><el-input  v-if="skuList[0]"  v-model="skuList[0].pt_pricex"/></td>
                 </tr>
 
             </template>
@@ -192,7 +192,7 @@
       </el-form-item>
 
       <el-form-item label="商品承诺" >
-        <div class="input-wrap"  style="width: 160px;margin-left: 10px;display: inline-block;position: relative"  v-for="(item,index) of Products_Promise" :key="index">
+        <div class="input-wrap"  style="width: 160px;display: inline-block;position: relative" :style="{marginLeft:index==0?'':'10px'}"  v-for="(item,index) of Products_Promise" :key="index">
           <el-input     v-model="Products_Promise[index]" @focus="focusCommit(index)"/>
 <!--          <img src="@/assets/img/productAdd/del.png" class="imgDel" @click="committedDel(index)">-->
               <div class="imgDel" @click="committedDel(index)">
@@ -245,14 +245,14 @@
         <el-radio-group v-model="ruleForm.orderType" @change="changeRadio">
           <el-radio label="0" style="display: block;margin-bottom: 15px" >实物订单  <span class="font12">( 买家下单 -> 买家付款 -> 商家发货 -> 买家收货 -> 订单完成 )</span> </el-radio>
           <el-radio label="1" style="display: block;margin-bottom: 15px" >虚拟订单  <span class="font12">( 买家下单 -> 买家付款 -> 系统发送消费券码到买家手机 -> 商家认证消费 -> 订单完成 )</span></el-radio>
-          <el-radio label="2"  style="display: block;margin-bottom: 15px" ><span @click="clickRadio">其他  <span class="font12">( 买家下单 -> 买家付款 -> 订单完成 ) <el-button type="primary" sizi="small">设置</el-button></span></span> </el-radio>
+          <el-radio label="2"  style="display: block;margin-bottom: 15px" ><span @click="clickRadio">其他  <span class="font12">( 买家下单 -> 买家付款 -> 订单完成 ) <el-button type="primary" sizi="mini">设置</el-button></span></span> </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="商品库存" prop="Products_Count">
         <el-input  v-model="ruleForm.Products_Count"  class="sortInput"></el-input>
         <span class="sortMsg">注:若不限则填写10000</span>
       </el-form-item>
-      <el-form-item label="退货损坏说明" prop="refund">
+      <el-form-item label="退货损坏说明">
         <el-select  v-model="ruleForm.refund" placeholder="请选择类型"  style="width: 160px">
           <template v-for="(shop,shopIn) in prodConfig.shop_damage">
             <el-option :label="shop.Damage_Name" :value="shop.Damage_ID"></el-option>
@@ -306,7 +306,7 @@
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
               <el-input   v-model="platForm_Income_Reward" style="width: 80px;margin-left: 19px;"></el-input>
-              % <span class="msg">（发放金额所占网站利润百分比；小于100%大于0%）</span>
+              % <span class="msg">(发放金额所占网站利润百分比；小于100%大于0%)</span>
             </el-form-item>
           </div>
         </div>
@@ -361,13 +361,13 @@
           <div class="aiHai">
             <div class="fenxiaoshang" v-for="(fen,fenIndex) of dis_level_list" :key="fenIndex">
               <div class="fenTitle">{{fen.Level_Name}}</div>
-              <div>
-                <el-form-item label="" prop="sort" style="margin-bottom: 0px;" v-for="(dis,disIndex) of Dis_Level_arr" :key="disIndex">
+              <div class="paddingAll">
+                <el-form-item label="" prop="sort"  class="padding15-t marginBootom"  v-for="(dis,disIndex) of Dis_Level_arr" :key="disIndex">
                   <span class="label">{{dis}}</span>
                   <el-input   style="width: 70px" v-model="distriboutor_config[fenIndex][disIndex]"></el-input>
                   % <span class="msg">(佣金比例百分比)</span>
                 </el-form-item>
-                <el-form-item label="" prop="sort" style="margin-bottom: 0px;" v-if="prodConfig.Dis_Self_Bonus==1">
+                <el-form-item label="" prop="sort"  class="padding15-t marginBootom"  v-if="prodConfig.Dis_Self_Bonus==1">
                   <span class="label">自销</span>
                   <!--手动加了一个-->
                   <el-input   style="width: 70px" v-model="distriboutor_config[fenIndex][Dis_Level_arr.length]"></el-input>
@@ -631,10 +631,10 @@
             Products_Name:[
                 { required: true, message: '请输入商品名称', trigger: 'blur' }
             ],
-            Products_Sales:[
-                { required: true, message: '请输入虚拟销量', trigger: 'blur' },
-                { type: 'number', message: '虚拟销量必须为数字值'}
-            ],
+            // Products_Sales:[
+            //     { required: true, message: '请输入虚拟销量', trigger: 'blur' },
+            //     { type: 'number', message: '虚拟销量必须为数字值'}
+            // ],
             Products_PriceY:[
                 { required: true, message: '请输入原价',trigger: 'blur' }
             ],
@@ -654,9 +654,6 @@
             Products_Profit:[
                 { required: true, validator:this.validateFn.profit, trigger: 'blur' }
             ],
-            Products_BriefDescription:[
-                { required: true, message: '请输入商品简介', trigger: 'blur' }
-            ],
             Products_Type: [
                 { validator:this.validateFn.ProductsType,trigger: 'change' }
             ],
@@ -665,9 +662,6 @@
             ],
             Products_Count:[
                 { required: true, message: '请输入商品库存', trigger: 'blur' }
-            ],
-            refund:[
-                { required: true, message: '请选择退货类型', trigger: 'change' }
             ],
             goods:[
                 { validator:this.validateFn.freightIs, trigger: 'change' }
@@ -1124,17 +1118,20 @@
 
 
                     systemOperateProd(productInfo,{}).then(res=>{
-                        if(id){
-                            this.$message({
-                                message: '修改成功',
-                                type: 'success'
-                            });
-                        }else{
-                            this.$message({
-                                message: '添加成功',
-                                type: 'success'
-                            });
+                        if(res.errorCode==0){
+                            if(id){
+                                this.$message({
+                                    message: '修改成功',
+                                    type: 'success'
+                                });
+                            }else{
+                                this.$message({
+                                    message: '添加成功',
+                                    type: 'success'
+                                });
+                            }
                         }
+
                     }).catch(e=>{
                         console.log(e)
                     })
@@ -1809,4 +1806,23 @@
     margin: 0 auto;
   }
 }
+table{
+  border: 1px solid #DBDBDB;
+}
+  .inputSku /deep/ .el-input__inner {
+    background-color: #F8F8F8 !important;
+  }
+  .borderRight{
+    border-right: 0px;
+  }
+.paddingAll{
+  padding: 20px;
+}
+  .padding15-t{
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+  .marginBootom{
+    margin-bottom: 0px;
+  }
 </style>
