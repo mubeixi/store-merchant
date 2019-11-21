@@ -5,6 +5,9 @@
     </div>
 
     <el-form size="small" :model="ruleForm" :rules="rules" ref="ruleForm" :inline-message="true" label-width="120px"   class="ruleForm">
+      <el-form-item :label="textTitle"  class="textTitle">
+
+      </el-form-item>
       <el-form-item label="商品排序" prop="Products_Index">
         <el-input v-model="ruleForm.Products_Index" :disabled="noEditField.Products_Index"  class="sortInput"></el-input>
         <span class="sortMsg">注：数字越大，越往前（必须大于0）</span>
@@ -116,7 +119,7 @@
                     :fetch-suggestions="querySearchAsync"
                     v-model="specs[idx_row].vals[idx_val]"
                     :disabled="noEditField.Products_Type"
-                    @focus="queryIndex(idx_row)"
+                    @focus="queryIndex(idx_row,specs[idx_row].vals[idx_val])"
                   ></el-autocomplete>
                   <div class="imgDel" @click="skuDel(idx_row,idx_val)">
                     <i class="el-icon-error"></i>
@@ -243,8 +246,15 @@
         <el-checkbox-group v-if="prodConfig.Payment_RmainderEnabled==1"  :disabled="noEditField.Products_IsPaysBalance" v-model="ruleForm.Products_IsPaysBalance">
           <el-checkbox label="使用余额支付" value="1" name="Products_IsPaysBalance"></el-checkbox>
         </el-checkbox-group>
-<!--        <el-checkbox-group  v-model="ruleForm.Products_IsPaysBalance">-->
-<!--          <el-checkbox label="开启限购" value="2" name="Products_IsPaysBalance"></el-checkbox>-->
+<!--        <el-checkbox-group  v-model="ruleForm.prod_limit">-->
+<!--          <el-checkbox label="开启限购" value="2" name="prod_limit"></el-checkbox>-->
+<!--          <el-form-item label="全部会员"  >-->
+<!--              <el-select   placeholder="请选择"  :disabled="noEditField.Product_backup"  style="width: 160px">-->
+<!--                <template v-for="(shop,shopIn) in prodConfig.prod_limit_type">-->
+<!--                  <el-option :label="shop" :value="shopIn"></el-option>-->
+<!--                </template>-->
+<!--              </el-select>-->
+<!--          </el-form-item>-->
 <!--        </el-checkbox-group>-->
       </el-form-item>
       <el-form-item label="订单类型" prop="orderType" >
@@ -627,7 +637,8 @@
             orderType:'0',//订单类型
             freight:'0',//运费
             freightGu:'',//固定运费
-            Products_IsPaysBalance:'',//是否使用余额支付
+            Products_IsPaysBalance:false,//是否使用余额支付
+            prod_limit:false,//限购
         }
         rules = {
             Products_Index: [
@@ -694,6 +705,7 @@
         multipleSelection=[]
         currentSpecItemIdx = null //当前激活的规格可选值索引，从0开始
         noEditField=[];//不可编辑
+        textTitle='';
 
         saveCurrentSpecItem(idx){
             this.currentSpecItemIdx = idx
@@ -854,7 +866,7 @@
         querySearchAsync(queryString, cb) {
             cb(this.queryArr);
         }
-        queryIndex(index){
+        queryIndex(index,value){
             this.queryArr=[];
             for(let item of this.prodConfig.prod_type_list){
                 if(item.Type_ID==this.ruleForm.Products_Type){
@@ -874,6 +886,16 @@
 
                 }
             }
+
+            // let specs=this.specs[index].vals;
+            // for(let items of this.queryArr){
+            //     for(let i=0;i<specs.length;i++){
+            //         let it=specs[i]
+            //         if(items.value==it){
+            //             console.log(this.queryArr,"sss")
+            //         }
+            //     }
+            // }
         }
         getRowsSpan(specsIndex){
             return getArrayMulite(this.spec_val_list,specsIndex);
@@ -1314,7 +1336,11 @@
 
             await systemProdConfig().then(res=>{
                 this.prodConfig=res.data;
-
+                this.prodConfig.prod_type_list.unshift({Attr_ID: 0,
+                    Attr_Name: [],
+                    Attr_Values:'',
+                    Type_ID: 0,
+                    Type_Name: "无规格"})
                 this.dis_level_list = res.data.dis_level_list
                 this.Dis_Level_arr = res.data.Dis_Level_arr
 
@@ -1371,7 +1397,7 @@
                 await systemProdDetail({prod_id:id}).then(res=>{
 
                     productInfo=res.data;
-
+                    this.textTitle=res.data.active_desc;
                     this.initialPro=res.data;
                     this.noEditField=res.data.no_edit_field;
                     let objNoEdit={};
@@ -1842,5 +1868,8 @@ table{
   }
   .marginBootom{
     margin-bottom: 0px;
+  }
+  .textTitle /deep/ .el-form-item__label{
+    color: red;
   }
 </style>
