@@ -124,6 +124,11 @@ export const virtualCardType = (data:object={},options:any=false) => fetch('virt
 export const getScene = (data:object={},options:any=false) => fetch('get_scene', data, options);
 //获取场景营销列表
 export const getScenes = (data:object={},options:any=false) => fetch('get_scenes', data, options);
+//终止场景营销
+export const stopScene = (data:object={},options:any=false) => fetch('stop_scene', data, options);
+//场景营销初始化
+export const initScenes = (data:object={},options:any=false) => fetch('init_scenes', data, options);
+
 
 // 获取初始化数据
 export const initScene = (data:object={},options:object={}) => fetch('init_scene', data , options);
