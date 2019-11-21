@@ -17,16 +17,36 @@
                       >
                       </el-option>
                     </el-select>
+                      号
                       <span class="line"></span>
-                      <el-select></el-select>
+                      <el-select v-model="form.endday">
+                        <el-option
+                          v-for="item in enddatelist"
+                          :key="item.value"
+                          :value="item.value"
+                        ></el-option>
+                      </el-select>
+                      号
                     </template>
                     <!--生日营销 传act_time-->
-                    <template v-if="form.type==2"></template>
+                    <template v-if="form.type==2">
+                      <el-radio-group v-model="form.act_time">
+                        <label>
+                          <el-radio :label="1">生日当天</el-radio>
+                        </label>
+                        <label>
+                          <el-radio :label="2">生日当周</el-radio>
+                        </label>
+                        <label >
+                          <el-radio :label="3">生日当月</el-radio>
+                        </label>
+                      </el-radio-group>
+                    </template>
                     <!--节日营销 传时间戳-->
                     <template v-if="form.type==3">
-                      <el-date-picker type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择开始日期" v-model="form.start_time"></el-date-picker>
+                      <el-date-picker type="datetime" value-format="timestamp" placeholder="选择开始日期" v-model="form.start_time"></el-date-picker>
                       <span class="line" ></span>
-                      <el-date-picker type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择结束日期" v-model="form.end_time"></el-date-picker>
+                      <el-date-picker type="datetime" value-format="timestamp" placeholder="选择结束日期" v-model="form.end_time"></el-date-picker>
                     </template>
                 </el-form-item>
                 <div class="title">权益</div>
@@ -273,6 +293,15 @@
         }
     @Component({
         computed:{
+            enddatelist: function(){
+                let temarr = []
+                for(var i = this.form.startday;i<28;i++) {
+                    temarr.push({
+                        value: i+1
+                    })
+                }
+                return temarr
+            },
 
         }
     })
@@ -282,6 +311,7 @@
             type: 1, // 1：会员日营销，2：生日营销，3：节日营销
             rule_type: 0, // 1是都不一样，0是都一样
             startday: 1, // 用户选择的开始日期
+            endday:2, // 用户选择的结束日期
             rights: [{
                 rights: [{
                     gift: {
@@ -328,11 +358,12 @@
                     level: '所有等级会员',
                 }
             ],
-            startdatelist : []
+            startdatelist : [],
+            act_time: 1, // 1当天 2当周 3当月
         }
 
-        onSubmit(e){
-            addScene({
+        onSubmit(){
+            let postData = {
                 name: this.form.name,
                 type: this.form.type,
                 rule_type: this.form.rule_type,
@@ -344,8 +375,32 @@
                 mobile_che: this.form.mobile_che,
                 mobile: this.form.mobile,
                 sms_che: this.form.sms_che,
-                sms_content: this.form.sms_content
-            }).then(res=>{
+                sms_content: this.form.sms_content,
+                act_time: ''
+            }
+            //判断类型
+            if(this.form.type == 1) {
+                postData.start_time = this.form.startday;
+                postData.end_time = this.form.endday;
+                if(postData.end_time<=postData.start_time) {
+                    this.$message({
+                        message: '开始时间不能大于结束时间',
+                        type: 'warning'
+                    });
+                    return;
+                }
+
+            }else if(this.form.type == 2) {
+                postData.start_time = '';
+                postData.end_time = '';
+                postData.act_time = this.form.act_time;
+            }else if(this.form.type == 3) {
+                postData.start_time = this.form.start_time;
+                postData.end_time = this.form.end_time;
+            }else {
+                return;
+            }
+            addScene(postData).then(res=>{
                 console.log(res)
             })
         }
@@ -354,6 +409,7 @@
             console.log(index)
         }
         created(){
+            this.form.type = this.$route.params.type;
             // 获取一些初始化信息
             initScene().then(res=>{
                 console.log(res)
@@ -453,6 +509,7 @@
             }
             /deep/.el-radio__label {
                 line-height: 40px;
+                margin-right: 30px;
             }
             .is-open-msg {
                 padding-left: 20px;
