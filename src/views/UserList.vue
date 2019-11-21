@@ -671,8 +671,7 @@
         }
         // 资金
         get_sysbalances(arg = ''){
-            // 余额type需要+1 ，后台约定
-            getSysbalances({User_ID,start_time: this.start_time,end_time:this.end_time,type:this.type + 1,page:this.page, output: arg === 'output' ? 1 : 0}).then(res=>{
+            getSysbalances({User_ID,start_time: this.start_time,end_time:this.end_time,type:this.type,page:this.page, output: arg === 'output' ? 1 : 0}).then(res=>{
                 if (arg === 'output') {
                   res.data.file_path && window.open(res.data.file_path, '_self');
                 } else {
