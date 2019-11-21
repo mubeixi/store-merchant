@@ -2,14 +2,14 @@
     <div class="page-wrap">
         <div class="content">
             <div class="tabs">
-                <div class="tab">
+                <div class="tab" >
                     <div class="tab-item item1">
                         <img src="../assets/img/marketing/v.png" alt="">
                     </div>
                     <div class="tab-item item2">
                         会员日营销
                     </div>
-                    <div class="tab-item item3">
+                    <div class="tab-item item3"  @click="vipAdd">
                         立即新建
                     </div>
                     <img src="../assets/img/marketing/bg1.png" alt="">
@@ -21,7 +21,7 @@
                     <div class="tab-item item2">
                         生日营销
                     </div>
-                    <div class="tab-item item3">
+                    <div class="tab-item item3" @click="birthdayAdd">
                         立即新建
                     </div>
                     <img src="../assets/img/marketing/bg2.png" alt="">
@@ -33,7 +33,7 @@
                     <div class="tab-item item2">
                         节日营销
                     </div>
-                    <div class="tab-item item3">
+                    <div class="tab-item item3" @click="festivalAdd">
                         立即新建
                     </div>
                     <img src="../assets/img/marketing/bg3.png" alt="">
@@ -111,7 +111,7 @@
                     background
                     layout="prev, pager, next"
                     @current-change="currentChange"
-                    :page-size="page-size"
+                    :page-size="pageSize"
                     :total="totalCount">
                 </el-pagination>
             </div>
@@ -124,7 +124,7 @@
 <script lang="ts">
     import Vue from 'vue'
     import Component from 'vue-class-component'
-    import  {getScenes,stopScene} from '@/common/fetch'
+    import  {getScenes,stopScene,initScenes} from '@/common/fetch'
     @Component
     export default class Marketing extends  Vue{
         active_name = ''
@@ -137,6 +137,49 @@
         typeValue='';//活动列表值
         pageSize=10;
         page=1;
+        init={};//初始化 生日营销节日营销
+
+        //会员日新建营销
+        vipAdd(){
+            if(this.init.btn1.status==1){
+                this.$router.push({
+                    path: 'DayMark',
+                    params: {
+                        type: '1'
+                    }
+                })
+            }else{
+                this.$message({
+                    message: this.init.btn1.tip,
+                    type: 'warning'
+                });
+            }
+        }
+        //生日新建营销
+        birthdayAdd(){
+            if(this.init.btn2.status==1){
+                this.$router.push({
+                    path: 'DayMark',
+                    params: {
+                        type: '2'
+                    }
+                })
+            }else{
+                this.$message({
+                    message: this.init.btn2.tip,
+                    type: 'warning'
+                });
+            }
+        }
+        //节日新建营销
+        festivalAdd(){
+            this.$router.push({
+                path: 'DayMark',
+                params: {
+                    type: '3'
+                }
+            })
+        }
 
         currentChange(val){
             this.page=val;
@@ -189,9 +232,16 @@
                 this.types=res.types;
             })
         }
-
+        initScenes(){
+            initScenes().then(res=>{
+                if(res.errorCode==0){
+                    this.init=res.data;
+                }
+            })
+        }
         created(){
            this.searchList();
+           this.initScenes();
         }
     }
 </script>
@@ -206,6 +256,7 @@
         padding: 20px 0 0 20px;
     }
     .content {
+      min-width: 1200px;
         height: 100%;
         padding: 15px 0 0 14px;
         background: #fff;
