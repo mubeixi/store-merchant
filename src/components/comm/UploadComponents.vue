@@ -9,6 +9,7 @@
       :accept="accept"
       :name="elName"
       :limit="limit"
+      :disabled="disabled"
       :data.sync='ajaxData'
       :action="baseURL+'/api/little_program/shopconfig.php'"
       list-type="picture-card"
@@ -138,6 +139,11 @@
           default:'image'
       })
       elName:string
+      @Prop({
+          type:Boolean,
+          default:false
+      })
+      disabled:boolean
 
       @Prop({
           type:String,
