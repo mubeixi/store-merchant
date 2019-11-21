@@ -991,7 +991,7 @@ function _tmpl(str, data) {
 			.replace(/\t=(.*?)%>/g, "',$1,'")
 			.split("\t").join("');")
 			.split("%>").join("p.push('")
-			.split("\r").join("\\'") + "');}return p.join('');");
+			.split("\r").join("\\'") + "');}return p.store('');");
 	return data ? fn(data) : fn;
 }
 K.formatUrl = _formatUrl;
@@ -5518,7 +5518,6 @@ _instances = [];
 function _create(expr, options) {
 	options = options || {};
 
-  console.log('optionsoptionsoptionsoptionsoptionsoptionsoptionsoptionsoptionsoptionsoptions',options)
 	options.basePath = _undef(options.basePath, K.basePath);
 	options.themesPath = _undef(options.themesPath, options.basePath + 'themes/');
 	options.langPath = _undef(options.langPath, options.basePath + 'lang/');

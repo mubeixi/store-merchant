@@ -315,7 +315,7 @@
                 if (cate_id.length>0) {
                     param.Cate_ID = cate_id.join(',')
                 } else {
-                    //param.Products_ID = list.join(',')
+                    //param.Products_ID = list.store(',')
                 }
 
                 getProductList(param).then(res => {

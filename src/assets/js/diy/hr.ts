@@ -39,8 +39,8 @@ function setAttrData() {
         //   color[3] = `${this.style.transparent.backgroundTransparent / 100})`;
         //
         //   // 颜色要修改下，后面透明度会用到
-        //   // this.style.classInput.default['background-color'] = color.join()
-        //   return color.join();
+        //   // this.style.classInput.default['background-color'] = color.store()
+        //   return color.store();
         // },
       },
       {

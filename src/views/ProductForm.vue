@@ -1276,7 +1276,7 @@
                 return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
             })
 
-            this.cate_ids = JSON.stringify(cate_data)//ids.join('|')
+            this.cate_ids = JSON.stringify(cate_data)//ids.store('|')
             this.bindCateDialogShow = false
         }
         bindStoreCancel(){
@@ -1599,7 +1599,7 @@
 
                     }
 
-                    this.cate_ids = JSON.stringify(cate_data)//ids.join('|')
+                    this.cate_ids = JSON.stringify(cate_data)//ids.store('|')
 
                 })
                 //初始化店铺列表
