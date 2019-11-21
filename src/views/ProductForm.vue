@@ -985,10 +985,10 @@
                         });
                         return
                     }
-                    if(!this.ruleForm.Products_Type){
+                    if(this.ruleForm.Products_Type==''&&this.ruleForm.Products_Type!=0){
                         this.$message({
                             type: 'error',
-                            message: `请选择商品类型`
+                            message: `请选择商品类型1`
                         });
                         return
                     }
