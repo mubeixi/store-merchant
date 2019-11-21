@@ -174,7 +174,7 @@
         //节日新建营销
         festivalAdd(){
             this.$router.push({
-                path: 'DayMark',
+                name: 'DayMark',
                 params: {
                     type: '3'
                 }

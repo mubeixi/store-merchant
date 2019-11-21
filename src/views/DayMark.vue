@@ -409,9 +409,12 @@
             console.log(index)
         }
         created(){
+            console.log('type....')
+            console.log(this.$route)
             this.form.type = this.$route.params.type;
             // 获取一些初始化信息
             initScene().then(res=>{
+                console.log('ressss')
                 console.log(res)
                 // 转换day为需要的格式
                 let dayslist = res.data.days;
