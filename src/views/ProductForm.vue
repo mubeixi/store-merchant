@@ -5,15 +5,21 @@
     </div>
 
     <el-form size="small" :model="ruleForm" :rules="rules" ref="ruleForm" :inline-message="true" label-width="120px"   class="ruleForm">
-      <el-form-item :label="textTitle"  class="textTitle">
-
-      </el-form-item>
+      <el-alert
+        v-if="textTitle"
+        style="margin-bottom: 10px"
+        :title="textTitle"
+        :closable="false"
+        type="success">
+      </el-alert>
       <el-form-item label="商品排序" prop="Products_Index">
-        <el-input v-model="ruleForm.Products_Index" :disabled="noEditField.Products_Index"  class="sortInput"></el-input>
-        <span class="sortMsg">注：数字越大，越往前（必须大于0）</span>
+                <el-input v-model="ruleForm.Products_Index" :disabled="noEditField.Products_Index"  class="sortInput"></el-input>
+                <span class="sortMsg">注：数字越大，越往前（必须大于0）</span>
       </el-form-item>
       <el-form-item label="商品名称" prop="Products_Name">
-        <el-input v-model="ruleForm.Products_Name"  :disabled="noEditField.Products_Name"  class="nameInput"></el-input>
+        <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Name">
+          <el-input v-model="ruleForm.Products_Name"  :disabled="noEditField.Products_Name"  class="nameInput"></el-input>
+        </el-tooltip>
       </el-form-item>
 
       <el-form-item label="商品分类">
@@ -23,37 +29,49 @@
         <span class="cate_item" v-for="(cate,idx) in cate_list">{{cate.Category_Name}}</span>
       </div>
       <el-form-item label="销量" >
-        <el-input v-model.number="ruleForm.Products_Sales" :disabled="noEditField.Products_Sales"  class="sortInput"></el-input>
-        <span class="sortMsg">注：消费者看到的销量</span>
+          <el-input v-model.number="ruleForm.Products_Sales" :disabled="noEditField.Products_Sales"  class="sortInput"></el-input>
+          <span class="sortMsg">注：消费者看到的销量</span>
       </el-form-item>
 
       <el-form-item label="产品价格" >
         <el-form-item prop="Products_PriceY" style="display: inline-block;margin-bottom: 0px" >
-          <el-input v-model="ruleForm.Products_PriceY"  :disabled="noEditField.Products_PriceY"  placeholder="原价:¥" class="sortInput"></el-input>
+          <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_PriceY">
+            <el-input v-model="ruleForm.Products_PriceY"  :disabled="noEditField.Products_PriceY"  placeholder="原价:¥" class="sortInput"></el-input>
+          </el-tooltip>
         </el-form-item>
         <el-form-item  prop="Products_PriceX" style="display: inline-block;margin-bottom: 0px">
-          <el-input v-model="ruleForm.Products_PriceX"  :disabled="noEditField.Products_PriceX"  placeholder="现价:¥" class="sortInput" style="margin-left: 18px"></el-input>
+          <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_PriceX">
+            <el-input v-model="ruleForm.Products_PriceX"  :disabled="noEditField.Products_PriceX"  placeholder="现价:¥" class="sortInput" style="margin-left: 18px"></el-input>
+          </el-tooltip>
         </el-form-item>
       </el-form-item>
 
       <el-form-item label="拼团" prop="type" style="margin-bottom: 10px">
-        <el-checkbox v-model="ruleForm.pintuan_flag" :disabled="noEditField.pintuan_flag"  name="group">是否参与拼团</el-checkbox>
+        <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.pintuan_flag">
+          <el-checkbox v-model="ruleForm.pintuan_flag" :disabled="noEditField.pintuan_flag"  name="group">是否参与拼团</el-checkbox>
+        </el-tooltip>
       </el-form-item>
       <div class="group" style="margin-left: 120px;margin-bottom: 22px;" v-if="ruleForm.pintuan_flag">
         <el-form-item label="拼团人数" prop="pintuan_people" style="margin-bottom: 0px">
-          <el-input v-model.number="ruleForm.pintuan_people" :disabled="noEditField.pintuan_people"   class="sortInput"></el-input>
+          <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.pintuan_people">
+            <el-input v-model.number="ruleForm.pintuan_people" :disabled="noEditField.pintuan_people"   class="sortInput"></el-input>
+          </el-tooltip>
         </el-form-item>
         <el-form-item label="拼团价格" prop="pintuan_pricex"  style="margin-left: 43px;margin-bottom: 0px">
-          <el-input v-model="ruleForm.pintuan_pricex" :disabled="noEditField.pintuan_pricex"   class="sortInput"></el-input>
+          <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.pintuan_pricex">
+            <el-input v-model="ruleForm.pintuan_pricex" :disabled="noEditField.pintuan_pricex"   class="sortInput"></el-input>
+          </el-tooltip>
         </el-form-item>
         <el-form-item label="截止时间" prop="pintuan_end_time" style="margin-left: 43px;margin-bottom: 0px">
-          <el-date-picker
-            v-model="ruleForm.pintuan_end_time"
-            :disabled="noEditField.pintuan_end_time"
-            type="datetime"
-            placeholder="选择日期时间"
-            style="width: 200px" >
-          </el-date-picker>
+          <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.pintuan_end_time">
+            <el-date-picker
+              v-model="ruleForm.pintuan_end_time"
+              :disabled="noEditField.pintuan_end_time"
+              type="datetime"
+              placeholder="选择日期时间"
+              style="width: 200px" >
+            </el-date-picker>
+          </el-tooltip>
         </el-form-item>
       </div>
 
@@ -97,14 +115,19 @@
       </el-form-item>
 
       <el-form-item label="商品简介">
-        <el-input  type="textarea"  :disabled="noEditField.Products_BriefDescription"   v-model="ruleForm.Products_BriefDescription" style="width: 600px;" :rows="4"></el-input>
+        <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_BriefDescription">
+          <el-input  type="textarea"  :disabled="noEditField.Products_BriefDescription"   v-model="ruleForm.Products_BriefDescription" style="width: 600px;" :rows="4"></el-input>
+        </el-tooltip>
       </el-form-item>
-      <el-form-item label="商品类型" prop="Products_Type">
-        <el-select  v-model="ruleForm.Products_Type" placeholder="请选择类型" :disabled="noEditField.Products_Type"  style="width: 160px">
-          <template v-for="(it,ind_con) of prodConfig.prod_type_list">
-            <el-option :label="it.Type_Name" :value="it.Type_ID" ></el-option>
-          </template>
-        </el-select>
+
+      <el-form-item label="商品类型" prop="Products_Type" title="请输入活动">
+        <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Type" >
+          <el-select  v-model="ruleForm.Products_Type" placeholder="请选择类型" :disabled="noEditField.Products_Type"  style="width: 160px">
+            <template v-for="(it,ind_con) of prodConfig.prod_type_list">
+              <el-option :label="it.Type_Name" :value="it.Type_ID" ></el-option>
+            </template>
+          </el-select>
+        </el-tooltip>
       </el-form-item>
 
       <el-form-item label="商品规格" v-if="ruleForm.Products_Type">
@@ -114,13 +137,15 @@
             <div class="specs-item-list">
               <div v-for="(val,idx_val) in row.vals" class="spec-item-box">
                 <div class="input-wrap"   style="width: 110px;margin-left: 10px;display: inline-block;position: relative" >
-                  <el-autocomplete
-                    class="inline-input"
-                    :fetch-suggestions="querySearchAsync"
-                    v-model="specs[idx_row].vals[idx_val]"
-                    :disabled="noEditField.Products_Type"
-                    @focus="queryIndex(idx_row,specs[idx_row].vals[idx_val])"
-                  ></el-autocomplete>
+                  <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Type" >
+                    <el-autocomplete
+                      class="inline-input"
+                      :fetch-suggestions="querySearchAsync"
+                      v-model="specs[idx_row].vals[idx_val]"
+                      :disabled="noEditField.Products_Type"
+                      @focus="queryIndex(idx_row,specs[idx_row].vals[idx_val])"
+                    ></el-autocomplete>
+                  </el-tooltip>
                   <div class="imgDel" @click="skuDel(idx_row,idx_val)">
                     <i class="el-icon-error"></i>
                   </div>
@@ -163,24 +188,32 @@
                       <td class="td" :rowspan="getRowsSpan(index,idx)">{{sku[index]}}</td>
                     </template>
                   </template>
-                  <td class="td borderRight inputSku" ><el-input  :disabled="noEditField.Products_Type"  style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Attr_Price"/></td>
-                  <td class="td borderRight inputSku" ><el-input :disabled="noEditField.Products_Type"  style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Property_count"/></td>
-                  <td class="td borderRight inputSku" ><el-input :disabled="noEditField.Products_Type" style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Supply_Price"/></td>
-                  <td class="td borderRight inputSku"  v-if="ruleForm.pintuan_flag"><el-input :disabled="noEditField.Products_Type" v-if="skuList[idx]"  v-model="skuList[idx].pt_pricex"/></td>
+                  <td class="td borderRight inputSku" ><el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Type" ><el-input  :disabled="noEditField.Products_Type"  style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Attr_Price"/></el-tooltip></td>
+                  <td class="td borderRight inputSku" ><el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Type" ><el-input :disabled="noEditField.Products_Type"  style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Property_count"/></el-tooltip></td>
+                  <td class="td borderRight inputSku" ><el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Type" ><el-input :disabled="noEditField.Products_Type" style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Supply_Price"/></el-tooltip></td>
+                  <td class="td borderRight inputSku"  v-if="ruleForm.pintuan_flag"><el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Type" ><el-input :disabled="noEditField.Products_Type" style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].pt_pricex"/></el-tooltip></td>
                 </tr>
               </template>
             </template>
             <template v-if="skus.length==1">
-                <tr class="tr">
+                <tr class="tr"  v-if="specs.length>1">
                   <template v-for="(item,idx) in skus[0]">
                   <td class="td" >{{item}}</td>
                   </template>
-                  <td class="td borderRight inputSku"><el-input :disabled="noEditField.Products_Type"  style="width: 160px"  v-if="skuList[0]"  type="number" v-model="skuList[0].Attr_Price"/></td>
-                  <td class="td borderRight inputSku"><el-input :disabled="noEditField.Products_Type" style="width: 160px" v-if="skuList[0]"  v-model="skuList[0].Property_count"/></td>
-                  <td class="td borderRight inputSku"><el-input :disabled="noEditField.Products_Type"  style="width: 160px" v-if="skuList[0]"  v-model="skuList[0].Supply_Price"/></td>
-                  <td class="td borderRight inputSku" v-if="ruleForm.pintuan_flag"><el-input :disabled="noEditField.Products_Type"  v-if="skuList[0]"  v-model="skuList[0].pt_pricex"/></td>
+                  <td class="td borderRight inputSku"><el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Type" ><el-input :disabled="noEditField.Products_Type"  style="width: 160px"  v-if="skuList[0]"  type="number" v-model="skuList[0].Attr_Price"/></el-tooltip></td>
+                  <td class="td borderRight inputSku"><el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Type" ><el-input :disabled="noEditField.Products_Type" style="width: 160px" v-if="skuList[0]"  v-model="skuList[0].Property_count"/></el-tooltip></td>
+                  <td class="td borderRight inputSku"><el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Type" ><el-input :disabled="noEditField.Products_Type"  style="width: 160px" v-if="skuList[0]"  v-model="skuList[0].Supply_Price"/></el-tooltip></td>
+                  <td class="td borderRight inputSku" v-if="ruleForm.pintuan_flag"><el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Type" ><el-input style="width: 160px" :disabled="noEditField.Products_Type"  v-if="skuList[0]"  v-model="skuList[0].pt_pricex"/></el-tooltip></td>
                 </tr>
-
+              <template v-if="specs.length==1">
+                <tr class="tr"  v-for="(item,idx) of skuList">
+                    <td class="td" >{{item.Attr_Value}}</td>
+                    <td class="td borderRight inputSku"><el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Type" ><el-input :disabled="noEditField.Products_Type"  style="width: 160px"   type="number" v-model="skuList[idx].Attr_Price"/></el-tooltip></td>
+                    <td class="td borderRight inputSku"><el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Type" ><el-input :disabled="noEditField.Products_Type" style="width: 160px"  v-model="skuList[idx].Property_count"/></el-tooltip></td>
+                    <td class="td borderRight inputSku"><el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Type" ><el-input :disabled="noEditField.Products_Type"  style="width: 160px"  v-model="skuList[idx].Supply_Price"/></el-tooltip></td>
+                    <td class="td borderRight inputSku" v-if="ruleForm.pintuan_flag"><el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Type" ><el-input style="width: 160px" :disabled="noEditField.Products_Type"    v-model="skuList[idx].pt_pricex"/></el-tooltip></td>
+                </tr>
+              </template>
             </template>
             <tr class="tr">
                <td class="td divTd" colspan="9">
@@ -209,7 +242,9 @@
       </el-form-item>
 
       <el-form-item label="商品重量" prop="Products_Weight">
-        <el-input v-model="ruleForm.Products_Weight"  :disabled="noEditField.Products_Weight"  class="sortInput" ></el-input> kg
+        <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Weight" >
+            <el-input v-model="ruleForm.Products_Weight"  :disabled="noEditField.Products_Weight"  class="sortInput" ></el-input> kg
+        </el-tooltip>
       </el-form-item>
       <el-form-item label="运费计算" prop="goods">
         <el-radio-group v-model="ruleForm.goods">
@@ -230,10 +265,18 @@
       </el-form-item>
       <el-form-item label="其他属性" prop="otherAttributes">
         <el-checkbox-group v-model="ruleForm.otherAttributes">
-          <el-checkbox  label="下架" name="otherAttributes" :disabled="noEditField.Products_SoldOut"></el-checkbox>
-          <el-checkbox  label="新品" name="otherAttributes" :disabled="noEditField.Products_IsNew"></el-checkbox>
-          <el-checkbox  label="热卖" name="otherAttributes" :disabled="noEditField.Products_IsHot"></el-checkbox>
-          <el-checkbox  label="推荐" name="otherAttributes" :disabled="noEditField.Products_IsRecommend"></el-checkbox>
+          <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_SoldOut" >
+            <el-checkbox  label="下架" name="otherAttributes" :disabled="noEditField.Products_SoldOut"></el-checkbox>
+          </el-tooltip>
+          <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_IsNew" >
+            <el-checkbox  label="新品" name="otherAttributes" :disabled="noEditField.Products_IsNew"></el-checkbox>
+          </el-tooltip>
+          <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_IsHot" >
+            <el-checkbox  label="热卖" name="otherAttributes" :disabled="noEditField.Products_IsHot"></el-checkbox>
+          </el-tooltip>
+          <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_IsRecommend" >
+            <el-checkbox  label="推荐" name="otherAttributes" :disabled="noEditField.Products_IsRecommend"></el-checkbox>
+          </el-tooltip>
         </el-checkbox-group>
       </el-form-item>
 <!--      <el-form-item label="关联门店" >-->
@@ -244,7 +287,9 @@
 <!--      </div>-->
       <el-form-item label="特殊属性"  >
         <el-checkbox-group v-if="prodConfig.Payment_RmainderEnabled==1"  :disabled="noEditField.Products_IsPaysBalance" v-model="ruleForm.Products_IsPaysBalance">
-          <el-checkbox label="使用余额支付" value="1" name="Products_IsPaysBalance"></el-checkbox>
+          <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_IsPaysBalance" >
+            <el-checkbox label="使用余额支付" value="1" name="Products_IsPaysBalance"></el-checkbox>
+          </el-tooltip>
         </el-checkbox-group>
 <!--        <el-checkbox-group  v-model="ruleForm.prod_limit">-->
 <!--          <el-checkbox label="开启限购" value="2" name="prod_limit"></el-checkbox>-->
@@ -284,7 +329,7 @@
         </div>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">{{addText}}</el-button>
+        <el-button type="primary" :loading="isLoading" @click="submitForm('ruleForm')">{{addText}}</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -526,6 +571,7 @@
         CardType=[]
         isShow=false
         skuImg=false
+        isLoading=false
         validateFn = {
             // classification:(rule, value, callback) => {
             //     console.log(this.cate_ids,value,"ss")
@@ -765,24 +811,52 @@
             let nameStr,idx;
             //就是只有一行的时候
             if(this.skus.length===1){
-                if(_.isArray(this.skus[0])) {
-                    let nameStr = this.skus[0].join('|')
-                    let idx= name_list.indexOf(nameStr)
-                    let obj = null;
-                    if(idx!=-1){
-                        obj = {...this.skusData[idx]}
-                    }else{
-                        obj ={
-                            Attr_Value: nameStr,
-                            Attr_Price:'',
-                            Property_count:'',
-                            Supply_Price:'',
-                            pt_pricex:''
+                if(this.specs.length>1){
+                    if(_.isArray(this.skus[0])) {
+                        let nameStr = this.skus[0].join('|')
+                        let idx= name_list.indexOf(nameStr)
+                        let obj = null;
+                        if(idx!=-1){
+                            obj = {...this.skusData[idx]}
+                        }else{
+                            obj ={
+                                Attr_Value: nameStr,
+                                Attr_Price:'',
+                                Property_count:'',
+                                Supply_Price:'',
+                                pt_pricex:''
+                            }
                         }
-                    }
 
-                    this.skuList = [obj];
+                        this.skuList = [obj];
+                    }
+                }else{
+                    if(_.isArray(this.skus[0])) {
+
+                        this.skuList = []
+                        for(let item of this.skus[0]){
+                            console.log('itemitemitemitem',item)
+                            let nameStr = item;
+                            let idx= name_list.indexOf(nameStr)
+                            let obj = null;
+                            if(idx!=-1){
+                                obj = {...this.skusData[idx]}
+                            }else{
+                                obj ={
+                                    Attr_Value: nameStr,
+                                    Attr_Price:'',
+                                    Property_count:'',
+                                    Supply_Price:'',
+                                    pt_pricex:''
+                                }
+                            }
+
+                            this.skuList.push(obj);
+                        }
+
+                    }
                 }
+
             }else{
                 this.skuList = this.skus.map(sku=>{
                     nameStr = sku.join('|')
@@ -967,6 +1041,7 @@
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
+                    this.isLoading=true;
                     let id = this.$route.query.prod_id;
 
                     if(this.ruleForm.orderType<=0){
@@ -975,6 +1050,7 @@
                                 type: 'error',
                                 message: `实体订单商品重量大于0`
                             });
+                            this.isLoading=false;
                             return
                         }
                     }
@@ -983,6 +1059,7 @@
                             type: 'error',
                             message: `请选择商品分类`
                         });
+                        this.isLoading=false;
                         return
                     }
                     if(this.ruleForm.Products_Type==''&&this.ruleForm.Products_Type!=0){
@@ -990,6 +1067,7 @@
                             type: 'error',
                             message: `请选择商品类型1`
                         });
+                        this.isLoading=false;
                         return
                     }
                     let productInfo={
@@ -1036,6 +1114,7 @@
                             type: 'error',
                             message: `商品主图不能为空`
                         });
+                        this.isLoading=false;
                         return ;
                     }else {
                         productInfo.Products_JSON=JSON.stringify({"ImgPath":this.thumb})
@@ -1096,6 +1175,7 @@
                                     type: 'error',
                                     message: `库存不能为空`
                                 });
+                                this.isLoading=false;
                                 return;
                             }
                         }
@@ -1145,20 +1225,21 @@
                         productInfo.Products_Distributes=JSON.stringify(disObj);
                     }
 
-
-
                     systemOperateProd(productInfo,{}).then(res=>{
                         if(res.errorCode==0){
+                            this.isLoading=false;
                             if(id){
                                 this.$message({
                                     message: '修改成功',
                                     type: 'success'
                                 });
+                                window.location.href=window.parent.location.href+'/shop/products.php';
                             }else{
                                 this.$message({
                                     message: '添加成功',
                                     type: 'success'
                                 });
+                                window.location.href=window.parent.location.href+'/shop/products.php';
                             }
                         }
 

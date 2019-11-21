@@ -222,7 +222,7 @@
                 page:this.page,
                 pageSize:this.pageSize,
                 name:this.active_name,
-                state:this.state,
+                status:this.state,
                 type:this.typeValue
             }
             getScenes(data).then(res=>{
