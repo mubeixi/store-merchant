@@ -72,7 +72,7 @@
                         width="239">
                     </el-table-column>
                     <el-table-column
-                        prop="type"
+                        prop="type_txt"
                         label="活动类型"
                         width="187">
                     </el-table-column>
@@ -97,7 +97,7 @@
                         width="254">
                          <template slot-scope="scope">
                             <el-button @click="handleClick(scope.$index)" type="text" size="small">详情</el-button>
-                            <el-button type="text" size="small" v-if="scenesList[scope.$index].status==0">编辑</el-button>
+                            <el-button type="text" size="small" v-if="scenesList[scope.$index].status==0" @click="editScenes(scenesList[scope.$index].id,scenesList[scope.$index].type)">编辑</el-button>
 <!--                            <el-button type="text" size="small">删除</el-button>-->
                             <el-button type="text" size="small" v-if="scenesList[scope.$index].status<2" @click="stopScenes(scenesList[scope.$index].id)">终止</el-button>
                         </template>
@@ -138,6 +138,17 @@
         pageSize=10;
         page=1;
         init={};//初始化 生日营销节日营销
+
+        //跳转编辑页面
+        editScenes(index,type){
+            this.$router.push({
+                name: 'DayMark',
+                params: {
+                    id: index,
+                    type:type
+                }
+            })
+        }
 
         //会员日新建营销
         vipAdd(){

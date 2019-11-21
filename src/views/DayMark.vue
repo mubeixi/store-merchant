@@ -255,7 +255,7 @@
         Watch
     } from 'vue-property-decorator';
     import Vue from 'vue'
-    import {initScene,addScene} from '../common/fetch'
+    import {initScene,addScene,getScene} from '../common/fetch'
     import {createTmplArray} from '@/common/utils';
 
 
@@ -361,6 +361,7 @@
             startdatelist : [],
             act_time: 1, // 1当天 2当周 3当月
         }
+        initData=[]
 
         onSubmit(){
             let postData = {
@@ -408,12 +409,13 @@
             console.log(scope)
             console.log(index)
         }
-        created(){
+       async created(){
             console.log('type....')
             console.log(this.$route)
+
             this.form.type = this.$route.params.type;
             // 获取一些初始化信息
-            initScene().then(res=>{
+            await initScene().then(res=>{
                 console.log('ressss')
                 console.log(res)
                 // 转换day为需要的格式
@@ -452,6 +454,24 @@
                 this.form.startdatelist = temarr;
 
             })
+
+
+           let id = this.$route.params.id
+           //获取初始化活动信息
+           if(id){
+               let initData={
+                   id:id,
+                   edit:1
+               }
+               await getScene(initData).then(res=>{
+                      if(res.errorCode==0){
+                          this.initData=res.data;
+                      }
+               })
+           }
+
+
+
         }
     }
 </script>
