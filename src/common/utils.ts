@@ -231,7 +231,14 @@ export const calcDescartes = (array)=>{
   });
 }
 
-
+/**
+ * 从元素是对象的一维数组中，获取指定的键名对应的值组成的简单值一维数组
+ * arr = [{name:'wwww',age:2332,'city':'shanghai'},{name:'wwww2',age:2332,'city':'shanghai'}，{name:'wwww3',age:2332,'city':'shanghai'}]
+ * get_arr_column(arr,'name')
+ * ====>['wwww'，'wwww2'，'wwww3']
+ * @param arr
+ * @param column
+ */
 export const get_arr_column = (arr,column)=>{
   if(!_.isArray(arr)){
     throw new Error('数据必传')
@@ -239,12 +246,15 @@ export const get_arr_column = (arr,column)=>{
   if(typeof column !='string'){
     throw new Error('键名为字符串')
   }
+  if(!column){
+    throw new Error('键名必传')
+  }
   let rt = []
   for(var k in arr){
-    if(typeof arr[k] == 'object'){
-      throw new Error('获取的数值不为简单值')
+    if(typeof arr[k] != 'object'){
+      throw new Error('获取的数值为简单值')
     }
-    rt.push(arr[k])
+    rt.push(arr[k][column])
   }
   return rt
 }

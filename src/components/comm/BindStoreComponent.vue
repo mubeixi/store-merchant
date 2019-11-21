@@ -109,7 +109,6 @@
   import { domain } from '@/common/utils';
   import {City} from '../../common/city';
 
-
   function noop() {}
 
   export default {
