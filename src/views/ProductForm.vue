@@ -5,9 +5,12 @@
     </div>
 
     <el-form size="small" :model="ruleForm" :rules="rules" ref="ruleForm" :inline-message="true" label-width="120px"   class="ruleForm">
-      <el-form-item :label="textTitle"  class="textTitle">
-
-      </el-form-item>
+      <el-alert
+        style="margin-bottom: 10px"
+        :title="textTitle"
+        effect="dark"
+        type="error">
+      </el-alert>
       <el-form-item label="商品排序" prop="Products_Index">
         <el-input v-model="ruleForm.Products_Index" :disabled="noEditField.Products_Index"  class="sortInput"></el-input>
         <span class="sortMsg">注：数字越大，越往前（必须大于0）</span>
@@ -284,7 +287,7 @@
         </div>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">{{addText}}</el-button>
+        <el-button type="primary" :loading="isLoading" @click="submitForm('ruleForm')">{{addText}}</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -526,6 +529,7 @@
         CardType=[]
         isShow=false
         skuImg=false
+        isLoading=false
         validateFn = {
             // classification:(rule, value, callback) => {
             //     console.log(this.cate_ids,value,"ss")
@@ -764,7 +768,7 @@
 
             let nameStr,idx;
             //就是只有一行的时候
-            if(this.skus.length===1){
+            if(this.skus.length===1&&this.specs.length!=1){
                 if(_.isArray(this.skus[0])) {
                     let nameStr = this.skus[0].join('|')
                     let idx= name_list.indexOf(nameStr)
@@ -967,6 +971,7 @@
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
+                    this.isLoading=true;
                     let id = this.$route.query.prod_id;
 
                     if(this.ruleForm.orderType<=0){
@@ -975,6 +980,7 @@
                                 type: 'error',
                                 message: `实体订单商品重量大于0`
                             });
+                            this.isLoading=false;
                             return
                         }
                     }
@@ -983,6 +989,7 @@
                             type: 'error',
                             message: `请选择商品分类`
                         });
+                        this.isLoading=false;
                         return
                     }
                     if(this.ruleForm.Products_Type==''&&this.ruleForm.Products_Type!=0){
@@ -990,6 +997,7 @@
                             type: 'error',
                             message: `请选择商品类型1`
                         });
+                        this.isLoading=false;
                         return
                     }
                     let productInfo={
@@ -1036,6 +1044,7 @@
                             type: 'error',
                             message: `商品主图不能为空`
                         });
+                        this.isLoading=false;
                         return ;
                     }else {
                         productInfo.Products_JSON=JSON.stringify({"ImgPath":this.thumb})
@@ -1096,6 +1105,7 @@
                                     type: 'error',
                                     message: `库存不能为空`
                                 });
+                                this.isLoading=false;
                                 return;
                             }
                         }
@@ -1145,10 +1155,9 @@
                         productInfo.Products_Distributes=JSON.stringify(disObj);
                     }
 
-
-
                     systemOperateProd(productInfo,{}).then(res=>{
                         if(res.errorCode==0){
+                            this.isLoading=false;
                             if(id){
                                 this.$message({
                                     message: '修改成功',
