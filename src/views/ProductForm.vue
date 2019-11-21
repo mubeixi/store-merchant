@@ -6,11 +6,11 @@
 
     <el-form size="small" :model="ruleForm" :rules="rules" ref="ruleForm" :inline-message="true" label-width="120px"   class="ruleForm">
       <el-form-item label="商品排序" prop="Products_Index">
-        <el-input v-model="ruleForm.Products_Index"  class="sortInput"></el-input>
+        <el-input v-model="ruleForm.Products_Index" :disabled="noEditField.Products_Index"  class="sortInput"></el-input>
         <span class="sortMsg">注：数字越大，越往前（必须大于0）</span>
       </el-form-item>
       <el-form-item label="商品名称" prop="Products_Name">
-        <el-input v-model="ruleForm.Products_Name"   class="nameInput"></el-input>
+        <el-input v-model="ruleForm.Products_Name"  :disabled="noEditField.Products_Name"  class="nameInput"></el-input>
       </el-form-item>
 
       <el-form-item label="商品分类">
@@ -20,32 +20,33 @@
         <span class="cate_item" v-for="(cate,idx) in cate_list">{{cate.Category_Name}}</span>
       </div>
       <el-form-item label="销量" >
-        <el-input v-model.number="ruleForm.Products_Sales"  class="sortInput"></el-input>
+        <el-input v-model.number="ruleForm.Products_Sales" :disabled="noEditField.Products_Sales"  class="sortInput"></el-input>
         <span class="sortMsg">注：消费者看到的销量</span>
       </el-form-item>
 
       <el-form-item label="产品价格" >
         <el-form-item prop="Products_PriceY" style="display: inline-block;margin-bottom: 0px" >
-          <el-input v-model="ruleForm.Products_PriceY"   placeholder="原价:¥" class="sortInput"></el-input>
+          <el-input v-model="ruleForm.Products_PriceY"  :disabled="noEditField.Products_PriceY"  placeholder="原价:¥" class="sortInput"></el-input>
         </el-form-item>
         <el-form-item  prop="Products_PriceX" style="display: inline-block;margin-bottom: 0px">
-          <el-input v-model="ruleForm.Products_PriceX"   placeholder="现价:¥" class="sortInput" style="margin-left: 18px"></el-input>
+          <el-input v-model="ruleForm.Products_PriceX"  :disabled="noEditField.Products_PriceX"  placeholder="现价:¥" class="sortInput" style="margin-left: 18px"></el-input>
         </el-form-item>
       </el-form-item>
 
       <el-form-item label="拼团" prop="type" style="margin-bottom: 10px">
-        <el-checkbox v-model="ruleForm.pintuan_flag"  name="group">是否参与拼团</el-checkbox>
+        <el-checkbox v-model="ruleForm.pintuan_flag" :disabled="noEditField.pintuan_flag"  name="group">是否参与拼团</el-checkbox>
       </el-form-item>
       <div class="group" style="margin-left: 120px;margin-bottom: 22px;" v-if="ruleForm.pintuan_flag">
         <el-form-item label="拼团人数" prop="pintuan_people" style="margin-bottom: 0px">
-          <el-input v-model.number="ruleForm.pintuan_people"   class="sortInput"></el-input>
+          <el-input v-model.number="ruleForm.pintuan_people" :disabled="noEditField.pintuan_people"   class="sortInput"></el-input>
         </el-form-item>
         <el-form-item label="拼团价格" prop="pintuan_pricex"  style="margin-left: 43px;margin-bottom: 0px">
-          <el-input v-model="ruleForm.pintuan_pricex"   class="sortInput"></el-input>
+          <el-input v-model="ruleForm.pintuan_pricex" :disabled="noEditField.pintuan_pricex"   class="sortInput"></el-input>
         </el-form-item>
         <el-form-item label="截止时间" prop="pintuan_end_time" style="margin-left: 43px;margin-bottom: 0px">
           <el-date-picker
             v-model="ruleForm.pintuan_end_time"
+            :disabled="noEditField.pintuan_end_time"
             type="datetime"
             placeholder="选择日期时间"
             style="width: 200px" >
@@ -54,7 +55,7 @@
       </div>
 
       <el-form-item label="商品利润" prop="Products_Profit">
-        <el-input v-model="ruleForm.Products_Profit"   class="sortInput sortInputs" ></el-input>
+        <el-input v-model="ruleForm.Products_Profit" :disabled="noEditField.Products_Profit"   class="sortInput sortInputs" ></el-input>
         <span class="sortMsg">注：佣金将从商品利润中取出一部分发放</span>
       </el-form-item>
 
@@ -93,10 +94,10 @@
       </el-form-item>
 
       <el-form-item label="商品简介">
-        <el-input  type="textarea" v-model="ruleForm.Products_BriefDescription" style="width: 600px;" :rows="4"></el-input>
+        <el-input  type="textarea"  :disabled="noEditField.Products_BriefDescription"   v-model="ruleForm.Products_BriefDescription" style="width: 600px;" :rows="4"></el-input>
       </el-form-item>
       <el-form-item label="商品类型" prop="Products_Type">
-        <el-select  v-model="ruleForm.Products_Type" placeholder="请选择类型"  style="width: 160px">
+        <el-select  v-model="ruleForm.Products_Type" placeholder="请选择类型" :disabled="noEditField.Products_Type"  style="width: 160px">
           <template v-for="(it,ind_con) of prodConfig.prod_type_list">
             <el-option :label="it.Type_Name" :value="it.Type_ID" ></el-option>
           </template>
@@ -114,6 +115,7 @@
                     class="inline-input"
                     :fetch-suggestions="querySearchAsync"
                     v-model="specs[idx_row].vals[idx_val]"
+                    :disabled="noEditField.Products_Type"
                     @focus="queryIndex(idx_row)"
                   ></el-autocomplete>
                   <div class="imgDel" @click="skuDel(idx_row,idx_val)">
@@ -124,6 +126,7 @@
                 <upload-components
                   v-if="idx_row==0&&skuImg"
                   class="uploadThumb"
+                  :disabled="noEditField.Products_Type"
                   :key="idx_val"
                   ref="specPic"
                   size="mini"
@@ -157,10 +160,10 @@
                       <td class="td" :rowspan="getRowsSpan(index,idx)">{{sku[index]}}</td>
                     </template>
                   </template>
-                  <td class="td borderRight inputSku" ><el-input   style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Attr_Price"/></td>
-                  <td class="td borderRight inputSku" ><el-input  style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Property_count"/></td>
-                  <td class="td borderRight inputSku" ><el-input style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Supply_Price"/></td>
-                  <td class="td borderRight"  v-if="ruleForm.pintuan_flag"><el-input v-if="skuList[idx]"  v-model="skuList[idx].pt_pricex"/></td>
+                  <td class="td borderRight inputSku" ><el-input  :disabled="noEditField.Products_Type"  style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Attr_Price"/></td>
+                  <td class="td borderRight inputSku" ><el-input :disabled="noEditField.Products_Type"  style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Property_count"/></td>
+                  <td class="td borderRight inputSku" ><el-input :disabled="noEditField.Products_Type" style="width: 160px" v-if="skuList[idx]"  v-model="skuList[idx].Supply_Price"/></td>
+                  <td class="td borderRight inputSku"  v-if="ruleForm.pintuan_flag"><el-input :disabled="noEditField.Products_Type" v-if="skuList[idx]"  v-model="skuList[idx].pt_pricex"/></td>
                 </tr>
               </template>
             </template>
@@ -169,10 +172,10 @@
                   <template v-for="(item,idx) in skus[0]">
                   <td class="td" >{{item}}</td>
                   </template>
-                  <td class="td borderRight inputSku"><el-input  style="width: 160px"  v-if="skuList[0]"  type="number" v-model="skuList[0].Attr_Price"/></td>
-                  <td class="td borderRight inputSku"><el-input style="width: 160px" v-if="skuList[0]"  v-model="skuList[0].Property_count"/></td>
-                  <td class="td borderRight inputSku"><el-input  style="width: 160px" v-if="skuList[0]"  v-model="skuList[0].Supply_Price"/></td>
-                  <td class="td borderRight" v-if="ruleForm.pintuan_flag"><el-input  v-if="skuList[0]"  v-model="skuList[0].pt_pricex"/></td>
+                  <td class="td borderRight inputSku"><el-input :disabled="noEditField.Products_Type"  style="width: 160px"  v-if="skuList[0]"  type="number" v-model="skuList[0].Attr_Price"/></td>
+                  <td class="td borderRight inputSku"><el-input :disabled="noEditField.Products_Type" style="width: 160px" v-if="skuList[0]"  v-model="skuList[0].Property_count"/></td>
+                  <td class="td borderRight inputSku"><el-input :disabled="noEditField.Products_Type"  style="width: 160px" v-if="skuList[0]"  v-model="skuList[0].Supply_Price"/></td>
+                  <td class="td borderRight inputSku" v-if="ruleForm.pintuan_flag"><el-input :disabled="noEditField.Products_Type"  v-if="skuList[0]"  v-model="skuList[0].pt_pricex"/></td>
                 </tr>
 
             </template>
@@ -193,7 +196,7 @@
 
       <el-form-item label="商品承诺" >
         <div class="input-wrap"  style="width: 160px;display: inline-block;position: relative" :style="{marginLeft:index==0?'':'10px'}"  v-for="(item,index) of Products_Promise" :key="index">
-          <el-input     v-model="Products_Promise[index]" @focus="focusCommit(index)"/>
+          <el-input     v-model="Products_Promise[index]" :disabled="noEditField.Products_Promise" @focus="focusCommit(index)"/>
 <!--          <img src="@/assets/img/productAdd/del.png" class="imgDel" @click="committedDel(index)">-->
               <div class="imgDel" @click="committedDel(index)">
                 <i class="el-icon-error"></i>
@@ -203,19 +206,19 @@
       </el-form-item>
 
       <el-form-item label="商品重量" prop="Products_Weight">
-        <el-input v-model="ruleForm.Products_Weight"   class="sortInput" ></el-input> kg
+        <el-input v-model="ruleForm.Products_Weight"  :disabled="noEditField.Products_Weight"  class="sortInput" ></el-input> kg
       </el-form-item>
       <el-form-item label="运费计算" prop="goods">
         <el-radio-group v-model="ruleForm.goods">
-          <el-radio label="0" style="display: block;margin-bottom: 15px" >
+          <el-radio label="0" style="display: block;margin-bottom: 15px"  :disabled="noEditField.Products_IsShippingFree">
             免运费
-              <el-select   v-model="ruleForm.freight" placeholder="请选择类型"  style="width: 160px;margin-left: 37px;">
+              <el-select :disabled="noEditField.Products_IsShippingFree"   v-model="ruleForm.freight" placeholder="请选择类型"  style="width: 160px;margin-left: 37px;">
                 <template v-for="(prod,prodIn) of prodConfig.shipping_company_dropdown">
                   <el-option  :label="prodConfig.shipping_company_dropdown[prodIn]" :value="prodIn"></el-option>
                 </template>
               </el-select>
           </el-radio>
-          <el-radio  label="1" style="display: block;margin-bottom: 15px" >物流模板</el-radio>
+          <el-radio :disabled="noEditField.Products_IsShippingFree"  label="1" style="display: block;margin-bottom: 15px" >物流模板</el-radio>
 <!--          <el-radio  label="2" style="display: block;margin-bottom: 15px" >-->
 <!--            固定运费-->
 <!--            <el-input   v-model="ruleForm.freightGu"  class="sortInput" placeholder="运费金额：¥" style="width: 200px;margin-left: 23px;"></el-input>-->
@@ -224,36 +227,39 @@
       </el-form-item>
       <el-form-item label="其他属性" prop="otherAttributes">
         <el-checkbox-group v-model="ruleForm.otherAttributes">
-          <el-checkbox  label="下架" name="otherAttributes"></el-checkbox>
-          <el-checkbox  label="新品" name="otherAttributes"></el-checkbox>
-          <el-checkbox  label="热卖" name="otherAttributes"></el-checkbox>
-          <el-checkbox  label="推荐" name="otherAttributes"></el-checkbox>
+          <el-checkbox  label="下架" name="otherAttributes" :disabled="noEditField.Products_SoldOut"></el-checkbox>
+          <el-checkbox  label="新品" name="otherAttributes" :disabled="noEditField.Products_IsNew"></el-checkbox>
+          <el-checkbox  label="热卖" name="otherAttributes" :disabled="noEditField.Products_IsHot"></el-checkbox>
+          <el-checkbox  label="推荐" name="otherAttributes" :disabled="noEditField.Products_IsRecommend"></el-checkbox>
         </el-checkbox-group>
       </el-form-item>
 <!--      <el-form-item label="关联门店" >-->
 <!--        <span class="classificationSpan" @click="dialogStoreShow=true" >选择门店</span>-->
 <!--      </el-form-item>-->
-      <div class="group store_list" style="margin-left: 120px;margin-bottom: 22px;" v-if="store_list.length>0">
-        <div class="store_item" v-for="(store,idx) in store_list">{{store.Stores_Name}}</div>
-      </div>
-      <el-form-item label="特殊属性"  v-if="prodConfig.Payment_RmainderEnabled==1">
-        <el-checkbox-group v-model="ruleForm.Products_IsPaysBalance">
+<!--      <div class="group store_list" style="margin-left: 120px;margin-bottom: 22px;" v-if="store_list.length>0">-->
+<!--        <div class="store_item" v-for="(store,idx) in store_list">{{store.Stores_Name}}</div>-->
+<!--      </div>-->
+      <el-form-item label="特殊属性"  >
+        <el-checkbox-group v-if="prodConfig.Payment_RmainderEnabled==1"  :disabled="noEditField.Products_IsPaysBalance" v-model="ruleForm.Products_IsPaysBalance">
           <el-checkbox label="使用余额支付" value="1" name="Products_IsPaysBalance"></el-checkbox>
         </el-checkbox-group>
+<!--        <el-checkbox-group  v-model="ruleForm.Products_IsPaysBalance">-->
+<!--          <el-checkbox label="开启限购" value="2" name="Products_IsPaysBalance"></el-checkbox>-->
+<!--        </el-checkbox-group>-->
       </el-form-item>
       <el-form-item label="订单类型" prop="orderType" >
-        <el-radio-group v-model="ruleForm.orderType" @change="changeRadio">
+        <el-radio-group v-model="ruleForm.orderType" :disabled="noEditField.prod_order_type" @change="changeRadio">
           <el-radio label="0" style="display: block;margin-bottom: 15px" >实物订单  <span class="font12">( 买家下单 -> 买家付款 -> 商家发货 -> 买家收货 -> 订单完成 )</span> </el-radio>
           <el-radio label="1" style="display: block;margin-bottom: 15px" >虚拟订单  <span class="font12">( 买家下单 -> 买家付款 -> 系统发送消费券码到买家手机 -> 商家认证消费 -> 订单完成 )</span></el-radio>
-          <el-radio label="2"  style="display: block;margin-bottom: 15px" ><span @click="clickRadio">其他  <span class="font12">( 买家下单 -> 买家付款 -> 订单完成 ) <el-button type="primary" sizi="mini">设置</el-button></span></span> </el-radio>
+          <el-radio label="2"  style="display: block;margin-bottom: 15px" ><span @click="clickRadio">其他  <span class="font12">( 买家下单 -> 买家付款 -> 订单完成 ) <el-button type="primary" v-if="!noEditField.prod_order_type" sizi="mini">设置</el-button></span></span> </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="商品库存" prop="Products_Count">
-        <el-input  v-model="ruleForm.Products_Count"  class="sortInput"></el-input>
+        <el-input  v-model="ruleForm.Products_Count" :disabled="noEditField.Products_Count"  class="sortInput"></el-input>
         <span class="sortMsg">注:若不限则填写10000</span>
       </el-form-item>
       <el-form-item label="退货损坏说明">
-        <el-select  v-model="ruleForm.refund" placeholder="请选择类型"  style="width: 160px">
+        <el-select  v-model="ruleForm.refund" placeholder="请选择类型"  :disabled="noEditField.Product_backup"  style="width: 160px">
           <template v-for="(shop,shopIn) in prodConfig.shop_damage">
             <el-option :label="shop.Damage_Name" :value="shop.Damage_ID"></el-option>
           </template>
@@ -687,13 +693,12 @@
         store_id_list = []
         multipleSelection=[]
         currentSpecItemIdx = null //当前激活的规格可选值索引，从0开始
+        noEditField=[];//不可编辑
 
         saveCurrentSpecItem(idx){
-            console.log('鼠标点击'+idx)
             this.currentSpecItemIdx = idx
         }
         upSpecPicSuccessCall(url_list){
-
             if(url_list[0] && url_list[0].url){
                 //创建数组组
                 if(!this.specs[0].imgs){
@@ -716,15 +721,19 @@
             this.committedIndex=index;
         }
         committedAdd(){
+            if(this.noEditField.Products_Promise) return;
             this.Products_Promise.push('');
         }
         committedDel(index){
+            if(this.noEditField.Products_Promise) return;
             this.Products_Promise.splice(index,1);
         }
         skuAdd(index){
+            if(this.noEditField.Products_Type) return
             this.specs[index].vals.push('');
         }
         skuDel(i,j){
+            if(this.noEditField.Products_Type) return
             if(this.specs[i].vals.length<=1) return;
             this.specs[i].vals.splice(j,1);
             //this.createSkuData();
@@ -870,6 +879,7 @@
             return getArrayMulite(this.spec_val_list,specsIndex);
         }
         changePrice(index){
+            if(this.noEditField.Products_Type) return
             this.allValue='';
             this.allType=index;
             this.allPrice=false;
@@ -1363,6 +1373,14 @@
                     productInfo=res.data;
 
                     this.initialPro=res.data;
+                    this.noEditField=res.data.no_edit_field;
+                    let objNoEdit={};
+                    if(this.noEditField.length>0){
+                        for(let item of  this.noEditField){
+                            objNoEdit[item]=true;
+                        }
+                    }
+                    this.noEditField=objNoEdit;
 
                     this.ruleForm.Products_Index=productInfo.Products_Index;//商品排序
                     this.ruleForm.Products_Name=productInfo.Products_Name;//商品名称
