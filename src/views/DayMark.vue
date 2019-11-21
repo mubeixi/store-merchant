@@ -365,6 +365,9 @@
         isEdit=true;//能否编辑
 
         onSubmit(){
+            this.form.morerights=this.form.morerights.filter((item)=>{
+                return item.enable == 1
+            })
             let postData = {
                 name: this.form.name,
                 type: this.form.type,
@@ -446,6 +449,8 @@
                 this.form.morerights.forEach((item,index)=>{
                     item.level = index + 1;
                 })
+                console.log(this.form.morerights)
+                console.log('sssssss')
                 let temarr = []
                 for(let i = 0 ; i<28; i++) {
                     temarr.push({
@@ -481,11 +486,56 @@
                               this.form.act_time=parseInt(this.initData.act_time);
                           }
                           this.form.rule_type=this.initData.rule_type;
-                          if(this.initData.rule_type==1){
+                          console.log(this.form.morerights);
+                          if(this.form.rule_type==1){
                               this.form.morerights=this.initData.rights;
+                              for(let item of this.form.morerights){
+                                  console.log(Array.isArray(item.rights),item.rights,"ssssss")
+                                  if(!Array.isArray(item.rights)){
+                                      for(let i in item.rights){
+                                          item.rights[i].checked=true;
+                                      }
+                                  }else{
+                                      item.rights={
+                                          gift: {
+                                              checked:false,
+                                              value: '',
+                                              name:''
+                                          },
+                                          score: {
+                                              checked: false,
+                                              value: '',
+                                              name:''
+                                          },
+                                          coupon: {
+                                              checked: false,
+                                              value: '',
+                                              name:'',
+                                              count: 0
+                                          },
+                                          requite: {
+                                              checked: false,
+                                              value: '',
+                                              name:''
+                                          },
+                                          shipping: {
+                                              checked: false,
+                                              value: '',
+                                              name:''
+                                          }
+                                      }
+                                  }
+                              }
                           }
-                          if(this.form.rule_type==0){
+                          console.log(this.form.morerights);
 
+                          console.log('--------------------')
+                          return;
+                          if(this.form.rule_type==0){
+                              this.form.rights=this.initData.rights;
+                              for(let i in this.form.rights[0].rights){
+                                      this.form.rights[0].rights[i].checked=true;
+                              }
                           }
                           if(this.initData.sms_content){
                               this.form.sms_che=true;
