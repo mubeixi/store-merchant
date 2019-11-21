@@ -7,9 +7,27 @@
                     <el-input v-model="form.name" class="input-name"></el-input>
                 </el-form-item>
                 <el-form-item label="活动时间：" class="time">
-                    每月 <el-date-picker type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择开始日期" v-model="form.start_time"></el-date-picker>
-                    <span class="line" ></span>
-                    <el-date-picker type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择结束日期" v-model="form.end_time"></el-date-picker>
+                    <!--会员日营销 传2-28的数，结束日期大于开始日期-->
+                    <template v-if="form.type == 1">
+                      每月 <el-select v-model="form.startday">
+                      <el-option
+                        v-for="item in form.startdatelist"
+                        :key="item.value"
+                        :value="item.value"
+                      >
+                      </el-option>
+                    </el-select>
+                      <span class="line"></span>
+                      <el-select></el-select>
+                    </template>
+                    <!--生日营销 传act_time-->
+                    <template v-if="form.type==2"></template>
+                    <!--节日营销 传时间戳-->
+                    <template v-if="form.type==3">
+                      <el-date-picker type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择开始日期" v-model="form.start_time"></el-date-picker>
+                      <span class="line" ></span>
+                      <el-date-picker type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择结束日期" v-model="form.end_time"></el-date-picker>
+                    </template>
                 </el-form-item>
                 <div class="title">权益</div>
                 <el-form-item label="会员等级规则：">
@@ -211,7 +229,11 @@
 </template>
 
 <script lang="ts">
-    import Component from 'vue-class-component'
+    import {
+        Component,
+        Vue,
+        Watch
+    } from 'vue-property-decorator';
     import Vue from 'vue'
     import {initScene,addScene} from '../common/fetch'
     import {createTmplArray} from '@/common/utils';
@@ -249,12 +271,17 @@
                 }
             ]
         }
-    @Component
+    @Component({
+        computed:{
+
+        }
+    })
     export default class DayMark extends Vue{
         form = {
             name: '',
-            type: 3,
+            type: 1, // 1：会员日营销，2：生日营销，3：节日营销
             rule_type: 0, // 1是都不一样，0是都一样
+            startday: 1, // 用户选择的开始日期
             rights: [{
                 rights: [{
                     gift: {
@@ -301,7 +328,9 @@
                     level: '所有等级会员',
                 }
             ],
+            startdatelist : []
         }
+
         onSubmit(e){
             addScene({
                 name: this.form.name,
@@ -352,11 +381,17 @@
 
                 //以指定数据为模板，创建指定长度的数组
                 this.form.morerights = createTmplArray(tmpl_data,this.form.levels.length)
-                console.log(this.form.morerights)
                 this.form.morerights.forEach((item,index)=>{
                     item.level = index + 1;
                 })
-                console.log(this.form.morerights)
+                let temarr = []
+                for(let i = 0 ; i<28; i++) {
+                    temarr.push({
+                        value: i + 1
+                    })
+                }
+                this.form.startdatelist = temarr;
+
             })
         }
     }
