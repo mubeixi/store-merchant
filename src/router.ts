@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
-import Diy from './views/Diy.vue';
+Vue.use(Router);
 
-import Empty from './views/Empty.vue';
+import Home from './views/Home';
+import Diy from './views/Diy';
+import Empty from './views/Empty';
 import ProductForm from "@/views/ProductForm.vue";
 import UserList from '@/views/UserList.vue';
 import Marketing from '@/views/Marketing.vue';
@@ -13,14 +14,22 @@ import LabelAdd from '@/views/LabelAdd.vue'
 import CrowdName from '@/views/CrowdName.vue'
 import CrowdClient from '@/views/CrowdClient.vue'
 import DayMarkDetail from '@/views/DayMarkDetail.vue';
-Vue.use(Router);
+import StoreChannel from '@/views/StoreChannel.vue';
 
-export default new Router({
+const routerInstance = new Router({
   routes: [
     {
       path: '/',
       name: 'Home',
       component: Home,
+    },
+    {
+      path:'/StoreChannel',
+      name:'StoreChannel',
+      component: StoreChannel,
+      meta:{
+        title:'选择进货渠道'
+      }
     },
     {
       path: '/diy',
@@ -78,9 +87,6 @@ export default new Router({
       name: 'DayMarkDetail',
       component: DayMarkDetail
     }
-
-
-
     // {
     //   path: '/about',
     //   name: 'about',
@@ -91,3 +97,12 @@ export default new Router({
     // },
   ],
 });
+routerInstance.beforeEach((to, from, next) => {
+  const title = to.meta && to.meta.title;
+  if (title) {
+    document.title = title;
+  }
+  next();
+});
+
+export default routerInstance
