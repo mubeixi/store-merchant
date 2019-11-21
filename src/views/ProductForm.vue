@@ -277,7 +277,7 @@
       @cancel="bindCateCancel"
       :strictly="false"
       mode="productAdd"
-      :has="cate_list"
+      :has.sync="cate_list"
       :onSuccess="bindCateSuccessCall"
       :pageEl="pageEl"
       :show="bindCateDialogShow"/>
@@ -472,8 +472,7 @@
         objTranslate,
         plainArray,
         getArrayMulite,
-        createTmplArray,
-        get_arr_column
+        createTmplArray
     } from '@/common/utils';
     import {fun} from '@/common';
 
@@ -1208,10 +1207,6 @@
                        _self.$refs.specPic[idx].handleInitHas([imgs[idx]])
                    }
 
-
-
-
-
                }
             }
         }
@@ -1456,6 +1451,7 @@
 
                     let origin_cate_list = res.data
                     let cates = []
+                    //铺平数组
                     plainArray(res.data,'child',cates)
 
                     for(var cate of cates){

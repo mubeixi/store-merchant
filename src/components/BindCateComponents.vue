@@ -69,6 +69,7 @@
 <script>
   import { getProductCategory } from '@/common/fetch';
   import { deepCopy } from '@/common/utils';
+  import { get_arr_column, objTranslate } from '../common/utils';
 
   function refreshCateData(arr) {
 
@@ -94,6 +95,10 @@
   export default {
     name: 'BindCateComponents',
     props: {
+      has:{
+        type:Array,
+        default:[],
+      },
       multiple: {
         type: Boolean,
         default: false,
@@ -204,11 +209,12 @@
       },
       innerVisible(val) {
         this.$emit('input', val);
+        let $ref = this.$refs.treeForm;
 
         //关闭页面的时候
         if (val) return;
 
-        let $ref = this.$refs.treeForm;
+
 
         //获取已经选中的节点
         let keys = $ref.getCheckedKeys();
@@ -217,7 +223,6 @@
         for (var key of keys) {
           $ref.setChecked(key, false, true);
         }
-
       },
       show: {
         immediate: true,
@@ -226,14 +231,63 @@
 
           if (!val) return;
 
-          if (this.innerDialog.customizeIndex === '2' && !this.innerDialog.classify.isHasData) {
-            getProductCategory()
-              .then(res => {
-                this.innerDialog.classify.isHasData = true;
-                let data = refreshCateData(res.data);
-                this.innerDialog.classify.data.push(...data);
 
-              });
+          let self = this
+          if (this.innerDialog.customizeIndex === '2') {
+
+            if(!this.innerDialog.classify.isHasData){
+
+              getProductCategory()
+                .then(res => {
+                  this.innerDialog.classify.isHasData = true;
+
+                  let orogin_cate_list = objTranslate(res.data);
+                  this.innerDialog.classify.orogin_cate_list = orogin_cate_list;
+                  let data = refreshCateData(res.data);
+                  this.innerDialog.classify.data.push(...data);
+
+                  let pids = []
+
+                  let ids = get_arr_column(this.has,'Category_ID')
+
+                  for (var cate of orogin_cate_list){
+                    if(cate.child)pids.push(cate.Category_ID)
+                  }
+
+                  for(var idx in ids){
+                    if(pids.indexOf(ids[idx])!=-1){
+                      ids.splice(idx,1)
+                    }
+                  }
+
+                  console.log(pids,ids)
+
+                  self.$nextTick().then(res=>{
+                    self.setHasFn(ids)
+                  })
+
+                });
+            }else{
+
+              let orogin_cate_list = this.innerDialog.classify.orogin_cate_list;
+
+              let pids = []
+              let ids = get_arr_column(this.has,'Category_ID')
+              for (var cate of orogin_cate_list){
+                if(cate.child)pids.push(cate.Category_ID)
+              }
+              for(var idx in ids){
+                if(pids.indexOf(ids[idx])!=-1){
+                  ids.splice(idx,1)
+                }
+              }
+              console.log(pids,ids)
+              self.$nextTick().then(res=>{
+                self.setHasFn(ids)
+              })
+
+            }
+
           }
 
 
@@ -274,6 +328,7 @@
     },
     data() {
       return {
+
         innerVisible: false,
         innerDialog: {
           data: ['自定义链接', '选择页面'],
@@ -326,6 +381,7 @@
           classify: {
             data: [],
             index: 0,
+            orogin_cate_list:[],
             i: 0,
             defaultProps: {
               children: 'children',
@@ -369,7 +425,14 @@
       }
     },
     methods: {
+      setHasFn(ids){
+        let $ref = this.$refs.treeForm;
+        if(!$ref)return;
+        //初始化已经存在的数据
+        //has
+        $ref.setCheckedKeys(ids)
 
+      },
       closeFun() {
         console.log('触发关闭BindCateComponents');
         this.$emit('cancel');
