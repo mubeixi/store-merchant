@@ -44,13 +44,13 @@ export default new Router({
       component: UserList,
     },
     {
-      path: '/marketing',
-      name: 'marketing',
+      path: '/Marketing',
+      name: 'Marketing',
       component: Marketing,
     },
     {
-      path: '/daymark',
-      name: 'daymark',
+      path: '/DayMark',
+      name: 'DayMark',
       component: DayMark
     },
     {

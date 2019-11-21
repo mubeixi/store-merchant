@@ -126,6 +126,8 @@ export const getScene = (data:object={},options:any=false) => fetch('get_scene',
 export const getScenes = (data:object={},options:any=false) => fetch('get_scenes', data, options);
 //终止场景营销
 export const stopScene = (data:object={},options:any=false) => fetch('stop_scene', data, options);
+//场景营销初始化
+export const initScenes = (data:object={},options:any=false) => fetch('init_scenes', data, options);
 
 
 // 获取初始化数据
