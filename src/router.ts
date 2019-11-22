@@ -15,6 +15,7 @@ import CrowdName from '@/views/CrowdName.vue'
 import CrowdClient from '@/views/CrowdClient.vue'
 import DayMarkDetail from '@/views/DayMarkDetail.vue';
 import StoreChannel from '@/views/StoreChannel.vue';
+import StorePurchase from '@/views/StorePurchase.vue';
 
 const routerInstance = new Router({
   routes: [
@@ -27,6 +28,14 @@ const routerInstance = new Router({
       path:'/StoreChannel',
       name:'StoreChannel',
       component: StoreChannel,
+      meta:{
+        title:'选择进货渠道'
+      }
+    },
+    {
+      path:'/StorePurchase',
+      name:'StorePurchase',
+      component: StorePurchase,
       meta:{
         title:'选择进货渠道'
       }

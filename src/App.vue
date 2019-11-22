@@ -129,4 +129,16 @@ input[type="number"]{
     overflow-x: hidden !important;
   }
 }
+
+
+.danger-color{
+  color: #F43131;
+}
+
+.fly-pic{
+  position:fixed;
+  z-index:999;
+  width: 205px;
+  height: 205px;
+}
 </style>
