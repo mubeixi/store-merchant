@@ -177,13 +177,13 @@
                                                 </label>
                                                 <span>选择赠品</span>
                                             </div>
-                                            <div class="giftbag jifenbei">
-                                              <label>
-                                                <el-checkbox :disabled="!form.morerights[scope.$index].enable" v-model="form.morerights[scope.$index].rights.coupon.checked" ></el-checkbox>送优惠券
-                                              </label>
-                                                <el-select :disabled="!form.morerights[scope.$index].rights.coupon.checked"></el-select>
-                                                <el-input :disabled="!form.morerights[scope.$index].rights.coupon.checked" v-model="form.morerights[scope.$index].rights.coupon.count" ></el-input>张
-                                            </div>
+<!--                                            <div class="giftbag jifenbei">-->
+<!--                                              <label>-->
+<!--                                                <el-checkbox :disabled="!form.morerights[scope.$index].enable" v-model="form.morerights[scope.$index].rights.coupon.checked" ></el-checkbox>送优惠券-->
+<!--                                              </label>-->
+<!--                                                <el-select :disabled="!form.morerights[scope.$index].rights.coupon.checked"></el-select>-->
+<!--                                                <el-input :disabled="!form.morerights[scope.$index].rights.coupon.checked" v-model="form.morerights[scope.$index].rights.coupon.count" ></el-input>张-->
+<!--                                            </div>-->
                                         </div>
                                     </template>
                                 </el-table-column>
@@ -237,7 +237,7 @@
                     <el-checkbox v-model="form.mobile_che" label="通过短信提醒我" name="remindByMsg"></el-checkbox>
                     <div class="recive-number">
                         <span>接收短信的手机号</span>
-                        <el-input type="text" :disabled="!form.mobile_che" v-model="form.mobile"></el-input>
+                        <el-input type="text" maxlength="11" :disabled="!form.mobile_che" v-model="form.mobile"></el-input>
                     </div>
                 </el-form-item>
                 <el-form-item class="submit">
@@ -349,8 +349,8 @@
             mobile: '13946878984', // 短信提醒的手机号
             sms_che: true,  //是否启用短信通知
             sms_content: '活动开始了,请及时参加', // 短信通知内容
-            day: '',
-            time: '',
+            day: '1',
+            time: '0',
             days: [],
             times: [],
             oneruleData: [
@@ -362,9 +362,17 @@
             act_time: 1, // 1当天 2当周 3当月
         }
         initData=[]
+        timeArr=[];
         isEdit=true;//能否编辑
 
         onSubmit(){
+            if(this.form.mobile_che){
+                if(!(/^1[3456789]\d{9}$/.test(this.form.mobile))){
+
+                    this.$message.error('请填写正确接收短信的手机号');
+                    return
+                }
+            }
             this.form.morerights=this.form.morerights.filter((item)=>{
                 return item.enable == 1
             })
@@ -376,12 +384,18 @@
                 start_time: this.form.start_time,
                 end_time: this.form.end_time,
                 notify_day: this.form.day,
-                notify_time: this.form.time,
+                notify_time: this.timeArr[this.form.time],
                 mobile_che: this.form.mobile_che,
                 mobile: this.form.mobile,
                 sms_che: this.form.sms_che,
                 sms_content: this.form.sms_content,
                 act_time: ''
+            }
+
+            let id = this.$route.query.id
+            //获取初始化活动信息
+            if(id){
+                postData.id=id
             }
             //判断类型
             if(this.form.type == 1) {
@@ -406,7 +420,17 @@
                 return;
             }
             addScene(postData).then(res=>{
-                console.log(res)
+                if(res.errorCode==0){
+                    this.$message({
+                        message: res.msg,
+                        type: 'success'
+                    });
+                    setTimeout(()=>{
+                        this.$router.push({
+                            name: 'Marketing'
+                        })
+                    },1500)
+                }
             })
         }
         change(scope,index){
@@ -417,13 +441,14 @@
             console.log('type....')
             console.log(this.$route)
 
-            this.form.type = this.$route.params.type;
+            this.form.type = this.$route.query.type;
             // 获取一些初始化信息
             await initScene().then(res=>{
                 console.log('ressss')
                 console.log(res)
                 // 转换day为需要的格式
                 let dayslist = res.data.days;
+                this.timeArr=res.data.times;
                 let temArr = [];
                 for(let i in dayslist) {
                     temArr.push({
@@ -462,7 +487,7 @@
             })
 
 
-           let id = this.$route.params.id
+           let id = this.$route.query.id
            //获取初始化活动信息
            if(id){
                this.isEdit=false;
@@ -486,56 +511,14 @@
                               this.form.act_time=parseInt(this.initData.act_time);
                           }
                           this.form.rule_type=this.initData.rule_type;
-                          console.log(this.form.morerights);
                           if(this.form.rule_type==1){
                               this.form.morerights=this.initData.rights;
-                              for(let item of this.form.morerights){
-                                  console.log(Array.isArray(item.rights),item.rights,"ssssss")
-                                  if(!Array.isArray(item.rights)){
-                                      for(let i in item.rights){
-                                          item.rights[i].checked=true;
-                                      }
-                                  }else{
-                                      item.rights={
-                                          gift: {
-                                              checked:false,
-                                              value: '',
-                                              name:''
-                                          },
-                                          score: {
-                                              checked: false,
-                                              value: '',
-                                              name:''
-                                          },
-                                          coupon: {
-                                              checked: false,
-                                              value: '',
-                                              name:'',
-                                              count: 0
-                                          },
-                                          requite: {
-                                              checked: false,
-                                              value: '',
-                                              name:''
-                                          },
-                                          shipping: {
-                                              checked: false,
-                                              value: '',
-                                              name:''
-                                          }
-                                      }
-                                  }
-                              }
                           }
-                          console.log(this.form.morerights);
-
-                          console.log('--------------------')
-                          return;
                           if(this.form.rule_type==0){
                               this.form.rights=this.initData.rights;
-                              for(let i in this.form.rights[0].rights){
-                                      this.form.rights[0].rights[i].checked=true;
-                              }
+                              // for(let i in this.form.rights[0].rights){
+                              //         this.form.rights[0].rights[i].checked=true;
+                              // }
                           }
                           if(this.initData.sms_content){
                               this.form.sms_che=true;

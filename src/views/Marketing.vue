@@ -143,7 +143,7 @@
         editScenes(index,type){
             this.$router.push({
                 name: 'DayMark',
-                params: {
+                query: {
                     id: index,
                     type:type
                 }
@@ -154,8 +154,8 @@
         vipAdd(){
             if(this.init.btn1.status==1){
                 this.$router.push({
-                    path: 'DayMark',
-                    params: {
+                    name: 'DayMark',
+                    query: {
                         type: '1'
                     }
                 })
@@ -170,8 +170,8 @@
         birthdayAdd(){
             if(this.init.btn2.status==1){
                 this.$router.push({
-                    path: 'DayMark',
-                    params: {
+                    name: 'DayMark',
+                    query: {
                         type: '2'
                     }
                 })
@@ -186,7 +186,7 @@
         festivalAdd(){
             this.$router.push({
                 name: 'DayMark',
-                params: {
+                query: {
                     type: '3'
                 }
             })
@@ -201,7 +201,7 @@
             let id= this.scenesList[index].id;
             this.$router.push({
                 name: 'DayMarkDetail',
-                params: {
+                query: {
                     id: id
                 }
             })
