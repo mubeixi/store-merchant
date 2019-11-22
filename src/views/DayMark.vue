@@ -103,18 +103,27 @@
                                               </label>
                                                 <el-input :disabled="!form.rights[0].rights.score.checked" v-model="form.rights[0].rights.score.value"></el-input>积分
                                             </div>
-                                            <div class="giftbag song">
+                                            <div class="giftbag song" style="display: flex">
                                                 <label>
                                                   <el-checkbox v-model="form.rights[0].rights.gift.checked"></el-checkbox>送赠品
                                                 </label>
-                                                <span>选择赠品</span>
+                                                <span class="current"  @click="selectGift(1,0,form.rights[0].rights.gift.checked)">选择赠品</span>
+                                                <el-tooltip :content="form.rights[0].rights.gift.pname"  placement="top" effect="light">
+                                                  <div>
+                                                    <div  class="lst" style="display: block" v-if="form.rights[0].rights.gift.pname">{{form.rights[0].rights.gift.pname}}</div>
+                                                  </div>
+                                                </el-tooltip>
                                             </div>
                                             <div class="giftbag jifenbei">
                                                 <label>
                                                   <el-checkbox v-model="form.rights[0].rights.coupon.checked"></el-checkbox>送优惠券
                                                 </label>
-                                                <el-select :disabled="!form.rights[0].rights.coupon.checked" v-model="form.tickets"></el-select>
-                                                <el-input :disabled="!form.rights[0].rights.coupon.checked" v-model="form.rights[0].rights.coupon.value"></el-input>张
+                                                <el-select :disabled="!form.rights[0].rights.coupon.checked" v-model="form.rights[0].rights.coupon.value" style="width: 120px">
+                                                  <template v-for="(it,ind_con) of coupon">
+                                                    <el-option :label="it.title" :value="it.id" ></el-option>
+                                                  </template>
+                                                </el-select>
+                                                <el-input :disabled="!form.rights[0].rights.coupon.checked" v-model="form.rights[0].rights.coupon.count"></el-input>张
                                             </div>
                                         </div>
                                     </template>
@@ -171,19 +180,28 @@
                                                 </label>
                                                 <el-input :disabled="!form.morerights[scope.$index].rights.score.checked" v-model="form.morerights[scope.$index].rights.score.value" ></el-input>积分
                                             </div>
-                                            <div class="giftbag song">
+                                            <div class="giftbag song" style="display: flex">
                                                 <label>
                                                   <el-checkbox :disabled="!form.morerights[scope.$index].enable" v-model="form.morerights[scope.$index].rights.gift.checked" ></el-checkbox>送赠品
                                                 </label>
-                                                <span>选择赠品</span>
+                                                <span class="current" @click="selectGift(2,scope.$index,form.morerights[scope.$index].rights.gift.checked)">选择赠品</span>
+                                                <el-tooltip :content="form.morerights[scope.$index].rights.gift.pname"  placement="top" effect="light">
+                                                  <div>
+                                                    <div  class="lst" style="display: block" v-if="form.morerights[scope.$index].rights.gift.pname">{{form.morerights[scope.$index].rights.gift.pname}}</div>
+                                                  </div>
+                                                </el-tooltip>
                                             </div>
-<!--                                            <div class="giftbag jifenbei">-->
-<!--                                              <label>-->
-<!--                                                <el-checkbox :disabled="!form.morerights[scope.$index].enable" v-model="form.morerights[scope.$index].rights.coupon.checked" ></el-checkbox>送优惠券-->
-<!--                                              </label>-->
-<!--                                                <el-select :disabled="!form.morerights[scope.$index].rights.coupon.checked"></el-select>-->
-<!--                                                <el-input :disabled="!form.morerights[scope.$index].rights.coupon.checked" v-model="form.morerights[scope.$index].rights.coupon.count" ></el-input>张-->
-<!--                                            </div>-->
+                                            <div class="giftbag jifenbei">
+                                              <label>
+                                                <el-checkbox :disabled="!form.morerights[scope.$index].enable" v-model="form.morerights[scope.$index].rights.coupon.checked" ></el-checkbox>送优惠券
+                                              </label>
+                                              <el-select :disabled="!form.morerights[scope.$index].rights.coupon.checked" v-model="form.morerights[scope.$index].rights.coupon.value" style="width: 120px">
+                                                <template v-for="(it,ind_con) of coupon">
+                                                  <el-option :label="it.title" :value="it.id" ></el-option>
+                                                </template>
+                                              </el-select>
+                                                <el-input :disabled="!form.morerights[scope.$index].rights.coupon.checked" v-model="form.morerights[scope.$index].rights.coupon.count" ></el-input>张
+                                            </div>
                                         </div>
                                     </template>
                                 </el-table-column>
@@ -213,7 +231,7 @@
                 <div class="title">时间设置</div>
                 <el-form-item label="发放权益、通知时间：" class="time-choose">
                     <span>在活动生效</span>
-                    <el-select v-model="form.day" placeholder="前一天">
+                    <el-select v-model="form.day" placeholder="前一天" :disabled="!isEdit">
                         <el-option
                         v-for="item in form.days"
                         :key="item.value"
@@ -222,7 +240,7 @@
                         </el-option>
                     </el-select>
                     <span>的</span>
-                    <el-select v-model="form.time" placeholder="08：30">
+                    <el-select v-model="form.time" placeholder="08：30" :disabled="!isEdit">
                         <el-option
                         v-for="item in form.times"
                         :key="item.value"
@@ -245,6 +263,72 @@
                 </el-form-item>
             </el-form>
         </div>
+
+
+      <el-dialog
+        title="选择赠品"
+        width="60%"
+        @close="cardCancel"
+        append-to-body
+        :visible.sync="isShow"
+        class="setting"
+      >
+        <div class="cardTitle" style="margin-bottom: 10px">
+          <div class="cardTitle" style="margin-right: 10px">
+            产品名称： <el-input    class="sortInput" style="width: 100px" v-model="nameMbx"></el-input>
+          </div>
+          <el-button  type="primary" >搜索</el-button>
+        </div>
+        <el-table
+          ref="multipleTable"
+          :data="GivingGifts"
+          tooltip-effect="dark"
+          style="width: 100%"
+          highlight-current-row
+          @current-change="handleSelectionChange"
+        >
+          <el-table-column
+            type="index"
+            label="#"
+            width="55">
+          </el-table-column>
+          <el-table-column
+            label="赠品名称"
+            prop="gift_name"
+            width="120">
+          </el-table-column>
+          <el-table-column
+            prop="Products_Name"
+            label="产品名称"
+            width="300px"
+            >
+            <template slot-scope="scope">
+                <div class="fixDisplay">
+                  <div style="width: 100px;height: 100px">
+                    <img :src="GivingGifts[scope.$index].img_url" style="width: 100%;height: 100%">
+                  </div>
+                  <div style="width: 200px">{{GivingGifts[scope.$index].Products_Name}}</div>
+                </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="valid_days"
+            label="领取有效天数"
+            show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column
+            prop="limit_times"
+            label="限制领取次数"
+            show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column
+            prop="Products_Count"
+            label="剩余库存"
+            show-overflow-tooltip>
+          </el-table-column>
+        </el-table>
+        <el-button  type="primary" style="margin-top: 10px" @click="sureCard">确定</el-button>
+      </el-dialog>
     </div>
 </template>
 
@@ -255,7 +339,7 @@
         Watch
     } from 'vue-property-decorator';
     import Vue from 'vue'
-    import {initScene,addScene,getScene} from '../common/fetch'
+    import {initScene,addScene,getScene,getGivingGifts} from '../common/fetch'
     import {createTmplArray} from '@/common/utils';
     import fa from "element-ui/src/locale/lang/fa";
 
@@ -267,7 +351,8 @@
                 {
                     gift: {
                         checked: false,
-                        value: 7
+                        value: '',
+                        pname:''
                     },
                     score: {
                         checked: false,
@@ -275,8 +360,8 @@
                     },
                     coupon: {
                         checked: false,
-                        value: 5,
-                        count: 5
+                        value: '',
+                        count: 1
                     },
                     requite: {
                         checked: false,
@@ -306,6 +391,7 @@
         }
     })
     export default class DayMark extends Vue{
+        nameMbx='';
         form = {
             name: '',
             type: 1, // 1：会员日营销，2：生日营销，3：节日营销
@@ -316,16 +402,17 @@
                 rights: {
                     gift: {
                         checked:false,
-                        value: 7
+                        value: '',
+                        pname:''
                     },
                     score: {
                         checked: false,
-                        value: 10
+                        value: 1
                     },
                     coupon: {
                         checked: false,
-                        value: 5,
-                        count: 5
+                        value: '',
+                        count: 1
                     },
                     requite: {
                         checked: false,
@@ -339,8 +426,7 @@
                         value: 9
                     }
                 }
-            }
-            ],
+            }],
             morerights: [],
             levels: [],
             start_time: '',
@@ -363,24 +449,75 @@
         }
         initData=[]
         timeArr=[];
+        coupon=[];//优惠券
         isEdit=true;//能否编辑
+
+        //赠品
+        isShow=false;
+        GivingGifts=[];//赠品列表
+        giftIndex=0;
+        giftType=1;
+        selectGift(type,index,bool){
+            //type  为1是同一规则  2 为不同规则
+            //index   下标 第几行
+            //bool  是否选择赠品
+            if(!bool){
+                this.$message.error('请勾选送赠品');
+                return
+            }
+            this.giftType=type;
+            this.giftIndex=index;
+            this.isShow=true;
+        }
+        //取消
+        cardCancel(){
+            this.isShow=false
+        }
+        handleSelectionChange(val){
+            if(val){
+                if(this.giftType==1){
+                    this.form.rights[0].rights.gift.value=val.id;
+                    this.form.rights[0].rights.gift.pname=val.Products_Name;
+                    this.form.rights[0].rights.gift.checked=true;
+                }
+                if(this.giftType==2){
+                    this.form.morerights[this.giftIndex].rights.gift.value=val.id;
+                    this.form.morerights[this.giftIndex].rights.gift.pname=val.Products_Name;
+                    this.form.morerights[this.giftIndex].rights.gift.checked=true;
+                }
+                this.isShow=false
+                this.$refs.multipleTable.setCurrentRow();
+            }
+        }
+        //确定
+        sureCard(){
+            this.isShow=false;
+        }
 
         onSubmit(){
             if(this.form.mobile_che){
                 if(!(/^1[3456789]\d{9}$/.test(this.form.mobile))){
-
                     this.$message.error('请填写正确接收短信的手机号');
                     return
                 }
             }
-            this.form.morerights=this.form.morerights.filter((item)=>{
-                return item.enable == 1
-            })
+            let arrMore=[]
+            for(let item of this.form.morerights){
+                if(item.enable){
+                    arrMore.push(item);
+                }
+            }
+            // this.form.morerights=this.form.morerights.filter((item)=>{
+            //     if(item.enable){
+            //         return item
+            //     }
+            //     return
+            // })
             let postData = {
                 name: this.form.name,
                 type: this.form.type,
                 rule_type: this.form.rule_type,
-                rights: JSON.stringify(this.form.rule_type == 0 ? this.form.rights : this.form.morerights) ,
+                rights: JSON.stringify(this.form.rule_type == 0 ? this.form.rights : arrMore) ,
                 start_time: this.form.start_time,
                 end_time: this.form.end_time,
                 notify_day: this.form.day,
@@ -449,6 +586,7 @@
                 // 转换day为需要的格式
                 let dayslist = res.data.days;
                 this.timeArr=res.data.times;
+                this.coupon=res.data.coupons;
                 let temArr = [];
                 for(let i in dayslist) {
                     temArr.push({
@@ -485,6 +623,11 @@
                 this.form.startdatelist = temarr;
 
             })
+           await getGivingGifts({User_ID:'-1'}).then(res=>{
+               if(res.errorCode==0){
+                   this.GivingGifts=res.data;
+               }
+           })
 
 
            let id = this.$route.query.id
@@ -692,5 +835,28 @@
                 border-bottom: 0;
             }
         }
+
     }
+
+    .cardTitle{
+      display: flex;
+      align-items: center;
+    }
+  .current{
+    cursor: pointer;
+    color: #79B0FF;
+    margin-left: 10px;
+  }
+  .fixDisplay{
+    display: flex;
+    align-items: center;
+  }
+  .lst{
+    margin-left: 10px;
+    width: 100px;
+    overflow: hidden;
+    height: 17px;
+    line-height: 23px;
+    display: inline-block;
+  }
 </style>

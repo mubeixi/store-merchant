@@ -128,6 +128,14 @@ export const getScenes = (data:object={},options:any=false) => fetch('get_scenes
 export const stopScene = (data:object={},options:any=false) => fetch('stop_scene', data, options);
 //场景营销初始化
 export const initScenes = (data:object={},options:any=false) => fetch('init_scenes', data, options);
+//获取赠品列表
+export const getGivingGifts = (data:object={},options:any=false) => fetch('get_giving_gifts', data, options);
+//获取标签管理列表
+export const getTags = (data:object={},options:any=false) => fetch('get_tags', data, options);
+//删除标签
+export const delTag = (data:object={},options:any=false) => fetch('del_tag', data, options);
+//新增标签
+export const addTag = (data:object={},options:any=false) => fetch('add_tag', data, options);
 
 
 // 获取初始化数据

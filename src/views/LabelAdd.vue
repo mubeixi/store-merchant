@@ -3,18 +3,18 @@
     <div class="labelMain">
       <el-form size="small">
         <el-form-item label="标签名称:">
-          <el-input  style="width: 350px" ></el-input>
+          <el-input  style="width: 350px" :disabled="!isEdit"  v-model="allData.name"></el-input>
         </el-form-item>
         <el-form-item label="标签类型:">
-          <el-radio-group v-model="LabelRadio">
-            <el-radio label="0" >手动标签</el-radio>
-            <el-radio label="1" >自动标签</el-radio>
+          <el-radio-group v-model="allData.type">
+            <el-radio label="1" >手动标签</el-radio>
+            <el-radio label="2" >自动标签</el-radio>
           </el-radio-group>
         </el-form-item>
-        <template v-if="LabelRadio==1">
+        <template v-if="allData.type==2">
           <div class="labelManual">
             <el-form-item label="满足条件:">
-              <el-radio-group v-model="condition">
+              <el-radio-group v-model="allData.rule_type">
                 <el-radio label="0" >满足任意一个被选中的条件即可</el-radio>
                 <el-radio label="1" >必须满足所有被选中的条件</el-radio>
               </el-radio-group>
@@ -24,47 +24,51 @@
                 交易条件:
               </div>
               <div>
-                <el-checkbox-group v-model="lastTime">
+                <el-checkbox-group v-model="allData.conditions.time.checked">
                   <el-checkbox label="lastTime" name="lastTime">最后消费时间</el-checkbox>
                 </el-checkbox-group>
 
-                <el-radio-group :disabled="!lastTime"  v-model="timeInterval" style="margin-left: 30px;margin-top: 25px;margin-bottom: 16px;">
-                  <el-radio label="zuijin">最近
-                    <el-input  class="marginLR"></el-input>天
+                <el-radio-group :disabled="!allData.conditions.time.checked"  v-model="allData.conditions.time.type" style="margin-left: 30px;margin-top: 25px;margin-bottom: 16px;">
+                  <el-radio label="1">最近
+                    <el-input  class="marginLR" v-model="allData.conditions.time.value"></el-input>天
                   </el-radio>
-                  <el-radio label="zi">自定义
+                  <el-radio label="2">自定义
                     <el-form-item  style="display: inline-block">
                       <el-date-picker
                         type="datetime"
                         placeholder="选择开始时间"
                         align="right"
-                        style="width: 140px"
-                        :picker-options="pickerOptions">
+                        style="width: 182px"
+                        v-model="allData.conditions.time.start"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                        >
                       </el-date-picker>
                       一
                       <el-date-picker
                         type="datetime"
-                        style="width: 140px"
+                        style="width: 182px"
+                        v-model="allData.conditions.time.end"
+                        value-format="yyyy-MM-dd HH:mm:ss"
                         placeholder="选择结束时间"
-                        :picker-options="pickerOptions">
+                        >
                       </el-date-picker>
                     </el-form-item>
                   </el-radio>
                 </el-radio-group>
                 <el-form-item>
-                  <el-checkbox-group v-model="consumptionTimes">
+                  <el-checkbox-group v-model="allData.conditions.count.checked">
                     <el-checkbox label="lastTime" name="consumptionTimes">
-                      累计消费金额
-                      <el-input  class="marginLR" style="width: 70px"></el-input>元<span style="margin-left: 10px">一</span><el-input class="marginLR"  style="width: 70px"></el-input>元
+                      累计消费次数
+                      <el-input  class="marginLR" style="width: 70px" v-model="allData.conditions.count.min"></el-input>次<span style="margin-left: 10px">一</span><el-input class="marginLR" v-model="allData.conditions.count.max"  style="width: 70px"></el-input>次
                     </el-checkbox>
                   </el-checkbox-group>
                 </el-form-item>
 
                 <el-form-item>
-                  <el-checkbox-group v-model="consumptionMoney">
+                  <el-checkbox-group v-model="allData.conditions.money.checked">
                     <el-checkbox label="lastTime" name="consumptionMoney">
                       累计消费金额
-                      <el-input  class="marginLR" style="width: 70px"></el-input>元<span style="margin-left: 10px">一</span><el-input class="marginLR"  style="width: 70px"></el-input>元
+                      <el-input  class="marginLR" style="width: 70px" v-model="allData.conditions.money.min"></el-input>元<span style="margin-left: 10px">一</span><el-input class="marginLR" v-model="allData.conditions.money.max"  style="width: 70px"></el-input>元
                     </el-checkbox>
                   </el-checkbox-group>
                 </el-form-item>
@@ -73,7 +77,7 @@
             </div>
           </div>
         </template>
-        <div class="submit">保存</div>
+        <div class="submit" @click="saveData">保存</div>
       </el-form>
     </div>
   </div>
@@ -89,6 +93,7 @@
         Action,
         State
     } from 'vuex-class'
+    import  {addTag} from '@/common/fetch'
     import fa from "element-ui/src/locale/lang/fa";
 
     @Component({
@@ -100,25 +105,67 @@
 
     export default class AddProduct extends Vue {
 
+        isEdit=true
+        allData={
+            name:"",
+            rule_type:'0',
+            type:'2',
+            conditions:{
+                time:{
+                    checked:true,
+                    type:'1',
+                    start:'',
+                    end:'',
+                    value:''
+                },
+                count:{
+                    min:'',
+                    max:'',
+                    checked: false
+                },
+                money:{
+                    min:'',
+                    max:'',
+                    checked: false
+                }
+            }
+        }
 
-        //手动标签和自动标签
-        LabelRadio='1'
+        saveData(){
+            if(this.allData.name==''){
+                this.$message({
+                    message: '请填写标签名称',
+                    type: 'error'
+                })
+                return
+            }
+            let data={
+                name:this.allData.name,
+                type:this.allData.type,
+                rule_type:this.allData.rule_type,
+                conditions:JSON.stringify(this.allData.conditions)
+            }
+            addTag(data).then(res=>{
+                    if(res.errorCode==0){
+                        this.$message({
+                            message: res.msg,
+                            type: 'success'
+                        })
+                        setTimeout(()=>{
+                            this.$router.push({
+                                name: 'LabelManagement'
+                            })
+                        },1500)
+                    }
+                })
 
-        //满足条件（&与|）
-        condition='0'
-        //是否选中最后消费时间
-        lastTime=true
-
-        //时间区域
-        timeInterval="zuijin"
-
-        //消费次数
-        consumptionTimes=false
-        //消费金额
-        consumptionMoney=false
+        }
 
         async created(){
-
+            let id = this.$route.query.id
+            if(id){
+                this.isEdit=false
+            }
         }
 
 
@@ -145,7 +192,7 @@
     }
   }
   .labelManual{
-    width: 64%;
+    width: 80%;
     background-color: #F8F8F8;
     padding-top: 24px;
     padding-left: 84px;
@@ -173,5 +220,6 @@
   margin-top: 42px;
   margin-left: 30%;
 }
+
 
 </style>
