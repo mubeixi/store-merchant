@@ -51,6 +51,8 @@ export const login = (data:object={},options:any=false) => fetch('users_login', 
 
 export const getCouponList = (data:object={},options:any=false) => fetch('get_unaccalimed_coupon', data, options)
 
+export const getProductDetail = (data:object={},options:any=false) => fetch('prod_detail', data, options)
+
 export const getProductList = (data:object={},options:any=false) => fetch('get_prod', data, options)
 
 export const getShopSkinList = (data:object={},options:any=false) => fetch('get_shopskin', data, options)

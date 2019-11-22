@@ -10,10 +10,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label=" " prop="store_no" v-show="formData.channel!=2">
-          <el-input  v-model="formData.store_no" ></el-input>
+          <el-input  v-model="formData.store_no" placeholder="请输入门店编码" ></el-input>
         </el-form-item>
       </el-form>
-      <div class="btn">搜索</div>
+      <div class="btn" @click="subSearch">搜索</div>
     </div>
   </div>
 </template>
@@ -43,6 +43,12 @@
         {id:1,name:'门店进货'},
         {id:2,name:'平台进货'},
     ]
+
+    subSearch(){
+        this.$router.push({
+            name:'StorePurchase'
+        })
+    }
 
 
 
@@ -76,6 +82,7 @@
     color white
     text-align center
     font-size 18px
+    cursor pointer
 </style>
 
 

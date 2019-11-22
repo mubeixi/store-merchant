@@ -42,42 +42,45 @@ import {
   Tree,
   Upload,
   Autocomplete,
-  Progress
+  Progress,
+  InfiniteScroll,
+  InputNumber
 } from 'element-ui';
 
-
-Vue.use(Progress);
-Vue.use(Autocomplete);
-Vue.use(Input);
-Vue.use(Button);
-Vue.use(Pagination);
-Vue.use(Breadcrumb);
-Vue.use(BreadcrumbItem);
-Vue.use(Loading.directive);
-Vue.use(Radio);
-Vue.use(Dialog);
-Vue.use(Form);
-Vue.use(Alert);
-Vue.use(FormItem);
-Vue.use(Upload);
-Vue.use(Select);
-Vue.use(Option);
-Vue.use(RadioGroup);
-Vue.use(RadioButton);
-Vue.use(Tabs);
-Vue.use(TabPane);
-Vue.use(Tree);
-Vue.use(Tooltip);
-Vue.use(Switch);
-Vue.use(Carousel);
-Vue.use(CarouselItem);
-Vue.use(TimePicker);
-Vue.use(Col);
-Vue.use(DatePicker);
-Vue.use(CheckboxGroup);
-Vue.use(Checkbox);
-Vue.use(ColorPicker);
-Vue.use(Slider);
+Vue.use(InputNumber)
+Vue.use(InfiniteScroll)
+Vue.use(Progress)
+Vue.use(Autocomplete)
+Vue.use(Input)
+Vue.use(Button)
+Vue.use(Pagination)
+Vue.use(Breadcrumb)
+Vue.use(BreadcrumbItem)
+Vue.use(Loading.directive)
+Vue.use(Radio)
+Vue.use(Dialog)
+Vue.use(Form)
+Vue.use(Alert)
+Vue.use(FormItem)
+Vue.use(Upload)
+Vue.use(Select)
+Vue.use(Option)
+Vue.use(RadioGroup)
+Vue.use(RadioButton)
+Vue.use(Tabs)
+Vue.use(TabPane)
+Vue.use(Tree)
+Vue.use(Tooltip)
+Vue.use(Switch)
+Vue.use(Carousel)
+Vue.use(CarouselItem)
+Vue.use(TimePicker)
+Vue.use(Col)
+Vue.use(DatePicker)
+Vue.use(CheckboxGroup)
+Vue.use(Checkbox)
+Vue.use(ColorPicker)
+Vue.use(Slider)
 Vue.use(TableColumn)
 Vue.use(Table)
 

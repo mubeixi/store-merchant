@@ -1,4 +1,4 @@
-function division(x,t1,t2, epsilon,func) {//计算x的近似值
+function division(x, t1, t2, epsilon, func) {//计算x的近似值
   var t0,
     t1,
     t2,
@@ -33,40 +33,41 @@ export class UnitBezier {
 
   }
 
-  setPoint({p1x=0,p1y=0,p2x=0,p2y=0}){
+  setPoint({p1x = 0, p1y = 0, p2x = 0, p2y = 0}) {
 
     this.cx = 3.0 * p1x;
     this.bx = 3.0 * (p2x - p1x) - this.cx;
-    this.ax = 1.0 - this.cx -this.bx;
+    this.ax = 1.0 - this.cx - this.bx;
     this.cy = 3.0 * p1y;
     this.by = 3.0 * (p2y - p1y) - this.cy;
     this.ay = 1.0 - this.cy - this.by;
 
   }
 
-  sampleCurveX = (t)=>{
+  sampleCurveX = (t) => {
     return ((this.ax * t + this.bx) * t + this.cx) * t;
   }
 
-  sampleCurveY = (t)=>{
+  sampleCurveY = (t) => {
     return ((this.ay * t + this.by) * t + this.cy) * t;
   }
 
-  solve = (t)=>{
-    return {x:this.sampleCurveY(t),y:this.sampleCurveX(t)}
+  solve = (t) => {
+    return {x: this.sampleCurveY(t), y: this.sampleCurveX(t)}
   }
 
 }
 
-const noop = ()=>{}
+const noop = () => {
+}
 
 /**代理实现类**/
-function ProxyCopy(target,handle){
+function ProxyCopy(target, handle) {
   /**浅拷贝工具方法**/
-  this.clone=function(myObj){
-    if(typeof(myObj) !== 'object' || myObj == null) return myObj;
+  this.clone = function (myObj) {
+    if (typeof (myObj) !== 'object' || myObj == null) return myObj;
     var newObj = new Object();
-    for(let i in myObj){
+    for (let i in myObj) {
       newObj[i] = this.clone(myObj[i]);
     }
     return newObj;
@@ -74,16 +75,16 @@ function ProxyCopy(target,handle){
   //深度克隆当前对象
   let targetCopy = this.clone(target);
   //遍历当前对象所有属性
-  Object.keys(targetCopy).forEach(function(key){
+  Object.keys(targetCopy).forEach(function (key) {
     Object.defineProperty(targetCopy, key, {
-      get: function() {
-        return handle.get && handle.get(target,key);
+      get: function () {
+        return handle.get && handle.get(target, key);
       },
       /**
        * @param newVal 拦截的属性值
        */
-      set: function(newVal) {
-        handle.set && handle.set(target,key,newVal);
+      set: function (newVal) {
+        handle.set && handle.set(target, key, newVal);
       }
     });
   });
@@ -91,6 +92,7 @@ function ProxyCopy(target,handle){
 }
 
 export class Fly {
+
   defaults = {
     version: '1.0.0',
     autoPlay: true,
@@ -105,8 +107,9 @@ export class Fly {
 
   $element
 
-  constructor(element,options){
+  constructor(element, options) {
     this.$element = document.getElementById(element)
+    console.log(this.$element)
     this.init(options);
   }
 
@@ -119,12 +122,11 @@ export class Fly {
   move = function () {
     var settings = this.settings;
 
-      let start = settings.start,
+    let start = settings.start,
       count = settings.count,
       steps = settings.steps,
       end = settings.end;
 
-    console.log(end)
     // 计算left top值
     var left = start.left + (end.left - start.left) * count / steps,
       top = settings.curvature == 0 ? start.top + (end.top - start.top) * count / steps : settings.curvature * Math.pow(left - settings.vertex_left, 2) + settings.vertex_top;
@@ -133,7 +135,7 @@ export class Fly {
       var i = steps / 2,
         width = end.width - (end.width - start.width) * Math.cos(count < i ? 0 : (count - i) / (steps - i) * Math.PI / 2),
         height = end.height - (end.height - start.height) * Math.cos(count < i ? 0 : (count - i) / (steps - i) * Math.PI / 2);
-      console.log(width,height)
+
       this.$element.style.width = width + "px"
       this.$element.style.height = height + "px"
       //this.$element.css({width: width + "px", height: height + "px", "font-size": Math.min(width, height) + "px"});
@@ -156,7 +158,7 @@ export class Fly {
     }
   }
 
-  destroy = function(){
+  destroy = function () {
     this.$element.style.display = 'none';
   };
 
@@ -168,7 +170,7 @@ export class Fly {
 
   setOptions = function (options) {
 
-     Object.assign(this.settings,this.defaults, options)
+    Object.assign(this.settings, this.defaults, options)
 
     var settings = this.settings,
       start = settings.start,
@@ -207,12 +209,12 @@ export class Fly {
       // 特殊情况，出现顶点left==终点left，将曲率设置为0，做直线运动。
       curvature = end.left == vertex_left ? 0 : (end.top - vertex_top) / Math.pow(end.left - vertex_left, 2);
 
-    Object.assign(settings,{
-        count: -1, // 每次重置为-1
-        steps: steps,
-        vertex_left: vertex_left,
-        vertex_top: vertex_top,
-        curvature: curvature
+    Object.assign(settings, {
+      count: -1, // 每次重置为-1
+      steps: steps,
+      vertex_left: vertex_left,
+      vertex_top: vertex_top,
+      curvature: curvature
     })
 
   }
