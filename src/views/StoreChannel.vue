@@ -1,7 +1,20 @@
 <template>
   <div class="page-wrap">
-
-2131
+    <div class="container-wrap">
+      <el-form label-width="100px" class="form">
+        <el-form-item label="进货渠道:" prop="channel">
+          <el-select  v-model="formData.channel" placeholder="请选择类型" style="width: 100%" >
+            <template v-for="(item,idx) of channels">
+              <el-option :label="item.name" :value="item.id" ></el-option>
+            </template>
+          </el-select>
+        </el-form-item>
+        <el-form-item label=" " prop="store_no" v-show="formData.channel!=2">
+          <el-input  v-model="formData.store_no" placeholder="请输入门店编码" ></el-input>
+        </el-form-item>
+      </el-form>
+      <div class="btn" @click="subSearch">搜索</div>
+    </div>
   </div>
 </template>
 
@@ -18,24 +31,58 @@
     import {fun} from '../common';
 
 
-    @Component({
-        mixins:[],
-        components: {
-
-        }
-    })
-
-
+    @Component
     export default class StoreChannel extends Vue {
 
+    formData = {
+        store_no:null,
+        channel:null
+    }
 
+    channels = [
+        {id:1,name:'门店进货'},
+        {id:2,name:'平台进货'},
+    ]
+
+    subSearch(){
+        this.$router.push({
+            name:'StorePurchase'
+        })
+    }
 
 
 
     }
 </script>
 <style lang="stylus" scoped>
-
+.page-wrap
+  width 100%
+  height 100vh
+  background-position center bottom
+  background-size 100% auto
+  background-repeat no-repeat
+  background-image url("~@/assets/img/store/join_bg.png")
+.container-wrap
+  position fixed
+  left 50%
+  top 12%
+  transform translateX(-50%)
+  width 848px
+  height 602px
+  box-shadow 0 0 49px 14px rgba(0, 37, 157, 0.15)
+  .form
+    margin 129px 245px 100px 147px
+  .btn
+    margin 0 auto
+    width 420px
+    height 50px
+    line-height 50px
+    background #F43131
+    border-radius 6px
+    color white
+    text-align center
+    font-size 18px
+    cursor pointer
 </style>
 
 

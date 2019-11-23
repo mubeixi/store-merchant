@@ -991,7 +991,7 @@ function _tmpl(str, data) {
 			.replace(/\t=(.*?)%>/g, "',$1,'")
 			.split("\t").join("');")
 			.split("%>").join("p.push('")
-			.split("\r").join("\\'") + "');}return p.join('');");
+			.split("\r").join("\\'") + "');}return p.store('');");
 	return data ? fn(data) : fn;
 }
 K.formatUrl = _formatUrl;

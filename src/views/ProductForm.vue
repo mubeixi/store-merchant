@@ -314,7 +314,7 @@
         <span class="sortMsg">注:若不限则填写10000</span>
       </el-form-item>
       <el-form-item label="退货损坏说明">
-        <el-select  v-model="ruleForm.refund" placeholder="请选择类型"  :disabled="noEditField.Product_backup"  style="width: 160px">
+        <el-select  v-model="ruleForm.refund" placeholder="请选择"  :disabled="noEditField.Product_backup"  style="width: 160px">
           <template v-for="(shop,shopIn) in prodConfig.shop_damage">
             <el-option :label="shop.Damage_Name" :value="shop.Damage_ID"></el-option>
           </template>
@@ -921,20 +921,10 @@
             })
         }
         sureCard(){
-            if(this.multipleSelection.length>0){
-                this.isShow=false;
-            }else{
-                this.isShow=false;
-                this.ruleForm.orderType='0';
-            }
+                this.isShow=false
         }
         cardCancel(){
-            if(this.multipleSelection.length>0){
-                this.isShow=false;
-            }else{
-                this.isShow=false;
-                this.ruleForm.orderType='0';
-            }
+                this.isShow=false
         }
         querySearchAsync(queryString, cb) {
             cb(this.queryArr);
@@ -1286,7 +1276,7 @@
                 return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
             })
 
-            this.cate_ids = JSON.stringify(cate_data)//ids.join('|')
+            this.cate_ids = JSON.stringify(cate_data)//ids.store('|')
             this.bindCateDialogShow = false
         }
         bindStoreCancel(){
@@ -1609,7 +1599,7 @@
 
                     }
 
-                    this.cate_ids = JSON.stringify(cate_data)//ids.join('|')
+                    this.cate_ids = JSON.stringify(cate_data)//ids.store('|')
 
                 })
                 //初始化店铺列表

@@ -210,12 +210,12 @@
                     // pageSize: cate_id.length===0 && limit ? limit : 6
                     let param = {}
                     // if (cate_id.length>0) {
-                    //     param.Cate_ID = cate_id.join(',')
+                    //     param.Cate_ID = cate_id.store(',')
                     // } else {
                     //
                     // }
 
-                    //param.Products_ID = list.join(',');
+                    //param.Products_ID = list.store(',');
 
                     getSpikeProd({spike_id}).then(res => {
                         this.goodsList = res.data
