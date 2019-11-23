@@ -528,7 +528,7 @@
             return '';
             //return 'background-color:red;color:red;'
         }
-        prev(page){
+        getDetailByPage(page) {
             this.page = page;
             if(this.item == 2) {
                 // 请求日志
@@ -546,44 +546,15 @@
                 // 首页订单记录
                 this.get_sysorders();
             }
+        }
+        prev(page){
+            this.getDetailByPage(page);
         }
         next(page){
-            this.page = page;
-            if(this.item == 2) {
-                // 请求日志
-                this.get_syslogin_logs();
-            }else if(this.item == 3) {
-                // 积分明细
-                this.get_sysintegrals();
-            }else if(this.item == 4) {
-                // 资金流水
-                this.get_sysbalances();
-            }else if(this.item == 5) {
-                // 成长值明细
-                this.get_sysgrowths();
-            }else {
-                // 首页订单记录
-                this.get_sysorders();
-            }
+            this.getDetailByPage(page);
         }
         current(page){
-            this.page = page;
-            if(this.item == 2) {
-                // 请求日志
-                this.get_syslogin_logs();
-            }else if(this.item == 3) {
-                // 积分明细
-                this.get_sysintegrals();
-            }else if(this.item == 4) {
-                // 资金流水
-                this.get_sysbalances();
-            }else if(this.item == 5) {
-                // 成长值明细
-                this.get_sysgrowths();
-            }else {
-                // 首页订单记录
-                this.get_sysorders();
-            }
+            this.getDetailByPage(page);
         }
         // 用户信息
         getSysuser(){
