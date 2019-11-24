@@ -2,18 +2,17 @@
   <div class="labelManagement">
       <div class="labelMain">
             <div style="margin-bottom: 15px">
-              <el-select v-model="value" placeholder="请选择标签类型" size="mini" style="width: 175px;margin-right: 10px;">
+              <el-select v-model="types" placeholder="请选择标签类型" size="mini" style="width: 175px;margin-right: 10px;">
                 <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                  v-for="(it,ind) in typesList"
+                  :label="it"
+                  :value="ind">
                 </el-option>
               </el-select>
-              <el-input size="mini" placeholder="请输入标签名称" style="width: 175px"></el-input>
-              <el-button size="mini" class="el-button"  style="margin-left: 23px">搜索</el-button>
+              <el-input size="mini" placeholder="请输入标签名称" v-model="labelName" style="width: 175px"></el-input>
+              <el-button size="mini" class="el-button"  style="margin-left: 23px" @click="searchList">搜索</el-button>
               <el-button size="mini" class="el-button">导出标签</el-button>
-              <el-button size="mini" class="el-button floatRight">新建标签</el-button>
+              <el-button size="mini" class="el-button floatRight" @click="goAddLabel">新建标签</el-button>
             </div>
             <el-table
               class="wzw-tableS"
@@ -21,27 +20,32 @@
               border
               style="width: 80%">
               <el-table-column
-                prop="date"
+                prop="name"
                 label="标签名"
                 align="center"
                 width="230">
               </el-table-column>
               <el-table-column
-                prop="name"
+                prop="patron_count"
                 label="客户"
                 align="center"
                 width="180">
               </el-table-column>
               <el-table-column
-                prop="address"
+                prop="type_txt"
                 width="140"
                 align="center"
                 label="标签类型">
               </el-table-column>
               <el-table-column
-                prop="address"
+                prop="label_rule"
                 align="center"
                 label="打标条件">
+                <template slot-scope="scope">
+                  <template v-for="(item,index) of tableData[scope.$index].conditions" >
+                    <div class="divLeft">{{item}}</div>
+                  </template>
+                </template>
               </el-table-column>
               <el-table-column
                 label="操作"
@@ -49,15 +53,17 @@
                 width="180"
               >
                 <template slot-scope="scope">
-                  <span class="spans">编辑</span><span class="spans">|</span><span class="spans">删除</span>
+                  <span class="spans" @click="ediT(tableData[scope.$index].id)">编辑</span><span class="spans">|</span><span class="spans" @click="delList(tableData[scope.$index].id)">删除</span>
                 </template>
               </el-table-column>
             </el-table>
             <el-pagination
               background
               class="pagination"
+              @current-change="currentChange"
               layout="prev, pager, next"
-              :total="100">
+              :page-size="pageSize"
+              :total="totalCount">
             </el-pagination>
       </div>
   </div>
@@ -73,6 +79,7 @@
         Action,
         State
     } from 'vuex-class'
+  import  {getTags,delTag} from '@/common/fetch'
 
     @Component({
         mixins:[],
@@ -83,26 +90,80 @@
 
     export default class AddProduct extends Vue {
 
-        async created(){
+        tableData=[]
+        typesList=[]
+        types=''
+        labelName=''
+        page:1
+        pageSize=10
+        totalCount=0
 
+        //编辑
+        ediT(index){
+            this.$router.push({
+                name: 'LabelAdd',
+                query:{
+                    id:index
+                }
+            })
         }
-        tableData=[{
-            date: '2016-05-02',
-            name: '王小虎',
-            address: '自动标签'
-        }, {
-            date: '2016-05-04',
-            name: '王小虎',
-            address: '自动标签'
-        }, {
-            date: '2016-05-01',
-            name: '王小虎',
-            address: '自动标签'
-        }, {
-            date: '2016-05-03',
-            name: '王小虎',
-            address: '自动标签'
-        }]
+
+        //新建标签
+        goAddLabel(){
+            this.$router.push({
+                name: 'LabelAdd'
+            })
+        }
+        //删除标签
+        delList(id){
+            this.$confirm('你确定要删除这个标签吗', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                delTag({id:id}).then(res=>{
+                    if(res.errorCode==0){
+                        this.$message({
+                            message: res.msg,
+                            type: 'success'
+                        });
+                        this.searchList();
+                    }else{
+                        this.$message({
+                            message: res.msg,
+                            type: 'error'
+                        });
+                    }
+                })
+            }).catch(() => {
+
+            })
+        }
+        //切页数
+        currentChange(val){
+            this.page=val;
+            this.searchList();
+        }
+        searchList(){
+            let search={
+                name:this.labelName,
+                type:this.types,
+                page:this.page,
+                pageSize:this.pageSize
+            }
+            getTags(search).then(res=>{
+                if(res.errorCode==0){
+                    this.tableData=res.data;
+                    this.typesList=res.types;
+                    this.totalCount=res.totalCount;
+                }
+            })
+        }
+
+        async created(){
+            this.searchList();
+        }
+
 
 
 
@@ -132,6 +193,7 @@
     color: @bgColor;
     margin-left: 2px;
     margin-right: 2px;
+    cursor: pointer;
   }
   .el-button{
     background-color: @bgColor;
@@ -151,5 +213,11 @@
   .floatRight{
     margin-right: 20%;
     float: right;
+  }
+  .divLeft{
+    height: 20px;
+    line-height: 20px;
+    text-align: left;
+    margin-left: 30px;
   }
 </style>
