@@ -11,6 +11,12 @@ export const doLoginMixin = {
 
   async created() {
 
+    if (isDev) {
+      Cookies.set('Users_ID', 'wkbq6nc2kc')
+      Cookies.set('User_ID', '49')
+      Cookies.set('Stores_ID', '10')
+    }
+
     if(!Cookies.get('Users_ID')){
       this.$fun.error({msg:'需要登录'});
       setTimeout(function () {
@@ -40,9 +46,7 @@ export const tmplDiyMixin = {
     if (GetQueryByString(location.href, 'Home_ID')) {
     }
 
-    if (isDev) {
-      Cookies.set('Users_ID', 'wkbq6nc2kc')
-    }
+
 
 
     //走ss这样会每次重新打开页面，就会获取数据

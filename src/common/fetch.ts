@@ -22,6 +22,10 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
   // param.Users_Account = get_Users_Account();
   // @ts-ignore
   param.Users_ID = get_Users_ID();
+  // @ts-ignore
+  param.User_ID = get_User_ID();
+  // @ts-ignore
+  param.Stores_ID = get_Stores_ID();
   // param.appid = get_Appid();
 
   // 数据加密
@@ -37,7 +41,12 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
   return new Promise(((resolve, reject) => {
 
     Vue.http[method](url, data, options).then(res=>{
-      resolve(res.data)
+      if(res.data.errorCode === 0){
+        resolve(res.data)
+      }else{
+        reject(res.data)
+      }
+
     },error=>{
       reject(error)
     })
@@ -101,14 +110,31 @@ export const getProductCountInfo  = (data:object={},options:any=false) => fetch(
 export const uploadImgByBase64 = (data:object={},options:any=false) => fetch('upload_image', data, options);
 
 export const getSysuser = (data:object={},options:any=false) => fetch('get_sysuser', data, options);
+
 export const getSysorders = (data:object={},options:any=false) => fetch('get_sysorders', data, options);
+
 export const getSysgrowths = (data:object={},options:any=false) => fetch('get_sysgrowths', data, options);
+
 export const getSysbalances = (data:object={},options:any=false) => fetch('get_sysbalances', data, options);
+
 export const getSysintegrals = (data:object={},options:any=false) => fetch('get_sysintegrals', data, options);
+
 export const getSysloginLogs = (data:object={},options:any=false) => fetch('get_syslogin_logs', data, options);
+
 export const getSysstatistics = (data:object={},options:any=false) => fetch('get_sysstatistics', data, options);
+
 export const getAddress = (data:object={},options:any=false) => fetch('get_address',data,options);
+
 export const getStoreList = (data:object={},options:any=false) => fetch('get_store_list', data, options);
+
+//购物车
+export const updateCart = (data:object={},options:any=false) => fetch('update_cart', data, options);
+
+export const getCartList = (data:object={},options:any=false) => fetch('get_cart', data, options);
+
+export const delCart = (data:object={},options:any=false) => fetch('del_cart', data, options);
+
+
 
 //产品添加编辑所需配置
 export const systemProdConfig = (data:object={},options:any=false) => fetch('system_prod_config', data, options);
@@ -137,11 +163,15 @@ export const initScene = (data:object={},options:object={}) => fetch('init_scene
 //更新活动信息
 export const addScene = (data:object={},options:object={}) => fetch('add_scene', data , options);
 
+
+
 function get_Appid() {
   return 'xhh';
 }
 
-export const get_Users_ID = () => Cookie.get('Users_ID');//ls.get('Users_ID')
+export const get_User_ID = () => Cookie.get('User_ID');
+export const get_Users_ID = () => Cookie.get('Users_ID');
+export const get_Stores_ID = () => Cookie.get('Stores_ID');
 
 export const get_Users_Account = () => ls.get('Users_Account')
 

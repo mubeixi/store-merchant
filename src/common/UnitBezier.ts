@@ -61,35 +61,7 @@ export class UnitBezier {
 const noop = () => {
 }
 
-/**代理实现类**/
-function ProxyCopy(target, handle) {
-  /**浅拷贝工具方法**/
-  this.clone = function (myObj) {
-    if (typeof (myObj) !== 'object' || myObj == null) return myObj;
-    var newObj = new Object();
-    for (let i in myObj) {
-      newObj[i] = this.clone(myObj[i]);
-    }
-    return newObj;
-  }
-  //深度克隆当前对象
-  let targetCopy = this.clone(target);
-  //遍历当前对象所有属性
-  Object.keys(targetCopy).forEach(function (key) {
-    Object.defineProperty(targetCopy, key, {
-      get: function () {
-        return handle.get && handle.get(target, key);
-      },
-      /**
-       * @param newVal 拦截的属性值
-       */
-      set: function (newVal) {
-        handle.set && handle.set(target, key, newVal);
-      }
-    });
-  });
-  return targetCopy;
-}
+
 
 export class Fly {
 

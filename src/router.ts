@@ -16,6 +16,7 @@ import CrowdClient from '@/views/CrowdClient.vue'
 import DayMarkDetail from '@/views/DayMarkDetail.vue';
 import StoreChannel from '@/views/StoreChannel.vue';
 import StorePurchase from '@/views/StorePurchase.vue';
+import SystemNotice from '@/views/SystemNotice.vue';
 
 const routerInstance = new Router({
   routes: [
@@ -30,6 +31,14 @@ const routerInstance = new Router({
       component: StoreChannel,
       meta:{
         title:'选择进货渠道'
+      }
+    },
+    {
+      path:'/SystemNotice/:id',
+      name:'SystemNotice',
+      component: SystemNotice,
+      meta:{
+        title:'系统公告'
       }
     },
     {

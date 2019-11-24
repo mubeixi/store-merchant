@@ -16,7 +16,7 @@ export class Cart {
   }
 
   add(item){
-    let isHas = findArrayIdx(this.lists,'Products_ID',item.Products_ID,true)
+    let isHas = findArrayIdx(this.lists,{Productsattrstrval:item.Productsattrstrval,Products_ID:item.Products_ID},true)
     if(isHas === false){
       this.lists.push({...item,num:0})
     }else{
@@ -29,7 +29,7 @@ export class Cart {
   }
 
   minus(item){
-    let isHas = findArrayIdx(this.lists,'Products_ID',item.Products_ID)
+    let isHas = findArrayIdx(this.lists,{Productsattrstrval:item.Productsattrstrval,Products_ID:item.Products_ID})
     if(isHas!==false){
       this.setCount(isHas,item.num-1)
     }
@@ -37,15 +37,17 @@ export class Cart {
   }
 
   plus(item){
-    let isHas = findArrayIdx(this.lists,'Products_ID',item.Products_ID)
+    let isHas = findArrayIdx(this.lists,{Productsattrstrval:item.Productsattrstrval,Products_ID:item.Products_ID})
     if(isHas!==false){
       this.setCount(isHas,(item.num+1))
     }
   }
 
 
-  del(item){
-
+  remove(item){
+    //获取索引
+    let isIdx = findArrayIdx(this.lists,{Productsattrstrval:item.Productsattrstrval,Products_ID:item.Products_ID})
+    this.lists.splice(isIdx,1)
   }
 
 

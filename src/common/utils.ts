@@ -334,14 +334,17 @@ export class Fun{
  * @param val
  * @param full 是否返回值和下标，默认只返回下标
  */
-export const findArrayIdx = (arr, key, val, full:boolean=false)=>{
+export const findArrayIdx = (arr, key_val_arr, full:boolean=false)=>{
 
   for (var i in arr){
     if(typeof arr[i] !='object')continue
-    if(arr[i][key] === val){
+
+    //用来比较对象
+    if(compare_obj(arr[i],key_val_arr)){
       if(!full) return i;
       return {val:arr[i],idx:i}
     }
+
   }
   return false
 }
@@ -359,4 +362,21 @@ export const numberSort = function(arr, order_by) {
   } else {  //asc
     return arr.sort(function (v1, v2) { return v1 - v2; });
   }
+}
+
+
+/**
+ * 查看对象1中的所有属性在obj2中都有
+ * @param obj1
+ * @param obj2
+ */
+export const compare_obj = (obj1,obj2) => {
+  for (var i in obj1){
+    if(!obj1.hasOwnProperty(i))continue;
+    if(!obj2.hasOwnProperty(i) || obj1[i]!=obj2[i]){
+      return false
+    }
+  }
+  return true
+
 }
