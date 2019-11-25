@@ -11,7 +11,7 @@
               </el-select>
               <el-input size="mini" placeholder="请输入标签名称" v-model="labelName" style="width: 175px"></el-input>
               <el-button size="mini" class="el-button"  style="margin-left: 23px" @click="searchList">搜索</el-button>
-              <el-button size="mini" class="el-button">导出标签</el-button>
+<!--              <el-button size="mini" class="el-button">导出标签</el-button>-->
               <el-button size="mini" class="el-button floatRight" @click="goAddLabel">新建标签</el-button>
             </div>
             <el-table
