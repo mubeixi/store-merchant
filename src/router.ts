@@ -18,6 +18,8 @@ import StoreChannel from '@/views/StoreChannel.vue';
 import StorePurchase from '@/views/StorePurchase.vue';
 import SystemNotice from '@/views/SystemNotice.vue';
 import StorePurchaseApply from './views/StorePurchaseApply.vue';
+import MessageSend from '@/views/MessageSend.vue';
+import MessageStationSend from '@/views/MessageStationSend.vue';
 
 const routerInstance = new Router({
   routes: [
@@ -72,6 +74,9 @@ const routerInstance = new Router({
       path: '/ProductForm',
       name: 'product',
       component: ProductForm,
+      meta:{
+        title:'发布商品'
+      }
     }
     ,
     {
@@ -92,28 +97,58 @@ const routerInstance = new Router({
     {
       path: '/LabelManagement',
       name: 'LabelManagement',
-      component: LabelManagement
+      component: LabelManagement,
+      meta:{
+        title:'标签列表'
+      }
+
     },
     {
       path: '/LabelAdd',
       name: 'LabelAdd',
-      component: LabelAdd
+      component: LabelAdd,
+      meta:{
+        title:'添加标签'
+      }
     },
     {
       path: '/CrowdName',
       name: 'CrowdName',
-      component: CrowdName
+      component: CrowdName,
+      meta:{
+        title:'添加人群'
+      }
     },
     {
       path: '/CrowdClient',
       name: 'CrowdClient',
-      component: CrowdClient
+      component: CrowdClient,
+      meta:{
+        title:'人群列表'
+      }
     },
     {
       path: '/DayMarkDetail',
       name: 'DayMarkDetail',
       component: DayMarkDetail
+    },
+    {
+      path: '/MessageSend',
+      name: 'MessageSend',
+      component: MessageSend,
+      meta:{
+        title:'群发短信'
+      }
+    },
+    {
+      path: '/MessageStationSend',
+      name: 'MessageStationSend',
+      component: MessageStationSend,
+      meta:{
+        title:'群发站内信'
+      }
     }
+
     // {
     //   path: '/about',
     //   name: 'about',
