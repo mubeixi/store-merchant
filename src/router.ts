@@ -17,6 +17,7 @@ import DayMarkDetail from '@/views/DayMarkDetail.vue';
 import StoreChannel from '@/views/StoreChannel.vue';
 import StorePurchase from '@/views/StorePurchase.vue';
 import SystemNotice from '@/views/SystemNotice.vue';
+import StorePurchaseApply from './views/StorePurchaseApply.vue';
 import MessageSend from '@/views/MessageSend.vue';
 import MessageStationSend from '@/views/MessageStationSend.vue';
 import LabelSetting from '@/views/LabelSetting.vue';
@@ -28,6 +29,14 @@ const routerInstance = new Router({
       path: '/',
       name: 'Home',
       component: Home,
+    },
+    {
+      path:'/StorePurchaseApply',
+      name:'StorePurchaseApply',
+      component: StorePurchaseApply,
+      meta:{
+        title:'进货记录'
+      }
     },
     {
       path:'/StoreChannel',

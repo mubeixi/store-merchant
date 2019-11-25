@@ -44,9 +44,13 @@ import {
   Autocomplete,
   Progress,
   InfiniteScroll,
-  InputNumber
+  InputNumber,
+  Timeline,
+  TimelineItem
 } from 'element-ui';
 
+Vue.use(Timeline)
+Vue.use(TimelineItem)
 Vue.use(InputNumber)
 Vue.use(InfiniteScroll)
 Vue.use(Progress)

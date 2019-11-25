@@ -296,8 +296,6 @@
     mounted () {
       var _this = this
 
-
-console.log('_this.pluginsPath_this.pluginsPath_this.pluginsPath_this.pluginsPath',_this.pluginsPath)
       _this.editor = window.KindEditor.create('#' + this.id, {
 
         width: _this.width,
@@ -364,7 +362,7 @@ console.log('_this.pluginsPath_this.pluginsPath_this.pluginsPath_this.pluginsPat
         fixToolBar: _this.fixToolBar,
         tabIndex: _this.tabIndex
       })
-      
+
       console.log(_this.editor,_this.basePath,_this.pluginsPath)
     }
   }
