@@ -1189,11 +1189,14 @@
                             //批量新增图片
                             //利用对应的规格获取在第一个规格可选值的vals的索引
                             let specItemIdx = this.specs[0].vals.indexOf(this.skus[idx][0])
-                            if(specItemIdx!=-1 && this.specs[0].imgs[specItemIdx]){
-                                mbx.Attr_Image = this.specs[0].imgs[specItemIdx]
-                            }else{
-                                mbx.Attr_Image = ''
+                            if(this.specs[0].imgs){
+                                if(specItemIdx!=-1 && this.specs[0].imgs[specItemIdx]){
+                                    mbx.Attr_Image = this.specs[0].imgs[specItemIdx]
+                                }else{
+                                    mbx.Attr_Image = ''
+                                }
                             }
+
 
                         }
                         console.log(skuList)
