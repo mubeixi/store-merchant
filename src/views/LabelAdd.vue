@@ -148,7 +148,7 @@
                 rule_type:this.allData.rule_type,
                 conditions:JSON.stringify(this.allData.conditions)
             }
-            let id = this.$route.query.id
+            let id = this.$route.params.id
             if(id){
                 data.id=id;
             }
@@ -176,15 +176,17 @@
         }
 
         async created(){
-            let id = this.$route.query.id
+            let id = this.$route.params.id
             if(id){
                 this.isEdit=false
                 getTag({id:id}).then(res=>{
                     if(res.errorCode==0){
                         this.allData.name=res.data.name
-                        this.allData.rule_type=String(res.data.rule_type);
                         this.allData.type=String(res.data.type)
-                        this.allData.conditions=res.data.conditions
+                        if(res.data.type!=1){
+                            this.allData.rule_type=String(res.data.rule_type);
+                            this.allData.conditions=res.data.conditions
+                        }
                     }
                 })
             }
