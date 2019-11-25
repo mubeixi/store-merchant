@@ -101,7 +101,6 @@
           fun.error({msg:'请选择物流公司'})
           return
         }
-        console.log(this.out_order_no,this.express)
 
         this.ajax = true;
         this.activities = []
