@@ -80,7 +80,7 @@
         <span class="sortMsg">注：佣金将从商品利润中取出一部分发放</span>
       </el-form-item>
 
-      <el-form-item label="商品主图">
+      <el-form-item label="商品主图"  class="relative">
         <upload-components
           size="mini"
           ref="thumb"
@@ -91,7 +91,7 @@
 
       <el-form-item label="主图视频及封面" v-if="prodConfig.is_upload_video==1">
         <div class="flex">
-          <div>
+          <div class="relative">
             <upload-components
               type="video"
               ref="video"
@@ -101,7 +101,7 @@
               :onSuccess="upVideoSuccessCall"
             />
           </div>
-          <div class="margin15-c">
+          <div class="margin15-c relative">
             <upload-components
               ref="video_cover"
               :limit="1"
@@ -1226,13 +1226,13 @@
                                     message: '修改成功',
                                     type: 'success'
                                 });
-                                window.location.href=window.parent.location.href+'/shop/products.php';
+                                window.location.href=window.parent.location.href+'shop/products.php';
                             }else{
                                 this.$message({
                                     message: '添加成功',
                                     type: 'success'
                                 });
-                                window.location.href=window.parent.location.href+'/shop/products.php';
+                                window.location.href=window.parent.location.href+'shop/products.php';
                             }
                         }
 
@@ -1943,5 +1943,8 @@ table{
   }
   .textTitle /deep/ .el-form-item__label{
     color: red;
+  }
+  .relative{
+    position: relative;
   }
 </style>

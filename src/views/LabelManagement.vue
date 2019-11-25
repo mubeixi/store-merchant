@@ -26,7 +26,7 @@
                 width="230">
               </el-table-column>
               <el-table-column
-                prop="patron_count"
+                prop="tag_num"
                 label="客户"
                 align="center"
                 width="180">
@@ -43,8 +43,9 @@
                 label="打标条件">
                 <template slot-scope="scope">
                   <template v-for="(item,index) of tableData[scope.$index].conditions" >
-                    <div class="divLeft">{{item}}</div>
+                    <div class="divLeft" v-if="index==0">{{item}}</div>
                   </template>
+                  <div v-if="tableData[scope.$index].conditions"  class="divLeft curr" @click="lookDetail(scope.$index)">查看详情</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -97,6 +98,17 @@
         page:1
         pageSize=10
         totalCount=0
+
+        lookDetail(index){
+            let msg=this.tableData[index].condition;
+            let arr=`<div style="height: 24px;font-size: 14px;color: #333333;line-height: 24px;margin-top: 5px !important;margin-bottom: 5px !important;font-weight: bold;">${msg}</div>`;
+            for(let item of this.tableData[index].conditions){
+                arr+=`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item}</br>`
+            }
+            this.$alert(arr, '打标条件', {
+                dangerouslyUseHTMLString: true
+            });
+        }
 
         //编辑
         ediT(index){
@@ -215,9 +227,12 @@
     float: right;
   }
   .divLeft{
-    height: 20px;
     line-height: 20px;
     text-align: left;
     margin-left: 30px;
+  }
+  .curr{
+    color: #428CF7;
+    cursor: pointer;
   }
 </style>
