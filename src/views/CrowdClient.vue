@@ -52,13 +52,6 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination
-            background
-            class="pagination"
-            layout="prev, pager, next"
-            :total="100">
-          </el-pagination>
-
         </el-tab-pane>
         <el-tab-pane label="推荐人群" name="second">
           <el-table
@@ -98,18 +91,16 @@
                 <span class="spans">短信群发</span></template>
             </el-table-column>
           </el-table>
-          <el-pagination
-            background
-            class="pagination"
-            @current-change="currentChange"
-            layout="prev, pager, next"
-            :page-size="pageSize"
-            :total="totalCount">
-          </el-pagination>
-
         </el-tab-pane>
       </el-tabs>
-
+      <el-pagination
+        background
+        class="pagination"
+        @current-change="currentChange"
+        layout="prev, pager, next"
+        :page-size="pageSize"
+        :total="totalCount">
+      </el-pagination>
 
 
     </div>
