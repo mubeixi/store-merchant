@@ -52,64 +52,55 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination
-            background
-            class="pagination"
-            layout="prev, pager, next"
-            :total="100">
-          </el-pagination>
-
         </el-tab-pane>
-        <el-tab-pane label="推荐人群" name="second">
-          <el-table
-            class="wzw-tableS"
-            :data="tableData"
-            border
-            style="width: 80%">
-            <el-table-column
-              prop="date"
-              label="人群名称"
-              align="center"
-              width="230">
-            </el-table-column>
-            <el-table-column
-              prop="name"
-              label="人群定义"
-              align="center"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="address"
-              align="center"
-              label="推荐理由">
-            </el-table-column>
-            <el-table-column
-              prop="time"
-              align="center"
-              width="140"
-              label="人群数量">
-            </el-table-column>
-            <el-table-column
-              label="操作"
-              align="center"
-              width="140"
-            >
-              <template slot-scope="scope">
-                <span class="spans">短信群发</span></template>
-            </el-table-column>
-          </el-table>
-          <el-pagination
-            background
-            class="pagination"
-            @current-change="currentChange"
-            layout="prev, pager, next"
-            :page-size="pageSize"
-            :total="totalCount">
-          </el-pagination>
-
-        </el-tab-pane>
+<!--        <el-tab-pane label="推荐人群" name="second">-->
+<!--          <el-table-->
+<!--            class="wzw-tableS"-->
+<!--            :data="tableData"-->
+<!--            border-->
+<!--            style="width: 80%">-->
+<!--            <el-table-column-->
+<!--              prop="date"-->
+<!--              label="人群名称"-->
+<!--              align="center"-->
+<!--              width="230">-->
+<!--            </el-table-column>-->
+<!--            <el-table-column-->
+<!--              prop="name"-->
+<!--              label="人群定义"-->
+<!--              align="center"-->
+<!--            >-->
+<!--            </el-table-column>-->
+<!--            <el-table-column-->
+<!--              prop="address"-->
+<!--              align="center"-->
+<!--              label="推荐理由">-->
+<!--            </el-table-column>-->
+<!--            <el-table-column-->
+<!--              prop="time"-->
+<!--              align="center"-->
+<!--              width="140"-->
+<!--              label="人群数量">-->
+<!--            </el-table-column>-->
+<!--            <el-table-column-->
+<!--              label="操作"-->
+<!--              align="center"-->
+<!--              width="140"-->
+<!--            >-->
+<!--              <template slot-scope="scope">-->
+<!--                <span class="spans">短信群发</span></template>-->
+<!--            </el-table-column>-->
+<!--          </el-table>-->
+<!--        </el-tab-pane>-->
       </el-tabs>
-
+      <el-pagination
+        background
+        class="pagination"
+        @current-change="currentChange"
+        layout="prev, pager, next"
+        :page-size="pageSize"
+        :total="totalCount">
+      </el-pagination>
 
 
     </div>
