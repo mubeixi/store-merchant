@@ -4,6 +4,7 @@
       <div class="head">
         <div class="search">
           <input class="search-input" v-model="keyword" placeholder="请输入商品关键词" />
+          <i class="el-icon-close" v-show="keyword" @click="restSearch"></i>
           <button @click="searchFn" class="search-btn">搜索</button>
         </div>
       </div>
@@ -36,7 +37,7 @@
             <i @click="cartDialogCancel" v-show="cartsDialogInstance.innerVisible" class="el-icon-arrow-down"></i>
           </div>
         </div>
-        <div class="sub-btn" @click="subFn">提交进货单</div>
+        <el-button class="sub-btn" @click="subFn" v-loading="subLoading">提交进货单</el-button>
       </div>
       <div id="imgs"></div>
     </div>
@@ -48,15 +49,15 @@
       <div class="carts-dialog-container" v-if="carts.lists.length>0" >
         <div class="goods-item" v-for="(goods,idx) of carts.lists" :key="idx"  >
           <div class="cover" :style="{backgroundImage: 'url('+goods.ImgPath+')'}"><i @click="cartRemoveFn(goods)" class="el-icon-error"></i></div>
-          <div class="title">{{goods.ProductsName}}</div>
+          <div class="title">{{goods.Products_Name}}</div>
           <!--{{formatSpec(goods.spec_key,',')}}-->
-          <div class="attr">{{goods.Productsattrstrval}}</div>
+          <div class="attr">{{goods.Productsattrstrval||'无规格'}}</div>
           <div class="numbox" >
            <span class="label">数量: </span>
             <input class="input" v-model="goods.num" />
             <div class="num-btns">
               <span @click="cartPlusFn(goods,goods.num)" class="num-btn plus-btn"><i class="el-icon-arrow-up"></i></span>
-              <span @click="cartMinsFn(goods,goods.num)" class="num-btn minus-btn"><i class="el-icon-arrow-down"></i></span>
+              <span @click="cartMinusFn(goods,goods.num)" class="num-btn minus-btn"><i class="el-icon-arrow-down"></i></span>
             </div>
 <!--            <el-input-number @change="cartNumChange" controls-position="right" :min="1" :max="goods.Products_Count" size="mini" v-model="goods.num" :step="1"></el-input-number>-->
           </div>
@@ -117,7 +118,7 @@
         State
     } from 'vuex-class'
     import {fun} from '../common';
-    import {getProductList,getProductDetail,updateCart,getCartList,delCart} from '../common/fetch';
+    import {getProductList,getProductDetail,updateCart,getCartList,delCart,getPifaProductList,createOrder} from '../common/fetch';
     import {numberSort, findArrayIdx, objTranslate, compare_obj} from '@/common/utils';
     import {Fly} from '../common/UnitBezier';
     import {Cart} from '@/common/cart';
@@ -199,10 +200,9 @@
         }
         setCartCurrentItem(goods){
             console.log(goods)
-            this.cartCurrentItem = objTranslate(goods)
+            this.cartCurrentItem = goods
         }
         async cartNumChange(nVal,oVal){
-            console.log(arguments)
 
             let select_store_id = 0
             let postData = {
@@ -213,6 +213,13 @@
                 active_id: `${Stores_ID}_${select_store_id}`
             }
 
+            if(this.cartCurrentItem.Productsattrstrval){
+                if(!this.cartCurrentItem.prd_attr_id){
+                    fun.error({msg:'prd_attr_id缺失'});
+                    return;
+                }
+                postData.attr_id = this.cartCurrentItem.prd_attr_id
+            }
 
             let add_card_rt = false
 
@@ -227,6 +234,8 @@
             })
 
             if(!add_card_rt)return;
+
+            this.cartCurrentItem.num = nVal
 
         }
 
@@ -253,6 +262,8 @@
                 this.cartsDialogInstance.loading = false
             })
             if(!del_rt)return;
+            let {Productsattrstrval,Products_ID} = goods
+            console.log({Productsattrstrval,Products_ID})
             cartInstance.remove(goods)
         }
 
@@ -363,7 +374,9 @@
 
 
 
-            let target = Object.assign({},this.dialogInstance.item,this.dialogInstance.product)
+            //也要把prd_attr_id写进去
+            let target = Object.assign({},this.dialogInstance.item,this.dialogInstance.product,{prd_attr_id:this.dialogInstance.prd_attr_id,num:this.dialogInstance.num})
+            console.log('targettargettargettargettargettarget',target)
             target.skuval = this.dialogInstance.skuval
             target.speck_key = this.dialogInstance.skuval
 
@@ -452,8 +465,38 @@
 
         }
 
+        subLoading = false
+
         subFn(){
-            console.log(this.flys[0].move === this.flys[1].move)
+
+            if(this.carts.lists.length<1){
+                fun.error({msg:'购物车中无产品'})
+                return;
+            }
+            let postData = {cart_key:'CartList'}
+            let prod_attr = {}
+            for(var goods of this.carts.lists){
+                if(goods.num<1){
+                    fun.error({msg:'产品至少选择1个'})
+                    return;
+                }
+                if(goods.prd_attr_id){
+                    prod_attr[goods.Products_ID] = [goods.prd_attr_id]
+                }else{
+                    prod_attr[goods.Products_ID] = []
+                }
+            }
+            postData.cart_buy = JSON.stringify(prod_attr)
+
+            this.subLoading = true
+            createOrder(postData).then(res=>{
+                fun.success({msg:'提交成功'})
+                this.cartDialogCancel()
+                this.carts.clear()
+                this.subLoading = false
+            },err=>{
+                this.subLoading = false
+            })
         }
 
         addCart(goods,idx){
@@ -505,7 +548,16 @@
             if(this.paginate.finish)return;
             this.loading = true
             const loadingInstance = this.$loading()
-            getProductList({Products_Name:this.keyword,...this.paginate}).then(res=>{
+
+            let postData = {Products_Name:this.keyword,...this.paginate}
+            let getProductListFn = getProductList
+
+            //如果是门店进货，那就从门店
+            if(this.$route.query.channel == 1 && this.$route.query.store_no){
+                getProductListFn = getPifaProductList
+                postData.purchase_store_sn = this.$route.query.store_no
+            }
+            getProductListFn(postData).then(res=>{
                 this.loading = false
 
                 this.paginate.totalCount = res.totalCount
@@ -519,7 +571,7 @@
                     return;
                 }
 
-                this.paginate.page ++
+
 
                 if(this.paginate.page===1){
                     this.products = res.data
@@ -528,12 +580,18 @@
                     this.products = this.products.concat(res.data)
                 }
 
+                this.paginate.page ++
+
             })
         }
 
+        restSearch(){
+            this.keyword = ''
+            this.searchFn()
+        }
         searchFn(){
             this.paginate.finish = false
-            this.paginate.page = 0
+            this.paginate.page = 1
             this.loadGoodsInfo()
         }
 
@@ -564,6 +622,8 @@
                         goods.num = goods.Qty
                         if(goods.Productsattrkeystrval && goods.Productsattrkeystrval.Product_Attr_ID)goods.prd_attr_id = goods.Productsattrkeystrval.Product_Attr_ID
                         goods.Products_ID = key
+                        goods.Products_Name = goods.ProductsName
+
                         //模拟加入
                         this.carts.add(goods)
                     }
@@ -724,6 +784,9 @@
   .row{
     display: flex;
     margin-bottom: 10px;
+    *{
+      user-select: none;
+    }
     .label{
       display: inline-block;
       padding-right: 10px;
@@ -731,6 +794,7 @@
       height: 30px;
       line-height: 30px;
       text-align: right;
+
     }
     .specs{
       flex: 1;
@@ -745,6 +809,7 @@
         border: 1px solid #e7e7e7;
         overflow: hidden;
         cursor: pointer;
+
         .el-icon-check{
           display: none;
         }
@@ -884,7 +949,7 @@
 
 .main{
 
-  margin: 0 auto;
+  margin: 0 auto 50px;
   padding-bottom: 30px;
   .lists{
     display: flex;
@@ -1001,6 +1066,10 @@
     height: 50px;
     width: 150px;
     text-align: center;
+    border-radius: 0;
+    border: none;
+    padding: 0;
+
 
   }
 }
@@ -1017,6 +1086,7 @@
     overflow: hidden;
     display: flex;
     border: 1px solid #F43131;
+    align-items: center;
   }
   .search-input{
     flex: 1;
@@ -1032,6 +1102,13 @@
       color: #C1C1C1;
     }
   }
+  .el-icon-close{
+    margin-right: 6px;
+    cursor: pointer;
+    color: #999;
+    /*position: absolute;*/
+    /*right: 76px;*/
+  }
   .search-btn{
     height: 36px;
     width: 74px;
@@ -1040,6 +1117,7 @@
     border: none;
     padding: 0;
     margin: 0;
+    cursor: pointer;
   }
 }
 

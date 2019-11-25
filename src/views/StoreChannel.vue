@@ -45,8 +45,18 @@
     ]
 
     subSearch(){
+
+        if(!this.formData.channel){
+            this.$fun.info({msg:'渠道必选'});
+            return;
+        }
+        if(this.formData.channel===1 && !this.formData.store_no){
+            this.$fun.info({msg:'门店编码必填'});
+            return;
+        }
         this.$router.push({
-            name:'StorePurchase'
+            name:'StorePurchase',
+            query:this.formData
         })
     }
 

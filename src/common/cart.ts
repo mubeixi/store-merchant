@@ -18,7 +18,7 @@ export class Cart {
   add(item){
     let isHas = findArrayIdx(this.lists,{Productsattrstrval:item.Productsattrstrval,Products_ID:item.Products_ID},true)
     if(isHas === false){
-      this.lists.push({...item,num:0})
+      this.lists.push({num:1,...item})
     }else{
       //不能用item,因为会拿不到num
       this.plus(isHas.val)
@@ -47,7 +47,16 @@ export class Cart {
   remove(item){
     //获取索引
     let isIdx = findArrayIdx(this.lists,{Productsattrstrval:item.Productsattrstrval,Products_ID:item.Products_ID})
-    this.lists.splice(isIdx,1)
+    console.log('需要删除的索引是',isIdx)
+    if(isIdx!==false){
+
+      this.lists.splice(isIdx,1)
+    }
+
+  }
+
+  clear(){
+    this.lists = []
   }
 
 
