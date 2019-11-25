@@ -2,7 +2,7 @@
   <div class="home-wrap">
     <div class="container">
       <div class="lists" v-infinite-scroll="loadInfo" infinite-scroll-immediate="true" style="overflow:auto">
-        <div class="item" v-for="(apply,idx1) in applys" :key="idx1">
+        <div class="item" v-for="(apply,idx1) in applys" :key="idx1" v-loading="ajax_idx===idx1">
           <div class="head flex">
             <div class="info flex flex1">
               <div class="store-pic" :style="{backgroundImage:'url('+apply.store.headimg+')'}"></div>
@@ -15,7 +15,7 @@
               <el-tooltip class="" effect="dark" content="驳回原因" placement="top">
                 <i class="el-icon-warning-outline danger-color padding10-c"></i>
               </el-tooltip>
-              <i class="el-icon-delete-solid graytext2"></i>
+              <i v-if="inArray(apply.order_status,[21,23,25])" class="el-icon-delete-solid graytext2"></i>
             </div>
           </div>
           <table class="purchases" v-if="apply && apply.prod_list" cellspacing="0">
@@ -25,7 +25,18 @@
                 <div class="c">
                   <div class="title line10">{{item.prod_name}}</div>
                   <div class="spec-key graytext font14">{{item.attr_info.attr_name}}</div>
-                  <div class="numbox graytext">数量：{{item.prod_count}}<i class="el-icon-warning-outline danger-color padding10-c font18"></i></div>
+                  <div  class="numbox graytext">
+                    <span class="handle" v-if="inArray(apply.Order_Status,[23,25])">
+                      <span class="minus" @click="minusFn(apply,item,idx1)">
+                        <i class="el-icon-minus icon"></i>
+                      </span>
+                      <input class="input" :value="item.prod_count" @blur="setValFn($event,apply,item,idx1)" />
+                      <span class="plus" @click="plusFn(apply,item,idx1)">
+                        <i class="el-icon-plus icon"></i>
+                      </span>
+                    </span>
+                    <span v-else>数量：{{item.prod_count}}</span>
+                    <i class="el-icon-warning-outline danger-color padding10-c font18"></i></div>
                 </div>
                 <div class="r font14">金额:<span class="danger-color">￥<span class="price-num font16">2500</span></span></div>
               </td>
@@ -36,12 +47,12 @@
                 </div>
               </td>
               <td class="actions text-center" v-if="idx2===0" :rowspan="apply.prod_list.length">
-                <div v-if="{{apply.order_status == 21}}"><el-button class="acion-btn" type="danger">撤回进货单</el-button></div>
-                <div>
+                <div v-if="inArray(apply.Order_Status,[21])"><el-button @click="cancelApply(apply)" class="acion-btn" type="danger">撤回进货单</el-button></div>
+                <div v-if="inArray(apply.Order_Status,[22])">
                   <el-button class="acion-btn line8" type="danger">确认收货</el-button>
-                  <div class="font12 graytext2">查看物流</div>
+                  <div @click="showLogistics(apply)" class="font12 graytext2 logistics" >查看物流</div>
                 </div>
-                <div>
+                <div v-if="inArray(apply.Order_Status,[23,25])">
                   <el-button class="acion-btn" type="danger">提交进货单</el-button>
                 </div>
               </td>
@@ -51,9 +62,10 @@
           </table>
 
         </div>
-
       </div>
     </div>
+
+    <logistics-info ref="logistics" />
 
     <el-dialog
       :visible.sync="channelDialogInstance.innerVisible"
@@ -121,15 +133,16 @@
         Action,
         State
     } from 'vuex-class'
-    import {getStorePurchaseApply,getStoreList,changeStoreApplyChannel} from '../common/fetch';
+    import {getStorePurchaseApply,getStoreList,changeStoreApplyChannel,updateStoreApplyGoodsNum,cancalStorePurchaseApply} from '../common/fetch';
     import {objTranslate,findArrayIdx} from '@/common/utils';
     import {fun} from '@/common';
+    import LogisticsInfo from '@/components/comm/LogisticsInfo'
 
 
     @Component({
         mixins:[],
         components: {
-
+            LogisticsInfo
         }
     })
 
@@ -159,6 +172,73 @@
             totalCount:0
         }
 
+
+        ajax_idx = null
+
+
+        async cancelApply(apply,idx){
+            this.ajax_idx = idx
+            await cancalStorePurchaseApply({order_id:apply.Order_ID}).then(res=>{
+                apply.Order_Status =  25
+                apply.Order_Status_desc =  "已撤回"
+            })
+            this.ajax_idx = null
+        }
+
+        showLogistics(apply){
+
+            let {out_order_no='',Express=''} = {...apply.Order_Shipping,out_order_no:apply.Order_ShippingID}
+
+            if(!out_order_no || !Express)return;
+            let logisticsComponent = this.$refs.logistics
+            logisticsComponent.setExpress(Express)
+            logisticsComponent.setOutOrderNo(out_order_no)
+            logisticsComponent.show()
+            logisticsComponent.search()
+        }
+
+        setValFn(e,apply,goods,idx){
+            let Attr_ID = null
+            if(goods.attr_info && goods.attr_info.attr_val){
+                Attr_ID  = goods.attr_info.attr_val.Attr_ID
+            }
+            //如果设置失败，数量要变回来
+            this.updateGoodsStock(apply.Order_ID,goods.prod_id,Attr_ID,e.target.value,function(){goods.prod_count = e.target.value},function(){
+                e.target.value = goods.prod_count
+            },idx)
+        }
+
+        plusFn(apply,goods,idx){
+
+            let Attr_ID = null
+            if(goods.attr_info && goods.attr_info.attr_val){
+                Attr_ID  = goods.attr_info.attr_val.Attr_ID
+            }
+            this.updateGoodsStock(apply.Order_ID,goods.prod_id,Attr_ID,goods.prod_count+1,function(){goods.prod_count++},null,idx)
+        }
+
+        minusFn(apply,goods,idx){
+            let Attr_ID = null
+            if(goods.attr_info && goods.attr_info.attr_val){
+                Attr_ID  = goods.attr_info.attr_val.Attr_ID
+            }
+            this.updateGoodsStock(apply.Order_ID,goods.prod_id,Attr_ID,goods.prod_count-1,function(){goods.prod_count--},null,idx)
+        }
+
+        async updateGoodsStock(order_id,prod_id,attr_id,modify_prod_count,call,errcall,idx){
+
+            this.ajax_idx = idx
+            await updateStoreApplyGoodsNum({order_id,prod_id,attr_id,modify_prod_count}).then(res=>{
+                call && call()
+            },err=>{
+                errcall && errcall()
+            })
+            this.ajax_idx = null
+        }
+
+        inArray(val,arr){
+            return arr.indexOf(val)!=-1
+        }
         changeApplyChannel(){
 
             if(!this.channelDialogInstance.channel){
@@ -224,7 +304,6 @@
                     headimg:'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=1373026939,1825269194&fm=173&app=25&f=JPEG?w=500&h=402&s=118B99550496CBDE52072DEF0300E01A',
                     title:'店铺名称',
                     Stores_ID:10
-
                 }
                 let rt = res.data.map(item=>{
 
@@ -368,6 +447,41 @@
               padding: 0 15px;
               .numbox{
                 margin-top: 25px;
+                display: flex;
+                align-items: center;
+                .handle{
+                  background: #f2f2f2;
+                  height: 34px;
+                  display: flex;
+                  align-items: center;
+                  width: 104px;
+                  .input{
+                    width: 40px;
+                    height: 24px;
+                    line-height: 24px;
+                    outline: none;
+                    padding: 0 4px;
+                    box-sizing: border-box;
+                    text-align: center;
+                  }
+                  .plus,.minus{
+                    text-align: center;
+                    display: block;
+                    line-height: 34px;
+                    width: 34px;
+                    height: 34px;
+                    cursor: pointer;
+                    .icon{
+
+                    }
+                  }
+                  .minus{
+
+                  }
+                  .plus{
+
+                  }
+                }
               }
             }
             .r{
@@ -385,6 +499,9 @@
         }
         .actions{
           width: 184px;
+          .logistics{
+            cursor: pointer;
+          }
         }
 
       }

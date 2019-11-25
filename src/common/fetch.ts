@@ -134,6 +134,18 @@ export const getAddress = (data:object={},options:any=false) => fetch('get_addre
 export const getStoreList = (data:object={},options:any=false) => fetch('get_store_list', data, options);
 
 export const changeStoreApplyChannel = (data:object={},options:any=false) => fetch('store_pifa_order_change_wholesaler', data, options);
+
+
+export const updateStoreApplyGoodsNum = (data:object={},options:any=false) => fetch('store_pifa_order_edit', data, options);
+
+export const getOrderExpress = (data:object={},options:any=false) => fetch('get_order_express', data, options);
+
+export const cancalStorePurchaseApply = (data:object={},options:any=false) => fetch('store_pifa_order_recall', data, options);
+
+
+
+
+
 //购物车
 export const updateCart = (data:object={},options:any=false) => fetch('update_cart', data, options);
 
