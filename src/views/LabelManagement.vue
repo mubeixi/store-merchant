@@ -95,7 +95,7 @@
         typesList=[]
         types=''
         labelName=''
-        page:1
+        page=1
         pageSize=10
         totalCount=0
 

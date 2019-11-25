@@ -178,7 +178,12 @@ export const getTag = (data:object={},options:any=false) => fetch('get_tag', dat
 export const getCrowds = (data:object={},options:any=false) => fetch('get_crowds', data, options);
 //删除人群
 export const delCrowd = (data:object={},options:any=false) => fetch('del_crowd', data, options);
-
+//初始化人群
+export const initCrowd = (data:object={},options:any=false) => fetch('init_crowd', data, options);
+//新增人群
+export const addCrowd = (data:object={},options:any=false) => fetch('add_crowd', data, options);
+//获取人群详情
+export const getCrowd = (data:object={},options:any=false) => fetch('get_crowd', data, options);
 
 
 // 获取初始化数据
