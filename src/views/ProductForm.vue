@@ -85,6 +85,7 @@
           size="mini"
           ref="thumb"
           :limit="5"
+          :tip="上传商品主图"
           :onSuccess="upThumbSuccessCall"
         />
       </el-form-item>
@@ -98,6 +99,7 @@
               elName="video"
               accept="video/*"
               size="mini"
+              :tip="上传主图视频"
               :onSuccess="upVideoSuccessCall"
             />
           </div>
@@ -106,6 +108,7 @@
               ref="video_cover"
               :limit="1"
               size="mini"
+              :tip="上传视频封面"
               :onSuccess="upImgsSuccessCall"
             />
           </div>
