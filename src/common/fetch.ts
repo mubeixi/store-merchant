@@ -133,6 +133,7 @@ export const getAddress = (data:object={},options:any=false) => fetch('get_addre
 
 export const getStoreList = (data:object={},options:any=false) => fetch('get_store_list', data, options);
 
+export const changeStoreApplyChannel = (data:object={},options:any=false) => fetch('store_pifa_order_change_wholesaler', data, options);
 //购物车
 export const updateCart = (data:object={},options:any=false) => fetch('update_cart', data, options);
 
@@ -140,7 +141,8 @@ export const getCartList = (data:object={},options:any=false) => fetch('get_cart
 
 export const delCart = (data:object={},options:any=false) => fetch('del_cart', data, options);
 
-
+//进货单相关处理
+export const getStorePurchaseApply = (data:object={},options:any=false) => fetch('get_store_pifa_apply_order', data, options);
 
 //产品添加编辑所需配置
 export const systemProdConfig = (data:object={},options:any=false) => fetch('system_prod_config', data, options);

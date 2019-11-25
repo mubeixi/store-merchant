@@ -54,7 +54,7 @@
           <div class="attr">{{goods.Productsattrstrval||'无规格'}}</div>
           <div class="numbox" >
            <span class="label">数量: </span>
-            <input class="input" v-model="goods.num" />
+            <input class="input" v-model="goods.num" readonly />
             <div class="num-btns">
               <span @click="cartPlusFn(goods,goods.num)" class="num-btn plus-btn"><i class="el-icon-arrow-up"></i></span>
               <span @click="cartMinusFn(goods,goods.num)" class="num-btn minus-btn"><i class="el-icon-arrow-down"></i></span>
@@ -494,6 +494,10 @@
                 this.cartDialogCancel()
                 this.carts.clear()
                 this.subLoading = false
+
+                this.$router.push({
+                    name:'StorePurchaseApply'
+                })
             },err=>{
                 this.subLoading = false
             })

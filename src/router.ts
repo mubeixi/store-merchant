@@ -17,6 +17,7 @@ import DayMarkDetail from '@/views/DayMarkDetail.vue';
 import StoreChannel from '@/views/StoreChannel.vue';
 import StorePurchase from '@/views/StorePurchase.vue';
 import SystemNotice from '@/views/SystemNotice.vue';
+import StorePurchaseApply from './views/StorePurchaseApply.vue';
 
 const routerInstance = new Router({
   routes: [
@@ -24,6 +25,14 @@ const routerInstance = new Router({
       path: '/',
       name: 'Home',
       component: Home,
+    },
+    {
+      path:'/StorePurchaseApply',
+      name:'StorePurchaseApply',
+      component: StorePurchaseApply,
+      meta:{
+        title:'进货记录'
+      }
     },
     {
       path:'/StoreChannel',
