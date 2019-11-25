@@ -25,7 +25,7 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
   // @ts-ignore
   param.User_ID = get_User_ID();
   // @ts-ignore
-  param.Stores_ID = get_Stores_ID();
+  param.store_id = get_Stores_ID();
   // param.appid = get_Appid();
 
   // 数据加密
@@ -63,6 +63,12 @@ export const getCouponList = (data:object={},options:any=false) => fetch('get_un
 export const getProductDetail = (data:object={},options:any=false) => fetch('prod_detail', data, options)
 
 export const getProductList = (data:object={},options:any=false) => fetch('get_prod', data, options)
+
+
+export const getPifaProductList = (data:object={},options:any=false) => fetch('get_pifa_store_prod', data, options)
+
+export const createOrder = (data:object={},options:any=false) => fetch('create_order', data, options)
+
 
 export const getShopSkinList = (data:object={},options:any=false) => fetch('get_shopskin', data, options)
 

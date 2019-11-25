@@ -340,7 +340,7 @@ export const findArrayIdx = (arr, key_val_arr, full:boolean=false)=>{
     if(typeof arr[i] !='object')continue
 
     //用来比较对象
-    if(compare_obj(arr[i],key_val_arr)){
+    if(compare_obj(key_val_arr,arr[i])){
       if(!full) return i;
       return {val:arr[i],idx:i}
     }
