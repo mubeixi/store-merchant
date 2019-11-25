@@ -17,6 +17,7 @@ import DayMarkDetail from '@/views/DayMarkDetail.vue';
 import StoreChannel from '@/views/StoreChannel.vue';
 import StorePurchase from '@/views/StorePurchase.vue';
 import SystemNotice from '@/views/SystemNotice.vue';
+import MessageSend from '@/views/MessageSend.vue';
 
 const routerInstance = new Router({
   routes: [
@@ -104,6 +105,11 @@ const routerInstance = new Router({
       path: '/DayMarkDetail',
       name: 'DayMarkDetail',
       component: DayMarkDetail
+    },
+    {
+      path: '/MessageSend',
+      name: 'MessageSend',
+      component: MessageSend
     }
     // {
     //   path: '/about',

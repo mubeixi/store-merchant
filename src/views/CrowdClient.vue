@@ -6,7 +6,7 @@
       </div>
       <el-tabs  v-model="tabs">
         <el-tab-pane label="自定义人群" name="first">
-          <div class="crowdAdd">新建人群</div>
+          <div class="crowdAdd current" @click="crowdAdd">新建人群</div>
           <el-table
             class="wzw-tableS"
             :data="tableData"
@@ -48,7 +48,7 @@
               width="250"
             >
               <template slot-scope="scope">
-                <span class="spans">短信群发</span><span class="spans">|</span><span class="spans">编辑</span><span class="spans">|</span><span class="spans">删除</span>
+                <span class="spans current">短信群发</span><span class="spans">|</span><span class="spans current"  @click="ediT(tableData[scope.$index].id)">编辑</span><span class="spans">|</span><span class="spans current" @click="delList(tableData[scope.$index].id)">删除</span>
               </template>
             </el-table-column>
           </el-table>
@@ -101,7 +101,9 @@
           <el-pagination
             background
             class="pagination"
+            @current-change="currentChange"
             layout="prev, pager, next"
+            :page-size="pageSize"
             :total="totalCount">
           </el-pagination>
 
@@ -154,6 +156,59 @@
                     this.totalCount=res.totalCount
                     this.tableData=res.data
                 }
+            })
+        }
+        crowdAdd(){
+            this.$router.push({
+                name:'CrowdName'
+            })
+        }
+
+        lookDetail(index){
+            let arr=``
+            for(let item of this.tableData[index].conditions){
+                arr+=`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${item}</br>`
+            }
+            this.$alert(arr, '人群定义', {
+                dangerouslyUseHTMLString: true
+            });
+        }
+        currentChange(val){
+            this.page=val
+            this.getList()
+        }
+        //编辑人群
+        ediT(id){
+            this.$router.push({
+                name: 'CrowdName',
+                query:{
+                    id:id
+                }
+            })
+        }
+        //删除人群
+        delList(id){
+            this.$confirm('你确定要删除这个人群吗', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                delCrowd({id:id}).then(res=>{
+                    if(res.errorCode==0){
+                        this.$message({
+                            message: res.msg,
+                            type: 'success'
+                        });
+                        this.getList();
+                    }else{
+                        this.$message({
+                            message: res.msg,
+                            type: 'error'
+                        });
+                    }
+                })
+            }).catch(() => {
+
             })
         }
 
@@ -225,6 +280,18 @@
     border: none !important;
     border-top: 1px solid #EAEAEA !important;
     border-left: 1px solid #EAEAEA !important;
+  }
+  .divLeft{
+    line-height: 20px;
+    text-align: left;
+    margin-left: 30px;
+  }
+  .curr{
+    color: #428CF7;
+    cursor: pointer;
+  }
+  .current{
+    cursor: pointer;
   }
 
 </style>
