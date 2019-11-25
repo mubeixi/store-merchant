@@ -2,7 +2,7 @@
   <div class="labelManagement">
     <div class="labelMain flex">
           <div style="margin-left: 15%;width: 350px;height: 100px;background-color: #ff4444">
-              123123
+            <img src="/assets/message.png" >
           </div>
           <div class="floatRight">
             <el-form size="small">
@@ -48,8 +48,9 @@
               </el-form-item>
 
               <el-form-item label="短信签名：" class="flex">
-                <span>【网中网】</span><span class="colorF current">修改</span><span class="spanMarginLeft">（本月还能修改2次）</span>
-                <div class="error">短信签名不能包含【网中网】，请修改</div>
+                <span>【网中网】</span><span class="colorF current">修改</span>
+<!--                <span class="spanMarginLeft">（本月还能修改2次）</span>-->
+<!--                <div class="error">短信签名不能包含【网中网】，请修改</div>-->
               </el-form-item>
 
               <el-form-item label="发送时间：" class="flex">
