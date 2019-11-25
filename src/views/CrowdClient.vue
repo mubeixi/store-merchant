@@ -13,7 +13,7 @@
             border
             style="width: 80%">
             <el-table-column
-              prop="date"
+              prop="name"
               label="人群名称"
               align="center"
               width="230">
@@ -23,15 +23,21 @@
               label="人群定义"
               align="center"
               >
+              <template slot-scope="scope">
+                <template v-for="(item,index) of tableData[scope.$index].conditions" >
+                  <div class="divLeft" v-if="index==0">{{item}}</div>
+                </template>
+                <div v-if="tableData[scope.$index].conditions"  class="divLeft curr" @click="lookDetail(scope.$index)">查看详情</div>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="address"
+              prop="group_num"
               width="140"
               align="center"
               label="人群数量">
             </el-table-column>
             <el-table-column
-              prop="time"
+              prop="updated_at"
               align="center"
               width="170"
               label="更新时间">
@@ -96,7 +102,7 @@
             background
             class="pagination"
             layout="prev, pager, next"
-            :total="100">
+            :total="totalCount">
           </el-pagination>
 
         </el-tab-pane>
@@ -119,6 +125,7 @@
         State
     } from 'vuex-class'
     import fa from "element-ui/src/locale/lang/fa";
+    import  {getCrowds,delCrowd} from  '@/common/fetch'
 
     @Component({
         mixins:[],
@@ -131,30 +138,28 @@
         //tab选项的值
         tabs='first'
 
-        tableData=[{
-            date: '爱购物的剁手党',
-            name: '最近3天内有访问，最近3天内有加入购物车',
-            address: '10',
-            time:'2019-11-18'
-        }, {
-            date: '爱购物的剁手党',
-            name: '最近3天内有访问，最近3天内有加入购物车',
-            address: '10',
-            time:'2019-11-18'
-        }, {
-            date: '爱购物的剁手党',
-            name: '最近3天内有访问，最近3天内有加入购物车',
-            address: '10',
-            time:'2019-11-18'
-        }, {
-            date: '爱购物的剁手党',
-            name: '最近3天内有访问，最近3天内有加入购物车',
-            address: '10',
-            time:'2019-11-18'
-        }]
+        tableData=[]
+
+        page=1
+        totalCount=0
+        pageSize=10
+
+        getList(){
+            let data={
+                page:this.page,
+                pageSize:this.pageSize
+            }
+            getCrowds(data).then(res=>{
+                if(res.errorCode==0){
+                    this.totalCount=res.totalCount
+                    this.tableData=res.data
+                }
+            })
+        }
 
         async created(){
 
+            this.getList()
         }
 
 

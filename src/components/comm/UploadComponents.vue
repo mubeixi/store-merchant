@@ -24,7 +24,6 @@
       :before-upload='beforeUpload'
       :on-change='change'>
       <i class="el-icon-plus" v-if="Len<limit"></i>
-
         <div slot="file"  slot-scope="{file}">
           <template v-if="file.status!='success'">
             <el-progress :width="width-2" style="width: 100%" type="circle" :percentage="file.percentage|percent"></el-progress>

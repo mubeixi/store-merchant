@@ -32,28 +32,28 @@
                   <el-radio label="1">最近
                     <el-input  class="marginLR" v-model="allData.conditions.time.value"></el-input>天
                   </el-radio>
-                  <el-radio label="2">自定义
-                    <el-form-item  style="display: inline-block">
-                      <el-date-picker
-                        type="datetime"
-                        placeholder="选择开始时间"
-                        align="right"
-                        style="width: 182px"
-                        v-model="allData.conditions.time.start"
-                        value-format="yyyy-MM-dd HH:mm:ss"
-                        >
-                      </el-date-picker>
-                      一
-                      <el-date-picker
-                        type="datetime"
-                        style="width: 182px"
-                        v-model="allData.conditions.time.end"
-                        value-format="yyyy-MM-dd HH:mm:ss"
-                        placeholder="选择结束时间"
-                        >
-                      </el-date-picker>
-                    </el-form-item>
-                  </el-radio>
+<!--                  <el-radio label="2">自定义-->
+<!--                    <el-form-item  style="display: inline-block">-->
+<!--                      <el-date-picker-->
+<!--                        type="datetime"-->
+<!--                        placeholder="选择开始时间"-->
+<!--                        align="right"-->
+<!--                        style="width: 182px"-->
+<!--                        v-model="allData.conditions.time.start"-->
+<!--                        value-format="yyyy-MM-dd HH:mm:ss"-->
+<!--                        >-->
+<!--                      </el-date-picker>-->
+<!--                      一-->
+<!--                      <el-date-picker-->
+<!--                        type="datetime"-->
+<!--                        style="width: 182px"-->
+<!--                        v-model="allData.conditions.time.end"-->
+<!--                        value-format="yyyy-MM-dd HH:mm:ss"-->
+<!--                        placeholder="选择结束时间"-->
+<!--                        >-->
+<!--                      </el-date-picker>-->
+<!--                    </el-form-item>-->
+<!--                  </el-radio>-->
                 </el-radio-group>
                 <el-form-item>
                   <el-checkbox-group v-model="allData.conditions.count.checked">
@@ -77,7 +77,7 @@
             </div>
           </div>
         </template>
-        <div class="submit" @click="saveData">保存</div>
+        <div class="submit"  @click="saveData">保存</div><div class="submits" @click="goLabel">返回</div>
       </el-form>
     </div>
   </div>
@@ -93,7 +93,7 @@
         Action,
         State
     } from 'vuex-class'
-    import  {addTag} from '@/common/fetch'
+    import  {addTag,getTag} from '@/common/fetch'
     import fa from "element-ui/src/locale/lang/fa";
 
     @Component({
@@ -105,6 +105,7 @@
 
     export default class AddProduct extends Vue {
 
+        loading=false
         isEdit=true
         allData={
             name:"",
@@ -132,6 +133,8 @@
         }
 
         saveData(){
+            if(this.loading) return;
+            this.loading=true
             if(this.allData.name==''){
                 this.$message({
                     message: '请填写标签名称',
@@ -145,6 +148,10 @@
                 rule_type:this.allData.rule_type,
                 conditions:JSON.stringify(this.allData.conditions)
             }
+            let id = this.$route.query.id
+            if(id){
+                data.id=id;
+            }
             addTag(data).then(res=>{
                     if(res.errorCode==0){
                         this.$message({
@@ -157,14 +164,29 @@
                             })
                         },1500)
                     }
-                })
+            }).catch(e=>{
+                this.loading=false
+            })
 
+        }
+        goLabel(){
+            this.$router.push({
+                name: 'LabelManagement'
+            })
         }
 
         async created(){
             let id = this.$route.query.id
             if(id){
                 this.isEdit=false
+                getTag({id:id}).then(res=>{
+                    if(res.errorCode==0){
+                        this.allData.name=res.data.name
+                        this.allData.rule_type=String(res.data.rule_type);
+                        this.allData.type=String(res.data.type)
+                        this.allData.conditions=res.data.conditions
+                    }
+                })
             }
         }
 
@@ -218,8 +240,24 @@
   text-align: center;
   line-height: 38px;
   margin-top: 42px;
-  margin-left: 30%;
+  margin-left: 24%;
+  cursor: pointer;
+  display: inline-block;
 }
+  .submits{
+    display: inline-block;
+    width:92px;
+    height:38px;
+    font-size: 14px;
+    text-align: center;
+    line-height: 38px;
+    margin-top: 42px;
+    margin-left: 40px;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #dcdfe6;
+    color: #606266;
+  }
 
 
 </style>

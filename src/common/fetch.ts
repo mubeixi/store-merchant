@@ -170,6 +170,15 @@ export const getTags = (data:object={},options:any=false) => fetch('get_tags', d
 export const delTag = (data:object={},options:any=false) => fetch('del_tag', data, options);
 //新增标签
 export const addTag = (data:object={},options:any=false) => fetch('add_tag', data, options);
+//获取编辑标签
+export const getTag = (data:object={},options:any=false) => fetch('get_tag', data, options);
+
+
+//获取人群列表
+export const getCrowds = (data:object={},options:any=false) => fetch('get_crowds', data, options);
+//删除人群
+export const delCrowd = (data:object={},options:any=false) => fetch('del_crowd', data, options);
+
 
 
 // 获取初始化数据
