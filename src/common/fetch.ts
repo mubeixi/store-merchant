@@ -200,6 +200,16 @@ export const addCrowd = (data:object={},options:any=false) => fetch('add_crowd',
 export const getCrowd = (data:object={},options:any=false) => fetch('get_crowd', data, options);
 
 
+//获取短信模板
+export const smsGetTemplates = (data:object={},options:any=false) => fetch('sms_get_templates', data, options);
+//新增短信模板
+export const smsAddTemplate = (data:object={},options:any=false) => fetch('sms_add_template', data, options);
+//删除短信模板
+export const smsDelTemplate = (data:object={},options:any=false) => fetch('sms_del_template', data, options);
+
+
+
+
 // 获取初始化数据
 export const initScene = (data:object={},options:object={}) => fetch('init_scene', data , options);
 //更新活动信息

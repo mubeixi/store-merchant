@@ -20,7 +20,9 @@ import SystemNotice from '@/views/SystemNotice.vue';
 import StorePurchaseApply from './views/StorePurchaseApply.vue';
 import MessageSend from '@/views/MessageSend.vue';
 import MessageStationSend from '@/views/MessageStationSend.vue';
-
+import LabelSetting from '@/views/LabelSetting.vue';
+import CouponGift from '@/views/CouponGift.vue';
+import GiftsGift from '@/views/GiftsGift.vue';
 const routerInstance = new Router({
   routes: [
     {
@@ -147,7 +149,33 @@ const routerInstance = new Router({
       meta:{
         title:'群发站内信'
       }
+    },
+    {
+      path: '/LabelSetting',
+      name: 'LabelSetting',
+      component: LabelSetting,
+      meta:{
+        title:'设置标签'
+      }
+    },
+    {
+      path: '/CouponGift',
+      name: 'CouponGift',
+      component: CouponGift,
+      meta:{
+        title:'赠送优惠券'
+      }
+    },
+    {
+      path: '/GiftsGift',
+      name: 'GiftsGift',
+      component: GiftsGift,
+      meta:{
+        title:'赠送赠品'
+      }
     }
+
+
 
     // {
     //   path: '/about',

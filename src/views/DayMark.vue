@@ -623,7 +623,7 @@
                 this.form.startdatelist = temarr;
 
             })
-           await getGivingGifts({User_ID:'-1'}).then(res=>{
+           await getGivingGifts().then(res=>{
                if(res.errorCode==0){
                    this.GivingGifts=res.data;
                }

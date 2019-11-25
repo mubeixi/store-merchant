@@ -114,7 +114,7 @@
         ediT(index){
             this.$router.push({
                 name: 'LabelAdd',
-                query:{
+                params:{
                     id:index
                 }
             })

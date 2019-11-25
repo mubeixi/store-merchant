@@ -29,7 +29,7 @@
                     width="373"
                     align="center">
                     <template slot-scope="scope">
-                      <div style="text-align:left;padding-left:78px;">
+                      <div style="text-align:center;width: 100%;">
                         <div class="userinput baoyou" v-for="(item,index) of vipDate.rights[scope.$index].rights.basic" :key="index">
                             {{item}}
                         </div>
@@ -42,7 +42,7 @@
                     width="376"
                     align="center">
                     <template slot-scope="scope">
-                      <div style="text-align:left;padding-left:78px;">
+                      <div style="text-align:center;width: 100%">
                         <div class="userinput baoyou" v-for="(it,ind) of vipDate.rights[scope.$index].rights.right" :key="ind">
                           {{it}}
                         </div>
@@ -69,6 +69,9 @@
             <span>接收短信的手机号：{{vipDate.mobile}}</span>
           </div>
         </el-form-item>
+        <div class="bottomFixed">
+            <div class="close" @click="closeThis">关闭</div>
+        </div>
       </el-form>
     </div>
   </div>
@@ -190,6 +193,13 @@
                 gift: '232'
             },
         ]
+
+        closeThis(){
+            this.$router.push({
+                name:'Marketing'
+            })
+
+        }
         created(){
             let id=this.$route.query.id;
             getScene({id:id}).then(res=>{
@@ -342,6 +352,38 @@
         border-left: 1px solid #EBEEF5;
         border-bottom: 0;
       }
+    }
+  }
+
+  .bottomFixed{
+    position: fixed;
+    padding: 10px 0;
+    box-sizing: border-box;
+    bottom: 0;
+    width: 100%;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    background-color: #fff;
+    box-shadow: 0 -3px 5px #eee;
+    z-index: 1;
+    transition: right .2s ease;
+    .close{
+        width:62px;
+        height:32px;
+        line-height: 32px;
+        text-align: center;
+        cursor: pointer;
+        border-radius:5px;
+        margin-top: 50px;
+        display: inline-block;
+        font-size: 16px;
+        background-color: #428CF7;
+        color: #FFFFFF;
+        margin:0 auto;
     }
   }
 </style>
