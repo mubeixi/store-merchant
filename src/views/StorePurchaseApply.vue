@@ -40,7 +40,11 @@
                       </span>
                     </span>
                     <span v-else>数量：{{item.prod_count}}</span>
-                    <i class="el-icon-warning-outline danger-color padding10-c font18"></i></div>
+                    <el-tooltip v-if="item.prod_count_change_desc" class="" effect="dark" :content="item.prod_count_change_desc" placement="top">
+                      <i class="el-icon-warning-outline danger-color padding10-c font18"></i>
+                    </el-tooltip>
+
+                  </div>
                 </div>
                 <div class="r font14">金额:<span class="danger-color">￥<span class="price-num font16">2500</span></span></div>
               </td>
@@ -235,11 +239,16 @@
         setValFn(e,apply,goods,idx){
             let Attr_ID = null
             if(goods.attr_info && goods.attr_info.attr_val){
-                Attr_ID  = goods.attr_info.attr_val.Attr_ID
+                Attr_ID  = goods.attr_info.attr_val.Product_Attr_ID
             }
+            let newVal = e.target.value,oldVal = goods.prod_count
+            console.log(e.target.value)
             //如果设置失败，数量要变回来
-            this.updateGoodsStock(apply.Order_ID,goods.prod_id,Attr_ID,e.target.value,function(){goods.prod_count = e.target.value},function(){
-                e.target.value = goods.prod_count
+            this.updateGoodsStock(apply.Order_ID,goods.prod_id,Attr_ID,e.target.value,function(){
+                goods.prod_count = newVal
+            },function(){
+                console.log('errorerror')
+                e.target.value = oldVal
             },idx)
         }
 
@@ -247,7 +256,7 @@
 
             let Attr_ID = null
             if(goods.attr_info && goods.attr_info.attr_val){
-                Attr_ID  = goods.attr_info.attr_val.Attr_ID
+                Attr_ID  = goods.attr_info.attr_val.Product_Attr_ID
             }
             this.updateGoodsStock(apply.Order_ID,goods.prod_id,Attr_ID,goods.prod_count+1,function(){goods.prod_count++},null,idx)
         }
@@ -255,7 +264,7 @@
         minusFn(apply,goods,idx){
             let Attr_ID = null
             if(goods.attr_info && goods.attr_info.attr_val){
-                Attr_ID  = goods.attr_info.attr_val.Attr_ID
+                Attr_ID  = goods.attr_info.attr_val.Product_Attr_ID
             }
             this.updateGoodsStock(apply.Order_ID,goods.prod_id,Attr_ID,goods.prod_count-1,function(){goods.prod_count--},null,idx)
         }
@@ -264,11 +273,18 @@
 
             this.ajax_idx = idx
             await updateStoreApplyGoodsNum({order_id,prod_id,attr_id,modify_prod_count}).then(res=>{
+                console.log('success')
                 call && call()
             },err=>{
+                console.log('error')
                 errcall && errcall()
             })
-            this.ajax_idx = null
+
+            let _self = this
+            setTimeout(function () {
+                _self.ajax_idx = null
+            },100)
+
         }
 
         inArray(val,arr){
