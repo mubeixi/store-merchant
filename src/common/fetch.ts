@@ -142,9 +142,9 @@ export const getOrderExpress = (data:object={},options:any=false) => fetch('get_
 
 export const cancalStorePurchaseApply = (data:object={},options:any=false) => fetch('store_pifa_order_recall', data, options);
 
+export const subStorePurchaseApply = (data:object={},options:any=false) => fetch('store_pifa_order_submit', data, options);
 
-
-
+export const delStorePurchaseApply = (data:object={},options:any=false) => fetch('store_pifa_order_del', data, options);
 
 //购物车
 export const updateCart = (data:object={},options:any=false) => fetch('update_cart', data, options);

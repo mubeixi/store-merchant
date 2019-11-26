@@ -1,24 +1,28 @@
 <template>
   <div class="home-wrap">
     <div class="container">
+
       <div class="lists" v-infinite-scroll="loadInfo" infinite-scroll-immediate="true" style="overflow:auto">
-        <div class="item" v-for="(apply,idx1) in applys" :key="idx1" v-loading="ajax_idx===idx1">
+        <div class="item" v-for="(apply,idx1) in applys" :key="idx1" >
           <div class="head flex">
             <div class="info flex flex1">
-              <div class="store-pic" :style="{backgroundImage:'url('+apply.store.headimg+')'}"></div>
-              <div class="store-title">{{apply.store.title}}</div>
+              <div class="store-pic" :style="{backgroundImage:'url('+apply.supplier_img+')'}"></div>
+              <div class="store-title">{{apply.supplier_name}}</div>
               <div class="action" >(<span @click="showStore(apply.store)" class="action-item">查看信息</span><span  class="padding4-c">/</span><span class="action-item" @click="changeChannel(apply)" >修改渠道</span>)</div>
               <div class="order_no">进货单号: {{apply.Order_ID}}</div>
             </div>
             <div class="status">
               <span class="status-text danger-color padding10-c font14">{{apply.Order_Status_desc}}</span>
-              <el-tooltip class="" effect="dark" content="驳回原因" placement="top">
+              <el-tooltip v-if="apply.reason" class="" effect="dark" :content="apply.reason" placement="top">
                 <i class="el-icon-warning-outline danger-color padding10-c"></i>
               </el-tooltip>
-              <i v-if="inArray(apply.order_status,[21,23,25])" class="el-icon-delete-solid graytext2"></i>
+              <i @click="delApply(apply,idx1)" v-if="inArray(apply.Order_Status,[21,23,25])"  title="删除订单" class="el-icon-delete-solid"></i>
             </div>
           </div>
-          <table class="purchases" v-if="apply && apply.prod_list" cellspacing="0">
+          <table class="purchases"
+                 v-loading="ajax_idx===idx1"
+                 v-if="apply && apply.prod_list"
+                 cellspacing="0">
             <tr class="goods-list" v-for="(item,idx2) in apply.prod_list">
               <td class="goods">
                 <div class="l" :style="{backgroundImage:'url('+item.prod_img+')'}"></div>
@@ -36,7 +40,11 @@
                       </span>
                     </span>
                     <span v-else>数量：{{item.prod_count}}</span>
-                    <i class="el-icon-warning-outline danger-color padding10-c font18"></i></div>
+                    <el-tooltip v-if="item.prod_count_change_desc" class="" effect="dark" :content="item.prod_count_change_desc" placement="top">
+                      <i class="el-icon-warning-outline danger-color padding10-c font18"></i>
+                    </el-tooltip>
+
+                  </div>
                 </div>
                 <div class="r font14">金额:<span class="danger-color">￥<span class="price-num font16">2500</span></span></div>
               </td>
@@ -47,26 +55,21 @@
                 </div>
               </td>
               <td class="actions text-center" v-if="idx2===0" :rowspan="apply.prod_list.length">
-                <div v-if="inArray(apply.Order_Status,[21])"><el-button @click="cancelApply(apply)" class="acion-btn" type="danger">撤回进货单</el-button></div>
+                <div v-if="inArray(apply.Order_Status,[21])"><el-button @click="cancelApply(apply,idx1)" class="acion-btn" type="danger">撤回进货单</el-button></div>
                 <div v-if="inArray(apply.Order_Status,[22])">
                   <el-button class="acion-btn line8" type="danger">确认收货</el-button>
                   <div @click="showLogistics(apply)" class="font12 graytext2 logistics" >查看物流</div>
                 </div>
                 <div v-if="inArray(apply.Order_Status,[23,25])">
-                  <el-button class="acion-btn" type="danger">提交进货单</el-button>
+                  <el-button  @click="submitAplly(apply,idx1)" class="acion-btn" type="danger">提交进货单</el-button>
                 </div>
               </td>
             </tr>
-
-
           </table>
-
         </div>
       </div>
     </div>
-
     <logistics-info ref="logistics" />
-
     <el-dialog
       :visible.sync="channelDialogInstance.innerVisible"
       title="切换渠道"
@@ -93,7 +96,6 @@
       </div>
 
     </el-dialog>
-
     <el-dialog
       :visible.sync="storeDialogInstance.innerVisible"
       title="店铺信息"
@@ -119,7 +121,6 @@
       </div>
 
     </el-dialog>
-
   </div>
 </template>
 
@@ -133,7 +134,7 @@
         Action,
         State
     } from 'vuex-class'
-    import {getStorePurchaseApply,getStoreList,changeStoreApplyChannel,updateStoreApplyGoodsNum,cancalStorePurchaseApply} from '../common/fetch';
+    import {getStorePurchaseApply,getStoreList,changeStoreApplyChannel,updateStoreApplyGoodsNum,cancalStorePurchaseApply,subStorePurchaseApply,delStorePurchaseApply} from '../common/fetch';
     import {objTranslate,findArrayIdx} from '@/common/utils';
     import {fun} from '@/common';
     import LogisticsInfo from '@/components/comm/LogisticsInfo'
@@ -175,6 +176,40 @@
 
         ajax_idx = null
 
+        async delApply(apply,idx){
+
+            let _self = this
+            this.$confirm('删除订单不可恢复, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                _self.ajax_idx = idx
+                delStorePurchaseApply({order_id:apply.Order_ID}).then(res=>{
+                    _self.applys.splice(idx,1)
+                    setTimeout(function () {
+                        _self.ajax_idx = null
+                    },100)
+                })
+            }).catch(() => {
+
+            });
+
+
+        }
+
+        async submitAplly(apply,idx){
+
+            this.ajax_idx = idx
+            await subStorePurchaseApply({order_id:apply.Order_ID}).then(res=>{
+                apply.Order_Status =  21
+                apply.Order_Status_desc =  "待处理"
+            })
+            let _self = this
+            setTimeout(function () {
+                _self.ajax_idx = null
+            },100)
+        }
 
         async cancelApply(apply,idx){
             this.ajax_idx = idx
@@ -182,7 +217,11 @@
                 apply.Order_Status =  25
                 apply.Order_Status_desc =  "已撤回"
             })
-            this.ajax_idx = null
+            //延时是为了触发加载的
+            let _self = this
+            setTimeout(function () {
+                _self.ajax_idx = null
+            },100)
         }
 
         showLogistics(apply){
@@ -200,11 +239,16 @@
         setValFn(e,apply,goods,idx){
             let Attr_ID = null
             if(goods.attr_info && goods.attr_info.attr_val){
-                Attr_ID  = goods.attr_info.attr_val.Attr_ID
+                Attr_ID  = goods.attr_info.attr_val.Product_Attr_ID
             }
+            let newVal = e.target.value,oldVal = goods.prod_count
+            console.log(e.target.value)
             //如果设置失败，数量要变回来
-            this.updateGoodsStock(apply.Order_ID,goods.prod_id,Attr_ID,e.target.value,function(){goods.prod_count = e.target.value},function(){
-                e.target.value = goods.prod_count
+            this.updateGoodsStock(apply.Order_ID,goods.prod_id,Attr_ID,e.target.value,function(){
+                goods.prod_count = newVal
+            },function(){
+                console.log('errorerror')
+                e.target.value = oldVal
             },idx)
         }
 
@@ -212,7 +256,7 @@
 
             let Attr_ID = null
             if(goods.attr_info && goods.attr_info.attr_val){
-                Attr_ID  = goods.attr_info.attr_val.Attr_ID
+                Attr_ID  = goods.attr_info.attr_val.Product_Attr_ID
             }
             this.updateGoodsStock(apply.Order_ID,goods.prod_id,Attr_ID,goods.prod_count+1,function(){goods.prod_count++},null,idx)
         }
@@ -220,7 +264,7 @@
         minusFn(apply,goods,idx){
             let Attr_ID = null
             if(goods.attr_info && goods.attr_info.attr_val){
-                Attr_ID  = goods.attr_info.attr_val.Attr_ID
+                Attr_ID  = goods.attr_info.attr_val.Product_Attr_ID
             }
             this.updateGoodsStock(apply.Order_ID,goods.prod_id,Attr_ID,goods.prod_count-1,function(){goods.prod_count--},null,idx)
         }
@@ -229,11 +273,18 @@
 
             this.ajax_idx = idx
             await updateStoreApplyGoodsNum({order_id,prod_id,attr_id,modify_prod_count}).then(res=>{
+                console.log('success')
                 call && call()
             },err=>{
+                console.log('error')
                 errcall && errcall()
             })
-            this.ajax_idx = null
+
+            let _self = this
+            setTimeout(function () {
+                _self.ajax_idx = null
+            },100)
+
         }
 
         inArray(val,arr){
@@ -289,6 +340,7 @@
         }
 
         async loadInfo(){
+            if(this.ajax_idx!==null)return
             const loadInstacne = this.$loading()
             await getStorePurchaseApply({...this.paginate}).then(res=>{
 
@@ -334,6 +386,7 @@
         }
 
         async created(){
+
             getStoreList({pageSize:999}).then(res=>{
                 this.stores = res.data
             })
@@ -414,6 +467,15 @@
           .order_no{
             margin-left: 30px;
             color: #666;
+          }
+        }
+        .status{
+          .el-icon-delete-solid{
+            cursor: pointer;
+            color: #999;
+            &:hover{
+              color: #F43131;
+            }
           }
         }
       }
