@@ -773,7 +773,7 @@
                 let url = url_list[0].url
                 this.specs[0].imgs[this.currentSpecItemIdx] = url
             }
-            console.log(url_list,this.currentSpecItemIdx)
+            // console.log(url_list,this.currentSpecItemIdx)
         }
         onContentChange (val) {
             this.ruleForm.content = val
@@ -844,7 +844,6 @@
 
                         this.skuList = []
                         for(let item of this.skus[0]){
-                            console.log('itemitemitemitem',item)
                             let nameStr = item;
                             let idx= name_list.indexOf(nameStr)
                             let obj = null;
@@ -886,7 +885,7 @@
                 });
             }
 
-            console.log("初始化规格")
+            // console.log("初始化规格")
             for(let item of this.skuList){
                 for(let it of this.initialSku){
                     if(item.Attr_Value==it.Attr_Value){
@@ -1207,7 +1206,7 @@
 
 
                         }
-                        console.log(skuList)
+
                         // @ts-ignore
                         productInfo.prod_attrval=JSON.stringify({
                             'attrs':attrs,
@@ -1324,9 +1323,9 @@
         initSpecItemPic(){
             if(this.specs[0] && this.specs[0].imgs && this.specs[0].imgs.length>0){
                 let imgs = this.specs[0].imgs
-                console.log(imgs)
+
                for(var idx in imgs){
-                   console.log(imgs[idx])
+
                    if(!imgs[idx])continue
                    //初始化一下
 
@@ -1403,7 +1402,7 @@
                     pro['Attr_Value']=arr.join("|");
                 }
 
-                console.log(this.specs[0] && this.specs[0].imgs && this.specs[0].imgs.length>0)
+                // console.log(this.specs[0] && this.specs[0].imgs && this.specs[0].imgs.length>0)
 
 
                 var _self = this
