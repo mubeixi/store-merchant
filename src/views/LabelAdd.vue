@@ -28,33 +28,10 @@
                   <el-checkbox label="lastTime" name="lastTime">最后消费时间</el-checkbox>
                 </el-checkbox-group>
 
-                <el-radio-group :disabled="!allData.conditions.time.checked"  v-model="allData.conditions.time.type" style="margin-left: 30px;margin-top: 25px;margin-bottom: 16px;">
-                  <el-radio label="1">最近
-                    <el-input  class="marginLR" v-model="allData.conditions.time.value"></el-input>天
-                  </el-radio>
-<!--                  <el-radio label="2">自定义-->
-<!--                    <el-form-item  style="display: inline-block">-->
-<!--                      <el-date-picker-->
-<!--                        type="datetime"-->
-<!--                        placeholder="选择开始时间"-->
-<!--                        align="right"-->
-<!--                        style="width: 182px"-->
-<!--                        v-model="allData.conditions.time.start"-->
-<!--                        value-format="yyyy-MM-dd HH:mm:ss"-->
-<!--                        >-->
-<!--                      </el-date-picker>-->
-<!--                      一-->
-<!--                      <el-date-picker-->
-<!--                        type="datetime"-->
-<!--                        style="width: 182px"-->
-<!--                        v-model="allData.conditions.time.end"-->
-<!--                        value-format="yyyy-MM-dd HH:mm:ss"-->
-<!--                        placeholder="选择结束时间"-->
-<!--                        >-->
-<!--                      </el-date-picker>-->
-<!--                    </el-form-item>-->
-<!--                  </el-radio>-->
-                </el-radio-group>
+                <el-form-item label="最近:"  style="margin-left: 30px;margin-top: 25px;margin-bottom: 16px;">
+                  <el-input  class="marginLR" v-model="allData.conditions.time.value"></el-input>天
+                </el-form-item>
+
                 <el-form-item>
                   <el-checkbox-group v-model="allData.conditions.count.checked">
                     <el-checkbox label="lastTime" name="consumptionTimes">
@@ -77,7 +54,7 @@
             </div>
           </div>
         </template>
-        <div class="submit"  @click="saveData">保存</div><div class="submits" @click="goLabel">返回</div>
+        <el-button  class="submit"  @click="saveData" type="primary">保存</el-button><el-button class="submits"  @click="goLabel">返回</el-button>
       </el-form>
     </div>
   </div>
@@ -113,10 +90,7 @@
             type:'2',
             conditions:{
                 time:{
-                    checked:true,
-                    type:'1',
-                    start:'',
-                    end:'',
+                    checked:false,
                     value:''
                 },
                 count:{
@@ -135,13 +109,14 @@
         saveData(){
             if(this.loading) return;
             this.loading=true
-            if(this.allData.name==''){
-                this.$message({
-                    message: '请填写标签名称',
-                    type: 'error'
-                })
-                return
-            }
+            // if(this.allData.name==''){
+            //     this.$message({
+            //         message: '请填写标签名称',
+            //         type: 'error'
+            //     })
+            //     this.loading=false
+            //     return
+            // }
             let data={
                 name:this.allData.name,
                 type:this.allData.type,
@@ -220,6 +195,7 @@
     background-color: #F8F8F8;
     padding-top: 24px;
     padding-left: 84px;
+    padding-bottom: 40px;
   }
   .conditionClass{
     margin: 28px 50px 0px 84px;
@@ -234,31 +210,13 @@
     margin-right: 9px;
   }
 .submit{
-  width:92px;
-  height:38px;
-  background:rgba(66,140,247,1);
-  font-size: 14px;
-  color: #F3F3F3;
-  text-align: center;
-  line-height: 38px;
   margin-top: 42px;
   margin-left: 24%;
-  cursor: pointer;
-  display: inline-block;
+
 }
   .submits{
-    display: inline-block;
-    width:92px;
-    height:38px;
-    font-size: 14px;
-    text-align: center;
-    line-height: 38px;
     margin-top: 42px;
     margin-left: 40px;
-    cursor: pointer;
-    background: #fff;
-    border: 1px solid #dcdfe6;
-    color: #606266;
   }
 
 
