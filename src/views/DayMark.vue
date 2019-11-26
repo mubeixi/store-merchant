@@ -259,7 +259,8 @@
                     </div>
                 </el-form-item>
                 <el-form-item class="submit">
-                    <el-button type="primary" @click="onSubmit">新建活动</el-button>
+                    <el-button type="primary" class="submits" @click="onSubmit">新建活动</el-button>
+                    <el-button   class="close" @click="goMarking">返回</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -356,23 +357,23 @@
                     },
                     score: {
                         checked: false,
-                        value: 10
+                        value: ''
                     },
                     coupon: {
                         checked: false,
                         value: '',
-                        count: 1
+                        count: ''
                     },
                     requite: {
                         checked: false,
-                        value: 1.1
+                        value: ''
                     },
                     shipping: {
                         checked: false,
                     },
                     discount: {
                         checked: 0,
-                        value: 9
+                        value: ''
                     }
                 }
         }
@@ -431,9 +432,9 @@
             levels: [],
             start_time: '',
             end_time: '',
-            mobile_che: true,   //通过短信提醒我开关
+            mobile_che: false,   //通过短信提醒我开关
             mobile: '', // 短信提醒的手机号
-            sms_che: true,  //是否启用短信通知
+            sms_che: false,  //是否启用短信通知
             sms_content: '', // 短信通知内容
             day: '1',
             time: '0',
@@ -469,6 +470,12 @@
             this.giftIndex=index;
             this.isShow=true;
         }
+
+        goMarking(){
+            this.$router.push({
+                name:'Marketing'
+            })
+        }
         //取消
         cardCancel(){
             this.isShow=false
@@ -495,12 +502,12 @@
         }
 
         onSubmit(){
-            if(this.form.mobile_che){
-                if(!(/^1[3456789]\d{9}$/.test(this.form.mobile))){
-                    this.$message.error('请填写正确接收短信的手机号');
-                    return
-                }
-            }
+            // if(this.form.mobile_che){
+            //     if(!(/^1[3456789]\d{9}$/.test(this.form.mobile))){
+            //         this.$message.error('请填写正确接收短信的手机号');
+            //         return
+            //     }
+            // }
             let arrMore=[]
             for(let item of this.form.morerights){
                 if(item.enable){
@@ -522,9 +529,9 @@
                 end_time: this.form.end_time,
                 notify_day: this.form.day,
                 notify_time: this.timeArr[this.form.time],
-                mobile_che: this.form.mobile_che,
+                mobile_che: this.form.mobile_che?1:0,
                 mobile: this.form.mobile,
-                sms_che: this.form.sms_che,
+                sms_che: this.form.sms_che?1:0,
                 sms_content: this.form.sms_content,
                 act_time: ''
             }
@@ -556,6 +563,7 @@
             }else {
                 return;
             }
+
             addScene(postData).then(res=>{
                 if(res.errorCode==0){
                     this.$message({
@@ -779,12 +787,14 @@
                 }
             }
             .submit {
-                .el-button--primary {
-                    margin-left: 102px;
-                    margin-top: 97px;
-                    width: 146px;
-                    height: 46px;
-                }
+              .submits{
+                margin-left: 102px;
+                margin-top: 97px;
+              }
+              .close{
+                margin-left: 40px;
+                margin-top: 97px;
+              }
             }
             /deep/ .el-table td {
                 padding: 0 !important;
