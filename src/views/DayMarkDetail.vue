@@ -70,7 +70,7 @@
           </div>
         </el-form-item>
         <div class="bottomFixed">
-            <el-button class="close" @click="closeThis">关闭</el-button>
+            <el-button class="close" size="small" @click="closeThis">关闭</el-button>
         </div>
       </el-form>
     </div>
@@ -372,14 +372,14 @@
     z-index: 1;
     transition: right .2s ease;
     .close{
-        width:62px;
-        height:32px;
-        line-height: 32px;
-        text-align: center;
-        cursor: pointer;
-        border-radius:5px;
-        margin-top: 50px;
-        display: inline-block;
+        /*width:62px;*/
+        /*height:32px;*/
+        /*line-height: 32px;*/
+        /*text-align: center;*/
+        /*cursor: pointer;*/
+        /*border-radius:5px;*/
+        /*margin-top: 50px;*/
+        /*display: inline-block;*/
         font-size: 16px;
         background-color: #428CF7;
         color: #FFFFFF;
