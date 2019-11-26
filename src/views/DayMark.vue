@@ -396,8 +396,8 @@
             name: '',
             type: 1, // 1：会员日营销，2：生日营销，3：节日营销
             rule_type: 0, // 1是都不一样，0是都一样
-            startday: 1, // 用户选择的开始日期
-            endday:2, // 用户选择的结束日期
+            startday: '', // 用户选择的开始日期
+            endday:'', // 用户选择的结束日期
             rights: [{
                 rights: {
                     gift: {
@@ -407,23 +407,23 @@
                     },
                     score: {
                         checked: false,
-                        value: 1
+                        value: ''
                     },
                     coupon: {
                         checked: false,
                         value: '',
-                        count: 1
+                        count: ''
                     },
                     requite: {
                         checked: false,
-                        value: 1.1
+                        value: ''
                     },
                     shipping: {
                         checked: false,
                     },
                     discount: {
                         checked: 0,
-                        value: 9
+                        value: ''
                     }
                 }
             }],
@@ -432,9 +432,9 @@
             start_time: '',
             end_time: '',
             mobile_che: true,   //通过短信提醒我开关
-            mobile: '13946878984', // 短信提醒的手机号
+            mobile: '', // 短信提醒的手机号
             sms_che: true,  //是否启用短信通知
-            sms_content: '活动开始了,请及时参加', // 短信通知内容
+            sms_content: '', // 短信通知内容
             day: '1',
             time: '0',
             days: [],
