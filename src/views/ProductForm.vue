@@ -1503,7 +1503,13 @@
                     this.ruleForm.Products_IsPaysBalance=productInfo.Products_IsPaysBalance?true:false;//是否使用余额
 
                     this.distriboutor_config=[];
-                    const tmpl_child_data = createTmplArray(0,(this.Dis_Level_arr.length+1))
+                    const tmpl_child_data=[];
+                    if(this.prodConfig.Dis_Self_Bonus==1){
+                         tmpl_child_data = createTmplArray(0,(this.Dis_Level_arr.length+1))
+                    }else{
+                        tmpl_child_data = createTmplArray(0,(this.Dis_Level_arr.length))
+                    }
+
                     this.distriboutor_config = createTmplArray(tmpl_child_data,this.dis_level_list.length)
 
                     for(let i in productInfo.Products_Distributes){

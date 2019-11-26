@@ -259,7 +259,7 @@
                     </div>
                 </el-form-item>
                 <el-form-item class="submit">
-                    <el-button type="primary" class="submits" @click="onSubmit">新建活动</el-button>
+                    <el-button type="primary" :loading="loading" class="submits" @click="onSubmit">新建活动</el-button>
                     <el-button   class="close" @click="goMarking">返回</el-button>
                 </el-form-item>
             </el-form>
@@ -393,6 +393,7 @@
     })
     export default class DayMark extends Vue{
         nameMbx='';
+        loading=false
         form = {
             name: '',
             type: 1, // 1：会员日营销，2：生日营销，3：节日营销
@@ -508,6 +509,8 @@
             //         return
             //     }
             // }
+            if(this.loading) return;
+            this.loading=true;
             let arrMore=[]
             for(let item of this.form.morerights){
                 if(item.enable){
@@ -570,12 +573,15 @@
                         message: res.msg,
                         type: 'success'
                     });
+                    this.loading=false
                     setTimeout(()=>{
                         this.$router.push({
                             name: 'Marketing'
                         })
                     },1500)
                 }
+            }).catch(e=>{
+                this.loading=false
             })
         }
         change(scope,index){

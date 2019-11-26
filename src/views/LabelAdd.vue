@@ -54,7 +54,7 @@
             </div>
           </div>
         </template>
-        <el-button  class="submit"  @click="saveData" type="primary">保存</el-button><el-button class="submits"  @click="goLabel">返回</el-button>
+        <el-button  class="submit"  :loading="loading" @click="saveData" type="primary">保存</el-button><el-button class="submits"  @click="goLabel">返回</el-button>
       </el-form>
     </div>
   </div>
@@ -133,6 +133,7 @@
                             message: res.msg,
                             type: 'success'
                         })
+                        this.loading=false
                         setTimeout(()=>{
                             this.$router.push({
                                 name: 'LabelManagement'
