@@ -294,16 +294,18 @@
             <el-checkbox label="使用余额支付" value="1" name="Products_IsPaysBalance"></el-checkbox>
           </el-tooltip>
         </el-checkbox-group>
-<!--        <el-checkbox-group  v-model="ruleForm.prod_limit">-->
-<!--          <el-checkbox label="开启限购" value="2" name="prod_limit"></el-checkbox>-->
-<!--          <el-form-item label="全部会员"  >-->
-<!--              <el-select   placeholder="请选择"  :disabled="noEditField.Product_backup"  style="width: 160px">-->
-<!--                <template v-for="(shop,shopIn) in prodConfig.prod_limit_type">-->
-<!--                  <el-option :label="shop" :value="shopIn"></el-option>-->
-<!--                </template>-->
-<!--              </el-select>-->
-<!--          </el-form-item>-->
-<!--        </el-checkbox-group>-->
+        <el-checkbox-group  v-model="ruleForm.prod_limit" style="display: flex">
+          <el-checkbox label="开启限购" value="2" name="prod_limit"></el-checkbox>
+          <el-form-item label="全部会员" style="margin-left: -30px">
+              <el-select  sizi="mini"  placeholder="请选择"  v-model="vipType"  style="width: 100px">
+                <template v-for="(shop,shopIn) in prodConfig.prod_limit_type">
+                  <el-option :label="shop" :value="shopIn"></el-option>
+                </template>
+              </el-select>
+          </el-form-item>
+          <el-input-number  v-model="vipNum" :min="1"  label="件" sizi="mini" style="width: 120px;margin-left: 10px"></el-input-number>
+          <div style="font-size: 14px;margin-left: 10px">件</div>
+        </el-checkbox-group>
       </el-form-item>
       <el-form-item label="订单类型" prop="orderType" >
         <el-radio-group v-model="ruleForm.orderType" :disabled="noEditField.prod_order_type" @change="changeRadio">
@@ -553,6 +555,8 @@
 
     export default class AddProduct extends Vue {
 
+        vipType='1'
+        vipNum=0
         pageEl = this
         bindCateDialogShow = false
         dialogStoreShow = false
@@ -953,15 +957,14 @@
                 }
             }
 
-            // let specs=this.specs[index].vals;
-            // for(let items of this.queryArr){
-            //     for(let i=0;i<specs.length;i++){
-            //         let it=specs[i]
-            //         if(items.value==it){
-            //             console.log(this.queryArr,"sss")
-            //         }
-            //     }
-            // }
+            let myArr=this.spec_val_list[index]
+            for(let item of myArr){
+                for(let i=0;i<this.queryArr.length;i++){
+                    if(this.queryArr[i].value==item||this.queryArr[i].value==value){
+                        this.queryArr.splice(i,1)
+                    }
+                }
+            }
         }
         getRowsSpan(specsIndex){
             return getArrayMulite(this.spec_val_list,specsIndex);
@@ -1215,12 +1218,25 @@
                         let disObj={};
                         for(let dis=0;dis<disArr.length;dis++){
                             let arr=disArr[dis].Level_ID;
+                            //如果没有自销分销商
+                            if(this.prodConfig.Dis_Self_Bonus==0){
+                                this.distriboutor_config[dis].pop()
+                            }
                             let arr2=this.distriboutor_config[dis];
                             disObj[arr]=arr2;
                         }
                         productInfo.Products_Distributes=JSON.stringify(disObj);
                     }
-
+                    let prodObj={}
+                    //限购prod_limit
+                    prodObj={
+                        switch:this.ruleForm.prod_limit?1:0,
+                        limit:{
+                            type:this.vipType,
+                            num:this.vipNum
+                        }
+                    }
+                    productInfo.prod_limit=JSON.stringify(prodObj)
                     systemOperateProd(productInfo,{}).then(res=>{
                         if(res.errorCode==0){
                             this.isLoading=false;
@@ -1426,18 +1442,20 @@
                         return ''
                     })
                     //加一个自定义的
-                    tempArr[i].push('')
+                    //修改分销商
+                        tempArr[i].push('')
                 }
 
                 this.$set(this,'distriboutor_config',tempArr);
                 //this.distriboutor_config = tempArr;
-
+                //修改分校等级
                 for(let item in this.prodConfig.Shop_Commision_Reward_Json.Distribute){
-                    for(let i=0;i<this.dis_level_list.length;i++){
-                        if(item==this.dis_level_list[i].Level_ID){
-                            this.distriboutor_config[i]=this.prodConfig.Shop_Commision_Reward_Json.Distribute[item];
+                        for(let i=0;i<this.dis_level_list.length;i++){
+                            if(item==this.dis_level_list[i].Level_ID){
+                                this.distriboutor_config[i]=this.prodConfig.Shop_Commision_Reward_Json.Distribute[item];
+                            }
                         }
-                    }
+
                 }
 
                 this.platForm_Income_Reward=res.data.Shop_Commision_Reward_Json.platForm_Income_Reward;
@@ -1503,7 +1521,7 @@
                     this.ruleForm.Products_IsPaysBalance=productInfo.Products_IsPaysBalance?true:false;//是否使用余额
 
                     this.distriboutor_config=[];
-                    const tmpl_child_data=[];
+                    let tmpl_child_data=[];
                     if(this.prodConfig.Dis_Self_Bonus==1){
                          tmpl_child_data = createTmplArray(0,(this.Dis_Level_arr.length+1))
                     }else{
@@ -1517,6 +1535,14 @@
                             this.distriboutor_config[i-1][j-0] = productInfo.Products_Distributes[i][j]
                         }
                     }
+
+                    //限购
+                    if(productInfo.prod_limit!=''){
+                        this.ruleForm.prod_limit=productInfo.prod_limit.switch==1?true:false
+                        this.vipType=productInfo.prod_limit.limit.type
+                        this.vipNum=productInfo.prod_limit.limit.num
+                    }
+
 
                     //佣金设置
                     this.platForm_Income_Reward=productInfo.platForm_Income_Reward;
