@@ -327,10 +327,10 @@
       </el-form-item>
       <el-form-item label="商品详情">
         <div>
-          <wzw-editor id="container" height="400px" width="800px" :content.sync="editorText"
+          <kind-editor id="container" height="400px" width="800px" :content.sync="editorText"
                       :afterChange="afterChange()"
                       :loadStyleMode="false"
-                      @on-content-change="onContentChange"></wzw-editor>
+                      @on-content-change="onContentChange" />
         </div>
       </el-form-item>
       <el-form-item>
@@ -523,6 +523,8 @@
     import BindCateComponents from '@/components/BindCateComponents.vue';
     import BindStoreComponent from "@/components/comm/BindStoreComponent.vue";
     import SettingComponent from "@/components/comm/SettingComponent.vue";
+    import KindEditor from "@/components/comm/kindeditor.vue"
+
     import {
         getProductCategory,
         getStoreList,
@@ -549,10 +551,10 @@
         components: {
             BindStoreComponent,
             SettingComponent,
+            KindEditor,
             UploadComponents,BindCateComponents
         }
     })
-
     export default class AddProduct extends Vue {
 
         vipType='1'

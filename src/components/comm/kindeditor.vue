@@ -5,6 +5,11 @@
 </template>
 
 <script>
+
+  import "kindeditor/themes/default/default.css";
+  import "kindeditor/kindeditor-all.js";
+  import "kindeditor/lang/zh-CN.js";
+
   import {baseApiUrl } from '../../common/env';
 
   const upbaseUrl = baseApiUrl;

@@ -97,7 +97,7 @@
     props: {
       has:{
         type:Array,
-        default:[],
+        default:()=>{},
       },
       multiple: {
         type: Boolean,
