@@ -23,7 +23,7 @@
                  v-loading="ajax_idx===idx1"
                  v-if="apply && apply.prod_list"
                  cellspacing="0">
-            <tr class="goods-list" v-for="(item,idx2) in apply.prod_list">
+            <tr class="goods-list" v-for="(item,idx2) in apply.prod_list" :key="idx2">
               <td class="goods">
                 <div class="l" :style="{backgroundImage:'url('+item.prod_img+')'}"></div>
                 <div class="c">
@@ -46,12 +46,12 @@
 
                   </div>
                 </div>
-                <div class="r font14">金额:<span class="danger-color">￥<span class="price-num font16">2500</span></span></div>
+                <div class="r font14">金额:<span class="danger-color">￥<span class="price-num font16">{{item.prod_price}}</span></span></div>
               </td>
               <td class="price-box" v-if="idx2===0" :rowspan="apply.prod_list.length">
                 <div class="text-center">
-                  <div class="total line6">总计:<span class="danger-color">￥<span class="total_num font18">5329.00</span></span></div>
-                  <div class="postage font14 graytext">(含运费￥100.00)</div>
+                  <div class="total line6">总计:<span class="danger-color">￥<span class="total_num font18">{{apply.Order_TotalPrice}}</span></span></div>
+                  <div class="postage font14 graytext">(含运费￥{{apply.Order_Shipping.Price}})</div>
                 </div>
               </td>
               <td class="actions text-center" v-if="idx2===0" :rowspan="apply.prod_list.length">

@@ -1,6 +1,6 @@
 <template>
   <div class="kindeditor">
-    <textarea :id="id" name="content">{{ outContent }}</textarea>
+    <textarea :id="id" name="content" v-model="outContent"></textarea>
   </div>
 </template>
 
@@ -8,6 +8,15 @@
   import {baseApiUrl } from '../../common/env';
 
   const upbaseUrl = baseApiUrl;
+
+  function entityToString(entity){
+    return entity
+    // var div=document.createElement('div');
+    // div.innerHTML=entity;
+    // var res=div.innerText||div.textContent;
+    // console.log(entity,'->',res);
+    // return res;
+  }
   export default {
     name: 'kindeditor',
     data () {
@@ -286,6 +295,7 @@
     },
     watch: {
       content (val) {
+        val = entityToString(val)
         this.editor && val !== this.outContent && this.editor.html(val)
       },
       outContent (val) {
