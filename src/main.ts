@@ -12,9 +12,9 @@ import Common from './common/index';
 import {doLoginMixin} from "@/common/mixin";
 Vue.use(VueResource);
 
-window.editorBaseUrl = baseApiUrl;
-import VueKindEditor from '@/components/kindeditor/index';
-Vue.use(VueKindEditor)
+// window.editorBaseUrl = baseApiUrl;
+// import VueKindEditor from '@/components/kindeditor/index';
+// Vue.use(VueKindEditor)
 
 // @ts-ignore
 Vue.http.options.emulateJSON = true;
