@@ -206,8 +206,11 @@ export const smsGetTemplates = (data:object={},options:any=false) => fetch('sms_
 export const smsAddTemplate = (data:object={},options:any=false) => fetch('sms_add_template', data, options);
 //删除短信模板
 export const smsDelTemplate = (data:object={},options:any=false) => fetch('sms_del_template', data, options);
+//新增短信站内信
+export const addBatch = (data:object={},options:any=false) => fetch('add_batch', data, options);
 
-
+//给人群打标签
+export const tagCrowd = (data:object={},options:any=false) => fetch('tag_crowd', data, options);
 
 
 // 获取初始化数据

@@ -20,7 +20,6 @@ import SystemNotice from '@/views/SystemNotice.vue';
 import StorePurchaseApply from './views/StorePurchaseApply.vue';
 import MessageSend from '@/views/MessageSend.vue';
 import MessageStationSend from '@/views/MessageStationSend.vue';
-import LabelSetting from '@/views/LabelSetting.vue';
 import CouponGift from '@/views/CouponGift.vue';
 import GiftsGift from '@/views/GiftsGift.vue';
 const routerInstance = new Router({
@@ -148,14 +147,6 @@ const routerInstance = new Router({
       component: MessageStationSend,
       meta:{
         title:'群发站内信'
-      }
-    },
-    {
-      path: '/LabelSetting',
-      name: 'LabelSetting',
-      component: LabelSetting,
-      meta:{
-        title:'设置标签'
       }
     },
     {
