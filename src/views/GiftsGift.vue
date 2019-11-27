@@ -3,13 +3,12 @@
     <div class="labelMain">
       <el-form size="small">
         <el-form-item  label="赠送对象："  >
-          <el-select  placeholder="请选择"   style="width: 200px">
-            <el-option label="0" value="哈哈"></el-option>
-            <!--                  <template v-for="(shop,shopIn) in prodConfig.shop_damage">-->
-            <!--                    <el-option :label="shop.Damage_Name" :value="shop.Damage_ID"></el-option>-->
-            <!--                  </template>-->
+          <el-select  placeholder="请选择"  v-model="crowdId" style="width: 200px">
+            <template v-for="(shop,shopIn) in crowdList">
+              <el-option :label="shop.name" :value="shop.id"></el-option>
+            </template>
           </el-select>
-          <span class="spans" style="margin-left: 20px">刷新</span><span class="spans"> | </span><span class="spans">人群管理</span>
+          <span class="spans" style="margin-left: 20px" @click="refresh">刷新</span><span class="spans"> | </span><span class="spans" @click="cancelPro">人群管理</span>
         </el-form-item>
 
         <el-form-item  label="赠送赠品："  >
@@ -17,24 +16,28 @@
         </el-form-item>
 
 
-        <el-form-item label="赠送时间：" class="flex">
-          <el-radio-group >
+        <el-form-item label="发送时间：" class="flex">
+          <el-radio-group  v-model="times">
             <el-radio label="0" class="radioTop">
-              立即赠送
+              立即发送
             </el-radio>
             <el-radio label="1" class="radioBottom">
-              定时赠送
+              定时发送
               <el-date-picker
+                v-model="send_time"
                 class="dateTime"
                 type="datetime"
+                value-format="yyyy-MM-dd HH:mm:ss"
                 placeholder="选择日期时间">
               </el-date-picker>
             </el-radio>
           </el-radio-group>
         </el-form-item>
 
-        <span class="spanButton cancel">取消</span>
-        <span class="spanButton">保存</span>
+        <div class="all">
+          <el-button style="margin-left: 60px" @click="cancelPro" >取消</el-button>
+          <el-button :loading="loading" style="margin-left: 100px"  type="primary" @click="saveData">保存</el-button>
+        </div>
       </el-form>
     </div>
   </div>
@@ -51,7 +54,7 @@
         State
     } from 'vuex-class'
     import fa from "element-ui/src/locale/lang/fa";
-
+    import  {getCrowds,addBatch} from '@/common/fetch'
     @Component({
         mixins:[],
         components: {
@@ -61,8 +64,47 @@
 
     export default class AddProduct extends Vue {
 
-        async created(){
+        crowdList=[]
+        crowdId=''
+        loading=false
+        send_time=''
+        times="0"
+        cancelPro(){
+            this.$router.push({
+                name:'CrowdClient'
+            })
+        }
+        //刷新
+        refresh(){
+            let id = this.$route.params.id
+            if(this.loading)return
+            this.loading=true
+            getCrowds({page:1,pageSize:10000}).then(res=>{
+                if(res.errorCode==0){
+                    this.$message({
+                        type: 'success',
+                        message: '刷新成功'
+                    });
+                    this.crowdList=res.data
+                    if(id){
+                        this.crowdId=id
+                    }
+                    this.loading=false
+                }
+            })
+        }
 
+        async created(){
+            let id = this.$route.params.id
+            //获取人群列表
+            getCrowds({page:1,pageSize:10000}).then(res=>{
+                if(res.errorCode==0){
+                    this.crowdList=res.data
+                    if(id){
+                        this.crowdId=id
+                    }
+                }
+            })
 
         }
 
@@ -111,6 +153,7 @@
   .spans{
     color: #428CF7;
     font-size: 14px;
+    cursor: pointer;
   }
 
   .radioTop{

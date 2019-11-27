@@ -278,7 +278,7 @@
           <div class="cardTitle" style="margin-right: 10px">
             产品名称： <el-input    class="sortInput" style="width: 100px" v-model="nameMbx"></el-input>
           </div>
-          <el-button  type="primary" >搜索</el-button>
+          <el-button  type="primary" @click="searchList">搜索</el-button>
         </div>
         <el-table
           ref="multipleTable"
@@ -308,7 +308,7 @@
                   <div style="width: 100px;height: 100px">
                     <img :src="GivingGifts[scope.$index].img_url" style="width: 100%;height: 100%">
                   </div>
-                  <div style="width: 200px">{{GivingGifts[scope.$index].Products_Name}}</div>
+                  <div style="width: 200px;margin-left: 10px;">{{GivingGifts[scope.$index].Products_Name}}</div>
                 </div>
             </template>
           </el-table-column>
@@ -470,6 +470,14 @@
             this.giftType=type;
             this.giftIndex=index;
             this.isShow=true;
+        }
+
+        searchList(){
+            getGivingGifts({pro_name:this.nameMbx}).then(res=>{
+                if(res.errorCode==0){
+                    this.GivingGifts=res.data;
+                }
+            })
         }
 
         goMarking(){
@@ -875,4 +883,7 @@
     line-height: 23px;
     display: inline-block;
   }
+    /deep/ .el-table__row  {
+      cursor: pointer;
+    }
 </style>
