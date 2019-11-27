@@ -328,7 +328,14 @@
             show-overflow-tooltip>
           </el-table-column>
         </el-table>
-        <el-button  type="primary" style="margin-top: 10px" @click="sureCard">确定</el-button>
+        <el-pagination
+          style="margin-top: 20px;text-align: center;"
+          @current-change="currentChange"
+          background
+          :page-size="pageSize"
+          layout="prev, pager, next"
+          :total="totalCount">
+        </el-pagination>
       </el-dialog>
     </div>
 </template>
@@ -453,7 +460,9 @@
         timeArr=[];
         coupon=[];//优惠券
         isEdit=true;//能否编辑
-
+        totalCount=0
+        page=1
+        pageSize=8
         //赠品
         isShow=false;
         GivingGifts=[];//赠品列表
@@ -472,8 +481,17 @@
             this.isShow=true;
         }
 
+        currentChange(val){
+            this.page=val;
+            this.searchList()
+        }
         searchList(){
-            getGivingGifts({pro_name:this.nameMbx}).then(res=>{
+            let data={
+                page:this.page,
+                pageSize:this.pageSize,
+                pro_name:this.nameMbx
+            }
+            getGivingGifts(data).then(res=>{
                 if(res.errorCode==0){
                     this.GivingGifts=res.data;
                 }
@@ -505,10 +523,7 @@
                 this.$refs.multipleTable.setCurrentRow();
             }
         }
-        //确定
-        sureCard(){
-            this.isShow=false;
-        }
+
 
         onSubmit(){
             // if(this.form.mobile_che){
@@ -645,9 +660,14 @@
                 this.form.startdatelist = temarr;
 
             })
-           await getGivingGifts().then(res=>{
+           let data={
+               page:this.page,
+               pageSize:this.pageSize
+           }
+           await getGivingGifts(data).then(res=>{
                if(res.errorCode==0){
                    this.GivingGifts=res.data;
+                   this.totalCount=res.totalCount
                }
            })
 

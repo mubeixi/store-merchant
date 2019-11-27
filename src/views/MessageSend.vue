@@ -131,6 +131,7 @@
         style="margin-top: 20px;text-align: center;"
         @current-change="currentChange"
         background
+        :page-size="pageSize"
         layout="prev, pager, next"
         :total="totalCount">
       </el-pagination>

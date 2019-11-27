@@ -12,7 +12,12 @@
         </el-form-item>
 
         <el-form-item  label="赠送优惠券："  >
-          <span class="spans">选择优惠券</span>
+          <span class="spans" @click="selectGi">选择优惠券</span>
+          <el-tooltip :content="text"  placement="top" effect="light">
+            <div style="display:inline-block">
+              <div  class="lst" style="display: block" v-if="text">{{text}}</div>
+            </div>
+          </el-tooltip>
         </el-form-item>
 
 
@@ -40,6 +45,48 @@
         </div>
       </el-form>
     </div>
+
+    <el-dialog
+      title="选择优惠券"
+      width="60%"
+      @close="cardCancel"
+      append-to-body
+      :visible.sync="isShow"
+      class="setting"
+    >
+      <el-table
+        ref="multipleTable"
+        :data="GivingGifts"
+        tooltip-effect="dark"
+        style="width: 100%"
+        highlight-current-row
+        @current-change="handleSelectionChange"
+      >
+        <el-table-column
+          type="index"
+          label="#"
+          width="55">
+        </el-table-column>
+        <el-table-column
+          label="优惠券ID"
+          prop="id"
+          width="120">
+        </el-table-column>
+        <el-table-column
+          prop="title"
+          label="优惠券"
+          show-overflow-tooltip>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+        style="margin-top: 20px;text-align: center;"
+        @current-change="currentChange"
+        background
+        :page-size="pageSize"
+        layout="prev, pager, next"
+        :total="totalCount">
+      </el-pagination>
+    </el-dialog>
   </div>
 </template>
 
@@ -54,7 +101,7 @@
         State
     } from 'vuex-class'
     import fa from "element-ui/src/locale/lang/fa";
-    import  {getCrowds,addBatch} from '@/common/fetch'
+    import  {getCrowds,addBatch,getGivingCoupons} from '@/common/fetch'
     @Component({
         mixins:[],
         components: {
@@ -63,6 +110,48 @@
     })
 
     export default class AddProduct extends Vue {
+//赠品操作
+        isShow=false
+        nameMbx='';
+        GivingGifts=[]
+        text=''
+        send_id=''
+        totalCount=0
+        page=1
+        pageSize=8
+        currentChange(val){
+            this.page=val;
+            this.searchList()
+        }
+        searchList(){
+            let data={
+                page:this.page,
+                pageSize:this.pageSize
+            }
+             getGivingCoupons(data).then(res=>{
+                if(res.errorCode==0){
+                    this.GivingGifts=res.data;
+                }
+            })
+        }
+        //取消
+        cardCancel(){
+            this.isShow=false
+        }
+        selectGi(){
+            this.isShow=true;
+        }
+        handleSelectionChange(val){
+            if(val){
+                this.isShow=false
+                this.text=val.title
+                this.send_id=val.id
+                this.$refs.multipleTable.setCurrentRow();
+            }
+        }
+        //赠品结束
+
+
 
         crowdList=[]
         crowdId=''
@@ -74,11 +163,40 @@
                 name:'CrowdClient'
             })
         }
+        saveData(){
+            //保存
+            if(this.loading)return
+            this.loading=true
+            let data={
+                type:4,
+                send_id:this.send_id,
+                crowd_id:this.crowdId
+            }
+            if(this.times==0){
+                data.send_time=0
+            }else if(this.times==1){
+                data.send_time=this.send_time
+            }
+            addBatch(data).then(res=>{
+                if(res.errorCode==0){
+                    this.$message({
+                        type: 'success',
+                        message: res.msg
+                    });
+                    let that=this
+                    setTimeout(function () {
+                        that.$router.push({
+                            name:'CrowdClient'
+                        })
+                    },1000)
+                }
+            }).catch(e=>{
+                this.loading=false
+            })
+        }
         //刷新
         refresh(){
             let id = this.$route.params.id
-            if(this.loading)return
-            this.loading=true
             getCrowds({page:1,pageSize:10000}).then(res=>{
                 if(res.errorCode==0){
                     this.$message({
@@ -89,7 +207,6 @@
                     if(id){
                         this.crowdId=id
                     }
-                    this.loading=false
                 }
             })
         }
@@ -103,6 +220,18 @@
                     if(id){
                         this.crowdId=id
                     }
+                }
+            })
+
+            let data={
+                page:this.page,
+                pageSize:this.pageSize
+            }
+            //赠品
+            await getGivingCoupons(data).then(res=>{
+                if(res.errorCode==0){
+                    this.GivingGifts=res.data;
+                    this.totalCount=res.totalCount
                 }
             })
 
@@ -173,4 +302,28 @@
     width: 170px;
     padding-right: 0px
   }
+
+  /*赠品*/
+  .cardTitle{
+    display: flex;
+    align-items: center;
+  }
+  .current{
+    cursor: pointer;
+    color: #79B0FF;
+    margin-left: 10px;
+  }
+  .fixDisplay{
+    display: flex;
+    align-items: center;
+  }
+  .lst{
+    margin-left: 10px;
+    width: 100px;
+    overflow: hidden;
+    height: 17px;
+    line-height: 23px;
+    display: inline-block;
+  }
+
 </style>
