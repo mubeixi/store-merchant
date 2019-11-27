@@ -1534,9 +1534,13 @@
 
                     this.distriboutor_config = createTmplArray(tmpl_child_data,this.dis_level_list.length)
 
+                    let mb=-1
                     for(let i in productInfo.Products_Distributes){
+                        mb++
+                        let mx=-1
                         for(let j in productInfo.Products_Distributes[i]){
-                            this.distriboutor_config[i-1][j-0] = productInfo.Products_Distributes[i][j]
+                            mx++
+                            this.distriboutor_config[mb][mx] = productInfo.Products_Distributes[i][j]
                         }
                     }
 
