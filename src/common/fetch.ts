@@ -198,7 +198,8 @@ export const initCrowd = (data:object={},options:any=false) => fetch('init_crowd
 export const addCrowd = (data:object={},options:any=false) => fetch('add_crowd', data, options);
 //获取人群详情
 export const getCrowd = (data:object={},options:any=false) => fetch('get_crowd', data, options);
-
+//赠送优惠券列表
+export const getGivingCoupons = (data:object={},options:any=false) => fetch('get_giving_coupons', data, options);
 
 //获取短信模板
 export const smsGetTemplates = (data:object={},options:any=false) => fetch('sms_get_templates', data, options);

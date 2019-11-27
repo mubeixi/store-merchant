@@ -133,7 +133,10 @@
 
       </el-form>
 
-      <div class="submit"  @click="saveData">保存</div><div class="submits" @click="goCrowd">返回</div>
+      <div class="all">
+        <el-button style="margin-left: 60px" @click="goCrowd" >取消</el-button>
+        <el-button :loading="loading" style="margin-left: 100px"  type="primary" @click="saveData">保存</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -309,5 +312,7 @@
     border: 1px solid #dcdfe6;
     color: #606266;
   }
-
+.all{
+  margin-top: 42px;
+}
 </style>
