@@ -205,6 +205,7 @@
             this.loading=true
             let data={
                 type:3,
+                send_name:this.text,
                 send_id:this.send_id,
                 crowd_id:this.crowdId
             }

@@ -110,7 +110,7 @@
     })
 
     export default class AddProduct extends Vue {
-//赠品操作
+        //赠品操作
         isShow=false
         nameMbx='';
         GivingGifts=[]
@@ -169,6 +169,7 @@
             this.loading=true
             let data={
                 type:4,
+                send_name:this.text,
                 send_id:this.send_id,
                 crowd_id:this.crowdId
             }
