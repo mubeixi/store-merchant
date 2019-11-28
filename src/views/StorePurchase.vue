@@ -128,7 +128,7 @@
     const cartInstance = new Cart()
 
     const Stores_ID = Cookies.get('Stores_ID')
-    const User_ID = Cookies.get('User_ID')
+    const User_ID = Cookies.get('Stores_Bind_User_ID')
 
     @Component({
         computed:{
@@ -205,6 +205,12 @@
         async cartNumChange(nVal,oVal){
 
             let select_store_id = 0
+
+            //如果有门店，需要换成从门店进货
+            if(this.$route.query.store_no && this.products.length>0){
+              select_store_id = this.products[0].Stores_ID
+            }
+
             let postData = {
                 cart_key:'CartList',
                 active:'store_pifa',
@@ -382,6 +388,12 @@
 
 
             let select_store_id = 0
+
+            //如果有门店，需要换成从门店进货
+            if(this.$route.query.store_no && this.products.length>0){
+              select_store_id = this.products[0].Stores_ID
+            }
+
             let postData = {
                 cart_key:'CartList',
                 active:'store_pifa',
@@ -612,7 +624,7 @@
         }
 
         syncCardList(){
-            return getCartList({act:'get_cart',User_ID,cart_key:'CartList'}).then(res=>{
+            return getCartList({act:'get_cart',cart_key:'CartList'}).then(res=>{
               return res.data.CartList
             })
         }
