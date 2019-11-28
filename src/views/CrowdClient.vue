@@ -113,10 +113,10 @@
         title="选择操作"
         width="40%"
       >
-          <div class="divLin">
-            <span class="curr" @click="goMessage">群发短信</span>
-            <span class="marginLe">此处是群发短信相关解释说明此处是群发短信解释说明</span>
-          </div>
+<!--          <div class="divLin">-->
+<!--            <span class="curr" @click="goMessage">群发短信</span>-->
+<!--            <span class="marginLe">此处是群发短信相关解释说明此处是群发短信解释说明</span>-->
+<!--          </div>-->
 
         <div class="divLin">
           <span class="curr" @click="goStation">群发站内信</span>
