@@ -18,16 +18,26 @@ import StoreChannel from '@/views/StoreChannel.vue';
 import StorePurchase from '@/views/StorePurchase.vue';
 import SystemNotice from '@/views/SystemNotice.vue';
 import StorePurchaseApply from './views/StorePurchaseApply.vue';
+import storeWholesale from './views/storeWholesale.vue';
 import MessageSend from '@/views/MessageSend.vue';
 import MessageStationSend from '@/views/MessageStationSend.vue';
 import CouponGift from '@/views/CouponGift.vue';
 import GiftsGift from '@/views/GiftsGift.vue';
+
 const routerInstance = new Router({
   routes: [
     {
       path: '/',
       name: 'Home',
       component: Home,
+    },
+    {
+      path:'/storeWholesale',
+      name:'storeWholesale',
+      component: storeWholesale,
+      meta:{
+        title:'进货管理'
+      }
     },
     {
       path:'/StorePurchaseApply',

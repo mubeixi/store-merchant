@@ -133,8 +133,8 @@ export const getAddress = (data:object={},options:any=false) => fetch('get_addre
 
 export const getStoreList = (data:object={},options:any=false) => fetch('get_store_list', data, options);
 
+//批发——采购方操作
 export const changeStoreApplyChannel = (data:object={},options:any=false) => fetch('store_pifa_order_change_wholesaler', data, options);
-
 
 export const updateStoreApplyGoodsNum = (data:object={},options:any=false) => fetch('store_pifa_order_edit', data, options);
 
@@ -145,6 +145,12 @@ export const cancalStorePurchaseApply = (data:object={},options:any=false) => fe
 export const subStorePurchaseApply = (data:object={},options:any=false) => fetch('store_pifa_order_submit', data, options);
 
 export const delStorePurchaseApply = (data:object={},options:any=false) => fetch('store_pifa_order_del', data, options);
+
+//批发——发货方的操作
+export const refuseStorePurchaseApply = (data:object={},options:any=false) => fetch('store_pifa_order_reject', data, options);
+
+//获取批发的订单
+export const getStorePurchaseSales = (data:object={},options:any=false) => fetch('get_store_pifa_assign_order', data, options);
 
 //购物车
 export const updateCart = (data:object={},options:any=false) => fetch('update_cart', data, options);
@@ -225,7 +231,7 @@ function get_Appid() {
   return 'xhh';
 }
 
-export const get_User_ID = () => Cookie.get('User_ID');
+export const get_User_ID = () => Cookie.get('Stores_Bind_User_ID');
 export const get_Users_ID = () => Cookie.get('Users_ID');
 export const get_Stores_ID = () => Cookie.get('Stores_ID');
 
