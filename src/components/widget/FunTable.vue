@@ -1,7 +1,7 @@
 <template>
   <div class="fun-table-plugin">
     <div class="section filter">
-      <fun-search :columns="columns" @submit="filterFn">
+      <fun-search :size="formSize" :columns="columns" @submit="filterFn">
         <slot name="filter"></slot>
       </fun-search>
 
@@ -74,6 +74,11 @@
     })
     export default class FunTable extends Vue {
 
+        @Prop({
+            type:String,
+            default:'small'
+        })
+        formSize
         @Prop({
             type:Array,
             required:true,

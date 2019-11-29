@@ -1,14 +1,11 @@
 <template>
   <div class="fun-search-plugin">
-    <el-row :gutter="12" >
-
+      <div class="row">
         <template v-for="(col,index) in columnsData">
-
-            <el-col v-if="col.search !== false" :sm="6" :md="4" :lg="3">
-
-              <div class="label">{{col.label}}</div>
+          <div class="col" v-if="col.search !== false">
+            <div class="label graytext" :style="{fontSize:fontSizeFn(size)}" >{{col.label}}</div>
               <template v-if="col.search.type === 'select'">
-                <el-select v-model="col.value" :placeholder="col.search.placeholder||'请选择'">
+                <el-select :size="size" v-model="col.value" :placeholder="col.search.placeholder||'请选择'">
                   <el-option
                     v-for="item in col.search.option"
                     :key="item.value"
@@ -16,52 +13,46 @@
                     :value="item.value">
                   </el-option>
                 </el-select>
-
               </template>
-
               <template v-if="col.search.type === 'input'">
-                <el-input v-model="col.value"/>
+                <el-input :size="size" v-model="col.value"/>
               </template>
-
               <template v-if="col.search.type === 'date'">
                 <el-date-picker
+                  :size="size"
                   v-model="col.value"
                   type="datetimerange"
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  align="right" />
+                  align="right"/>
               </template>
 
-            </el-col>
-
+          </div>
         </template>
         <!--有自己想加的元素-->
         <!--<slot></slot>-->
-        <el-col :sm="6" :md="4" :lg="3">
+        <div style="width: 20px"></div>
+        <div class="col">
           <div>
-            <el-button @click="submit" type="primary">搜索</el-button>
-            <el-button @click="reset">重置</el-button>
+            <el-button :size="size" @click="submit" type="primary">搜索</el-button>
+            <el-button :size="size" @click="reset">重置</el-button>
           </div>
-        </el-col>
+        </div>
+      </div>
 
-      </el-row>
   </div>
 </template>
 
 <script lang="ts">
-    import {
-        Component,
-        Vue,
-        Prop
-    } from 'vue-property-decorator';
-    import {
-        mapState
-    } from 'vuex';
+    import {Component, Prop, Vue} from 'vue-property-decorator';
 
 
+    @Component({
+        filters:{
 
-    @Component
+        }
+    })
     export default class FunSearch extends Vue {
 
         @Prop({
@@ -70,9 +61,22 @@
         })
         columns
 
+        @Prop({
+            type: String,
+            default: 'default'
+        })
+        size
+
         columnsData = []
-        filter =  {}
+        filter = {}
         op = {}
+
+        fontSizeFn(val){
+
+            if(val==='default') return '16px'
+            if(val==='small') return '14px'
+            if(val==='mini') return '12px'
+        }
 
         reset() {
             this.columnsData = this.columns.map(v => {
@@ -126,16 +130,37 @@
         }
 
 
-        mounted(){
+        mounted() {
             this.reset();
         }
-
-
 
 
     }
 </script>
 
 <style lang="less" scoped>
+  .fun-search-plugin{
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #f8f8f8;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
 
+    .col {
+      display: flex;
+      align-items: center;
+
+      .label {
+        white-space: nowrap;
+        padding-right: 6px;
+        width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: right;
+      }
+
+    }
+  }
 </style>

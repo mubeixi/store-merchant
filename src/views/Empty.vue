@@ -44,8 +44,6 @@
         }
 
     }
-
-
     const restArr = (arr,key)=>{
 
         let plainArr = []
@@ -90,7 +88,7 @@
             },
             {
                 name: "Product_Name",
-                label: "商品名称",
+                label: "商品名称商品名称商品名称",
                 field: "Product_Name",
                 // align: "center",
                 // sortable: true,
