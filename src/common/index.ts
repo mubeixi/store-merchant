@@ -46,9 +46,11 @@ import {
   InfiniteScroll,
   InputNumber,
   Timeline,
-  TimelineItem
+  TimelineItem,
+  Row
 } from 'element-ui';
 
+Vue.use(Row)
 Vue.use(Timeline)
 Vue.use(TimelineItem)
 Vue.use(InputNumber)

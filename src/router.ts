@@ -23,6 +23,7 @@ import MessageSend from '@/views/MessageSend.vue';
 import MessageStationSend from '@/views/MessageStationSend.vue';
 import CouponGift from '@/views/CouponGift.vue';
 import GiftsGift from '@/views/GiftsGift.vue';
+import NotFound from '@/views/NotFound.vue';
 
 const routerInstance = new Router({
   routes: [
@@ -174,6 +175,18 @@ const routerInstance = new Router({
       meta:{
         title:'赠送赠品'
       }
+    },
+    {
+      path: '/NotFound',
+      name: 'NotFound',
+      component: NotFound,
+      meta:{
+        title:'NotFound'
+      }
+    },
+    {
+      path: '*',
+      redirect:'/NotFound'
     }
 
 

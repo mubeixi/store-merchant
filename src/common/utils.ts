@@ -269,14 +269,43 @@ export const plainArray = (arr,key,newArr)=>{
   if(!arr || !key)return false;
 
   for(var item of arr){
+    let tempObj = objTranslate(item)
+    if(tempObj.hasOwnProperty(key)){
+      tempObj[key] = null
+    }
+    newArr.push(tempObj)
+
     if(item && item[key] && _.isArray(item[key])){
       plainArray(item[key],key,newArr);
-      continue;
     }
-    newArr.push(item)
+
   }
 
 }
+
+/**
+ *
+ * @param arr
+ * @param key
+ * @param newArr pid标识
+ * @param field
+ */
+// export const buildArrayTree = (arr,key,newArr,field)=>{
+//
+//   if(!arr || !key)return false;
+//
+//   for(var item of arr){
+//     if(item && item[key] && _.isArray(item[key])){
+//       plainArray(item[key],key,newArr);
+//       continue;
+//     }
+//     newArr.push(item)
+//   }
+//
+// }
+
+
+
 
 /**
  * 获取二维数组（一维数组的元素也是数组)的指定位置开始到最后的长度叠加成绩

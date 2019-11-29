@@ -55,6 +55,7 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
 
 };
 
+export const commonReq = (act,data:object={},options:any=false)=> fetch(act, data, options)
 
 export const login = (data:object={},options:any=false) => fetch('users_login', data, options)
 
