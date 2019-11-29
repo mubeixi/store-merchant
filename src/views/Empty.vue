@@ -1,9 +1,11 @@
 <template>
   <div class="home-wrap">
     <div style="width: 1200px;margin: 100px auto;border:1px solid #e7e7e7;padding: 10px;">
+<!--      act1="get_self_store_prod"-->
       <fun-table
         :columns="columns"
-        act="get_self_store_prod"
+        act="get_prod"
+
       >
       </fun-table>
     </div>
@@ -32,7 +34,7 @@
             let item = arr[i]
             if(item[key] == val[pkey]){
                 idx = i
-                console.log(key,pkey,val,i,idx!=='0')
+
                 break;
             }
         }
@@ -79,7 +81,7 @@
 
         columns = [
             {
-                name: "Product_ID",
+                columnName: "Product_ID",
                 label: "产品ID",
                 // align: "center",
                 // sortable: true,
@@ -87,8 +89,8 @@
                 search: false //不需要搜索ID,所以都不需要了
             },
             {
-                name: "Product_Name",
-                label: "商品名称商品名称商品名称",
+                columnName: "Product_Name",
+                label: "商品名称",
                 field: "Product_Name",
                 // align: "center",
                 // sortable: true,
@@ -100,10 +102,11 @@
                 }
             },
             {
-                name: "Product_Cate",
+                columnName: "Product_Cate",
                 label: "商品分类",
                 field: "Product_Cate",
                 value:'',
+                hidden:true,
                 // align: "center",
                 // sortable: true,
                 //后面这些是filter使用的
@@ -123,12 +126,7 @@
             getProductCategory().then(res=>{
                 let cates = res.data
 
-
-
-
                 // arr2table(newArr,'Category_ID','Category_ParentID')
-
-
                 this.cates = restArr(cates,'child')
 
                 //修改

@@ -10,18 +10,24 @@
       <el-table :data="lists">
         <template v-for="(rows,idx1) in columns">
           <el-table-column
+            v-if="!rows.hidden"
             :label="rows.label"
+
             :width="rows.width">
             <!--简单值的情况-->
-            <template slot-scope="scope">
-              <template v-if="scope.row.value">
-                {{scope.row.value}}
-              </template>
-              <template v-if="scope.row.value">
-                <slot></slot>
-              </template>
+            <template slot-scope="props" >
+
+<img height="100px" :src="props.row.ImgPath" />
 
             </template>
+
+<!--            <template-->
+<!--              v-for="(slot,index) in $scopedSlots"-->
+<!--              slot-scope="props"-->
+<!--              :slot="index"-->
+<!--            >-->
+<!--              <slot :row="props.row" :col="props.col" :value="props.value" :name="index"/>-->
+<!--            </template>-->
 
           </el-table-column>
         </template>
@@ -70,10 +76,15 @@
     @Component({
         components:{
             FunSearch
+        },
+        filters:{
+
         }
     })
     export default class FunTable extends Vue {
-
+        filterColVal(row,columName){
+            return row[columName]
+        }
         @Prop({
             type:String,
             default:'small'

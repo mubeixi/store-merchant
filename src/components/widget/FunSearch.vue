@@ -140,7 +140,7 @@
 
 <style lang="less" scoped>
   .fun-search-plugin{
-    padding: 10px;
+    padding: 15px;
     margin-bottom: 10px;
     background: #f8f8f8;
   }
