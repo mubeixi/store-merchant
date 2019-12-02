@@ -70,6 +70,7 @@ export const getPifaProductList = (data:object={},options:any=false) => fetch('g
 
 export const createOrder = (data:object={},options:any=false) => fetch('create_order', data, options)
 
+export const getSelfStoreProd = (data:object={},options:any=false) => fetch('get_self_store_prod', data, options)
 
 export const getShopSkinList = (data:object={},options:any=false) => fetch('get_shopskin', data, options)
 

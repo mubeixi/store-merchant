@@ -13,8 +13,8 @@ export const doLoginMixin = {
 
     if (isDev) {
       Cookies.set('Users_ID', 'wkbq6nc2kc')
-      Cookies.set('Stores_Bind_User_ID', '49')//为了区分其他的user_id，所以弄了这个代表店铺的user_id
-      Cookies.set('Stores_ID', '10')
+      Cookies.set('Stores_Bind_User_ID', '213')//为了区分其他的user_id，所以弄了这个代表店铺的user_id
+      Cookies.set('Stores_ID', '24')
     }
 
     if(!Cookies.get('Users_ID')){

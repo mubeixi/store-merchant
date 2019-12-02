@@ -2,7 +2,7 @@
   <div class="fun-search-plugin">
       <div class="row">
         <template v-for="(col,index) in columnsData">
-          <div class="col" v-if="col.search !== false">
+          <div class="col" v-if="col.search!==false">
             <div class="label graytext" :style="{fontSize:fontSizeFn(size)}" >{{col.label}}</div>
               <template v-if="col.search.type === 'select'">
                 <el-select :size="size" v-model="col.value" :placeholder="col.search.placeholder||'请选择'">

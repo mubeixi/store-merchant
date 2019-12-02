@@ -47,9 +47,11 @@ import {
   InputNumber,
   Timeline,
   TimelineItem,
-  Row
+  Row,
+  Tag
 } from 'element-ui';
 
+Vue.use(Tag)
 Vue.use(Row)
 Vue.use(Timeline)
 Vue.use(TimelineItem)

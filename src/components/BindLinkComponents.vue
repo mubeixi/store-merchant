@@ -496,6 +496,7 @@
         if (this.innerDialog.index === 'customize') {
           path = this.innerDialog.customizeStart + this.innerDialog.customizeLink;
           tooltip = `自定义链接：${path}`;
+          type = 'third';
         } else if (this.innerDialog.index === 'page') {
           switch (this.innerDialog.customizeIndex) {
             case '1':

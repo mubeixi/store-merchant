@@ -8,28 +8,23 @@
     </div>
     <div class="section table">
       <el-table :data="lists">
-        <template v-for="(rows,idx1) in columns">
-          <el-table-column
-            v-if="!rows.hidden"
-            :label="rows.label"
-
-            :width="rows.width">
-            <!--简单值的情况-->
-            <template slot-scope="props" >
-
-<img height="100px" :src="props.row.ImgPath" />
-
-            </template>
-
-<!--            <template-->
-<!--              v-for="(slot,index) in $scopedSlots"-->
-<!--              slot-scope="props"-->
-<!--              :slot="index"-->
-<!--            >-->
-<!--              <slot :row="props.row" :col="props.col" :value="props.value" :name="index"/>-->
-<!--            </template>-->
-
-          </el-table-column>
+        <el-table-column
+          type="selection"
+          width="55">
+        </el-table-column>
+        <template v-for="(column,idx1) in computedColumns">
+              <el-table-column
+                :type="column.type"
+                :key="column.prop + column.label"
+                :label="column.label"
+                :prop="column.prop"
+                :width="column.width"
+                :align="column.align"
+              >
+              <slot :name="getSlotNameFn(column)" :scope="scope" :row="scope.row" slot-scope="scope">
+                <render-content :option="{render: column.render,scope: scope,column: column}"></render-content>
+              </slot>
+              </el-table-column>
         </template>
       </el-table>
     </div>
@@ -59,6 +54,7 @@
     } from 'vuex';
     import FunSearch from './FunSearch'
     import {commonReq} from '@/common/fetch';
+    import MyRender from './MyRender'
 
     const noop = ()=>{}
     const extendFn = (obj)=>{
@@ -73,9 +69,18 @@
 
     }
 
+    import {RenderContent} from '@/components/widget/RenderContent';
+
     @Component({
         components:{
-            FunSearch
+            FunSearch,MyRender,RenderContent
+        },
+        computed:{
+            computedColumns () {
+                return this.columns.filter(column =>
+                    column.showIf ? column.showIf(this.lists) : true
+                )
+            }
         },
         filters:{
 
@@ -143,6 +148,15 @@
         lists = []
         currentPage = 1
 
+
+        getSlotNameFn (column) {
+            if (typeof column.render === 'string') {
+                return column.render
+            }
+            console.log(`${column.prop}-column`)
+            return `${column.prop}-column`
+        }
+
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`);
         }
@@ -163,6 +177,8 @@
         }
 
         loadData(){
+
+
             let postData = {},
                 filterData = this.buildFilterFormData()
 
@@ -182,6 +198,7 @@
                 }else{
                     this.lists = res.data
                 }
+
             })
 
         }
