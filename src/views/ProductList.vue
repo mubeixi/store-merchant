@@ -1,7 +1,7 @@
 <template>
   <div class="home-wrap">
     <div style="width: 1200px;margin: 100px auto;border:1px solid #e7e7e7;padding: 10px;">
-<!--      get_self_store_prod-->
+      <!--      get_self_store_prod-->
       <div class="padding10">
         <el-button  size="mini" class="" type="primary" >发布商品</el-button>
         <el-button  size="mini" class="" type="primary" >批量设置佣金</el-button>
@@ -14,6 +14,10 @@
         :columns="dataTableOpt.columns"
         :dataList="dataTableOpt.dataList"
         :act="dataTableOpt.act"
+        :totalCount="dataTableOpt.totalCount"
+        :pageSize="dataTableOpt.pageSize"
+        :is_paginate="dataTableOpt.is_paginate"
+        @currentChange="currentChange"
         @selectVal="selectVal"
       >
         <template slot="Products_Qrcode-column" slot-scope="props">
@@ -31,9 +35,9 @@
           <img height="60px" :src="props.row.ImgPath" />
         </template>
         <template slot="operate-column" slot-scope="props">
-          <span @click="handleOperate(props)">编辑</span>
-          <span @click="handleOperate(props)">删除</span>
-          <span @click="handleOperate(props)">退货</span>
+          <span class="spans" @click="handleOperate(props)">编辑</span>
+          <span class="spans" @click="handleOperate(props)">删除</span>
+          <span class="spans" @click="handleOperate(props)">退货</span>
         </template>
       </fun-table>
     </div>
@@ -94,11 +98,12 @@
 
     export default class Empty extends Vue {
 
-        ids = []
-
         dataTableOpt = {
             act : 'get_self_store_prod',
             dataList:false,
+            totalCount:100,
+            pageSize:20,
+            is_paginate:true,//是否显示分页 默认显示
             columns : [
                 {
                     prop: "Products_ID",
@@ -189,18 +194,27 @@
             ]
         }
 
+
+
+
         cates = []
 
+
         handleOperate(props){
-            console.log(props.row)
+            console.log(props)
         }
 
         //获取选中数据
         selectVal(val){
             console.log(val)
         }
+        //当前页数
+        currentChange(val){
+            console.log(val)
+        }
 
         created(){
+
             // getProductCategory().then(res=>{
             //     let cates = res.data
             //     // arr2table(newArr,'Category_ID','Category_ParentID')
@@ -217,4 +231,8 @@
     }
 </script>
 <style lang="stylus" scoped>
+  .spans
+    color:#428CF7
+    margin-right:4px
+    cursor:pointer
 </style>
