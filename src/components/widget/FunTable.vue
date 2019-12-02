@@ -29,15 +29,15 @@
       </el-table>
     </div>
 
-    <div class="section paginate">
+    <div class="section paginate" v-if="is_paginate">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :page-sizes="[10, 20, 30, 40,50]"
+        :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
+        :total="totalCount">
       </el-pagination>
     </div>
   </div>
@@ -90,6 +90,16 @@
         filterColVal(row,columName){
             return row[columName]
         }
+        @Prop({
+            type:Number,
+            default:10
+        })
+        pageSize
+        @Prop({
+            type:Number,
+            default:10
+        })
+        totalCount
         @Prop({
             type:String,
             default:'small'
@@ -162,7 +172,8 @@
         }
 
         handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
+            console.log(`当前页: ${val}`)
+            this.$emit('currentChange', val); // 将当前对象传到父组件
         }
 
         filterFn(){
@@ -212,7 +223,7 @@
 
         created(){
             if(this.dataList){
-                this.lists = this.dataList
+                this.lists = [...this.dataList]
                 return
             }
 

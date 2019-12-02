@@ -24,7 +24,7 @@ import MessageStationSend from '@/views/MessageStationSend.vue';
 import CouponGift from '@/views/CouponGift.vue';
 import GiftsGift from '@/views/GiftsGift.vue';
 import NotFound from '@/views/NotFound.vue';
-
+import ProductList from '@/views/ProductList.vue';
 const routerInstance = new Router({
   routes: [
     {
@@ -182,6 +182,14 @@ const routerInstance = new Router({
       component: NotFound,
       meta:{
         title:'NotFound'
+      }
+    },
+    {
+      path: '/ProductList',
+      name: 'ProductList',
+      component: ProductList,
+      meta:{
+        title:'商品列表'
       }
     },
     {
