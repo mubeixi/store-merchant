@@ -6,9 +6,9 @@
 
 <script>
 
-  import "kindeditor/themes/default/default.css";
-  import "kindeditor/kindeditor-all.js";
-  import "kindeditor/lang/zh-CN.js";
+  import "wzw-kindeditor/themes/default/default.css";
+  import "wzw-kindeditor/kindeditor-all.js";
+  import "wzw-kindeditor/lang/zh-CN.js";
 
   import {baseApiUrl } from '../../common/env';
 
