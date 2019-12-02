@@ -2,6 +2,7 @@
   <div class="home-wrap">
     <div style="width: 1200px;margin: 100px auto;border:1px solid #e7e7e7;padding: 10px;">
 <!--      get_self_store_prod-->
+
       <fun-table
         :columns="dataTableOpt.columns"
         :dataList="dataTableOpt.dataList"
@@ -83,6 +84,8 @@
     })
 
     export default class Empty extends Vue {
+
+        ids = []
 
         dataTableOpt = {
             act : 'get_self_store_prod',
@@ -177,18 +180,13 @@
             ]
         }
 
-
-
-
         cates = []
-
 
         handleOperate(props){
             console.log(props.row)
         }
 
         created(){
-
             // getProductCategory().then(res=>{
             //     let cates = res.data
             //     // arr2table(newArr,'Category_ID','Category_ParentID')

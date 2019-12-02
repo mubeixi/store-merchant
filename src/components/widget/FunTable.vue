@@ -1,5 +1,6 @@
 <template>
   <div class="fun-table-plugin">
+    <slot name="topToolBar"></slot>
     <div class="section filter">
       <fun-search :size="formSize" :columns="columns" @submit="filterFn">
         <slot name="filter"></slot>
