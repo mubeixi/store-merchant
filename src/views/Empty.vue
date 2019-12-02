@@ -2,10 +2,19 @@
   <div class="home-wrap">
     <div style="width: 1200px;margin: 100px auto;border:1px solid #e7e7e7;padding: 10px;">
 <!--      get_self_store_prod-->
+      <div class="padding10">
+        <el-button  size="mini" class="" type="primary" >发布商品</el-button>
+        <el-button  size="mini" class="" type="primary" >批量设置佣金</el-button>
+        <el-button  size="mini" class="" type="primary" >批量重生二维码</el-button>
+        <el-button  size="mini" class="" type="primary" >批量上架</el-button>
+        <el-button  size="mini" class="" type="primary" >批量下架</el-button>
+        <el-button  size="mini" class="" type="primary" >退货</el-button>
+      </div>
       <fun-table
         :columns="dataTableOpt.columns"
         :dataList="dataTableOpt.dataList"
         :act="dataTableOpt.act"
+        @selectVal="selectVal"
       >
         <template slot="Products_Qrcode-column" slot-scope="props">
           <img height="60px" :src="props.row.Products_Qrcode" />
@@ -185,6 +194,11 @@
 
         handleOperate(props){
             console.log(props.row)
+        }
+
+        //获取选中数据
+        selectVal(val){
+            console.log(val)
         }
 
         created(){

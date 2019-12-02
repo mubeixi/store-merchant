@@ -7,7 +7,7 @@
 
     </div>
     <div class="section table">
-      <el-table :data="lists">
+      <el-table :data="lists"  @selection-change="handleSelectionChange">
         <el-table-column
           type="selection"
           width="55">
@@ -153,7 +153,7 @@
             if (typeof column.render === 'string') {
                 return column.render
             }
-            console.log(`${column.prop}-column`)
+           // console.log(`${column.prop}-column`)
             return `${column.prop}-column`
         }
 
@@ -167,6 +167,12 @@
 
         filterFn(){
 
+        }
+        /**
+         * 选中的值
+         */
+        handleSelectionChange(val){
+            this.$emit('selectVal', val); // 将当前对象传到父组件
         }
 
         /**
