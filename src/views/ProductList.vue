@@ -53,7 +53,7 @@
         Action,
         State
     } from 'vuex-class'
-    import FunTable from '@/components/widget/FunTable'
+
     import {getProductList,getProductCategory} from '@/common/fetch';
     import {findArrayIdx, plainArray, createTmplArray, objTranslate} from '@/common/utils';
     import _ from 'underscore'
@@ -93,7 +93,7 @@
     @Component({
         mixins:[],
         components: {
-            FunTable
+
         }
     })
 
@@ -119,6 +119,7 @@
                 {
                     prop: "Products_Name",
                     label: "商品名称",
+                    width:220,
                     field: "Products_Name",
                     // align: "center",
                     // sortable: true,

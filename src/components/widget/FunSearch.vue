@@ -1,7 +1,7 @@
 <template>
-  <div class="fun-search-plugin">
+  <div class="fun-search-plugin" v-if="columnsData.length>0">
       <div class="row">
-        <template v-for="(col,index) in columnsData">
+        <template  v-for="(col,index) in columnsData">
           <div class="col" v-if="col.search!==false">
             <div class="label graytext" :style="{fontSize:fontSizeFn(size)}" >{{col.label}}</div>
               <template v-if="col.search.type === 'select'">
@@ -79,11 +79,13 @@
         }
 
         reset() {
-            this.columnsData = this.columns.map(v => {
+            this.columnsData = []
+
+            this.columns.map(v => {
                 if (v.search !== false) {
-                    // if (!v.search) {
-                    //     this.$set(v, 'search', {operate: '='})
-                    // }
+                    if (!v.search) {
+                        this.$set(v, 'search', {operate: '='})
+                    }
                     // if (typeof v.search === 'string') {
                     //     this.$set(v, 'search', {operate: v.search})
                     // }
@@ -91,17 +93,19 @@
                     //     this.$set(v.search, 'operate', '=')
                     // }
                     // v.search.operate = v.search.operate.toUpperCase();
-                    // if (!v.search.type) {
-                    //     this.$set(v.search, 'type', 'input')
-                    // }
+                    if (!v.search.type) {
+                        this.$set(v.search, 'type', 'input')
+                    }
                     // let value = v.search.operate === 'BETWEEN' ? [] : '';
                     // this.$set(v, 'value', value);
                     // if (v.search.type === 'date') {
                     //     v.search.operate = 'RANGE';
                     //     this.$set(v, 'opened', false);
                     // }
+
+                    this.columnsData.push(v)
                 }
-                return v;
+                //return v;
             })
         }
 

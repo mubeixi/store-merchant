@@ -12,6 +12,9 @@ import Common from './common/index';
 import {doLoginMixin} from "@/common/mixin";
 Vue.use(VueResource);
 
+import FunTable from "@/components/widget/FunTable.vue";
+Vue.component('fun-table',FunTable);
+
 // window.editorBaseUrl = baseApiUrl;
 // import VueKindEditor from '@/components/kindeditor/index';
 // Vue.use(VueKindEditor)

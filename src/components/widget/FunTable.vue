@@ -8,7 +8,12 @@
 
     </div>
     <div class="section table">
-      <el-table :data="lists"  @selection-change="handleSelectionChange">
+      <el-table
+        :height="height"
+        :data="lists"
+        ref="funTable"
+        @row-click="handleRowChange"
+        @selection-change="handleSelectionChange">
         <el-table-column
           type="selection"
           width="55">
@@ -30,7 +35,7 @@
       </el-table>
     </div>
 
-    <div class="section paginate" v-if="is_paginate">
+    <div class="section paginate-box text-center" v-if="is_paginate">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -56,6 +61,7 @@
     import FunSearch from './FunSearch'
     import {commonReq} from '@/common/fetch';
     import MyRender from './MyRender'
+    import _ from 'underscore'
 
     const noop = ()=>{}
     const extendFn = (obj)=>{
@@ -83,6 +89,31 @@
                 )
             }
         },
+        watch:{
+          dataList:{
+              immediate:true,
+              deep:true,
+              handler(val){
+                  if(val && _.isArray(val) && val.length>0){
+                      this.lists = [...val]
+                  }
+              }
+          },
+          lists:{
+              deep:true,
+              handler(val){
+                  //有变动就需要渲染下
+                  this.toggleSelection()
+              }
+          },
+          has:{
+              immediate:true,
+              deep:true,
+              handler(val){
+
+              }
+          }
+        },
         filters:{
 
         }
@@ -91,6 +122,23 @@
         filterColVal(row,columName){
             return row[columName]
         }
+
+        @Prop({
+            type:String,
+        })
+        vkey //主键
+
+        @Prop({
+            type:Array,
+            default:()=>[]
+        })
+        has //是否有已经选中的选项
+
+        @Prop({
+            type:Number
+        })
+        height
+
         @Prop({
             type:Number,
             default:10
@@ -109,20 +157,6 @@
         @Prop({
             type:Array,
             required:true,
-            // default:()=>{
-            //     return [
-            //         {
-            //             width:180,
-            //             label:'列名称',
-            //             value:'值'
-            //         },
-            //         {
-            //             width:180,
-            //             label:'列名称',
-            //             value:'值'
-            //         }
-            //     ]
-            // }
         })
         columns //表头和内容显示的配置
         @Prop({
@@ -133,7 +167,7 @@
 
         @Prop({
             type:Boolean,
-            default:true
+            default:false
         })
         is_paginate //是否分页
         @Prop({
@@ -160,6 +194,35 @@
         currentPage = 1
 
 
+        toggleSelection() {
+
+            this.$refs.funTable.clearSelection();
+            console.log('初始化选中的')
+            if(!this.vkey || !this.has || !_.isArray(this.has) || this.has.length<1){
+                this.$refs.funTable.clearSelection();
+                return;
+            };
+
+            let rows = []
+
+            for(var item of this.lists){
+                if(this.has.indexOf(item[this.vkey]+'')!==-1){
+                    rows.push(item)
+                }
+            }
+            console.log('设置为选中',rows)
+
+            let _self = this
+            if (rows) {
+                setTimeout(function () {
+                    rows.forEach(row => {
+                        _self.$refs.funTable.toggleRowSelection(row,true);
+                    });
+                },100)
+
+            }
+        }
+
         getSlotNameFn (column) {
             if (typeof column.render === 'string') {
                 return column.render
@@ -180,6 +243,12 @@
         filterFn(){
 
         }
+        //单击某一行
+        handleRowChange(row, column, event) {
+
+            this.$refs.funTable.toggleRowSelection(row);
+        }
+
         /**
          * 选中的值
          */
@@ -196,7 +265,7 @@
 
         loadData(){
 
-
+            if(this.dataList)return;
             let postData = {},
                 filterData = this.buildFilterFormData()
 
@@ -223,10 +292,10 @@
 
 
         created(){
-            if(this.dataList){
-                this.lists = [...this.dataList]
-                return
-            }
+            // if(this.dataList){
+            //     this.lists = [...this.dataList]
+            //     return
+            // }
 
             this.loadData()
         }
@@ -238,8 +307,7 @@
 </script>
 
 <style lang="less" scoped>
-.paginate{
-  text-align: center;
+.paginate-box{
   margin-top: 20px;
   margin-bottom: 10px;
 }

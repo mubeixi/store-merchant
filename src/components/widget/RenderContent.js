@@ -11,7 +11,7 @@ export const RenderContent = {
     const { column } = this.option
     const property = column.prop
     let value = row[property]
-    console.log(column.prop,value)
+    // console.log(column.prop,value)
     if (column && column.formatter) {
       let val = column.formatter(row, column, value, $index)
       return <span>{val}</span>
