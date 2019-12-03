@@ -233,6 +233,7 @@
 
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`);
+            this.$emit('handleSizeChange', val); // 将当前对象传到父组件
         }
 
         handleCurrentChange(val) {
@@ -241,7 +242,7 @@
         }
 
         filterFn(){
-
+            this.$emit('submit');
         }
         //单击某一行
         handleRowChange(row, column, event) {
@@ -292,12 +293,9 @@
 
 
         created(){
-            // if(this.dataList){
-            //     this.lists = [...this.dataList]
-            //     return
-            // }
 
-            this.loadData()
+
+           //this.loadData()
         }
 
 

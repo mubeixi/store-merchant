@@ -3,12 +3,11 @@
     <div style="width: 1200px;margin: 100px auto;border:1px solid #e7e7e7;padding: 10px;">
       <!--      get_self_store_prod-->
       <div class="padding10">
-        <el-button  size="mini" class="" type="primary" >发布商品</el-button>
-        <el-button  size="mini" class="" type="primary" >批量设置佣金</el-button>
-        <el-button  size="mini" class="" type="primary" >批量重生二维码</el-button>
-        <el-button  size="mini" class="" type="primary" >批量上架</el-button>
-        <el-button  size="mini" class="" type="primary" >批量下架</el-button>
-        <el-button  size="mini" class="" type="primary" >退货</el-button>
+        <el-button  size="mini" class="" type="primary" @click="goProduct">发布商品</el-button>
+        <el-button  size="mini" class="" type="primary" @click="batch(4)">批量设置佣金</el-button>
+        <el-button  size="mini" class="" type="primary" @click="batch(3)">批量重生二维码</el-button>
+        <el-button  size="mini" class="" type="primary" @click="batch(2)">批量上架</el-button>
+        <el-button  size="mini" class="" type="primary" @click="batch(1)">批量下架</el-button>
       </div>
       <fun-table
         :columns="dataTableOpt.columns"
@@ -18,30 +17,40 @@
         :pageSize="dataTableOpt.pageSize"
         :is_paginate="dataTableOpt.is_paginate"
         :formSize="'small'"
+        @handleSizeChange="handleSizeChange"
         @currentChange="currentChange"
         @selectVal="selectVal"
+        @submit="submit"
       >
+        <template slot="Products_Profit-column" slot-scope="props">
+            <span>查看详情</span>
+        </template>
         <template slot="Products_Qrcode-column" slot-scope="props">
           <img height="60px" :src="props.row.Products_Qrcode" />
         </template>
         <template slot="attr-column"  slot-scope="props">
-          <span class="padding4-c" v-if="props.row.Products_IsNew">
-            <el-tag type="success">新品</el-tag>
-          </span>
-          <span class="padding4-c" v-if="props.row.Products_IsHot">
-            <el-tag type="warning"> 热门</el-tag>
-          </span>
+            <template v-for="(item,index) of props.row.oattrs" >
+              <el-tag style="margin-bottom: 5px">{{item}}</el-tag>
+            </template>
         </template>
-        <template slot="ImgPath-column" slot-scope="props">
-          <img height="60px" :src="props.row.ImgPath" />
+        <template slot="Products_Sales-column" slot-scope="props">
+          <span>{{props.row.Products_Sales}}/{{props.row.Products_Count}}</span>
         </template>
         <template slot="operate-column" slot-scope="props">
-          <span class="spans" @click="handleOperate(props)">编辑</span>
+          <span class="spans" @click="goEdit(props)">编辑</span>
           <span class="spans" @click="handleOperate(props)">删除</span>
-          <span class="spans" @click="handleOperate(props)">退货</span>
         </template>
       </fun-table>
     </div>
+
+
+<!--    <el-dialog title="商品佣金详情" :visible.sync="dialogTableVisible">-->
+<!--      <el-table :data="gridData">-->
+<!--        <el-table-column property="date" label="序号" width="150"></el-table-column>-->
+<!--        <el-table-column property="name" label="级别名称" width="200"></el-table-column>-->
+<!--        <el-table-column property="address" label="佣金明细"></el-table-column>-->
+<!--      </el-table>-->
+<!--    </el-dialog>-->
   </div>
 </template>
 <script lang="ts">
@@ -54,7 +63,7 @@
         State
     } from 'vuex-class'
 
-    import {getProductList,getProductCategory} from '@/common/fetch';
+    import {getProducts,batchSetting,getProductCategory} from '@/common/fetch';
     import {findArrayIdx, plainArray, createTmplArray, objTranslate} from '@/common/utils';
     import _ from 'underscore'
     const getParentsCount = (arr,key,pkey,val,tempArr)=>{
@@ -97,13 +106,14 @@
         }
     })
 
-    export default class Empty extends Vue {
+    export default class ProductList extends Vue {
 
         dataTableOpt = {
             act : 'get_self_store_prod',
             dataList:false,
+            page:1,
             totalCount:100,
-            pageSize:20,
+            pageSize:10,
             is_paginate:true,//是否显示分页 默认显示
             columns : [
                 {
@@ -120,6 +130,7 @@
                     prop: "Products_Name",
                     label: "商品名称",
                     width:220,
+                    value:'',
                     field: "Products_Name",
                     // align: "center",
                     // sortable: true,
@@ -150,26 +161,42 @@
                     search: false
                 },
                 {
+                    prop: "Product_Cate",
+                    label: "商品分类",
+                    showIf:(row)=>false,
+                    value:'',
+                    search: {
+                        type: 'select',
+                        operate: 'like',
+                        option:[]
+                    }
+                },
+                {
                     prop: "attr",
                     label: "特殊属性",
+                    value:'',
                     search: {
+                        option:'',
                         type: 'select',
                         operate: 'like',
                     }
                 },
                 {
-                    prop: "ImgPath",
+                    prop: "Products_CreateTime",
                     label: "发布时间",
+                    width:100,
                     search: false
                 },
                 {
-                    prop: "ImgPath",
-                    label: "销量库存",
+                    prop: "Products_Sales",
+                    label: "销量/库存",
+                    width:150,
                     search: false
                 },
                 {
                     prop: "operate",
                     label: "操作",
+                    width:200,
                     search: false
                 },
                 // {
@@ -200,34 +227,97 @@
 
         cates = []
 
+        //搜索
+        submit(){
+            this.getProduct()
+        }
 
         handleOperate(props){
             console.log(props)
         }
-
+        goProduct(){
+            this.$router.push({
+                name: 'product'
+            })
+        }
+        //批量操作type 1:批量下架 2：批量上架 3：批量生成二维码 4：批量设置佣金
+        batch(type){
+            let data={
+                type:type,
+                ids:JSON.stringify(this.selectValue)
+            }
+            batchSetting(data).then(res=>{
+                if(res.errorCode==0){
+                    this.$message({
+                        message: res.msg,
+                        type: 'success'
+                    });
+                }
+            })
+        }
+        //跳转编辑页面
+        goEdit(props){
+            this.$router.push({
+                name: 'product',
+                query: {
+                    prod_id:props.row.Products_ID
+                }
+            })
+        }
+        selectValue=[]
         //获取选中数据
         selectVal(val){
-            console.log(val)
+            this.selectValue=[]
+            for(let item of val){
+                this.selectValue.push(item.Products_ID)
+            }
+        }
+
+        //一页多少行
+        handleSizeChange(val){
+            this.dataTableOpt.pageSize=val
+            this.getProduct()
         }
         //当前页数
         currentChange(val){
-            console.log(val)
+            this.dataTableOpt.page=val
+            this.getProduct()
+        }
+
+        getProduct(){
+            let data={
+                pageSize: this.dataTableOpt.pageSize,
+                page:this.dataTableOpt.page,
+                pro_name:this.dataTableOpt.columns[1].value,
+                sel_oattr:this.dataTableOpt.columns[6].value,
+                sel_cate:this.dataTableOpt.columns[5].value
+            }
+
+            getProducts(data).then(res=>{
+                if(res.errorCode==0){
+                    this.dataTableOpt.dataList=res.data
+                    this.dataTableOpt.totalCount=res.totalCount
+                    this.dataTableOpt.columns[6].search.option=res.oattrs
+                }
+            })
         }
 
         created(){
 
-            // getProductCategory().then(res=>{
-            //     let cates = res.data
-            //     // arr2table(newArr,'Category_ID','Category_ParentID')
-            //     this.cates = restArr(cates,'child')
-            //     //修改
-            //     let idx = findArrayIdx(this.columns,{name:'Product_Cate',label:'商品分类'})
-            //     if(idx!==false){
-            //         this.columns[idx].search.option = this.cates.map(item=>{
-            //             return {label:item.new_name,value:item.Category_ID}
-            //         })
-            //     }
-            // })
+            this.getProduct()
+            getProductCategory().then(res=>{
+                let cates = res.data
+                // arr2table(newArr,'Category_ID','Category_ParentID')
+                this.cates = restArr(cates,'child')
+                //修改
+                let idx = findArrayIdx(this.dataTableOpt.columns,{prop:'Product_Cate',label:'商品分类'})
+                console.log(idx)
+                if(idx!==false){
+                    this.dataTableOpt.columns[idx].search.option = this.cates.map(item=>{
+                        return {label:item.new_name,value:item.Category_ID}
+                    })
+                }
+            })
         }
     }
 </script>
