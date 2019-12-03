@@ -35,9 +35,10 @@ function setAttrData() {
         editType: 'config',
         editKey: 'origin',
         model: this.config.origin,
-        origintooltip: this.config.origintooltip,
+        origintooltip: (this.config.origin==='filter' && this.value.list.length>0) ?'已选择多个商品':this.config.origintooltip,
         limit: this.value.limit,
         cate_id: this.value.cate_id,
+        has:this.value.list.join(','),
         bindListCB: (list, pageEl) => {
           console.log(list)
 
@@ -49,6 +50,7 @@ function setAttrData() {
           Vue.set(this.config, 'origin', 'filter');
           Vue.set(this.value, 'list', tempArr);
           Vue.set(this.value, 'cate_id', []);
+          Vue.set(this.config, 'origintooltip', '已选择多个商品');
 
           pageEl.bindListDialogShow = false;
 
@@ -362,6 +364,8 @@ function setAttrData() {
   Vue.set(this, 'attrData', data);
 }
 
+
+
 function attrData(options = {}) {
   // @ts-ignore
   const {value, config, attrData} = options;
@@ -436,6 +440,19 @@ class Goods extends Common {
   }
 
   // value = []
+
+  getHasVal(){
+    // var ids_arr = []
+    //
+    // for(var item of this.value.list){
+    //   if(item && item.hasOwnProperty('Products_ID')){
+    //     ids_arr.push(item.Products_ID)
+    //   }
+    //
+    // }
+    // console.log('列表是',this.value.list,'ids',ids_arr)
+    return this.value.list.join(',')
+  }
 
 
   setIndex(index: number, options: object) {

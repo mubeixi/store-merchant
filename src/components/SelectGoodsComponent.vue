@@ -9,61 +9,31 @@
       class="innerDislog"
     >
       <div class="container">
-        <el-table
-          :data="list"
-          v-loading="loading"
-          stripe
-          max-height="500"
-          ref="multipleTable"
-          @selection-change="handleSelectionChange"
-          @row-click="handleRowChange"
-          row-class-name="fun-table-row"
-          style="width: 100%">
-          <el-table-column type="selection">
-          </el-table-column>
-          <el-table-column
-            prop="Products_ID"
-            fixed
-            width="60"
-            label="ID">
-          </el-table-column>
-          <el-table-column
-            prop="Products_Name"
-            fixed
-            width="300"
-            label="名称">
-          </el-table-column>
-          <el-table-column
-            prop="Products_JSON"
-            fixed
-            width="160"
-            label="缩略图">
-            <template slot-scope="scope">
-              <img style="height: 60px;max-width: 100px;" :src="scope.row.ImgPath"/>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="Products_PriceX"
-
-            label="价格">
-          </el-table-column>
-        </el-table>
-        <div class="pagination padding10-r">
-          <el-pagination
-            :hide-on-single-page="true"
-            @prev-click="prev"
-            @next-click="next"
-            @current-change="current"
-            background
-            layout="prev, pager, next"
-            :total="page_total">
-          </el-pagination>
-        </div>
+        <fun-table
+          ref="funTableComp"
+          :height="500"
+          vkey="Products_ID"
+          :has="ids_arr"
+          :dataList.sync="list"
+          :columns="columns"
+          @selectVal="selectVal"
+        >
+          <template slot="Products_Name-column" slot-scope="props">
+            <div style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{props.row.Products_Name}}</div>
+          </template>
+          <template slot="ImgPath-column" slot-scope="props">
+            <img height="40px" :src="props.row.ImgPath" />
+          </template>
+          <template slot="Products_PriceX-column" slot-scope="props">
+            <span class="" style="color: #F43131"><span class="font14">￥</span>{{props.row.Products_PriceX}}</span>
+          </template>
+        </fun-table>
       </div>
+
 
       <span slot="footer" class="dialog-footer">
                 <el-button @click="cancel">取 消</el-button>
-                <el-button type="primary" @click="selectCoupon">确 定</el-button>
+                <el-button type="primary" @click="selectFn">确 定</el-button>
             </span>
     </el-dialog>
 
@@ -73,6 +43,7 @@
 <script>
   import { getProductList,getFlashSaleList } from '../common/fetch';
   import { domain } from '@/common/utils';
+
 
   function noop() {
 
@@ -98,7 +69,8 @@
         default: noop,
       },
       ids: {
-        type: String
+        type: String,
+        default:''
       },
       show: {
         type: Boolean,
@@ -107,6 +79,32 @@
     },
     data() {
       return {
+        columns:[
+          {
+            label:'ID',
+            prop:'Products_ID',
+            width:100,
+            search:false
+          },
+          {
+            label:'名称',
+            prop:'Products_Name',
+            search:false
+          },
+          {
+            label:'缩略图',
+            prop:'ImgPath',
+            width:140,
+            align:'center',
+            search:false
+          },
+          {
+            label:'价格',
+            prop:'Products_PriceX',
+            width:100,
+            search:false
+          }
+        ],
         loading: true,
         finish:false,
         innerVisible: false,
@@ -151,7 +149,7 @@
       //已经选择的ids_arr不要重复选择了
       ids_arr() {
         if (!this.ids) return [];
-        return this.ids.join(',');
+        return this.ids.split(',');
       }
     },
 
@@ -160,6 +158,15 @@
 
     },
     methods: {
+      //获取选中数据
+      selectVal(val){
+        console.log('选中数据',val)
+        this.multipleSelection = val
+      },
+      //当前页数
+      currentChange(val){
+        console.log(val)
+      },
       getPic(jsonstr) {
         if (!jsonstr) return '';
         let obj = JSON.parse(jsonstr);
@@ -168,9 +175,9 @@
         return domain(obj.ImgPath[0]);
       },
       //单击某一行
-      handleRowChange(row, column, event) {
-        this.$refs.multipleTable.toggleRowSelection(row);
-      },
+      // handleRowChange(row, column, event) {
+      //   this.$refs.multipleTable.toggleRowSelection(row);
+      // },
       filterTag(value, row) {
         return row.tag === value;
       },
@@ -223,25 +230,26 @@
           this.list = arr;
         });
       },
-      selectCoupon({}) {
+      selectFn({}) {
 
         this.onSuccess.call(this, this.multipleSelection, this.pageEl);
         // this.innerVisible = false;
       },
       cancel() {
+        this.list = []
         this.$emit('cancel');
       },
-      handleSelectionChange(val) {
-        console.log(val);
-        this.multipleSelection = val;
-
-        // for(var item of val){
-        //   if(this.multipleSelection.indexOf(item.Coupon_ID)===-1){
-        //     this.multipleSelection.push(item.Coupon_ID);
-        //   }
-        // }
-
-      }
+      // handleSelectionChange(val) {
+      //   console.log(val);
+      //   this.multipleSelection = val;
+      //
+      //   // for(var item of val){
+      //   //   if(this.multipleSelection.indexOf(item.Coupon_ID)===-1){
+      //   //     this.multipleSelection.push(item.Coupon_ID);
+      //   //   }
+      //   // }
+      //
+      // }
     }
   };
 </script>

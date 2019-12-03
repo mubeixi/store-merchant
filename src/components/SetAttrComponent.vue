@@ -277,7 +277,7 @@
           <div v-if="item.model==='filter'"   style="margin-left: -70px;margin-top: 8px">
             <el-tooltip class="item rightBtn" effect="dark" :content="item.origintooltip"
                         placement="right">
-              <el-button @click="openGoodsBindList(item,item.bindListCB,item.pintuan_flag,item.flashsale_flag,item.kill_flag)" type="primary"
+              <el-button @click="openGoodsBindList(item,item.bindListCB,item.pintuan_flag,item.flashsale_flag,item.kill_flag,item.has)" type="primary"
                          size="small">选择商品
               </el-button>
             </el-tooltip>
@@ -348,7 +348,16 @@
 
     <select-spike-list-component @cancel="bindSpikeCancel" :onSuccess="bindSpikeSuccessCall" :pageEl="pageEl" :show="bindSpikeDialogShow" />
 
-    <select-goods-component @cancel="bindListCancel" :pintuan_flag="pintuan_flag" :kill_flag="kill_flag" :flashsale_flag="flashsale_flag" :onSuccess="bindListSuccessCall" :pageEl="pageEl" :show="bindListDialogShow"/>
+    <select-goods-component
+      @cancel="bindListCancel"
+      :pintuan_flag="pintuan_flag"
+      :kill_flag="kill_flag"
+      :flashsale_flag="flashsale_flag"
+      :onSuccess="bindListSuccessCall"
+      :pageEl="pageEl"
+      :ids="goods_ids"
+      :show="bindListDialogShow"
+    />
 
     <bind-cate-components :multiple="bindCateMultiple" @cancel="bindCateCancel" :onSuccess="bindCateSuccessCall"
                           :idx2="bindCateIdx2" :pageEl="pageEl" :show="bindCateDialogShow"/>
@@ -400,8 +409,11 @@
 
                 isLockMouser:false,
                 bindCateMultiple:false,
+
                 bindListDialogShow: false,
                 bindListSuccessCall: null,
+                goods_ids:'',
+
                 bindCateDialogShow: false,
                 bindCateSuccessCall: null,
                 bindCateIdx2: null,
@@ -498,10 +510,11 @@
                 this.bindLinkIdx2 = idx2;
                 //
             },
-            openGoodsBindList(item, success,pintuan_flag,flashsale_flag,kill_flag) {
-                console.log(item,success,pintuan_flag,flashsale_flag,kill_flag)
+            openGoodsBindList(item, success,pintuan_flag,flashsale_flag,kill_flag,goods_ids) {
+                console.log(item,success,pintuan_flag,flashsale_flag,kill_flag,goods_ids)
                 this.bindListDialogShow = true
                 this.bindListSuccessCall = success
+                this.goods_ids = goods_ids
                 //是否要拼团和抢购的
                 this.pintuan_flag = pintuan_flag?1:0
                 this.flashsale_flag = flashsale_flag?1:0
