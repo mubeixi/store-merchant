@@ -37,6 +37,7 @@ function setAttrData() {
         editType: 'config',
         editKey: 'origin',
         model: this.config.origin,
+        spike_id:this.value.spike_id,
         origintooltip: this.value.spike_id ?'已绑定活动':this.config.origintooltip,
         limit: this.value.limit,
         cate_id: this.value.cate_id,

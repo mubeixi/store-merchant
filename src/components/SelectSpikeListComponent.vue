@@ -9,11 +9,11 @@
       class="innerDislog"
     >
       <div class="container">
-<!--        @row-click="handleRowChange"-->
+
         <el-table
           :data="list"
           v-loading="loading"
-          stripe
+
           max-height="500"
           highlight-current-row
           ref="multipleTable"
@@ -95,8 +95,8 @@
         type: Function,
         default: noop,
       },
-      ids: {
-        type: String
+      spike_id: {
+        type: String | Number
       },
       show: {
         type: Boolean,
@@ -120,6 +120,16 @@
       };
     },
     watch: {
+      list:{
+        immediate:true,
+        deep:true,
+        handler(val){
+          console.log('数据变化')
+          if(val.length>0){
+            this.toggleSelection()
+          }
+        }
+      },
       show: {
         immediate: true,
         handler(val) {
@@ -148,10 +158,10 @@
         return parseInt(this.paginate.total / this.paginate.pageSize);
       },
       //已经选择的ids_arr不要重复选择了
-      ids_arr() {
-        if (!this.ids) return [];
-        return this.ids.join(',');
-      }
+      // ids_arr() {
+      //   if (!this.ids) return [];
+      //   return this.ids.join(',');
+      // }
     },
 
     created() {
@@ -159,6 +169,30 @@
 
     },
     methods: {
+      toggleSelection() {
+        console.log('初始化')
+        if(!this.spike_id)return;
+        this.$refs.multipleTable.clearSelection();
+
+        let rows = []
+
+        for(var item of this.list){
+          if(item.id == this.spike_id){
+            rows.push(item)
+          }
+        }
+        console.log('设置为选中',rows)
+
+        let _self = this
+        if (rows) {
+          setTimeout(function () {
+            rows.forEach(row => {
+              _self.$refs.multipleTable.setCurrentRow(row);
+            });
+          },100)
+
+        }
+      },
       getPic(jsonstr) {
         if (!jsonstr) return '';
         let obj = JSON.parse(jsonstr);

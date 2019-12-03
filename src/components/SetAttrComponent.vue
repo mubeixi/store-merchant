@@ -133,17 +133,17 @@
                 :imgUrl='item.value[idx].img'/>
               <div>
                 <div class="line10 flex">
-                  <div class="graytext" style="width: 50px;padding-left: 10px;">标题</div>
+                  <div class="graytext" style="width: 50px;padding-left: 10px;box-sizing: border-box;">标题</div>
                   <div>
                     <el-input  size="small" v-model="item.value[idx].title" class="input"
                               @input='item.inputCB'/>
                   </div>
                 </div>
-                <div class="flex">
-                  <div class="graytext" style="width: 50px;padding-left: 10px;box-sizing: border-box">链接</div>
+                <div class="">
+                  <div class="graytext" style="width: 50px;padding-left: 10px;box-sizing: border-box;display: inline-block">链接</div>
                   <el-tooltip class="item" effect="dark" :content="item.value[idx].tooltip||'未绑定'"
                               placement="right">
-                    <el-button :title="item.value[idx].tooltip" size="mini"
+                    <el-button size="mini"
                                @click="openSwiperBindLink(item,idx,item.bindCB)">绑定链接
                     </el-button>
                   </el-tooltip>
@@ -311,7 +311,7 @@
         <div v-if="item.type === 'origin' && item.flashsale_flag">
           <el-tooltip class="item rightBtn" effect="dark" :content="item.origintooltip"
                       placement="right">
-            <el-button @click="openSpikeBind(item,item.bindItemCB,null,true)" type="primary" size="small">绑定活动</el-button>
+            <el-button @click="openSpikeBind(item,item.bindItemCB,item.spike_id)" type="primary" size="small">绑定活动</el-button>
 
           </el-tooltip>
 
@@ -346,7 +346,7 @@
       <!--      </el-form-item>-->
     </el-form>
 
-    <select-spike-list-component @cancel="bindSpikeCancel" :onSuccess="bindSpikeSuccessCall" :pageEl="pageEl" :show="bindSpikeDialogShow" />
+    <select-spike-list-component :spike_id="spike_id" @cancel="bindSpikeCancel" :onSuccess="bindSpikeSuccessCall" :pageEl="pageEl" :show="bindSpikeDialogShow" />
 
     <select-goods-component
       @cancel="bindListCancel"
@@ -410,6 +410,7 @@
             return {
                 bindSpikeDialogShow:false,
                 bindSpikeSuccessCall: null,
+                spike_id:null,
 
                 pintuan_flag:0,
                 flashsale_flag:0,
@@ -431,6 +432,7 @@
                 bindLinkDialogShow: false,
                 bindLinkIdx2: null,
                 bindLinkSuccessCall: null,
+
                 selectPageShow: false,
                 bindLinkData: null,
                 currentData: {},
@@ -531,10 +533,16 @@
                 this.flashsale_flag = flashsale_flag?1:0
                 this.kill_flag = kill_flag?1:0
             },
-            openSpikeBind(item, success) {
-              console.log(item,success)
-                this.bindSpikeDialogShow = true
+            openSpikeBind(item, success,spike_id) {
+              console.log(item,success,spike_id)
+
                 this.bindSpikeSuccessCall = success
+                this.spike_id = spike_id
+
+                let _self = this
+                setTimeout(function () {
+                    _self.bindSpikeDialogShow = true
+                },100)
 
             },
             bindSpikeCancel() {
