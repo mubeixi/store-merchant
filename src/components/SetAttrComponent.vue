@@ -161,7 +161,7 @@
                 <el-tooltip class="item" effect="dark" :content="item.value[idx].tooltip||'未绑定'"
                             placement="right">
                   <el-button :title="item.value[idx].tooltip" size="small"
-                             @click="openGoodsBindCate(item,item.bindCB,idx,true)">绑定分类
+                             @click="openGoodsBindCate(item,item.bindCB,idx,true,item.arr[idx].cate_id)">绑定分类
                   </el-button>
                 </el-tooltip>
                 <span class="padding10-c font12 graytext.graytext2">{{item.value[idx].tooltip|cutstr(20,'..')}}</span>
@@ -288,7 +288,7 @@
             <div v-if="item.model!='filter'" class="line10"  style="margin-left: -70px;margin-top: 8px">
               <el-tooltip class="item rightBtn" effect="dark" :content="item.origintooltip"
                           placement="right">
-                <el-button @click="openGoodsBindCate(item,item.bindCateCB,null,true)" type="primary"
+                <el-button @click="openGoodsBindCate(item,item.bindCateCB,null,true,item.cate_has)" type="primary"
                            size="small">绑定分类
                 </el-button>
 
@@ -359,8 +359,15 @@
       :show="bindListDialogShow"
     />
 
-    <bind-cate-components :multiple="bindCateMultiple" @cancel="bindCateCancel" :onSuccess="bindCateSuccessCall"
-                          :idx2="bindCateIdx2" :pageEl="pageEl" :show="bindCateDialogShow"/>
+    <bind-cate-components
+      :multiple="bindCateMultiple"
+      :strictly="false"
+      @cancel="bindCateCancel"
+      :onSuccess="bindCateSuccessCall"
+      :has.sync="has_cate_list"
+      :idx2="bindCateIdx2"
+      :pageEl="pageEl"
+      :show="bindCateDialogShow"/>
 
     <bind-link-components @cancel="bindLinkCancel" :onSuccess="bindLinkSuccessCall"
                           :idx2="bindLinkIdx2" :pageEl="pageEl" :show="bindLinkDialogShow"/>
@@ -383,6 +390,7 @@
     import SelectGoodsComponent from '@/components/SelectGoodsComponent';
     import MagicCubeComponent from '@/components/diy/tool/MagicCubeComponent';
     import SelectSpikeListComponent from '@/components/SelectSpikeListComponent';
+    import {fun} from '@/common';
 
     // 没有继承，是依靠vuex的数据。也不碍事啊
     @Component({
@@ -417,6 +425,9 @@
                 bindCateDialogShow: false,
                 bindCateSuccessCall: null,
                 bindCateIdx2: null,
+                has_cate_list:[],
+
+
                 bindLinkDialogShow: false,
                 bindLinkIdx2: null,
                 bindLinkSuccessCall: null,
@@ -529,11 +540,22 @@
             bindSpikeCancel() {
                 this.bindSpikeDialogShow = false
             },
-            openGoodsBindCate(item, success, idx2,bindCateMultiple) {
-                this.bindCateDialogShow = true
+            openGoodsBindCate(item, success, idx2,bindCateMultiple,has_cate_list) {
+
                 this.bindCateSuccessCall = success
                 this.bindCateIdx2 = idx2
                 this.bindCateMultiple = bindCateMultiple
+
+                //居然还要自己拼接数据格式，醉哦
+                this.has_cate_list = has_cate_list.map(item=>{
+                    return {Category_ID:item}
+                })
+
+                //先改好数据再搞事
+                let _self = this
+                setTimeout(function () {
+                    _self.bindCateDialogShow = true
+                },50)
             },
             openSwiperBindLink(item, idx2, success) {
                 this.bindLinkDialogShow = true

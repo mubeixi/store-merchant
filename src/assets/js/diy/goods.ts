@@ -39,6 +39,7 @@ function setAttrData() {
         limit: this.value.limit,
         cate_id: this.value.cate_id,
         has:this.value.list.join(','),
+        cate_has:this.value.cate_id,//拥有的cateids
         bindListCB: (list, pageEl) => {
           console.log(list)
 

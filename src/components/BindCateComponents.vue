@@ -97,7 +97,7 @@
     props: {
       has:{
         type:Array,
-        default:()=>{},
+        default:()=>[],
       },
       multiple: {
         type: Boolean,
@@ -247,6 +247,7 @@
                   this.innerDialog.classify.data.push(...data);
 
                   let pids = []
+
 
                   let ids = get_arr_column(this.has,'Category_ID')
 

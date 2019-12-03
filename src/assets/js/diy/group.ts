@@ -37,7 +37,7 @@ function setAttrData() {
         editType: 'config',
         editKey: 'origin',
         model: this.config.origin,
-        origintooltip: this.config.origintooltip,
+        origintooltip: (this.config.origin==='filter' && this.value.list.length>0) ?'已选择多个商品':this.config.origintooltip,
         limit: this.value.limit,
         cate_id: this.value.cate_id,
         bindListCB: (list, pageEl) => {
