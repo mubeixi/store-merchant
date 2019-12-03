@@ -238,5 +238,9 @@
 </script>
 
 <style lang="less" scoped>
-
+.paginate{
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
 </style>
