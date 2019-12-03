@@ -221,6 +221,11 @@ export const addBatch = (data:object={},options:any=false) => fetch('add_batch',
 //给人群打标签
 export const tagCrowd = (data:object={},options:any=false) => fetch('tag_crowd', data, options);
 
+//获取商品列表
+export const getProducts = (data:object={},options:any=false) => fetch('get_products', data, options);
+//给商品type 1:批量下架 2：批量上架 3：批量生成二维码 4：批量设置佣金
+export const batchSetting = (data:object={},options:any=false) => fetch('batch_setting', data, options);
+
 
 // 获取初始化数据
 export const initScene = (data:object={},options:object={}) => fetch('init_scene', data , options);
