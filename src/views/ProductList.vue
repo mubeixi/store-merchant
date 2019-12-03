@@ -17,6 +17,7 @@
         :totalCount="dataTableOpt.totalCount"
         :pageSize="dataTableOpt.pageSize"
         :is_paginate="dataTableOpt.is_paginate"
+        :formSize="'small'"
         @currentChange="currentChange"
         @selectVal="selectVal"
       >
@@ -151,16 +152,15 @@
                 {
                     prop: "attr",
                     label: "特殊属性",
-                    search: false
+                    search: {
+                        type: 'select',
+                        operate: 'like',
+                    }
                 },
                 {
                     prop: "ImgPath",
                     label: "发布时间",
-                    search: {
-                        type: 'date',
-                        min:'',
-                        max:''
-                    }
+                    search: false
                 },
                 {
                     prop: "ImgPath",
