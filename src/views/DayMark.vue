@@ -123,7 +123,7 @@
                                                     <el-option :label="it.title" :value="it.id" ></el-option>
                                                   </template>
                                                 </el-select>
-                                                <el-input :disabled="!form.rights[0].rights.coupon.checked" v-model="form.rights[0].rights.coupon.count"></el-input>张
+<!--                                                <el-input :disabled="!form.rights[0].rights.coupon.checked" v-model="form.rights[0].rights.coupon.count"></el-input>张-->
                                             </div>
                                         </div>
                                     </template>
@@ -200,7 +200,7 @@
                                                   <el-option :label="it.title" :value="it.id" ></el-option>
                                                 </template>
                                               </el-select>
-                                                <el-input :disabled="!form.morerights[scope.$index].rights.coupon.checked" v-model="form.morerights[scope.$index].rights.coupon.count" ></el-input>张
+<!--                                                <el-input :disabled="!form.morerights[scope.$index].rights.coupon.checked" v-model="form.morerights[scope.$index].rights.coupon.count" ></el-input>张-->
                                             </div>
                                         </div>
                                     </template>
@@ -368,8 +368,8 @@
                     },
                     coupon: {
                         checked: false,
-                        value: '',
-                        count: ''
+                        value: ''
+                        // count: ''
                     },
                     requite: {
                         checked: false,
@@ -420,8 +420,8 @@
                     },
                     coupon: {
                         checked: false,
-                        value: '',
-                        count: ''
+                        value: ''
+                        // count: ''
                     },
                     requite: {
                         checked: false,
