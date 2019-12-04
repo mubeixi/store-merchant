@@ -238,6 +238,7 @@
       show: {
         immediate: true,
         handler(val) {
+          this.innerDialog.customizeLink = ''
           this.innerVisible = val;
 
 
