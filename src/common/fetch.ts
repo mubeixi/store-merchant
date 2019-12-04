@@ -142,7 +142,14 @@ export const updateStoreApplyGoodsNum = (data:object={},options:any=false) => fe
 
 export const getOrderExpress = (data:object={},options:any=false) => fetch('get_order_express', data, options);
 
-export const cancalStorePurchaseApply = (data:object={},options:any=false) => fetch('store_pifa_order_recall', data, options);
+export const orderPay = (data:object={},options:any=false) => fetch('order_pay', data, options);
+
+//取消进货单
+export const cancalStorePurchaseApply = (data:object={},options:any=false) => fetch('store_pifa_order_cancel', data, options);
+
+//撤回进货单
+export const recallStorePurchaseApply = (data:object={},options:any=false) => fetch('store_pifa_order_recall', data, options);
+
 
 export const subStorePurchaseApply = (data:object={},options:any=false) => fetch('store_pifa_order_submit', data, options);
 
@@ -160,6 +167,10 @@ export const updateCart = (data:object={},options:any=false) => fetch('update_ca
 export const getCartList = (data:object={},options:any=false) => fetch('get_cart', data, options);
 
 export const delCart = (data:object={},options:any=false) => fetch('del_cart', data, options);
+
+//获取进货单详情
+
+export const getStorePurchaseApplyInfo = (data:object={},options:any=false) => fetch('get_store_pifa_order_detail', data, options);
 
 //进货单相关处理
 export const getStorePurchaseApply = (data:object={},options:any=false) => fetch('get_store_pifa_apply_order', data, options);
