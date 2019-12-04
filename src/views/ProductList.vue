@@ -23,7 +23,7 @@
         @submit="submit"
       >
         <template slot="Products_Profit-column" slot-scope="props">
-            <span>查看详情</span>
+            <span class="spans" style="margin-right: 0px" @click="dissetting(props.row.Products_ID)">查看详情</span>
         </template>
         <template slot="Products_Qrcode-column" slot-scope="props">
           <img height="60px" :src="props.row.Products_Qrcode" />
@@ -38,19 +38,25 @@
         </template>
         <template slot="operate-column" slot-scope="props">
           <span class="spans" @click="goEdit(props)">编辑</span>
-          <span class="spans" @click="handleOperate(props)">删除</span>
+          <span class="spans" @click="delProduct(props)">删除</span>
         </template>
       </fun-table>
     </div>
 
 
-<!--    <el-dialog title="商品佣金详情" :visible.sync="dialogTableVisible">-->
-<!--      <el-table :data="gridData">-->
-<!--        <el-table-column property="date" label="序号" width="150"></el-table-column>-->
-<!--        <el-table-column property="name" label="级别名称" width="200"></el-table-column>-->
-<!--        <el-table-column property="address" label="佣金明细"></el-table-column>-->
-<!--      </el-table>-->
-<!--    </el-dialog>-->
+    <el-dialog title="商品佣金详情" :visible.sync="settingShow">
+      <el-table :data="settingData" >
+        <el-table-column align="center" type="index" label="序号" width="150"></el-table-column>
+        <el-table-column align="center" property="level_name" label="级别名称" width="200"></el-table-column>
+        <el-table-column align="center" label="佣金明细">
+          <template  slot-scope="scope" >
+            <div v-for="(item,index) of settingData[scope.$index].commisions">
+              {{item.label}}{{item.value}}(佣金比例的百分比)
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -63,9 +69,10 @@
         State
     } from 'vuex-class'
 
-    import {getProducts,batchSetting,getProductCategory} from '@/common/fetch';
+    import {getProducts,batchSetting,getProductCategory,delProduct,lookDissetting} from '@/common/fetch';
     import {findArrayIdx, plainArray, createTmplArray, objTranslate} from '@/common/utils';
     import _ from 'underscore'
+    import {float} from "html2canvas/dist/types/css/property-descriptors/float";
     const getParentsCount = (arr,key,pkey,val,tempArr)=>{
         var idx = false
         for(var i in arr){
@@ -222,8 +229,8 @@
             ]
         }
 
-
-
+        settingShow=false
+        settingData=[]
 
         cates = []
 
@@ -231,9 +238,13 @@
         submit(){
             this.getProduct()
         }
-
-        handleOperate(props){
-            console.log(props)
+        dissetting(id){
+            this.settingShow=true
+            lookDissetting({id:id}).then(res=>{
+                if(res.errorCode==0){
+                    this.settingData=res.data
+                }
+            })
         }
         goProduct(){
             this.$router.push({
@@ -254,6 +265,28 @@
                     });
                 }
             })
+        }
+        //删除
+        delProduct(props){
+           let id= props.row.Products_ID
+            this.$confirm('你确定要删除这个商品吗', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                delProduct({id:id}).then(res=>{
+                    if(res.errorCode==0){
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                        this.getProduct();
+                    }
+                })
+
+            }).catch(() => {
+
+            });
         }
         //跳转编辑页面
         goEdit(props){
