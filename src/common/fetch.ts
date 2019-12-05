@@ -140,6 +140,10 @@ export const changeStoreApplyChannel = (data:object={},options:any=false) => fet
 
 export const updateStoreApplyGoodsNum = (data:object={},options:any=false) => fetch('store_pifa_order_edit', data, options);
 
+
+export const calcApplyMoneyCount = (data:object={},options:any=false) => fetch('store_pifa_order_calc', data, options);
+
+
 export const getOrderExpress = (data:object={},options:any=false) => fetch('get_order_express', data, options);
 
 export const orderPay = (data:object={},options:any=false) => fetch('order_pay', data, options);
@@ -236,7 +240,10 @@ export const tagCrowd = (data:object={},options:any=false) => fetch('tag_crowd',
 export const getProducts = (data:object={},options:any=false) => fetch('get_products', data, options);
 //给商品type 1:批量下架 2：批量上架 3：批量生成二维码 4：批量设置佣金
 export const batchSetting = (data:object={},options:any=false) => fetch('batch_setting', data, options);
-
+//删除商品列表中的某个商品
+export const delProduct = (data:object={},options:any=false) => fetch('del_product', data, options);
+//查看分销商佣金列表
+export const lookDissetting = (data:object={},options:any=false) => fetch('look_dissetting', data, options);
 
 // 获取初始化数据
 export const initScene = (data:object={},options:object={}) => fetch('init_scene', data , options);

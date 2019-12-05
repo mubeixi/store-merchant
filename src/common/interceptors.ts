@@ -20,6 +20,7 @@ export default function (request, next) {
 
       switch (+response.body.errorCode) {
         case 0:
+        case 100:
           //
           //response = response.body
           break;

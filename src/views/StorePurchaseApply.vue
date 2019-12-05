@@ -52,7 +52,7 @@
 
                   </div>
                 </div>
-                <div class="r font14">金额:<span class="danger-color">￥<span class="price-num font16">{{item.prod_price}}</span></span></div>
+                <div class="r font14">单价:<span class="danger-color">￥<span class="price-num font16">{{item.prod_price}}</span></span></div>
               </td>
               <td class="price-box" v-if="idx2===0" :rowspan="apply.prod_list.length">
                 <div class="text-center">
@@ -62,11 +62,11 @@
               </td>
               <td class="actions text-center" v-if="idx2===0" :rowspan="apply.prod_list.length">
 
-                <div class="line10" v-if="apply.is_change_stock && inArray(apply.Order_Status,[20,22,25])">
-                  <el-button size="small" @click="showPayDialog(apply,idx1)" class="acion-btn" type="primary">保存库存变动</el-button>
-                </div>
+<!--                <div class="line10" v-if="apply.is_change_stock && inArray(apply.Order_Status,[20,22,25])">-->
+<!--                  <el-button size="small" @click="showPayDialog(apply,idx1)" class="acion-btn" type="primary">保存库存变动</el-button>-->
+<!--                </div>-->
                 <div class="line10" v-if="inArray(apply.Order_Status,[20])">
-                  <el-button size="small" @click="showPayDialog(apply,idx1)" class="acion-btn" type="success">支付</el-button>
+                  <el-button size="small" @click="payApply(apply,idx1)" class="acion-btn" type="success">支付</el-button>
                 </div>
                 <div class="line10" v-if="inArray(apply.Order_Status,[21])">
                   <el-button size="small" @click="recallApply(apply,idx1)" class="acion-btn" type="warning">撤回</el-button>
@@ -76,7 +76,8 @@
                   <div @click="showLogistics(apply)" class="font12 graytext2 logistics" >查看物流</div>
                 </div>
                 <!--如果在修改库存，则隐藏重新提交按钮。只有先保存库存，才出现-->
-                <div class="line10" v-if="inArray(apply.Order_Status,[22,25]) && !apply.is_change_stock">
+<!--                && !apply.is_change_stock-->
+                <div class="line10" v-if="inArray(apply.Order_Status,[22,25])">
                   <el-button size="small"  @click="submitAplly(apply,idx1)" class="acion-btn" type="success">重新提交</el-button>
                 </div>
                 <div class="line10" v-if="inArray(apply.Order_Status,[20,21,25])">
@@ -94,11 +95,16 @@
       title="订单支付"
       width="500px"
       center
+      :close-on-click-modal="false"
       @close="payDialogCancel"
       append-to-body
     >
       <div class="container-wrap">
+
         <el-form label-width="100px" class="form" :model="payDialogInstance" :rules="payRules" ref="payForm">
+          <el-form-item label="付款信息" v-if="payDialogInstance.tip">
+            <div v-html="payDialogInstance.tip"></div>
+          </el-form-item>
           <el-form-item label="支付密码" prop="pwd" :error="payDialogInstance.pwdError" >
             <el-input  v-model="payDialogInstance.pwd" placeholder="请输入支付密码" type="password" ></el-input>
           </el-form-item>
@@ -174,7 +180,7 @@
         Action,
         State
     } from 'vuex-class'
-    import {getStorePurchaseApply,getStorePurchaseApplyInfo,getStoreList,changeStoreApplyChannel,updateStoreApplyGoodsNum,cancalStorePurchaseApply,subStorePurchaseApply,delStorePurchaseApply,recallStorePurchaseApply,orderPay} from '../common/fetch';
+    import {getStorePurchaseApply,getStorePurchaseApplyInfo,getStoreList,changeStoreApplyChannel,updateStoreApplyGoodsNum,cancalStorePurchaseApply,subStorePurchaseApply,delStorePurchaseApply,recallStorePurchaseApply,orderPay,calcApplyMoneyCount} from '../common/fetch';
     import {objTranslate,findArrayIdx} from '@/common/utils';
     import {fun} from '@/common';
     import LogisticsInfo from '@/components/comm/LogisticsInfo'
@@ -211,6 +217,7 @@
 
         payDialogInstance = {
             callFn:noop,
+            tip:'',
             apply:null,
             idx:null,
             pwd:'',
@@ -225,6 +232,70 @@
             ],
         }
 
+        formNumDataByApply(apply){
+            console.log(apply)
+            let prod_attr = {}
+            for(var goods of apply.prod_list){
+                if(goods.prod_count<1){
+                    fun.error({msg:'产品至少选择1个'})
+                    return;
+                }
+                if(goods.attr_id){
+                    prod_attr[goods.prod_id] = {[goods.attr_id]:goods.prod_count}
+                }else{
+                    prod_attr[goods.prod_id] = {'0':goods.prod_count}
+                }
+            }
+            return JSON.stringify(prod_attr)
+        }
+
+        //第一次支付
+        async payApply(apply,idx){
+            this.payDialogInstance.tip = `需要支付<span class="padding4-c font14" style="color:red">￥<span class="font16">${apply.Order_TotalPrice}</span></span>的货款`
+            this.showPayDialog(apply,idx)
+        }
+
+        //是修改库存后重新提交/或者没有改库存也可以走（第一次支付)
+        async payEditFn(){
+
+
+
+            return new Promise((resolve, reject) => {
+
+                let {idx,pwd} = this.payDialogInstance
+
+                // this.ajax_idx = idx
+
+                let {Order_ID,Order_TotalPrice} = this.payDialogInstance.apply
+
+                let prod_json = this.formNumDataByApply(this.payDialogInstance.apply)
+
+                subStorePurchaseApply({order_id:Order_ID,prod_json,password:pwd}).then(res=>{
+                    this.payDialogCancel()
+                    resolve(res)
+                    // rt = true
+                }).catch(e=>{
+                    reject(e)
+                })
+            })
+
+
+            // let rt = false
+
+            //
+            // if(rt){
+            //     await this.refreshApplyInfo(idx)
+            // }
+
+
+            // let _self = this
+            //
+            // setTimeout(function () {
+            //     _self.ajax_idx = null
+            // },100)
+
+        }
+
         async payApplyFn(){
 
             this.$refs.payForm.validate((valid) => {
@@ -232,25 +303,35 @@
             })
 
             let {idx,pwd} = this.payDialogInstance
-
+            //
             this.ajax_idx = idx
 
-            let {Order_ID,Order_TotalPrice} = this.payDialogInstance.apply
-
-            let postData = {
-                pay_type:'remainder_pay',
-                user_pay_password: pwd,
-                Order_ID: Order_ID,
-                pay_money: Order_TotalPrice
-            }
-            await orderPay(postData,{text:'支付中'}).then(res=>{
-                this.payDialogCancel()
-                // this.payDialogInstance.pwdError = '密码错误'
+            let rt = false
+            await this.payEditFn().then(res=>{
+                rt = true
             }).catch(e=>{
-                this.payDialogInstance.pwdError = e.msg
-            })
 
-            await this.refreshApplyInfo(idx)
+            })
+            //
+            // let {Order_ID,Order_TotalPrice} = this.payDialogInstance.apply
+            //
+            // let postData = {
+            //     pay_type:'remainder_pay',
+            //     user_pay_password: pwd,
+            //     Order_ID: Order_ID,
+            //     pay_money: Order_TotalPrice
+            // }
+            // await orderPay(postData,{text:'支付中'}).then(res=>{
+            //     this.payDialogCancel()
+            //     // this.payDialogInstance.pwdError = '密码错误'
+            // }).catch(e=>{
+            //     this.payDialogInstance.pwdError = e.msg
+            // })
+
+            if(rt){
+                await this.refreshApplyInfo(idx)
+            }
+
 
             let _self = this
 
@@ -266,6 +347,7 @@
             this.payDialogInstance.pwd = ''
             this.payDialogInstance.pwdError = ''
             this.payDialogInstance.callFn = noop
+            this.payDialogInstance.tip = ''//只能退出的时候重置
         }
 
         showPayDialog(apply,idx){
@@ -328,17 +410,45 @@
 
         }
 
+
+
         async submitAplly(apply,idx){
 
-            this.ajax_idx = idx
-            await subStorePurchaseApply({order_id:apply.Order_ID}).then(res=>{
-                // apply.Order_Status =  21
-                // apply.Order_Status_desc =  "待处理"
-
-            })
-
-            await this.refreshApplyInfo(idx)
             let _self = this
+            _self.ajax_idx = idx
+
+            let prod_json = this.formNumDataByApply(apply)
+
+            let rt = false
+            await subStorePurchaseApply({order_id:apply.Order_ID,prod_json}).then(res=>{
+
+                if(res.data && res.data.code === 100){
+
+                    _self.payDialogInstance.tip = `需要支付<span class="padding4-c font14" style="color:red">￥<span class="font16">${res.data.pay_money}</span></span>的货款`
+                    //输入密码
+
+                    _self.payDialogInstance.pwd = ''
+                    _self.payDialogInstance.apply = apply
+                    _self.payDialogInstance.idx = idx
+                    _self.payDialogInstance.pwdError = ''
+                    _self.payDialogInstance.callFn = this.payApplyFn
+                    _self.payDialogInstance.innerVisible = true
+
+                }else{
+                    rt = true
+                }
+            })
+            // await subStorePurchaseApply({order_id:apply.Order_ID}).then(res=>{
+            //     // apply.Order_Status =  21
+            //     // apply.Order_Status_desc =  "待处理"
+            //
+            // })
+
+            if(true){
+                await this.refreshApplyInfo(idx)
+            }
+
+
             setTimeout(function () {
                 _self.ajax_idx = null
             },100)
@@ -386,57 +496,99 @@
         }
 
         setValFn(e,apply,goods,idx){
+
+
             let Attr_ID = null
             if(goods.attr_info && goods.attr_info.attr_val){
                 Attr_ID  = goods.attr_info.attr_val.Product_Attr_ID
             }
             let newVal = e.target.value,oldVal = goods.prod_count
             console.log(e.target.value)
-            //如果设置失败，数量要变回来
-            this.updateGoodsStock(apply.Order_ID,goods.prod_id,Attr_ID,e.target.value,function(){
-                goods.prod_count = newVal
-            },function(){
-                console.log('errorerror')
-                e.target.value = oldVal
-            },idx)
+
+            goods.prod_count = newVal
+
+            this.updateGoodsStock({
+                order_id:apply.Order_ID,
+                apply:apply,
+                prod_id:goods.prod_id,
+                attr_id:Attr_ID,
+                modify_prod_count:goods.prod_count-1,
+                idx,
+                call(res){
+                    console.log(res)
+                    if(res.data.Order_TotalPrice)apply.Order_TotalPrice = res.data.Order_TotalPrice
+                },
+                //如果设置失败，数量要变回来
+                errcall(res){
+                    goods.prod_count = oldVal
+                    // e.target.value = oldVal
+                }
+            })
+
+            // //如果设置失败，数量要变回来
+            // this.updateGoodsStock(apply.Order_ID,goods.prod_id,Attr_ID,e.target.value,function(){
+            //     goods.prod_count = newVal
+            // },function(){
+            //     console.log('errorerror')
+            //     e.target.value = oldVal
+            // },idx)
         }
 
         plusFn(apply,goods,idx){
 
-            apply.is_change_stock = true //设置为已经修改
+            // apply.is_change_stock = true //设置为已经修改
 
             let Attr_ID = null
             if(goods.attr_info && goods.attr_info.attr_val){
                 Attr_ID  = goods.attr_info.attr_val.Product_Attr_ID
             }
-            this.updateGoodsStock(apply.Order_ID,goods.prod_id,Attr_ID,goods.prod_count+1,function(){goods.prod_count++},null,idx)
+
+            this.updateGoodsStock({
+                order_id:apply.Order_ID,
+                apply:apply,
+                prod_id:goods.prod_id,
+                attr_id:Attr_ID,
+                modify_prod_count:goods.prod_count-1,
+                call:function(res){
+                    console.log(res)
+                    goods.prod_count++
+                    if(res.data.Order_TotalPrice)apply.Order_TotalPrice = res.data.Order_TotalPrice
+                },
+                idx
+            })
         }
 
         minusFn(apply,goods,idx){
 
-            apply.is_change_stock = true
+            // apply.is_change_stock = true
 
             let Attr_ID = null
             if(goods.attr_info && goods.attr_info.attr_val){
                 Attr_ID  = goods.attr_info.attr_val.Product_Attr_ID
             }
-            this.updateGoodsStock(apply.Order_ID,goods.prod_id,Attr_ID,goods.prod_count-1,function(){goods.prod_count--},null,idx)
+            this.updateGoodsStock({
+                order_id:apply.Order_ID,
+                apply:apply,
+                prod_id:goods.prod_id,
+                attr_id:Attr_ID,
+                modify_prod_count:goods.prod_count-1,
+                call:function(res){
+                    console.log(res)
+                    goods.prod_count--
+                    if(res.data.Order_TotalPrice)apply.Order_TotalPrice = res.data.Order_TotalPrice
+                },
+                idx
+            })
         }
 
-        async updateGoodsStock(order_id,prod_id,attr_id,modify_prod_count,call,errcall,idx){
-            this.ajax_idx = 'dss'
+        async updateGoodsStock({order_id,apply,call,errcall=noop,idx}){
 
-            let that = this
-
-            call && call()
-            setTimeout(function () {
-                that.ajax_idx = null
-            },200)
-            return;
             this.ajax_idx = idx
-            await updateStoreApplyGoodsNum({order_id,prod_id,attr_id,modify_prod_count}).then(res=>{
+
+            let prod_json = this.formNumDataByApply(apply)
+            await calcApplyMoneyCount({order_id,prod_json}).then(res=>{
                 console.log('success')
-                call && call()
+                call && call(res)
             },err=>{
                 console.log('error')
                 errcall && errcall()
