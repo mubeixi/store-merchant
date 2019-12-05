@@ -2,7 +2,7 @@
   <div class="fun-table-plugin">
     <slot name="topToolBar"></slot>
     <div class="section filter">
-      <fun-search :size="formSize" :columns="columns" @submit="filterFn">
+      <fun-search :size="formSize" :columns="columns" @submit="filterFn" @reset="reset">
         <slot name="filter"></slot>
       </fun-search>
 
@@ -94,9 +94,7 @@
               immediate:true,
               deep:true,
               handler(val){
-                  if(val && _.isArray(val) && val.length>0){
                       this.lists = [...val]
-                  }
               }
           },
           lists:{
@@ -243,6 +241,9 @@
 
         filterFn(){
             this.$emit('submit');
+        }
+        reset(){
+            this.$emit('reset');
         }
         //单击某一行
         handleRowChange(row, column, event) {

@@ -25,6 +25,7 @@ import CouponGift from '@/views/CouponGift.vue';
 import GiftsGift from '@/views/GiftsGift.vue';
 import NotFound from '@/views/NotFound.vue';
 import ProductList from '@/views/ProductList.vue';
+import StoreProductList from '@/views/StoreProductList.vue';
 const routerInstance = new Router({
   routes: [
     {
@@ -190,6 +191,14 @@ const routerInstance = new Router({
       component: ProductList,
       meta:{
         title:'商品列表'
+      }
+    },
+    {
+      path: '/StoreProductList',
+      name: 'StoreProductList',
+      component: StoreProductList,
+      meta:{
+        title:'门店商品列表'
       }
     },
     {

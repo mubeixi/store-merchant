@@ -8,11 +8,7 @@
         <el-tab-pane label="已下架" name="3"></el-tab-pane>
       </el-tabs>
       <div class="padding10">
-        <el-button  size="mini" class="" type="primary" @click="goProduct">发布商品</el-button>
-        <el-button  size="mini" class="" type="primary" @click="batch(4)">批量设置佣金</el-button>
-        <el-button  size="mini" class="" type="primary" @click="batch(3)">批量重生二维码</el-button>
-        <el-button  size="mini" class="" type="primary" @click="batch(2)">批量上架</el-button>
-        <el-button  size="mini" class="" type="primary" @click="batch(1)">批量下架</el-button>
+        <el-button  size="mini" class="" type="primary" @click="goProduct">退货</el-button>
       </div>
       <fun-table
         :columns="dataTableOpt.columns"
@@ -29,28 +25,24 @@
         @reset="reset"
       >
         <template slot="Products_Name-column" slot-scope="props" >
-         <div style="display: flex;align-items: center;">
-           <img width="90px" height="100px" :src="props.row.img_url">
-           <span style="margin-left: 10px">{{props.row.Products_Name}}</span>
-         </div>
-        </template>
-        <template slot="Products_Profit-column" slot-scope="props">
-            <span class="spans" style="margin-right: 0px" @click="dissetting(props.row.Products_ID)">查看详情</span>
+          <div style="display: flex;align-items: center;">
+            <img width="90px" height="100px" :src="props.row.img_url">
+            <span style="margin-left: 10px">{{props.row.Products_Name}}</span>
+          </div>
         </template>
         <template slot="Products_Qrcode-column" slot-scope="props">
           <img height="70px" width="70px" :src="props.row.Products_Qrcode">
         </template>
         <template slot="attr-column"  slot-scope="props">
-            <div v-for="(item,index) of props.row.oattrs" >
-              <el-tag style="width:80px;margin:0 auto;margin-bottom: 5px;display: block;">{{item}}</el-tag>
-            </div>
+          <div v-for="(item,index) of props.row.oattrs" >
+            <el-tag style="width:80px;margin:0 auto;margin-bottom: 5px;display: block;">{{item}}</el-tag>
+          </div>
         </template>
         <template slot="Products_Sales-column" slot-scope="props">
           <span>{{props.row.Products_Sales}}/{{props.row.Products_Count}}</span>
         </template>
         <template slot="operate-column" slot-scope="props">
-          <span class="spans" @click="goEdit(props)">编辑</span>
-          <span class="spans" @click="delProduct(props)">删除</span>
+          <span class="spans" @click="delProduct(props)">退货</span>
         </template>
       </fun-table>
     </div>
@@ -81,7 +73,7 @@
         State
     } from 'vuex-class'
 
-    import {getProducts,batchSetting,getProductCategory,delProduct,lookDissetting} from '@/common/fetch';
+    import {getProducts,batchSetting,getProductCategory,delProduct} from '@/common/fetch';
     import {findArrayIdx, plainArray, createTmplArray, objTranslate} from '@/common/utils';
     import _ from 'underscore'
     import {float} from "html2canvas/dist/types/css/property-descriptors/float";
@@ -125,7 +117,7 @@
         }
     })
 
-    export default class ProductList extends Vue {
+    export default class StoreProductList extends Vue {
 
         activeName='1'
         dataTableOpt = {
@@ -160,16 +152,6 @@
                         type: 'input',
                         operate: 'like',
                     }
-                },
-                {
-                    prop: "Products_Profit",
-                    label: "分销佣金",
-                    // width:150,
-                    align:'center',
-                    search: false,
-                    // render:function(h,optScope){
-                    //     console.log(h,optScope)
-                    // }
                 },
                 {
                     prop: "Products_PriceX",
@@ -253,64 +235,8 @@
         submit(){
             this.getProduct()
         }
-        dissetting(id){
-            this.settingShow=true
-            lookDissetting({id:id}).then(res=>{
-                if(res.errorCode==0){
-                    this.settingData=res.data
-                }
-            })
-        }
         goProduct(){
-            this.$router.push({
-                name: 'product'
-            })
-        }
-        //批量操作type 1:批量下架 2：批量上架 3：批量生成二维码 4：批量设置佣金
-        batch(type){
-            let data={
-                type:type,
-                ids:JSON.stringify(this.selectValue)
-            }
-            batchSetting(data).then(res=>{
-                if(res.errorCode==0){
-                    this.$message({
-                        message: res.msg,
-                        type: 'success'
-                    });
-                }
-            })
-        }
-        //删除
-        delProduct(props){
-           let id= props.row.Products_ID
-            this.$confirm('你确定要删除这个商品吗', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                delProduct({id:id}).then(res=>{
-                    if(res.errorCode==0){
-                        this.$message({
-                            message: '删除成功',
-                            type: 'success'
-                        });
-                        this.getProduct();
-                    }
-                })
 
-            }).catch(() => {
-
-            });
-        }
-        //跳转编辑页面
-        goEdit(props){
-            this.$router.push({
-                name: 'product',
-                query: {
-                    prod_id:props.row.Products_ID
-                }
-            })
         }
         selectValue=[]
         //获取选中数据
@@ -339,7 +265,8 @@
                 pro_name:this.dataTableOpt.columns[1].value,
                 sel_oattr:this.dataTableOpt.columns[6].value,
                 sel_cate:this.dataTableOpt.columns[5].value,
-                status:this.activeName
+                status:this.activeName,
+                store_id:24
             }
 
             getProducts(data).then(res=>{
