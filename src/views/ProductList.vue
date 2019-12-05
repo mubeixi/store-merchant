@@ -29,7 +29,7 @@
         @reset="reset"
       >
         <template slot="Products_Name-column" slot-scope="props" >
-         <div style="display: flex;align-items: center;">
+         <div style="display: flex;align-items: center;margin-left: 10px">
            <img width="90px" height="100px" :src="props.row.img_url">
            <span style="margin-left: 10px">{{props.row.Products_Name}}</span>
          </div>
@@ -45,6 +45,10 @@
               <el-tag style="width:80px;margin:0 auto;margin-bottom: 5px;display: block;">{{item}}</el-tag>
             </div>
         </template>
+        <template slot="Products_PriceX-column"  slot-scope="props">
+          <span>¥ {{props.row.Products_PriceX}}</span>
+        </template>
+
         <template slot="Products_Sales-column" slot-scope="props">
           <span>{{props.row.Products_Sales}}/{{props.row.Products_Count}}</span>
         </template>
@@ -140,6 +144,7 @@
                     prop: "Products_ID",
                     label: "产品ID",
                     align:'center',
+                    width:138,
                     // align: "center",
                     // sortable: true,
                     //后面这些是filter使用的
@@ -164,7 +169,7 @@
                 {
                     prop: "Products_Profit",
                     label: "分销佣金",
-                    // width:150,
+                    width:120,
                     align:'center',
                     search: false,
                     // render:function(h,optScope){
@@ -174,7 +179,7 @@
                 {
                     prop: "Products_PriceX",
                     label: "商品价格",
-                    // width:150,
+                    width:120,
                     align:'center',
                     search: false
                 },
@@ -228,7 +233,7 @@
                     prop: "operate",
                     label: "操作",
                     align:'center',
-                    // width:200,
+                    width:150,
                     search: false
                 }
             ]
@@ -278,6 +283,7 @@
                         message: res.msg,
                         type: 'success'
                     });
+                    this.getProduct()
                 }
             })
         }

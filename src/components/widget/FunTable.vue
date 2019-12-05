@@ -11,12 +11,14 @@
       <el-table
         :height="height"
         :data="lists"
+        border
         ref="funTable"
         @row-click="handleRowChange"
         @selection-change="handleSelectionChange">
         <el-table-column
           type="selection"
-          width="55">
+          align="center"
+          width="70">
         </el-table-column>
         <template v-for="(column,idx1) in computedColumns">
               <el-table-column
@@ -248,7 +250,7 @@
         //单击某一行
         handleRowChange(row, column, event) {
 
-            this.$refs.funTable.toggleRowSelection(row);
+            //this.$refs.funTable.toggleRowSelection(row);
         }
 
         /**
