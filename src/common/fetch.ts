@@ -21,11 +21,18 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
   param.env = 'wx_mp';
   // param.Users_Account = get_Users_Account();
   // @ts-ignore
-  param.Users_ID = get_Users_ID();
+
+  if(!param.Users_ID){
+    param.Users_ID = get_Users_ID();
+  }
   // @ts-ignore
-  param.User_ID = get_User_ID();
+  if(!param.User_ID){
+    param.User_ID = get_User_ID();
+  }
   // @ts-ignore
-  param.store_id = get_Stores_ID();
+  if(!param.store_id){
+    param.store_id = get_Stores_ID();
+  }
   // param.appid = get_Appid();
 
   // 数据加密

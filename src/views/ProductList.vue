@@ -1,6 +1,6 @@
 <template>
   <div class="home-wrap">
-    <div style="width: 1200px;margin: 100px auto;border:1px solid #e7e7e7;padding: 10px;">
+    <div style="padding: 20px">
       <!--      get_self_store_prod-->
       <div class="padding10">
         <el-button  size="mini" class="" type="primary" @click="goProduct">发布商品</el-button>
@@ -22,15 +22,21 @@
         @selectVal="selectVal"
         @submit="submit"
       >
+        <template slot="Products_Name-column" slot-scope="props" >
+         <div style="display: flex;align-items: center;">
+           <img width="90px" height="100px" :src="props.row.img_url">
+           <span style="margin-left: 10px">{{props.row.Products_Name}}</span>
+         </div>
+        </template>
         <template slot="Products_Profit-column" slot-scope="props">
             <span class="spans" style="margin-right: 0px" @click="dissetting(props.row.Products_ID)">查看详情</span>
         </template>
         <template slot="Products_Qrcode-column" slot-scope="props">
-          <img height="60px" :src="props.row.Products_Qrcode" />
+          <img height="70px" width="70px" :src="props.row.Products_Qrcode">
         </template>
         <template slot="attr-column"  slot-scope="props">
             <template v-for="(item,index) of props.row.oattrs" >
-              <el-tag style="margin-bottom: 5px">{{item}}</el-tag>
+              <el-tag style="margin-bottom: 5px;display: block">{{item}}</el-tag>
             </template>
         </template>
         <template slot="Products_Sales-column" slot-scope="props">
@@ -126,7 +132,6 @@
                 {
                     prop: "Products_ID",
                     label: "产品ID",
-                    width:90,
                     align:'center',
                     // align: "center",
                     // sortable: true,
@@ -136,8 +141,9 @@
                 {
                     prop: "Products_Name",
                     label: "商品名称",
-                    width:220,
                     value:'',
+                    width:300,
+                    align:'center',
                     field: "Products_Name",
                     // align: "center",
                     // sortable: true,
@@ -151,6 +157,8 @@
                 {
                     prop: "Products_Profit",
                     label: "分销佣金",
+                    // width:150,
+                    align:'center',
                     search: false,
                     // render:function(h,optScope){
                     //     console.log(h,optScope)
@@ -159,17 +167,22 @@
                 {
                     prop: "Products_PriceX",
                     label: "商品价格",
+                    // width:150,
+                    align:'center',
                     search: false
                 },
                 {
                     prop: "Products_Qrcode",
                     label: "二维码",
+                    align:'center',
+                    width:150,
                     // showIf:(row)=>false,
                     search: false
                 },
                 {
                     prop: "Product_Cate",
                     label: "商品分类",
+                    align:'center',
                     showIf:(row)=>false,
                     value:'',
                     search: {
@@ -181,6 +194,8 @@
                 {
                     prop: "attr",
                     label: "特殊属性",
+                    align:'center',
+                    width:150,
                     value:'',
                     search: {
                         option:'',
@@ -191,41 +206,24 @@
                 {
                     prop: "Products_CreateTime",
                     label: "发布时间",
+                    align:'center',
                     width:100,
                     search: false
                 },
                 {
                     prop: "Products_Sales",
                     label: "销量/库存",
+                    align:'center',
                     width:150,
                     search: false
                 },
                 {
                     prop: "operate",
                     label: "操作",
-                    width:200,
+                    align:'center',
+                    // width:200,
                     search: false
-                },
-                // {
-                //     prop: "",
-                //     label: "商品分类",
-                //     field: "Product_Cate",
-                //     value:'',
-                //     showIf: () => false,
-                //     // align: "center",
-                //     // sortable: true,
-                //     //后面这些是filter使用的
-                //     search: {
-                //         type: 'select',
-                //         operate: 'like',
-                //         option:[] // { value: '1', label: '类别一'},
-                //     }
-                // },
-                // {
-                //     label: '操作',
-                //     prop: 'operate',
-                //     search: false
-                // }
+                }
             ]
         }
 

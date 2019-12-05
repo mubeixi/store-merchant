@@ -675,6 +675,7 @@
             })
         }
         created(){
+            console.log(User_ID,"sss")
             this.getSysuser()
             this.get_sysstatistics();
             this.get_sysorders();
