@@ -688,7 +688,7 @@
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
-        background-color: #e5e5e5;
+        background-color: #fff;
         cursor: pointer;
         position: relative;
         &:hover{
