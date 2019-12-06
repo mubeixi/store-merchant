@@ -16,7 +16,11 @@ export class Cart {
   }
 
   add(item){
-    let isHas = findArrayIdx(this.lists,{Productsattrstrval:item.Productsattrstrval,Products_ID:item.Products_ID},true)
+    let key_val_arr = {Products_ID:item.Products_ID}
+    if(item.Productsattrstrval){
+      key_val_arr.Productsattrstrval = item.Productsattrstrval
+    }
+    let isHas = findArrayIdx(this.lists,key_val_arr,true)
     if(isHas === false){
       this.lists.push({num:1,...item})
     }else{
@@ -29,7 +33,11 @@ export class Cart {
   }
 
   minus(item){
-    let isHas = findArrayIdx(this.lists,{Productsattrstrval:item.Productsattrstrval,Products_ID:item.Products_ID})
+    let key_val_arr = {Products_ID:item.Products_ID}
+    if(item.Productsattrstrval){
+      key_val_arr.Productsattrstrval = item.Productsattrstrval
+    }
+    let isHas = findArrayIdx(this.lists,key_val_arr)
     if(isHas!==false){
       this.setCount(isHas,item.num-1)
     }
@@ -37,7 +45,11 @@ export class Cart {
   }
 
   plus(item){
-    let isHas = findArrayIdx(this.lists,{Productsattrstrval:item.Productsattrstrval,Products_ID:item.Products_ID})
+    let key_val_arr = {Products_ID:item.Products_ID}
+    if(item.Productsattrstrval){
+      key_val_arr.Productsattrstrval = item.Productsattrstrval
+    }
+    let isHas = findArrayIdx(this.lists,key_val_arr)
     if(isHas!==false){
       this.setCount(isHas,(item.num+1))
     }
@@ -46,7 +58,11 @@ export class Cart {
 
   remove(item){
     //获取索引
-    let isIdx = findArrayIdx(this.lists,{Productsattrstrval:item.Productsattrstrval,Products_ID:item.Products_ID})
+    let key_val_arr = {Products_ID:item.Products_ID}
+    if(item.Productsattrstrval){
+      key_val_arr.Productsattrstrval = item.Productsattrstrval
+    }
+    let isIdx = findArrayIdx(this.lists,key_val_arr)
     console.log('需要删除的索引是',isIdx)
     if(isIdx!==false){
 

@@ -401,6 +401,7 @@
             this.dialogInstance.innerVisible = false
             this.dialogInstance = objTranslate({
                 innerVisible:false,
+                addCartReq:false,
                 loading:false,
                 num:0,
                 check_attr:[],
@@ -564,7 +565,7 @@
         addCart(goods,idx){
 
             if(this.isMove){
-                fun.info({msg:'操作太快'})
+                fun.error({msg:'操作太快'})
                 return;
             }
             //添加

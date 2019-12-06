@@ -626,11 +626,11 @@
         changeApplyChannel(){
 
             if(!this.channelDialogInstance.channel){
-                fun.info({msg:'渠道必选'});
+                fun.error({msg:'渠道必选'});
                 return;
             }
             if(this.channelDialogInstance.channel==='store' && !this.channelDialogInstance.store_no){
-                fun.info({msg:'门店编码必填'});
+                fun.error({msg:'门店编码必填'});
                 return;
             }
 

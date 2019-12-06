@@ -74,8 +74,10 @@
           <i @click="cartDialogCancel" v-show="cartsDialogInstance.innerVisible" class="el-icon-arrow-down"></i>
         </div>
       </div>
+      <el-button class="sub-channel" @click="changeChannel" >退货渠道<span v-if="channelDialogInstance.channel">:{{channelDialogInstance.channel=='shop'?'平台':'门店'}}</span><i class="el-icon-arrow-up"></i></el-button>
       <el-button class="sub-btn" @click="subBackFn" v-loading="subLoading">确认退货</el-button>
     </div>
+
     <div @click="cartDialogCancel" class="cartsDialogMask"  @mousewheel.prevent  v-show="cartsDialogInstance.innerVisible"></div>
     <div class="cartsDialog" v-show="cartsDialogInstance.innerVisible"  v-loading="cartsDialogInstance.loading">
       <div class="carts-dialog-container" v-if="carts.lists.length>0" >
@@ -133,6 +135,33 @@
                 <el-button @click="dialogCancel">取 消</el-button>
                 <el-button @click="dialogSub" style="background: #F43131;color:white" >确 定</el-button>
             </span>
+    </el-dialog>
+
+    <el-dialog
+      :visible.sync="channelDialogInstance.innerVisible"
+      title="切换渠道"
+      width="848px"
+      center
+      @close="channelDialogCancel"
+
+      class="channel-container-wrap"
+    >
+      <div class="">
+        <el-form label-width="100px" class="form">
+          <el-form-item label="退货渠道:" prop="channel">
+            <el-select  v-model="channelDialogInstance.channel" placeholder="请选择类型" style="width: 100%" >
+              <template v-for="(item,idx) of channelDialogInstance.channels">
+                <el-option :label="item.name" :value="item.val" ></el-option>
+              </template>
+            </el-select>
+          </el-form-item>
+          <el-form-item label=" " prop="store_no" v-show="channelDialogInstance.channel!='shop'">
+            <el-input  v-model="channelDialogInstance.store_no" placeholder="请输入门店编码" ></el-input>
+          </el-form-item>
+        </el-form>
+        <div class="btn" @click="changeBackChannel">确定</div>
+      </div>
+
     </el-dialog>
 
   </div>
@@ -215,6 +244,57 @@
         isMove = false
 
 
+        stores = []
+
+        channelDialogInstance = {
+            apply:null,
+            store_no:null,
+            channel:null,
+            channels:[{id:1,name:'门店',val:'store'}, {id:2,name:'平台',val:'shop'}],
+            innerVisible:false,
+            store_sn:''
+        }
+
+
+        changeBackChannel(){
+
+            if(!this.channelDialogInstance.channel){
+                fun.error({msg:'渠道必选'});
+                return;
+            }
+            if(this.channelDialogInstance.channel==='store' && !this.channelDialogInstance.store_no){
+                fun.error({msg:'门店编码必填'});
+                return;
+            }
+
+            this.channelDialogCancel()
+
+            // this.subBackFn()
+
+            // let postData = {purchase_type:this.channelDialogInstance.channel,order_id:this.channelDialogInstance.apply.Order_ID}
+            //
+            // if(this.channelDialogInstance.channel==='store'){
+            //     this.channelDialogInstance.store_sn = this.channelDialogInstance.store_no
+            // }
+
+            // changeStoreApplyChannel(postData).then(res=>{
+            //     this.channelDialogCancel()
+            // })
+        }
+
+        channelDialogCancel(){
+            this.channelDialogInstance.innerVisible = false
+            // this.channelDialogInstance.store_no = null
+            // this.channelDialogInstance.channel = null
+
+        }
+
+        changeChannel(apply){
+
+            this.channelDialogInstance.innerVisible = true
+        }
+
+
         dialogInstance = {
             innerVisible:false,
             loading:false,
@@ -257,14 +337,34 @@
             }
             postData.prod_json = JSON.stringify(prod_attr)
 
-            postData.purchase_type = 'shop'
+            if(!this.channelDialogInstance.channel){
+                fun.error({msg:'退货渠道必填'})
+                return;
+            }
+
+
+            // && this.channelDialogInstance.store_no已经检查过了
+            if(this.channelDialogInstance.channel === 'store'){
+                if(!this.channelDialogInstance.store_no){
+                    fun.error({msg:'选择门店退货，门店编号必填'})
+                    return;
+                }
+                postData.purchase_type = 'store'
+                postData.purchase_store_sn = this.channelDialogInstance.store_no
+            }else{
+                postData.purchase_type = 'shop'
+            }
 
 
 
             console.log(postData)
             storeProductBack(postData,{text:'提交退货请求'}).then(res=>{
+
+                fun.success({msg:'发起退货成功'})
                 this.openBackFn()
+                this.cartDialogCancel()
                 this.getProduct()
+
             }).catch(e=>{
 
             })
@@ -313,7 +413,7 @@
             let count = 0;
 
             //没有这个属性，也就是还没有选中这一行
-            console.log(this.dialogInstance.product.skujosn_new[idx1].sku)
+            // console.log(this.dialogInstance.product.skujosn_new[idx1].sku)
             // if(!this.dialogInstance.skuval.hasOwnProperty(this.dialogInstance.product.skujosn_new[idx1].sku)){
             //
             //
@@ -322,7 +422,7 @@
             // }
 
             let spec_info = {[this.dialogInstance.product.skujosn_new[idx1].sku]:this.dialogInstance.product.skujosn_new[idx1].val[idx2]};
-            console.log(spec_info)
+            // console.log(spec_info)
 
             //模拟一下，如果现有的规格加上现在这个，还能有数量。那么就可以被选中
             //直接用自己的属性覆盖上去，如果有同样一行的，就覆盖掉
@@ -421,7 +521,7 @@
         addCart(goods,idx){
 
             if(this.isMove){
-                fun.info({msg:'操作太快'})
+                fun.error({msg:'操作太快'})
                 return;
             }
             //添加
@@ -626,7 +726,6 @@
 
         openBackFn(){
             this.cartsDialogInstance.footVisible = !this.cartsDialogInstance.footVisible
-
             this.cartsDialogInstance.backText = this.cartsDialogInstance.footVisible?'取消退货':'退货'
         }
 
@@ -867,6 +966,23 @@
     }
 </script>
 <style lang="stylus" scoped>
+  .channel-container-wrap
+    box-shadow 0 0 49px 14px rgba(0, 37, 157, 0.15)
+    .container-wrap
+      padding-bottom 20px
+    .form
+      margin 30px 245px 100px 147px
+    .btn
+      margin 0 auto
+      width 420px
+      height 50px
+      line-height 50px
+      background #F43131
+      border-radius 6px
+      color white
+      text-align center
+      font-size 18px
+      cursor pointer
   .spans
     color:#428CF7
     margin-right:4px
@@ -1295,6 +1411,20 @@
         line-height: 50px;
       }
 
+    }
+    .sub-channel{
+      position: absolute;
+      right: 150px;
+      bottom: 0;
+      color: white;
+      background: #909399;
+      line-height: 50px;
+      height: 50px;
+      width: 150px;
+      text-align: center;
+      border-radius: 0;
+      border: none;
+      padding: 0;
     }
     .sub-btn{
       position: absolute;
