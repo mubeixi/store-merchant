@@ -277,17 +277,38 @@
 
             if(JSON.stringify(this.dialogInstance.product) == '{}')return {};
 
+
+
             let disabled = true;
             let count = 0;
+
+            //没有这个属性，也就是还没有选中这一行
+            console.log(this.dialogInstance.product.skujosn_new[idx1].sku)
+            // if(!this.dialogInstance.skuval.hasOwnProperty(this.dialogInstance.product.skujosn_new[idx1].sku)){
+            //
+            //
+            // }else{
+            //     disabled = false;
+            // }
+
+            let spec_info = {[this.dialogInstance.product.skujosn_new[idx1].sku]:this.dialogInstance.product.skujosn_new[idx1].val[idx2]};
+            console.log(spec_info)
+
+            //模拟一下，如果现有的规格加上现在这个，还能有数量。那么就可以被选中
+            //直接用自己的属性覆盖上去，如果有同样一行的，就覆盖掉
+            let tempSkuVal = Object.assign({},this.dialogInstance.skuval,spec_info)
+
             for(var key in this.dialogInstance.product.skuvaljosn){
                 //看是不是已经选中的属性在数组二中存在,只要存在一个，就不会是禁用的
                 //而且要有库存
-                if(compare_obj(this.dialogInstance.skuval,this.dialogInstance.product.skuvaljosn[key].Attr_Value) && this.dialogInstance.product.skuvaljosn[key].Property_count>0){
+                if(compare_obj(tempSkuVal,this.dialogInstance.product.skuvaljosn[key].Attr_Value) && this.dialogInstance.product.skuvaljosn[key].Property_count>0){
                     disabled = false;
                     //累计可用库存
                     count += this.dialogInstance.product.skuvaljosn[key].Property_count
                 }
             }
+
+
 
             //是否选中
             let choose = false
@@ -298,6 +319,31 @@
             let use = !disabled
             return {choose,disabled,use}
         }
+        // getClassFn(idx1,idx2){
+        //
+        //     if(JSON.stringify(this.dialogInstance.product) == '{}')return {};
+        //
+        //     let disabled = true;
+        //     let count = 0;
+        //     for(var key in this.dialogInstance.product.skuvaljosn){
+        //         //看是不是已经选中的属性在数组二中存在,只要存在一个，就不会是禁用的
+        //         //而且要有库存
+        //         if(compare_obj(this.dialogInstance.skuval,this.dialogInstance.product.skuvaljosn[key].Attr_Value) && this.dialogInstance.product.skuvaljosn[key].Property_count>0){
+        //             disabled = false;
+        //             //累计可用库存
+        //             count += this.dialogInstance.product.skuvaljosn[key].Property_count
+        //         }
+        //     }
+        //
+        //     //是否选中
+        //     let choose = false
+        //     if(this.dialogInstance.skuval.hasOwnProperty(this.dialogInstance.product.skujosn_new[idx1].sku)){
+        //         if(this.dialogInstance.skuval[this.dialogInstance.product.skujosn_new[idx1].sku] === this.dialogInstance.product.skujosn_new[idx1].val[idx2])choose=true
+        //     }
+        //
+        //     let use = !disabled
+        //     return {choose,disabled,use}
+        // }
 
         cartDialogOpen(){
             // document.body.className += 'el-popup-parent--hidden'
@@ -819,7 +865,9 @@
         display: inline-block;
         margin: 0 10px 5px 0;
         height: 30px;
-        width: 50px;
+
+        min-width: 50px;
+        padding: 0 2px;
         line-height: 30px;
         text-align: center;
         border: 1px solid #e7e7e7;

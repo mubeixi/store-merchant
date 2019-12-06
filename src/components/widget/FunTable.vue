@@ -30,7 +30,7 @@
                 :width="column.width"
                 :align="column.align"
               >
-              <slot :name="getSlotNameFn(column)" :scope="scope" :row="scope.row" slot-scope="scope">
+              <slot :name="getSlotNameFn(column)" :scope="scope" :idx="scope.$index" :row="scope.row" slot-scope="scope">
                 <render-content :option="{render: column.render,scope: scope,column: column}"></render-content>
               </slot>
               </el-table-column>

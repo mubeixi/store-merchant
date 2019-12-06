@@ -8,7 +8,7 @@
         <el-tab-pane label="已下架" name="3"></el-tab-pane>
       </el-tabs>
       <div class="padding10">
-        <el-button  size="mini" class="" type="primary" @click="goProduct">退货</el-button>
+        <el-button  size="mini" class="" :type="cartsDialogInstance.backText=='退货'?'primary':'default'" @click="openBackFn">{{cartsDialogInstance.backText}}</el-button>
       </div>
       <fun-table
         :columns="dataTableOpt.columns"
@@ -27,7 +27,7 @@
       >
         <template slot="Products_Name-column" slot-scope="props" >
           <div style="display: flex;align-items: center;">
-            <img width="90px" height="100px" :src="props.row.img_url">
+            <img :class="'item'+props.idx" width="90px" height="100px" :src="props.row.img_url">
             <span style="margin-left: 10px">{{props.row.Products_Name}}</span>
           </div>
         </template>
@@ -43,11 +43,12 @@
           <span>{{props.row.Products_Sales}}/{{props.row.Products_Count}}</span>
         </template>
         <template slot="operate-column" slot-scope="props">
-          <span class="spans" @click="delProduct(props)">退货</span>
+          <span v-if="cartsDialogInstance.footVisible" class="spans" @click="openDialog(props.row,props.idx)">退货</span>
         </template>
       </fun-table>
     </div>
 
+    <div id="imgs"></div>
 
     <el-dialog title="商品佣金详情" :visible.sync="settingShow">
       <el-table :data="settingData" >
@@ -63,21 +64,18 @@
       </el-table>
     </el-dialog>
 
-<!--        <div class="foot">-->
-<!--          <div class="count" style="cursor: pointer">-->
-<!--            &lt;!&ndash;          /{{paginate.totalCount}}&ndash;&gt;-->
-<!--            <div class="text">-->
-<!--              <span @click="cartDialogOpen"  v-show="!cartsDialogInstance.innerVisible">已选取<span class="danger-color">{{count_num}}</span>个普通商品</span>-->
-<!--              <span @click="cartDialogCancel" v-show="cartsDialogInstance.innerVisible">已选取<span class="danger-color">{{count_num}}</span>个普通商品</span>-->
-<!--              <i @click="cartDialogOpen"  v-show="!cartsDialogInstance.innerVisible" class="el-icon-arrow-up"></i>-->
-<!--              <i @click="cartDialogCancel" v-show="cartsDialogInstance.innerVisible" class="el-icon-arrow-down"></i>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <el-button class="sub-btn" @click="subFn" v-loading="subLoading">提交进货单</el-button>-->
-<!--        </div>-->
-<!--        <div id="imgs"></div>-->
-
-
+    <div class="foot" v-show="cartsDialogInstance.footVisible">
+      <div class="count" style="cursor: pointer">
+        <!--          /{{paginate.totalCount}}-->
+        <div class="text">
+          <span @click="cartDialogOpen"  v-show="!cartsDialogInstance.innerVisible">已选取<span class="danger-color">{{count_num}}</span>个商品</span>
+          <span @click="cartDialogCancel" v-show="cartsDialogInstance.innerVisible">已选取<span class="danger-color">{{count_num}}</span>个商品</span>
+          <i @click="cartDialogOpen"  v-show="!cartsDialogInstance.innerVisible" class="el-icon-arrow-up"></i>
+          <i @click="cartDialogCancel" v-show="cartsDialogInstance.innerVisible" class="el-icon-arrow-down"></i>
+        </div>
+      </div>
+      <el-button class="sub-btn" @click="subBackFn" v-loading="subLoading">确认退货</el-button>
+    </div>
     <div @click="cartDialogCancel" class="cartsDialogMask"  @mousewheel.prevent  v-show="cartsDialogInstance.innerVisible"></div>
     <div class="cartsDialog" v-show="cartsDialogInstance.innerVisible"  v-loading="cartsDialogInstance.loading">
       <div class="carts-dialog-container" v-if="carts.lists.length>0" >
@@ -99,10 +97,43 @@
       </div>
       <div class="carts-dialog-container" v-else style="padding-top: 50px;display: block">
         <div class="text-center"><i style="font-size: 100px;color: #999" class="el-icon-shopping-cart-2"></i></div>
-        <div class="padding10-r graytext text-center">购物车空空如也</div>
+        <div class="padding10-r graytext text-center">空空如也</div>
       </div>
       <span slot="footer" class="dialog-footer"></span>
     </div>
+
+    <el-dialog
+      :visible.sync="dialogInstance.innerVisible"
+      title="选择商品属性"
+      width="500px"
+      center
+      @close="dialogCancel"
+      class="innerDislog"
+    >
+      <div class="dialog-container"  >
+        <div class="row" v-for="(item,idx1) of dialogInstance.product.skujosn_new" :key="idx1" >
+          <span class="label">{{item.sku}}:</span>
+          <div class="specs">
+            <div class="spec-item" :class="getClassFn(idx1,idx2)"  @click="selectAttr(item.sku,spec,idx1,idx2)"  v-for="(spec,idx2) of item.val" :key="idx2">
+              {{spec}}
+              <i class="el-icon-check"></i>
+              <div class="fill"></div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <span class="label">数量:</span>
+          <div class="specs">
+            <el-input-number controls-position="right" :min="1" :max="dialogInstance.stock" size="small" v-model="dialogInstance.num" :step="1"></el-input-number>
+            <span class="font12 graytext2 padding10-c">最多可以选择{{dialogInstance.stock}}件</span>
+          </div>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogCancel">取 消</el-button>
+                <el-button @click="dialogSub" style="background: #F43131;color:white" >确 定</el-button>
+            </span>
+    </el-dialog>
 
   </div>
 </template>
@@ -116,8 +147,8 @@
         State
     } from 'vuex-class'
 
-    import {getProducts,batchSetting,getProductCategory,delProduct} from '@/common/fetch';
-    import {findArrayIdx, plainArray, createTmplArray, objTranslate} from '@/common/utils';
+    import {getProducts,batchSetting,getProductCategory,delProduct,storeProductBack} from '@/common/fetch';
+    import {findArrayIdx, plainArray, createTmplArray, objTranslate,compare_obj} from '@/common/utils';
     import _ from 'underscore'
     import {float} from "html2canvas/dist/types/css/property-descriptors/float";
     const getParentsCount = (arr,key,pkey,val,tempArr)=>{
@@ -153,6 +184,12 @@
 
     import {Cart} from '../common/cart';
     import {fun} from '../common';
+    import {Fly} from '../common/UnitBezier';
+
+    import Cookies from 'js-cookie';
+    const Stores_ID = Cookies.get('Stores_ID')
+    const User_ID = Cookies.get('Stores_Bind_User_ID')
+
 
     const cartInstance = new Cart()
 
@@ -170,11 +207,427 @@
 
     export default class StoreProductList extends Vue {
 
+        fly_img_url = ''
+        curPosX = 0
+        curPosY = 0
+        lastPosX = 0
+        lastPosY = 0
+        isMove = false
+
+
+        dialogInstance = {
+            innerVisible:false,
+            loading:false,
+            num:0,
+            check_attr:[],
+            skuval:{},
+            product:{},
+            item:null,
+            stock:0,
+            idx:0,
+            addCartReq:false,
+            prd_attr_id:null//记录最终选出的attrid
+        }
+
+        subBackFn(){
+
+            let postData = {}
+            let prod_attr = {}
+            for(var goods of this.carts.lists){
+                if(goods.num<1){
+                    fun.error({msg:'产品至少选择1个'})
+                    return;
+                }
+                console.log(goods,prod_attr.hasOwnProperty(goods.Products_ID))
+                if(!prod_attr.hasOwnProperty(goods.Products_ID) || typeof prod_attr[goods.Products_ID]!='object'){
+                    prod_attr[goods.Products_ID] = {num:goods.num}
+                }else{
+                    prod_attr[goods.Products_ID].num+= goods.num //总量
+                }
+
+                console.log(prod_attr[goods.Products_ID])
+                if(goods.prd_attr_id){
+                    if(!prod_attr[goods.Products_ID].hasOwnProperty('attr') || typeof prod_attr[goods.Products_ID].attr!='object'){
+                        prod_attr[goods.Products_ID].attr = {}
+                    }
+                    prod_attr[goods.Products_ID].attr[goods.prd_attr_id] = goods.num
+                }else{
+                    //prod_attr[goods.Products_ID] = []
+                }
+            }
+            postData.prod_json = JSON.stringify(prod_attr)
+
+            postData.purchase_type = 'shop'
+
+
+
+            console.log(postData)
+            storeProductBack(postData,{text:'提交退货请求'}).then(res=>{
+                this.openBackFn()
+                this.getProduct()
+            }).catch(e=>{
+
+            })
+        }
+        //直接赋值了
+        selectAttr(val1,val2,idx1,idx2){
+
+            //是否禁用
+            let classObj = this.getClassFn(idx1,idx2)
+            if(classObj.disabled)return;
+
+
+            this.$set(this.dialogInstance.skuval,val1,val2)
+
+            let count = 0;
+            for(var key in this.dialogInstance.product.skuvaljosn){
+                //看是不是已经选中的属性在数组二中存在,只要存在一个，就不会是禁用的
+                //而且要有库存
+                if(compare_obj(this.dialogInstance.skuval,this.dialogInstance.product.skuvaljosn[key].Attr_Value) && this.dialogInstance.product.skuvaljosn[key].Property_count>0){
+
+                    //正反来一下，就行了
+                    if(compare_obj(this.dialogInstance.product.skuvaljosn[key].Attr_Value,this.dialogInstance.skuval)){
+                        this.dialogInstance.prd_attr_id = this.dialogInstance.product.skuvaljosn[key].Product_Attr_ID
+                    }
+                    //累计可用库存
+                    count += this.dialogInstance.product.skuvaljosn[key].Property_count
+                }
+            }
+
+            this.dialogInstance.stock = count
+
+            //数量太大就重置为1
+            if(this.dialogInstance.num>count){
+                this.dialogInstance.num = 1
+            }
+
+        }
+
+        getClassFn(idx1,idx2){
+
+            if(JSON.stringify(this.dialogInstance.product) == '{}')return {};
+
+
+
+            let disabled = true;
+            let count = 0;
+
+            //没有这个属性，也就是还没有选中这一行
+            console.log(this.dialogInstance.product.skujosn_new[idx1].sku)
+            // if(!this.dialogInstance.skuval.hasOwnProperty(this.dialogInstance.product.skujosn_new[idx1].sku)){
+            //
+            //
+            // }else{
+            //     disabled = false;
+            // }
+
+            let spec_info = {[this.dialogInstance.product.skujosn_new[idx1].sku]:this.dialogInstance.product.skujosn_new[idx1].val[idx2]};
+            console.log(spec_info)
+
+            //模拟一下，如果现有的规格加上现在这个，还能有数量。那么就可以被选中
+            //直接用自己的属性覆盖上去，如果有同样一行的，就覆盖掉
+            let tempSkuVal = Object.assign({},this.dialogInstance.skuval,spec_info)
+
+            for(var key in this.dialogInstance.product.skuvaljosn){
+                //看是不是已经选中的属性在数组二中存在,只要存在一个，就不会是禁用的
+                //而且要有库存
+                if(compare_obj(tempSkuVal,this.dialogInstance.product.skuvaljosn[key].Attr_Value) && this.dialogInstance.product.skuvaljosn[key].Property_count>0){
+                    disabled = false;
+                    //累计可用库存
+                    count += this.dialogInstance.product.skuvaljosn[key].Property_count
+                }
+            }
+
+
+
+            //是否选中
+            let choose = false
+            if(this.dialogInstance.skuval.hasOwnProperty(this.dialogInstance.product.skujosn_new[idx1].sku)){
+                if(this.dialogInstance.skuval[this.dialogInstance.product.skujosn_new[idx1].sku] === this.dialogInstance.product.skujosn_new[idx1].val[idx2])choose=true
+            }
+
+            let use = !disabled
+            return {choose,disabled,use}
+        }
+
+
+        async dialogSub(){
+
+            if(this.dialogInstance.product.skujosn_new.length>0 && Object.keys(this.dialogInstance.skuval).length != Object.keys(this.dialogInstance.product.skujosn).length){
+                fun.error({msg:'请选择所有规格'})
+                return;
+            }
+
+            if(this.dialogInstance.product.skujosn_new.length>0 && !this.dialogInstance.prd_attr_id){
+                fun.error({msg:'商品规格数据错误'})
+                return;
+            }
+
+            //也要把prd_attr_id写进去
+            let target = Object.assign({},this.dialogInstance.item,this.dialogInstance.product,{prd_attr_id:this.dialogInstance.prd_attr_id,num:this.dialogInstance.num})
+            // console.log('targettargettargettargettargettarget',target)
+            target.skuval = this.dialogInstance.skuval
+            target.speck_key = this.dialogInstance.skuval
+
+
+            // let select_store_id = 0
+
+            //如果有门店，需要换成从门店进货
+            // if(this.$route.query.store_no && this.products.length>0){
+            //     select_store_id = this.products[0].Stores_ID
+            // }
+
+            // let postData = {
+            //     cart_key:'CartList',
+            //     active:'store_pifa',
+            //     prod_id:this.dialogInstance.product.Products_ID,
+            //     qty:this.dialogInstance.num,
+            //     active_id: `${Stores_ID}_${select_store_id}`
+            // }
+            //
+            if(this.dialogInstance.product.skujosn_new.length>0 && this.dialogInstance.prd_attr_id){
+                //postData.attr_id = this.dialogInstance.prd_attr_id
+
+                let tempStr = ''
+                for(var key in this.dialogInstance.skuval){
+                    if(tempStr!==''){
+                        tempStr += ','
+                    }
+                    tempStr += key
+                    tempStr += ';'
+                    tempStr += this.dialogInstance.skuval[key]
+                }
+                target.Productsattrstrval = tempStr
+            }
+            // let add_card_rt = false
+            //
+            // this.dialogInstance.addCartReq = true
+            // await updateCart(postData).then(res=>{
+            //     add_card_rt = true
+            //     this.dialogInstance.addCartReq = false
+            // },err=>{
+            //     this.dialogInstance.addCartReq = false
+            // })
+            //
+            // if(!add_card_rt)return;
+
+            this.dialogInstance.loading = false
+            this.dialogInstance.innerVisible = false
+
+            this.addCart(target,this.dialogInstance.idx)
+
+        }
+
+        addCart(goods,idx){
+
+            if(this.isMove){
+                fun.info({msg:'操作太快'})
+                return;
+            }
+            //添加
+            if(!cartInstance.add(goods))return;
+
+            this.fly_img_url = goods.ImgPath
+            this.isMove = true
+            let _self = this
+
+            let randId = Date.now()+goods.Products_ID
+            let eleStr = `<img src="${goods.ImgPath}" class="fly-pic" id="${randId}" style="{left:${this.curPosX}px,top:${this.curPosY}px}" />`
+
+            let imgs = document.getElementById('imgs')
+            imgs.innerHTML += eleStr;
+
+            let itemDom = document.querySelector('.item'+idx)
+            var rect = itemDom.getBoundingClientRect()
+            console.log(rect)
+
+            //document.body.className += 'el-popup-parent--hidden'
+
+            let handle = document.querySelector('.foot')
+            let preBoundingClientRect = handle.getBoundingClientRect()
+            console.log(preBoundingClientRect)
+            this.lastPosY = preBoundingClientRect.top
+            this.lastPosX = document.body.offsetWidth/2
+
+
+            let opt = {
+                start:{left:rect.left,top:rect.top,height:100,width:100},
+                end:{left:this.lastPosX,top:this.lastPosY,height:10,width:10},
+                onEnd:function(){
+                    console.log('endend')
+                    //删掉
+                    imgs.removeChild(document.getElementById(randId))
+                    _self.isMove = false
+                }
+            }
+            let fly = new Fly(randId,opt)
+            //this.flys.push(fly)
+        }
+
+        cartCurrentItem = null
+
+        cartPlusFn(goods,num){
+
+            this.setCartCurrentItem(goods)
+            this.cartNumChange(num+1,num)
+        }
+
+        cartMinusFn(goods,num){
+            if(num<2){
+                fun.error({msg:'最少选择1个'})
+                return
+            }
+            this.setCartCurrentItem(goods)
+            this.cartNumChange(num-1,num)
+        }
+        setCartCurrentItem(goods){
+            console.log(goods)
+            this.cartCurrentItem = goods
+        }
+        async cartNumChange(nVal,oVal){
+
+            let select_store_id = 0
+
+            //如果有门店，需要换成从门店进货
+            if(this.$route.query.store_no && this.products.length>0){
+                select_store_id = this.products[0].Stores_ID
+            }
+
+            let postData = {
+                cart_key:'CartList',
+                active:'store_pifa',
+                prod_id:this.cartCurrentItem.Products_ID,
+                qty:(nVal-oVal),
+                active_id: `${Stores_ID}_${select_store_id}`
+            }
+
+            if(this.cartCurrentItem.Productsattrstrval){
+                if(!this.cartCurrentItem.prd_attr_id){
+                    fun.error({msg:'prd_attr_id缺失'});
+                    return;
+                }
+                postData.attr_id = this.cartCurrentItem.prd_attr_id
+            }
+
+            let add_card_rt = false
+
+
+            this.cartsDialogInstance.loading = true
+            await updateCart(postData).then(res=>{
+                add_card_rt = true
+                this.cartsDialogInstance.loading = false
+                this.cartCurrentItem.num = nVal
+            },err=>{
+                this.cartsDialogInstance.loading = false
+            })
+
+            if(!add_card_rt)return;
+
+            this.cartCurrentItem.num = nVal
+
+        }
+
+        async cartRemoveFn(goods){
+            // let postData = {cart_key:'CartList'}
+
+            // let prod_attr = {}
+            // if(goods.prd_attr_id){
+            //
+            //     prod_attr[goods.Products_ID] = [goods.prd_attr_id]
+            //
+            // }else{
+            //     prod_attr[goods.Products_ID] = []
+            //
+            // }
+            // postData.prod_attr = JSON.stringify(prod_attr)
+            // console.log(goods,postData)
+            // let del_rt =false
+            // this.cartsDialogInstance.loading = true
+            // await delCart(postData).then(res=>{
+            //     del_rt = true
+            //     this.cartsDialogInstance.loading = false
+            // },err=>{
+            //     this.cartsDialogInstance.loading = false
+            // })
+            // if(!del_rt)return;
+            let {Productsattrstrval,Products_ID} = goods
+            // console.log({Productsattrstrval,Products_ID})
+            console.log(goods)
+            cartInstance.remove(goods)
+        }
+
+        // delProductFn(){
+        //     this.openDialog(goods,idx)
+        // }
+
+
+        async openDialog(goods,idx){
+
+            this.dialogInstance.innerVisible = true
+            this.dialogInstance.item = goods
+            this.dialogInstance.idx = idx
+
+            let product = {}
+            this.dialogInstance.loading = true
+
+            product = goods;
+            if(goods.skujosn) {
+                let skujosn = goods.skujosn;
+                let skujosn_new = [];
+                for (let i in goods.skujosn) {
+                    skujosn_new.push({
+                        sku: i,
+                        val: skujosn[i]
+                    });
+                }
+
+                product.skujosn_new = skujosn_new;
+                product.skuvaljosn = goods.skuvaljosn;
+            }else{
+                product.skujosn_new = []
+                product.skuvaljosn = ''
+            }
+
+            //库存
+            this.dialogInstance.stock = product.Products_Count
+            this.dialogInstance.product = product
+            this.dialogInstance.innerVisible = true
+
+            this.dialogInstance.loading = false
+
+        }
+
+        dialogCancel(){
+            this.dialogInstance.loading = false
+            this.dialogInstance.innerVisible = false
+            this.dialogInstance = objTranslate({
+                innerVisible:false,
+                loading:false,
+                num:0,
+                check_attr:[],
+                skuval:{},
+                product:{},
+                item:null,
+                stock:0,
+                idx:0
+            })
+        }
+
+
         carts = cartInstance
 
         cartsDialogInstance = {
             innerVisible:false,
+            footVisible:false,
+            backText:'退货',
             loading:false
+        }
+
+
+        openBackFn(){
+            this.cartsDialogInstance.footVisible = !this.cartsDialogInstance.footVisible
+
+            this.cartsDialogInstance.backText = this.cartsDialogInstance.footVisible?'取消退货':'退货'
         }
 
         cartDialogOpen(){
@@ -341,9 +794,7 @@
         submit(){
             this.getProduct()
         }
-        goProduct(){
 
-        }
         selectValue=[]
         //获取选中数据
         selectVal(val){
@@ -404,6 +855,13 @@
                         return {label:item.new_name,value:item.Category_ID}
                     })
                 }
+            })
+        }
+
+        mounted(){
+            this.$nextTick().then(()=>{
+
+
             })
         }
     }
@@ -583,7 +1041,8 @@
           display: inline-block;
           margin: 0 10px 5px 0;
           height: 30px;
-          width: 50px;
+          min-width: 50px;
+          padding: 0 2px;
           line-height: 30px;
           text-align: center;
           border: 1px solid #e7e7e7;
@@ -599,6 +1058,7 @@
           &.disabled{
             background: #f8f8f8 !important;
             cursor: not-allowed !important;
+            color: #ccc;
           }
           &.choose{
             .fill{
