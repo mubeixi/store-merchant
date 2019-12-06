@@ -22,6 +22,7 @@
         :pageSize="dataTableOpt.pageSize"
         :is_paginate="dataTableOpt.is_paginate"
         :formSize="'small'"
+        :isRow="true"
         @handleSizeChange="handleSizeChange"
         @currentChange="currentChange"
         @selectVal="selectVal"
@@ -154,7 +155,7 @@
                     prop: "Products_Name",
                     label: "商品名称",
                     value:'',
-                    width:300,
+                    width:500,
                     align:'center',
                     field: "Products_Name",
                     // align: "center",
@@ -376,9 +377,13 @@
         }
     }
 </script>
-<style lang="stylus" scoped>
-  .spans
-    color:#428CF7
-    margin-right:4px
-    cursor:pointer
+<style lang="less" scoped>
+  .spans{
+    color:#428CF7;
+    margin-right:4px;
+    cursor:pointer;
+  }
+
+
+
 </style>
