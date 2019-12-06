@@ -155,7 +155,6 @@
                     prop: "Products_Name",
                     label: "商品名称",
                     value:'',
-                    width:500,
                     align:'center',
                     field: "Products_Name",
                     // align: "center",
