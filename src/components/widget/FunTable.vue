@@ -9,6 +9,7 @@
     </div>
     <div class="section table">
       <el-table
+        class="wzw-tableS"
         :height="height"
         :data="lists"
         border
@@ -170,6 +171,12 @@
             default:false
         })
         is_paginate //是否分页
+
+        @Prop({
+            type:Boolean,
+            default:false
+        })
+        isRow //是否点击某行某行选中
         @Prop({
             type:Object,
             default:() => {
@@ -249,8 +256,8 @@
         }
         //单击某一行
         handleRowChange(row, column, event) {
-
-            //this.$refs.funTable.toggleRowSelection(row);
+            if(this.isRow) return
+            this.$refs.funTable.toggleRowSelection(row);
         }
 
         /**
@@ -311,5 +318,10 @@
 .paginate-box{
   margin-top: 20px;
   margin-bottom: 10px;
+}
+
+.wzw-tableS /deep/ th {
+  color: #333 !important;
+  background-color: #f8f8f8 !important;
 }
 </style>
