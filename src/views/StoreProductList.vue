@@ -64,46 +64,46 @@
     </el-dialog>
 
 
-        <div class="foot">
-          <div class="count" style="cursor: pointer">
-            <!--          /{{paginate.totalCount}}-->
-            <div class="text">
-              <span @click="cartDialogOpen"  v-show="!cartsDialogInstance.innerVisible">已选取<span class="danger-color">{{count_num}}</span>个普通商品</span>
-              <span @click="cartDialogCancel" v-show="cartsDialogInstance.innerVisible">已选取<span class="danger-color">{{count_num}}</span>个普通商品</span>
-              <i @click="cartDialogOpen"  v-show="!cartsDialogInstance.innerVisible" class="el-icon-arrow-up"></i>
-              <i @click="cartDialogCancel" v-show="cartsDialogInstance.innerVisible" class="el-icon-arrow-down"></i>
-            </div>
-          </div>
-          <el-button class="sub-btn" @click="subFn" v-loading="subLoading">提交进货单</el-button>
-        </div>
-        <div id="imgs"></div>
+<!--        <div class="foot">-->
+<!--          <div class="count" style="cursor: pointer">-->
+<!--            &lt;!&ndash;          /{{paginate.totalCount}}&ndash;&gt;-->
+<!--            <div class="text">-->
+<!--              <span @click="cartDialogOpen"  v-show="!cartsDialogInstance.innerVisible">已选取<span class="danger-color">{{count_num}}</span>个普通商品</span>-->
+<!--              <span @click="cartDialogCancel" v-show="cartsDialogInstance.innerVisible">已选取<span class="danger-color">{{count_num}}</span>个普通商品</span>-->
+<!--              <i @click="cartDialogOpen"  v-show="!cartsDialogInstance.innerVisible" class="el-icon-arrow-up"></i>-->
+<!--              <i @click="cartDialogCancel" v-show="cartsDialogInstance.innerVisible" class="el-icon-arrow-down"></i>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <el-button class="sub-btn" @click="subFn" v-loading="subLoading">提交进货单</el-button>-->
+<!--        </div>-->
+<!--        <div id="imgs"></div>-->
 
 
-    <div @click="cartDialogCancel" class="cartsDialogMask"  @mousewheel.prevent  v-show="cartsDialogInstance.innerVisible"></div>
-    <div class="cartsDialog" v-show="cartsDialogInstance.innerVisible"  v-loading="cartsDialogInstance.loading">
-      <div class="carts-dialog-container" v-if="carts.lists.length>0" >
-        <div class="goods-item" v-for="(goods,idx) of carts.lists" :key="idx"  >
-          <div class="cover" :style="{backgroundImage: 'url('+goods.ImgPath+')'}"><i @click="cartRemoveFn(goods)" class="el-icon-error"></i></div>
-          <div class="title">{{goods.Products_Name}}</div>
-          <!--{{formatSpec(goods.spec_key,',')}}-->
-          <div class="attr">{{goods.Productsattrstrval||'无规格'}}</div>
-          <div class="numbox" >
-            <span class="label">数量: </span>
-            <input class="input" v-model="goods.num" readonly />
-            <div class="num-btns">
-              <span @click="cartPlusFn(goods,goods.num)" class="num-btn plus-btn"><i class="el-icon-arrow-up"></i></span>
-              <span @click="cartMinusFn(goods,goods.num)" class="num-btn minus-btn"><i class="el-icon-arrow-down"></i></span>
-            </div>
-            <!--            <el-input-number @change="cartNumChange" controls-position="right" :min="1" :max="goods.Products_Count" size="mini" v-model="goods.num" :step="1"></el-input-number>-->
-          </div>
-        </div>
-      </div>
-      <div class="carts-dialog-container" v-else style="padding-top: 50px;display: block">
-        <div class="text-center"><i style="font-size: 100px;color: #999" class="el-icon-shopping-cart-2"></i></div>
-        <div class="padding10-r graytext text-center">购物车空空如也</div>
-      </div>
-      <span slot="footer" class="dialog-footer"></span>
-    </div>
+<!--    <div @click="cartDialogCancel" class="cartsDialogMask"  @mousewheel.prevent  v-show="cartsDialogInstance.innerVisible"></div>-->
+<!--    <div class="cartsDialog" v-show="cartsDialogInstance.innerVisible"  v-loading="cartsDialogInstance.loading">-->
+<!--      <div class="carts-dialog-container" v-if="carts.lists.length>0" >-->
+<!--        <div class="goods-item" v-for="(goods,idx) of carts.lists" :key="idx"  >-->
+<!--          <div class="cover" :style="{backgroundImage: 'url('+goods.ImgPath+')'}"><i @click="cartRemoveFn(goods)" class="el-icon-error"></i></div>-->
+<!--          <div class="title">{{goods.Products_Name}}</div>-->
+<!--          &lt;!&ndash;{{formatSpec(goods.spec_key,',')}}&ndash;&gt;-->
+<!--          <div class="attr">{{goods.Productsattrstrval||'无规格'}}</div>-->
+<!--          <div class="numbox" >-->
+<!--            <span class="label">数量: </span>-->
+<!--            <input class="input" v-model="goods.num" readonly />-->
+<!--            <div class="num-btns">-->
+<!--              <span @click="cartPlusFn(goods,goods.num)" class="num-btn plus-btn"><i class="el-icon-arrow-up"></i></span>-->
+<!--              <span @click="cartMinusFn(goods,goods.num)" class="num-btn minus-btn"><i class="el-icon-arrow-down"></i></span>-->
+<!--            </div>-->
+<!--            &lt;!&ndash;            <el-input-number @change="cartNumChange" controls-position="right" :min="1" :max="goods.Products_Count" size="mini" v-model="goods.num" :step="1"></el-input-number>&ndash;&gt;-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="carts-dialog-container" v-else style="padding-top: 50px;display: block">-->
+<!--        <div class="text-center"><i style="font-size: 100px;color: #999" class="el-icon-shopping-cart-2"></i></div>-->
+<!--        <div class="padding10-r graytext text-center">购物车空空如也</div>-->
+<!--      </div>-->
+<!--      <span slot="footer" class="dialog-footer"></span>-->
+<!--    </div>-->
 
   </div>
 </template>
