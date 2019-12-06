@@ -97,7 +97,10 @@
               immediate:true,
               deep:true,
               handler(val){
+
+                  if(_.isArray(val)){
                       this.lists = [...val]
+                  }
               }
           },
           lists:{
