@@ -247,6 +247,20 @@ export const tagCrowd = (data:object={},options:any=false) => fetch('tag_crowd',
 //门店产品发起退货
 export const storeProductBack = (data:object={},options:any=false) => fetch('store_prod_back_submit', data, options);
 
+export const storeProductBackOrderList = (data:object={},options:any=false) => fetch('get_store_prod_back_order', data, options);
+
+export const store_prod_back_order_cancel = (data:object={},options:any=false) => fetch('store_prod_back_order_cancel', data, options);
+
+export const get_store_prod_back_order_detail = (data:object={},options:any=false) => fetch('get_store_prod_back_order_detail', data, options);
+
+export const store_prod_back_order_send = (data:object={},options:any=false) => fetch('store_prod_back_order_send', data, options);
+
+
+
+//获取物流公司列表
+export const getShippingList = (data:object={},options:any=false) => fetch('get_shipping', data, options);
+
+
 //获取门店商品列表
 export const getProducts = (data:object={},options:any=false) => fetch('get_products', data, options);
 

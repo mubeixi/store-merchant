@@ -18,6 +18,7 @@ import StoreChannel from '@/views/StoreChannel.vue';
 import StorePurchase from '@/views/StorePurchase.vue';
 import SystemNotice from '@/views/SystemNotice.vue';
 import StorePurchaseApply from './views/StorePurchaseApply.vue';
+import StorePurchaseBack from './views/StorePurchaseBack.vue';
 
 import MessageSend from '@/views/MessageSend.vue';
 import MessageStationSend from '@/views/MessageStationSend.vue';
@@ -40,6 +41,14 @@ const routerInstance = new Router({
       component: StorePurchaseApply,
       meta:{
         title:'进货记录'
+      }
+    },
+    {
+      path:'/StorePurchaseBack',
+      name:'StorePurchaseBack',
+      component: StorePurchaseBack,
+      meta:{
+        title:'退货记录'
       }
     },
     {
