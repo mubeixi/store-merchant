@@ -242,7 +242,7 @@
                     prop: "Products_ID",
                     label: "产品ID",
                     align:'center',
-                    width:138,
+                    width:70,
                     // sortable: true,
                     //后面这些是filter使用的
                     search: false //不需要搜索ID,所以都不需要了
@@ -251,7 +251,7 @@
                     prop: "Products_Name",
                     label: "商品名称",
                     value:'',
-                    width:600,
+                    width:400,
                     align:'center',
                     field: "Products_Name",
                     // align: "center",
@@ -266,7 +266,6 @@
                 {
                     prop: "Products_PriceX",
                     label: "商品价格",
-                    width:120,
                     align:'center',
                     search: false
                 },
@@ -274,7 +273,7 @@
                     prop: "Products_Qrcode",
                     label: "二维码",
                     align:'center',
-                    width:150,
+                    width:100,
                     // showIf:(row)=>false,
                     search: false
                 },
@@ -294,7 +293,6 @@
                     prop: "attr",
                     label: "特殊属性",
                     align:'center',
-                    width:150,
                     value:'',
                     search: {
                         option:'',
@@ -306,21 +304,19 @@
                     prop: "Products_CreateTime",
                     label: "发布时间",
                     align:'center',
-                    width:150,
+
                     search: false
                 },
                 {
                     prop: "Products_Sales",
                     label: "销量/库存",
                     align:'center',
-                    width:150,
                     search: false
                 },
                 {
                     prop: "operate",
                     label: "操作",
                     align:'center',
-                    width:150,
                     search: false
                 }
             ]
