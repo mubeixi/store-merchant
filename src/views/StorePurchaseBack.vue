@@ -1,24 +1,33 @@
 <template>
   <div class="home-wrap">
-    <div class="container">
 
+    <div class="container">
+      <div class="tabs">
+        <el-tabs v-model="status" @tab-click="handleClick">
+          <el-tab-pane :label="tab.label" :name="tab.val" v-for="(tab,idx) in tabConf"></el-tab-pane>
+<!--          <el-tab-pane label="已售完" name="2"></el-tab-pane>-->
+<!--          <el-tab-pane label="已下架" name="3"></el-tab-pane>-->
+        </el-tabs>
+      </div>
       <div class="lists" v-infinite-scroll="loadInfo" infinite-scroll-immediate="true" style="overflow:auto">
         <div class="item" v-for="(apply,idx1) in applys" :key="idx1" >
           <div class="head flex">
             <div class="info flex flex1">
-              <div class="store-pic" :style="{backgroundImage:'url('+apply.supplier_img+')'}"></div>
-              <div class="store-title">{{apply.supplier_name}}</div>
-              <div class="action" >(<span @click="showStore(apply.store)" class="action-item">查看信息</span>
-                <template v-if="inArray(apply.Order_Status,[20,22,25])">
+              <div class="store-pic" :style="{backgroundImage:'url('+apply.receive_img+')'}"></div>
+              <div class="store-title">{{apply.receive_name}}</div>
+              <div class="action" >(
+                <span @click="showStore(receive_id)" class="action-item">查看信息</span>
+
+                <template v-if="inArray(apply.status,[20,22,25])">
                   <span  class="padding4-c">/</span><span class="action-item" @click="changeChannel(apply)" >修改渠道</span>
                 </template>
 
                 )
               </div>
-              <div class="order_no">进货单号: {{apply.Order_ID}}</div>
+              <div class="order_no">单号: {{apply.id}}</div>
             </div>
             <div class="status">
-              <span class="status-text danger-color padding10-c font14">{{apply.Order_Status_desc}}</span>
+              <span class="status-text danger-color padding10-c font14">{{apply.status_desc}}</span>
               <el-tooltip v-if="apply.reason" class="" effect="dark" :content="apply.reason" placement="top">
                 <i class="el-icon-warning-outline danger-color padding10-c"></i>
               </el-tooltip>
@@ -36,28 +45,19 @@
                   <div class="title line10">{{item.prod_name}}</div>
                   <div class="spec-key graytext font14">{{item.attr_info.attr_name}}</div>
                   <div  class="numbox graytext">
-                    <span class="handle" v-if="inArray(apply.Order_Status,[20,22,25])">
-                      <span class="minus" @click="minusFn(apply,item,idx1)">
-                        <i class="el-icon-minus icon"></i>
-                      </span>
-                      <input class="input" :value="item.prod_count" @blur="setValFn($event,apply,item,idx1)" />
-                      <span class="plus" @click="plusFn(apply,item,idx1)">
-                        <i class="el-icon-plus icon"></i>
-                      </span>
-                    </span>
-                    <span v-else>数量：{{item.prod_count}}</span>
-                    <el-tooltip v-if="item.prod_count_change_desc" class="" effect="dark" :content="item.prod_count_change_desc" placement="top">
-                      <i class="el-icon-warning-outline danger-color padding10-c font18"></i>
-                    </el-tooltip>
 
+                    <span>数量：{{item.prod_count}}</span>
+<!--                    <el-tooltip v-if="item.prod_count_change_desc" class="" effect="dark" :content="item.prod_count_change_desc" placement="top">-->
+<!--                      <i class="el-icon-warning-outline danger-color padding10-c font18"></i>-->
+<!--                    </el-tooltip>-->
                   </div>
                 </div>
-                <div class="r font14">单价:<span class="danger-color">￥<span class="price-num font16">{{item.prod_price}}</span></span></div>
+                <div class="r font14"><span class="danger-color">￥<span class="price-num font18">{{item.prod_price}}</span></span></div>
               </td>
               <td class="price-box" v-if="idx2===0" :rowspan="apply.prod_list.length">
                 <div class="text-center">
-                  <div class="total line6">总计:<span class="danger-color">￥<span class="total_num font18">{{apply.Order_TotalPrice}}</span></span></div>
-                  <div class="postage font14 graytext">(含运费￥{{apply.Order_Shipping.Price}})</div>
+                  <div class="total line6">总计:<span class="danger-color">￥<span class="total_num font18">{{apply.price}}</span></span></div>
+<!--                  <div class="postage font14 graytext">(含运费￥{{apply.Order_Shipping.Price}})</div>-->
                 </div>
               </td>
               <td class="actions text-center" v-if="idx2===0" :rowspan="apply.prod_list.length">
@@ -65,30 +65,34 @@
 <!--                <div class="line10" v-if="apply.is_change_stock && inArray(apply.Order_Status,[20,22,25])">-->
 <!--                  <el-button size="small" @click="showPayDialog(apply,idx1)" class="acion-btn" type="primary">保存库存变动</el-button>-->
 <!--                </div>-->
-                <div class="line10" v-if="inArray(apply.Order_Status,[20])">
-                  <el-button size="small" @click="payApply(apply,idx1)" class="acion-btn" type="success">支付</el-button>
+                <div class="line10" v-if="1 || inArray(apply.status,[35])">
+                  <el-button size="small" @click="payApply(apply,idx1)" class="acion-btn" type="success">确认收款</el-button>
                 </div>
-                <div class="line10" v-if="inArray(apply.Order_Status,[21])">
-                  <el-button size="small" @click="recallApply(apply,idx1)" class="acion-btn" type="warning">撤回</el-button>
-                </div>
-                <div class="line10" v-if="inArray(apply.Order_Status,[23])">
-                  <el-button @click="completed(apply,idx1)" size="small" class="acion-btn line8" type="primary">确认收货</el-button>
-                  <div @click="showLogistics(apply)" class="font12 graytext2 logistics" >查看物流</div>
-                </div>
+<!--                <div class="line10" v-if="inArray(apply.status,[21])">-->
+<!--                  <el-button size="small" @click="recallApply(apply,idx1)" class="acion-btn" type="warning">撤回</el-button>-->
+<!--                </div>-->
+
                 <!--如果在修改库存，则隐藏重新提交按钮。只有先保存库存，才出现-->
 <!--                && !apply.is_change_stock-->
-                <div class="line10" v-if="inArray(apply.Order_Status,[22,25])">
-                  <el-button size="small"  @click="submitAplly(apply,idx1)" class="acion-btn" type="success">重新提交</el-button>
+<!--                <div class="line10" v-if="inArray(apply.status,[22,25])">-->
+<!--                  <el-button size="small"  @click="submitAplly(apply,idx1)" class="acion-btn" type="success">重新提交</el-button>-->
+<!--                </div>-->
+                <div class="line10" v-if="1 || inArray(apply.status,[31])">
+                  <el-button size="small" @click="cancelFn(apply,idx1)" class="acion-btn" type="danger">取消</el-button>
                 </div>
-                <div class="line10" v-if="inArray(apply.Order_Status,[20,21,25])">
-                  <el-button size="small" @click="cancelApply(apply,idx1)" class="acion-btn" type="danger">取消</el-button>
+
+                <div class="line10" v-if="1 || inArray(apply.status,[32])">
+                  <el-button @click="openSendDialog(apply,idx1)" size="small" class="acion-btn" type="primary">发货</el-button>
+
                 </div>
+                <div @click="showLogistics(apply)" v-if="1 || inArray(apply.status,[34,35,36])" class="font12 graytext2 logistics" >查看物流</div>
               </td>
             </tr>
           </table>
         </div>
       </div>
     </div>
+
     <logistics-info ref="logistics" />
     <el-dialog
       :visible.sync="payDialogInstance.innerVisible"
@@ -167,6 +171,45 @@
       </div>
 
     </el-dialog>
+
+
+    <el-dialog
+      :visible.sync="sendDialogInstance.innerVisible"
+      title="退货订单发货"
+      width="50%"
+      center
+      @close="closeSendDialog"
+      class="innerDislog"
+    >
+      <div class="dialog-container">
+        <el-form label-width="120px" class="form">
+          <el-form-item label="是否需要物流">
+            <el-radio v-model="sendDialogInstance.is_need_shipping" label="1">需要</el-radio>
+            <el-radio v-model="sendDialogInstance.is_need_shipping" label="0">不需要</el-radio>
+          </el-form-item>
+          <el-form-item label="物流公司" v-show="sendDialogInstance.is_need_shipping==1" >
+            <el-select v-model="sendDialogInstance.express"   v-loading="sendDialogInstance.loading">
+              <el-option
+                v-for="item in sendDialogInstance.express_list"
+                :key="item"
+                :label="item"
+                :value="item">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="订单单号"  v-show="sendDialogInstance.is_need_shipping==1 && sendDialogInstance.express">
+            <el-input v-model="sendDialogInstance.shipping_no" placeholder="请输入单号" />
+          </el-form-item>
+        </el-form>
+
+        <div class="padding4-c"></div>
+        <div style="text-align: right">
+          <el-button @click="sendFn" type="primary" :loading="sendDialogInstance.send">发货</el-button>
+        </div>
+
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -180,7 +223,25 @@
         Action,
         State
     } from 'vuex-class'
-    import {getStorePurchaseApply,getStorePurchaseApplyInfo,getStoreList,changeStoreApplyChannel,updateStoreApplyGoodsNum,cancalStorePurchaseApply,subStorePurchaseApply,delStorePurchaseApply,recallStorePurchaseApply,orderPay,calcApplyMoneyCount,store_pifa_order_completed} from '../common/fetch';
+    import {
+        getStorePurchaseApply,
+        getStorePurchaseApplyInfo,
+        getStoreList,
+        changeStoreApplyChannel,
+        updateStoreApplyGoodsNum,
+        cancalStorePurchaseApply,
+        subStorePurchaseApply,
+        delStorePurchaseApply,
+        recallStorePurchaseApply,
+        orderPay,
+        calcApplyMoneyCount,
+        store_pifa_order_completed,
+        storeProductBackOrderList,
+        store_prod_back_order_cancel,
+        get_store_prod_back_order_detail,
+        getShippingList,
+        store_prod_back_order_send
+    } from '../common/fetch';
     import {objTranslate,findArrayIdx} from '@/common/utils';
     import {fun} from '@/common';
     import LogisticsInfo from '@/components/comm/LogisticsInfo'
@@ -193,11 +254,138 @@
         mixins:[],
         components: {
             LogisticsInfo
+        },
+        watch:{
+            // status(nval,oval){
+            //     if(nval!=oval){
+            //
+            //     }
+            // }
         }
     })
 
 
     export default class StorePurchaseApply extends Vue {
+
+        status= ''
+
+        tabConf = [
+            {
+                label:'全部',
+                val:''
+            },
+            {
+                label:'待处理',
+                val:'31'
+            },
+            {
+                label:'待发货',
+                val:'32'
+            },
+            {
+                label:'已驳回',
+                val:'33'
+            },
+            {
+                label:'已发货',
+                val:'34'
+            },
+            {
+                label:'已收货',
+                val:'35'
+            },
+            {
+                label:'已收款',
+                val:'36'
+            },
+            {
+                label:'已收款',
+                val:'37'
+            },
+        ]
+
+        handleClick(){
+            this.paginate = {
+                page:1,
+                finish:false,
+                pageSize:20,
+                totalCount:0
+            }
+
+            this.loadInfo()
+        }
+
+
+        sendDialogInstance = {
+            is_need_shipping:true,
+            innerVisible:false,
+            apply:null,
+            idx:null,
+            send:false,
+            loading:false,
+            express_list:[],
+            shipping_no:'',
+            express:''//顺丰
+        }
+
+        async sendFn(){
+
+            if(this.sendDialogInstance.is_need_shipping == 1){
+                if(!this.sendDialogInstance.express){
+                    fun.error({msg:'请选择物流公司'})
+                    return;
+                }
+                if(!this.sendDialogInstance.shipping_no){
+                    fun.error({msg:'请输入单号'})
+                    return;
+                }
+            }
+            let {shipping_no,exprss,is_need_shipping} = {...this.sendDialogInstance}
+
+            let postData = {shipping_no,exprss,is_need_shipping,order_id:this.sendDialogInstance.apply.id}
+
+            let Idx = this.sendDialogInstance.idx
+            this.sendDialogInstance.send = false
+
+            this.ajax_idx = Idx
+            await store_prod_back_order_send(postData).catch(res=>{
+                this.closeSendDialog()
+                fun.success({msg:'操作成功'})
+            }).catch(e=>{
+                fun.error({msg:'操作失败'})
+            })
+
+            this.sendDialogInstance.send = false
+
+
+            await this.refreshApplyInfo(Idx)
+
+            setTimeout(()=>{
+                this.ajax_idx = null
+            },100)
+
+        }
+
+        openSendDialog(apply,idx){
+            this.sendDialogInstance.innerVisible = true
+
+            this.sendDialogInstance.apply = apply
+            this.sendDialogInstance.idx = idx
+
+            if(this.sendDialogInstance.express_list.length<1){
+                this.sendDialogInstance.loading = true;
+                getShippingList().then(res=>{
+                    this.sendDialogInstance.express_list = res.data
+                    this.sendDialogInstance.loading = false;
+                })
+            }
+        }
+        closeSendDialog(){
+            this.sendDialogInstance.innerVisible = false
+            this.sendDialogInstance.loading = false
+            this.sendDialogInstance.apply = null
+            this.sendDialogInstance.idx = null
+        }
 
         applys = []
         stores = []
@@ -376,10 +564,10 @@
          */
         refreshApplyInfo(idx){
             let _self = this
-            let order_id = this.applys[idx].Order_ID
+            let order_id = this.applys[idx].id
             //promise是为了阻止操作了
             return new Promise((resolve, reject) => {
-                getStorePurchaseApplyInfo({order_id}).then(res=>{
+                get_store_prod_back_order_detail({order_id}).then(res=>{
                     this.$set(this.applys,idx,res.data)
                     resolve({})
                 }).catch(e=>{
@@ -473,11 +661,12 @@
             },100)
         }
 
-        async cancelApply(apply,idx){
+        async cancelFn(apply,idx){
             this.ajax_idx = idx
-            await cancalStorePurchaseApply({order_id:apply.Order_ID}).then(res=>{
+            await store_prod_back_order_cancel({order_id:apply.id}).then(res=>{
                 // apply.Order_Status =  25
                 // apply.Order_Status_desc =  "已撤回"
+                fun.success({msg:'取消成功'})
             })
             await this.refreshApplyInfo(idx)
             //延时是为了触发加载的
@@ -504,14 +693,14 @@
 
         showLogistics(apply){
 
-            let {out_order_no='',Express=''} = {...apply.Order_Shipping,out_order_no:apply.Order_ShippingID}
-
-            if(!out_order_no || !Express)return;
+            // let {out_order_no='',Express=''} = {...apply.Order_Shipping,out_order_no:apply.Order_ShippingID}
+            //
+            // if(!out_order_no || !Express)return;
             let logisticsComponent = this.$refs.logistics
-            logisticsComponent.setExpress(Express)
-            logisticsComponent.setOutOrderNo(out_order_no)
+            // logisticsComponent.setExpress(Express)
+            // logisticsComponent.setOutOrderNo(out_order_no)
             logisticsComponent.show()
-            logisticsComponent.search()
+            // logisticsComponent.search()
         }
 
         setValFn(e,apply,goods,idx){
@@ -661,8 +850,12 @@
             this.storeDialogInstance.innerVisible = false
             this.storeDialogInstance.info = {}
         }
-        showStore(store){
-            let idx = findArrayIdx(this.stores,{Stores_ID:store.Stores_ID})
+        showStore(receive_id){
+            if(!receive_id){
+                fun.info({msg:'该订单为退货给平台'})
+                return;
+            }
+            let idx = findArrayIdx(this.stores,{Stores_ID:receive_id})
             if(idx!==false){
                 this.storeDialogInstance.info = this.stores[idx]
                 this.storeDialogInstance.innerVisible = true
@@ -675,7 +868,7 @@
         async loadInfo(){
             if(this.ajax_idx!==null)return
             const loadInstacne = this.$loading()
-            await getStorePurchaseApply({...this.paginate}).then(res=>{
+            await storeProductBackOrderList({...this.paginate,status:this.status}).then(res=>{
 
                 this.paginate.totalCount = res.totalCount
 
@@ -694,8 +887,8 @@
 
 
                     for(var goods of item.prod_list){
-                        if(goods.attr_info){
-                            goods.attr_info = JSON.parse(goods.attr_info)
+                        if(typeof goods.attr_info !='object'){
+                            goods.attr_info = goods.attr_info
                         }
                     }
 
@@ -762,9 +955,13 @@
     }
   }
 }
+
 .container{
   width: 1200px;
-  margin: 87px auto;
+  margin: 77px auto;
+  .tabs{
+    /*margin-bottom: 10px;*/
+  }
   .lists{
     .item{
       border: 1px solid #EDEDED;
@@ -894,6 +1091,7 @@
         }
         .actions{
           width: 184px;
+          padding: 10px 0;
           .logistics{
             cursor: pointer;
           }

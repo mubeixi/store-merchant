@@ -13,7 +13,7 @@
 
 <!--        -->
         <el-input v-model="out_order_no" placeholder="请输入单号" >
-          <el-select  style="width: 90px" slot="prepend" v-model="express" placeholder="物流公司">
+          <el-select  style="width: 120px" slot="prepend" v-model="express" placeholder="物流公司">
             <el-option
               v-for="item in express_list"
               :key="item"
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-  import { getOrderExpress } from '../../common/fetch';
+  import { getOrderExpress,getShippingList } from '../../common/fetch';
   import { fun } from '../../common';
 
 
@@ -84,6 +84,10 @@
       if(this.order_no){
         this.out_order_no = this.order_no
       }
+
+      // getShippingList().then(res=>{
+      //   this.express_list = res.data
+      // })
 
       this.activities = []
 

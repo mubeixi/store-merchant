@@ -457,7 +457,7 @@
                     let data = {image:base64Data};
 
                     return uploadImgByBase64(data).then(res => {
-                        console.log('upimg rt ','https://new401.bafangka.com'+res.data.path)
+                        console.log('upimg rt ',res.data.path)
                         this.imgUrl = res.data.path
                     })
                 })
