@@ -255,6 +255,9 @@ export const get_store_prod_back_order_detail = (data:object={},options:any=fals
 
 export const store_prod_back_order_send = (data:object={},options:any=false) => fetch('store_prod_back_order_send', data, options);
 
+export const store_prod_back_order_confirm = (data:object={},options:any=false) => fetch('store_prod_back_order_confirm', data, options);
+
+
 
 
 //获取物流公司列表

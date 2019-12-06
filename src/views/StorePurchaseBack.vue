@@ -66,7 +66,7 @@
 <!--                  <el-button size="small" @click="showPayDialog(apply,idx1)" class="acion-btn" type="primary">保存库存变动</el-button>-->
 <!--                </div>-->
                 <div class="line10" v-if="1 || inArray(apply.status,[35])">
-                  <el-button size="small" @click="payApply(apply,idx1)" class="acion-btn" type="success">确认收款</el-button>
+                  <el-button size="small" @click="payApplyFn(apply,idx1)" class="acion-btn" type="success">确认收款</el-button>
                 </div>
 <!--                <div class="line10" v-if="inArray(apply.status,[21])">-->
 <!--                  <el-button size="small" @click="recallApply(apply,idx1)" class="acion-btn" type="warning">撤回</el-button>-->
@@ -240,7 +240,8 @@
         store_prod_back_order_cancel,
         get_store_prod_back_order_detail,
         getShippingList,
-        store_prod_back_order_send
+        store_prod_back_order_send,
+        store_prod_back_order_confirm
     } from '../common/fetch';
     import {objTranslate,findArrayIdx} from '@/common/utils';
     import {fun} from '@/common';
@@ -317,7 +318,7 @@
 
 
         sendDialogInstance = {
-            is_need_shipping:true,
+            is_need_shipping:0,
             innerVisible:false,
             apply:null,
             idx:null,
@@ -340,24 +341,26 @@
                     return;
                 }
             }
-            let {shipping_no,exprss,is_need_shipping} = {...this.sendDialogInstance}
+            let {shipping_no,express,is_need_shipping} = {...this.sendDialogInstance}
 
-            let postData = {shipping_no,exprss,is_need_shipping,order_id:this.sendDialogInstance.apply.id}
+            let postData = {shipping_no,express,is_need_shipping,order_id:this.sendDialogInstance.apply.id}
 
             let Idx = this.sendDialogInstance.idx
             this.sendDialogInstance.send = false
 
-            this.ajax_idx = Idx
+
             await store_prod_back_order_send(postData).catch(res=>{
-                this.closeSendDialog()
+
                 fun.success({msg:'操作成功'})
             }).catch(e=>{
                 fun.error({msg:'操作失败'})
             })
 
+            this.closeSendDialog()
+
             this.sendDialogInstance.send = false
 
-
+            this.ajax_idx = Idx
             await this.refreshApplyInfo(Idx)
 
             setTimeout(()=>{
@@ -439,8 +442,8 @@
 
         //第一次支付
         async payApply(apply,idx){
-            this.payDialogInstance.tip = `需要支付<span class="padding4-c font14" style="color:red">￥<span class="font16">${apply.Order_TotalPrice}</span></span>的货款`
-            this.showPayDialog(apply,idx)
+            // this.payDialogInstance.tip = `需要支付<span class="padding4-c font14" style="color:red">￥<span class="font16">${apply.Order_TotalPrice}</span></span>的货款`
+            // this.showPayDialog(apply,idx)
         }
 
         //是修改库存后重新提交/或者没有改库存也可以走（第一次支付)
@@ -484,22 +487,41 @@
 
         }
 
-        async payApplyFn(){
+        async payApplyFn(apply,idx){
 
-            this.$refs.payForm.validate((valid) => {
-                if (!valid)return false
-            })
 
-            let {idx,pwd} = this.payDialogInstance
-            //
             this.ajax_idx = idx
-
             let rt = false
-            await this.payEditFn().then(res=>{
+            await store_prod_back_order_confirm({order_id:apply.id}).then(res=>{
+                fun.success({msg:'确认成功'})
                 rt = true
             }).catch(e=>{
-
+                fun.error({msg:'操作失败'})
             })
+
+            if(rt){
+                await this.refreshApplyInfo(idx)
+            }
+
+
+            setTimeout(()=>{
+                this.ajax_idx = null
+            },100)
+
+            // this.$refs.payForm.validate((valid) => {
+            //     if (!valid)return false
+            // })
+            //
+            // let {idx,pwd} = this.payDialogInstance
+            // //
+            // this.ajax_idx = idx
+            //
+            // let rt = false
+            // await this.payEditFn().then(res=>{
+            //     rt = true
+            // }).catch(e=>{
+            //
+            // })
             //
             // let {Order_ID,Order_TotalPrice} = this.payDialogInstance.apply
             //
@@ -516,16 +538,12 @@
             //     this.payDialogInstance.pwdError = e.msg
             // })
 
-            if(rt){
-                await this.refreshApplyInfo(idx)
-            }
+            // if(rt){
+            //     await this.refreshApplyInfo(idx)
+            // }
 
 
-            let _self = this
 
-            setTimeout(function () {
-                _self.ajax_idx = null
-            },100)
 
         }
 
