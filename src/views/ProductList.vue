@@ -346,7 +346,8 @@
                 pro_name:this.dataTableOpt.columns[1].value,
                 sel_oattr:this.dataTableOpt.columns[6].value,
                 sel_cate:this.dataTableOpt.columns[5].value,
-                status:this.activeName
+                status:this.activeName,
+                store_id:''
             }
 
             getProducts(data).then(res=>{

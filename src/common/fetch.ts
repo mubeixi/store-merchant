@@ -30,7 +30,7 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
     param.User_ID = get_User_ID();
   }
   // @ts-ignore
-  if(!param.store_id){
+  if(!param.hasOwnProperty('store_id')){
     param.store_id = get_Stores_ID();
   }
   // param.appid = get_Appid();
