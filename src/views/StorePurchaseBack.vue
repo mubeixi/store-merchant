@@ -187,7 +187,7 @@
             <el-radio v-model="sendDialogInstance.is_need_shipping" label="1">需要</el-radio>
             <el-radio v-model="sendDialogInstance.is_need_shipping" label="0">不需要</el-radio>
           </el-form-item>
-          <el-form-item label="物流公司" >
+          <el-form-item label="物流公司" v-show="sendDialogInstance.is_need_shipping==1" >
             <el-select v-model="sendDialogInstance.express"   v-loading="sendDialogInstance.loading">
               <el-option
                 v-for="item in sendDialogInstance.express_list"
@@ -197,7 +197,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="订单单号" >
+          <el-form-item label="订单单号"  v-show="sendDialogInstance.is_need_shipping==1 && sendDialogInstance.express">
             <el-input v-model="sendDialogInstance.shipping_no" placeholder="请输入单号" />
           </el-form-item>
         </el-form>
@@ -340,16 +340,19 @@
                     return;
                 }
             }
-            let postData = {...this.sendDialogInstance}
+            let {shipping_no,exprss,is_need_shipping} = {...this.sendDialogInstance}
+
+            let postData = {shipping_no,exprss,is_need_shipping,order_id:this.sendDialogInstance.apply.id}
 
             let Idx = this.sendDialogInstance.idx
             this.sendDialogInstance.send = false
 
             this.ajax_idx = Idx
-            await store_prod_back_order_send({}).catch(res=>{
+            await store_prod_back_order_send(postData).catch(res=>{
                 this.closeSendDialog()
+                fun.success({msg:'操作成功'})
             }).catch(e=>{
-
+                fun.error({msg:'操作失败'})
             })
 
             this.sendDialogInstance.send = false
