@@ -72,7 +72,7 @@
                   <el-button size="small" @click="recallApply(apply,idx1)" class="acion-btn" type="warning">撤回</el-button>
                 </div>
                 <div class="line10" v-if="inArray(apply.Order_Status,[23])">
-                  <el-button size="small" class="acion-btn line8" type="primary">确认收货</el-button>
+                  <el-button @click="completed(apply,idx1)" size="small" class="acion-btn line8" type="primary">确认收货</el-button>
                   <div @click="showLogistics(apply)" class="font12 graytext2 logistics" >查看物流</div>
                 </div>
                 <!--如果在修改库存，则隐藏重新提交按钮。只有先保存库存，才出现-->
@@ -180,7 +180,7 @@
         Action,
         State
     } from 'vuex-class'
-    import {getStorePurchaseApply,getStorePurchaseApplyInfo,getStoreList,changeStoreApplyChannel,updateStoreApplyGoodsNum,cancalStorePurchaseApply,subStorePurchaseApply,delStorePurchaseApply,recallStorePurchaseApply,orderPay,calcApplyMoneyCount} from '../common/fetch';
+    import {getStorePurchaseApply,getStorePurchaseApplyInfo,getStoreList,changeStoreApplyChannel,updateStoreApplyGoodsNum,cancalStorePurchaseApply,subStorePurchaseApply,delStorePurchaseApply,recallStorePurchaseApply,orderPay,calcApplyMoneyCount,store_pifa_order_completed} from '../common/fetch';
     import {objTranslate,findArrayIdx} from '@/common/utils';
     import {fun} from '@/common';
     import LogisticsInfo from '@/components/comm/LogisticsInfo'
@@ -387,6 +387,25 @@
                 })
             })
         }
+
+        /**
+         * 确认收货
+         * @param apply
+         * @param idx
+         */
+        async completed(apply,idx){
+
+            this.ajax_idx = idx
+            await store_pifa_order_completed({order_id:apply.Order_ID}).then(res=>{
+
+            }).catch()
+
+            await this.refreshApplyInfo(idx)
+            setTimeout(()=>{
+                this.ajax_idx = null
+            },100)
+        }
+
 
         async delApply(apply,idx){
 

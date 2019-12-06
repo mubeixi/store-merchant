@@ -161,6 +161,7 @@ export const cancalStorePurchaseApply = (data:object={},options:any=false) => fe
 //撤回进货单
 export const recallStorePurchaseApply = (data:object={},options:any=false) => fetch('store_pifa_order_recall', data, options);
 
+export const store_pifa_order_completed = (data:object={},options:any=false) => fetch('store_pifa_order_completed', data, options);
 
 export const subStorePurchaseApply = (data:object={},options:any=false) => fetch('store_pifa_order_submit', data, options);
 
@@ -243,12 +244,18 @@ export const addBatch = (data:object={},options:any=false) => fetch('add_batch',
 //给人群打标签
 export const tagCrowd = (data:object={},options:any=false) => fetch('tag_crowd', data, options);
 
-//获取商品列表
+//门店产品发起退货
+export const storeProductBack = (data:object={},options:any=false) => fetch('store_prod_back_submit', data, options);
+
+//获取门店商品列表
 export const getProducts = (data:object={},options:any=false) => fetch('get_products', data, options);
+
 //给商品type 1:批量下架 2：批量上架 3：批量生成二维码 4：批量设置佣金
 export const batchSetting = (data:object={},options:any=false) => fetch('batch_setting', data, options);
+
 //删除商品列表中的某个商品
 export const delProduct = (data:object={},options:any=false) => fetch('del_product', data, options);
+
 //查看分销商佣金列表
 export const lookDissetting = (data:object={},options:any=false) => fetch('look_dissetting', data, options);
 
