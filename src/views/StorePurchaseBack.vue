@@ -178,12 +178,11 @@
       title="退货订单发货"
       width="50%"
       center
-
       @close="closeSendDialog"
       class="innerDislog"
     >
       <div class="dialog-container">
-        <el-form label-width="120" class="form" >
+        <el-form label-width="120px" class="form">
           <el-form-item label="是否需要物流">
             <el-radio v-model="sendDialogInstance.is_need_shipping" label="1">需要</el-radio>
             <el-radio v-model="sendDialogInstance.is_need_shipping" label="0">不需要</el-radio>
@@ -199,7 +198,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="订单单号" >
-            <el-input  placeholder="请输入单号" />
+            <el-input v-model="sendDialogInstance.shipping_no" placeholder="请输入单号" />
           </el-form-item>
         </el-form>
 
