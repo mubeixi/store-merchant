@@ -359,7 +359,7 @@
 
         created(){
 
-            this.getProduct()
+           //this.getProduct()
             getProductCategory().then(res=>{
                 let cates = res.data
                 // arr2table(newArr,'Category_ID','Category_ParentID')
