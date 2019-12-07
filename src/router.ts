@@ -27,6 +27,7 @@ import GiftsGift from '@/views/GiftsGift.vue';
 import NotFound from '@/views/NotFound.vue';
 import ProductList from '@/views/ProductList.vue';
 import StoreProductList from '@/views/StoreProductList.vue';
+import DistributorLevel from '@/views/DistributorLevel.vue';
 const routerInstance = new Router({
   routes: [
     {
@@ -201,6 +202,14 @@ const routerInstance = new Router({
       component: StoreProductList,
       meta:{
         title:'门店商品列表'
+      }
+    },
+    {
+      path: '/DistributorLevel',
+      name: 'DistributorLevel',
+      component: DistributorLevel,
+      meta:{
+        title:'分销商级别设置'
       }
     },
     {

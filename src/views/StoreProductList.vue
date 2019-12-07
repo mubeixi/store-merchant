@@ -926,8 +926,7 @@
                 pro_name:this.dataTableOpt.columns[nameIdx].value,
                 sel_oattr:this.dataTableOpt.columns[oattrIdx].value,
                 sel_cate:this.dataTableOpt.columns[cateIdx].value,
-                status:this.activeName,
-                store_id:24
+                status:this.activeName
             }
 
 
