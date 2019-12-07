@@ -48,7 +48,8 @@ import {
   Timeline,
   TimelineItem,
   Row,
-  Tag
+  Tag,
+  Image
 } from 'element-ui';
 
 Vue.use(Tag)
@@ -91,7 +92,7 @@ Vue.use(ColorPicker)
 Vue.use(Slider)
 Vue.use(TableColumn)
 Vue.use(Table)
-
+Vue.use(Image)
 
 export const fun = {
   success: ({msg = '操作成功', title = '成功'}) => Notification({
