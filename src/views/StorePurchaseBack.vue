@@ -65,7 +65,7 @@
 <!--                <div class="line10" v-if="apply.is_change_stock && inArray(apply.Order_Status,[20,22,25])">-->
 <!--                  <el-button size="small" @click="showPayDialog(apply,idx1)" class="acion-btn" type="primary">保存库存变动</el-button>-->
 <!--                </div>-->
-                <div class="line10" v-if="1 || inArray(apply.status,[35])">
+                <div class="line10" v-if="inArray(apply.status,[35])">
                   <el-button size="small" @click="payApplyFn(apply,idx1)" class="acion-btn" type="success">确认收款</el-button>
                 </div>
 <!--                <div class="line10" v-if="inArray(apply.status,[21])">-->
@@ -77,15 +77,15 @@
 <!--                <div class="line10" v-if="inArray(apply.status,[22,25])">-->
 <!--                  <el-button size="small"  @click="submitAplly(apply,idx1)" class="acion-btn" type="success">重新提交</el-button>-->
 <!--                </div>-->
-                <div class="line10" v-if="1 || inArray(apply.status,[31])">
+                <div class="line10" v-if="inArray(apply.status,[31])">
                   <el-button size="small" @click="cancelFn(apply,idx1)" class="acion-btn" type="danger">取消</el-button>
                 </div>
 
-                <div class="line10" v-if="1 || inArray(apply.status,[32])">
+                <div class="line10" v-if="inArray(apply.status,[32])">
                   <el-button @click="openSendDialog(apply,idx1)" size="small" class="acion-btn" type="primary">发货</el-button>
 
                 </div>
-                <div @click="showLogistics(apply)" v-if="1 || inArray(apply.status,[34,35,36])" class="font12 graytext2 logistics" >查看物流</div>
+                <div @click="showLogistics(apply)" v-if="inArray(apply.status,[34,35,36])" class="font12 graytext2 logistics" >查看物流</div>
               </td>
             </tr>
           </table>

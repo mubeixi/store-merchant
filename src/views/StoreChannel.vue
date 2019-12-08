@@ -13,7 +13,7 @@
           <el-input  v-model="formData.store_no" placeholder="请输入门店编码" ></el-input>
         </el-form-item>
       </el-form>
-      <div class="btn" @click="subSearch">搜索</div>
+      <el-button :loading="loading" class="btn"  @click="subSearch">搜索</el-button>
     </div>
   </div>
 </template>
@@ -29,14 +29,17 @@
         State
     } from 'vuex-class'
     import {fun} from '../common';
+    import {getStoreDetail} from '@/common/fetch';
 
 
     @Component
     export default class StoreChannel extends Vue {
 
+    loading = false
     formData = {
         store_no:null,
-        channel:null
+        channel:null,
+
     }
 
     channels = [
@@ -44,20 +47,45 @@
         {id:2,name:'平台进货'},
     ]
 
-    subSearch(){
+    async subSearch(){
 
         if(!this.formData.channel){
-            this.$fun.info({msg:'渠道必选'});
+            fun.error({msg:'渠道必选'});
             return;
         }
-        if(this.formData.channel===1 && !this.formData.store_no){
-            this.$fun.info({msg:'门店编码必填'});
-            return;
+
+        if(this.formData.channel === 2){
+            this.$router.push({
+                name:'StorePurchase',
+                query:this.formData
+            })
         }
-        this.$router.push({
-            name:'StorePurchase',
-            query:this.formData
-        })
+
+        if(this.formData.channel===1){
+
+            if(!this.formData.store_no){
+                fun.error({msg:'门店编码必填'});
+                return;
+            }
+
+            this.loading = true
+            let rt = false
+            await getStoreDetail({store_sn:this.formData.store_no,User_ID:null,store_id:null}).then(res=>{
+                rt =true
+            }).catch(e=>{
+                // fun.error({msg:'门店编码不正确'})
+            })
+            this.loading = false
+
+            if(rt){
+                this.$router.push({
+                    name:'StorePurchase',
+                    query:this.formData
+                })
+            }
+
+        }
+
     }
 
 
@@ -84,6 +112,8 @@
     margin 129px 245px 100px 147px
   .btn
     margin 0 auto
+    display block
+    padding 0
     width 420px
     height 50px
     line-height 50px

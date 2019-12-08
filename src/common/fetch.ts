@@ -26,7 +26,7 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
     param.Users_ID = get_Users_ID();
   }
   // @ts-ignore
-  if(!param.User_ID){
+  if(!param.hasOwnProperty('User_ID')){
     param.User_ID = get_User_ID();
   }
   // @ts-ignore
@@ -142,6 +142,7 @@ export const getAddress = (data:object={},options:any=false) => fetch('get_addre
 
 export const getStoreList = (data:object={},options:any=false) => fetch('get_store_list', data, options);
 
+export const getStoreDetail = (data:object={},options:any=false) => fetch('get_store_detail', data, options);
 //批发——采购方操作
 export const changeStoreApplyChannel = (data:object={},options:any=false) => fetch('store_pifa_order_change_wholesaler', data, options);
 

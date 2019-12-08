@@ -8,7 +8,54 @@
           <button @click="searchFn" class="search-btn">搜索</button>
         </div>
       </div>
-      <div class="main">
+      <div class="category-box">
+        <div class="left">
+          <div class="row">
+            <div class="label">一级分类:</div>
+            <div class="valbox">
+              <span class="cate1" :class="{active:active_cate_idx===idx1}" v-for="(cate,idx1) in cates" @click="select_cate1(idx1,cate)">{{cate.Category_Name}}</span>
+            </div>
+          </div>
+          <div class="row" v-if="active_cate_idx!==null">
+            <div class="label">二级分类:</div>
+            <div class="valbox">
+              <span class="cate2" :class="{active:active_cate_idx===idx2}" v-for="(cate,idx2) in cates[active_cate_idx].child" @click="select_cate2(idx2,cate)">{{cate.Category_Name}}</span>
+            </div>
+          </div>
+          <div v-show="active_cate_idx!==null" class="row" :style="{paddingBottom:active_cate_idx!==null?'20px':''}">
+            <div class="label">当前选择:</div>
+            <div class="valbox" >
+            <span v-show="active_cate_idx!==null" class="cateval"  @click="remove_cate(1)">
+              <span class="name">{{s1.Category_Name}}</span>
+              <i class="el-icon-close"></i>
+            </span>
+              <span v-show="active_cate_idx2!==null" class="cateval"  @click="remove_cate(2)">
+              <span class="name">{{s2.Category_Name}}</span>
+              <i class="el-icon-close"></i>
+            </span>
+            </div>
+          </div>
+        </div>
+        <div class="store_info" v-if="store_info.Stores_ID">
+          <div class="info-row">
+            <div class="label"><span class="padding4-c"> </span></div>
+            <div class="text"><img class="Stores_ImgPath" :src="store_info.Stores_ImgPath|domain" /></div>
+          </div>
+          <div class="info-row">
+            <div class="label"><span class="padding4-c"> </span></div>
+            <div class="text font16" style="color: #333">{{store_info.Stores_Name}}</div>
+          </div>
+          <div class="info-row">
+            <div class="label"><i class="el-icon-phone" /></div>
+            <div class="text">{{store_info.Stores_Telephone}}</div>
+          </div>
+          <div class="info-row">
+            <div class="label"><i class="el-icon-location" /></div>
+            <div class="text">{{store_info.Stores_Province_name}}{{store_info.Stores_City_name}}{{store_info.Stores_Area_name}}{{store_info.Stores_Address}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="main" v-loading="loading">
         <div class="lists" v-infinite-scroll="loadGoodsInfo" infinite-scroll-immediate="true" style="overflow:auto">
           <div class="item" v-for="(item,idx) in products" :class="'item'+idx"  @click="openDialog(item,idx)"  @mouseover="mouseoverFn">
             <div class="cover">
@@ -26,7 +73,6 @@
         </div>
 
       </div>
-
       <div class="foot">
         <div class="count" style="cursor: pointer">
 <!--          /{{paginate.totalCount}}-->
@@ -41,9 +87,6 @@
       </div>
       <div id="imgs"></div>
     </div>
-
-<!--    -->
-
     <div @click="cartDialogCancel" class="cartsDialogMask"  @mousewheel.prevent  v-show="cartsDialogInstance.innerVisible"></div>
     <div class="cartsDialog" v-show="cartsDialogInstance.innerVisible"  v-loading="cartsDialogInstance.loading">
       <div class="carts-dialog-container" v-if="carts.lists.length>0" >
@@ -69,7 +112,6 @@
       </div>
       <span slot="footer" class="dialog-footer"></span>
     </div>
-
     <el-dialog
       :visible.sync="dialogInstance.innerVisible"
       title="选择商品属性"
@@ -118,8 +160,23 @@
         State
     } from 'vuex-class'
     import {fun} from '../common';
-    import {getProductList,getProductDetail,updateCart,getCartList,delCart,getPifaProductList,createOrder} from '../common/fetch';
-    import {numberSort, findArrayIdx, objTranslate, compare_obj} from '@/common/utils';
+    import {
+        getProductList,
+        getProductDetail,
+        updateCart,
+        getCartList,
+        delCart,
+        getPifaProductList,
+        createOrder,
+        getProductCategory, getStoreDetail
+    } from '../common/fetch';
+    import {
+        numberSort,
+        findArrayIdx,
+        objTranslate,
+        compare_obj,
+        get_arr_column
+    } from '@/common/utils';
     import {Fly} from '../common/UnitBezier';
     import {Cart} from '@/common/cart';
     import _ from 'underscore';
@@ -131,6 +188,20 @@
     const User_ID = Cookies.get('Stores_Bind_User_ID')
 
     @Component({
+        watch:{
+            s2:{
+                deep:true,
+                handler(val){
+                    this.searchFn()
+                }
+            },
+            s1:{
+                deep:true,
+                handler(val){
+                    this.searchFn()
+                }
+            }
+        },
         computed:{
             noMore () {
                 return this.paginate.finish
@@ -143,7 +214,8 @@
             }
         }
     })
-    export default class StoreChannel extends Vue {
+    export default class StorePurchase extends Vue {
+
 
         fly_img_url = ''
         curPosX = 0
@@ -161,6 +233,61 @@
             pageSize:20,
             totalCount:0
         }
+
+        cates = []
+        active_cate_idx = null
+        active_cate_idx2 = null
+        s1 = {}
+        s2 = {}
+
+        select_cate1(idx,item){
+
+            if(idx === this.active_cate_idx)return
+
+            this.s1 = item
+            this.active_cate_idx = idx
+
+            if(_.isEmpty(this.s2))return
+            this.s2 = {}
+            this.active_cate_idx2 = null
+
+            //
+            // this.active_cate_idx = idx
+            // let isHas = findArrayIdx(this.select_cates,{Category_ID:item.Category_ID})
+            // if(isHas===false){
+            //     this.select_cates[0] = item
+            // }
+
+
+        }
+
+        select_cate2(idx,item){
+
+
+            this.s2 = item
+            this.active_cate_idx2 = idx
+
+
+        }
+
+        remove_cate(idx){
+            if(idx==1){
+                this.s1 = {}
+                this.active_cate_idx = null
+
+                if(_.isEmpty(this.s2))return
+                this.s2 = {}
+                this.active_cate_idx2 = null
+
+            }
+            if(idx==2){
+                this.s2 = {}
+                this.active_cate_idx2 = null
+            }
+        }
+
+
+
 
         cartsDialogInstance = {
             innerVisible:false,
@@ -610,10 +737,22 @@
 
             if(this.paginate.finish)return;
             this.loading = true
-            const loadingInstance = this.$loading()
+            //const loadingInstance = this.$loading()
 
-            let postData = {Products_Name:this.keyword,...this.paginate}
+            let Cate_ID = ''
+
+            // if(this.s1.hasOwnProperty(Category_ID) && this.s1.Category_ID){
+            //     Cate_ID = this.s1.Category_ID
+            // }
+            //
+            // if(this.s2.hasOwnProperty(Category_ID) && this.s2.Category_ID){
+            //     Cate_ID = this.s2.Category_ID
+            // }
+
+            let postData = {Products_Name:this.keyword,...this.paginate,Cate_ID}
+
             let getProductListFn = getProductList
+
 
             //如果是门店进货，那就从门店
             if(this.$route.query.channel == 1 && this.$route.query.store_no){
@@ -624,9 +763,9 @@
                 this.loading = false
 
                 this.paginate.totalCount = res.totalCount
-                setTimeout(function () {
-                    loadingInstance.close()
-                },500)
+                // setTimeout(function () {
+                //     loadingInstance.close()
+                // },500)
 
                 //长度为0停止了
                 if(res.data.length===0){
@@ -652,6 +791,7 @@
             this.keyword = ''
             this.searchFn()
         }
+
         searchFn(){
             this.paginate.finish = false
             this.paginate.page = 1
@@ -676,6 +816,17 @@
             })
         }
 
+        store_info = {
+          // Stores_ID:89757,
+          // Stores_Name:'guanyu的店',
+          // Stores_ImgPath:'/uploadfiles/wkbq6nc2kc/image/20190930103505111.jpg',
+          // Stores_Telephone:'0898-3678775',
+          // Stores_Province_name:'河南',
+          // Stores_City_name:'郑州',
+          // Stores_Area_name:'金水区',
+          // Stores_Address:'评山区龙田街道龙兴北路135号'
+        }
+
         created(){
             this.syncCardList().then((CartList)=>{
                 console.log(CartList)
@@ -692,6 +843,27 @@
                     }
                 }
             })
+
+
+            getProductCategory().then(res=>{
+                this.cates = res.data
+                // arr2table(newArr,'Category_ID','Category_ParentID')
+                //this.cates = restArr(cates,'child')
+                //修改
+                // let idx = findArrayIdx(this.dataTableOpt.columns,{prop:'Product_Cate',label:'商品分类'})
+                // console.log(idx)
+                // if(idx!==false){
+                //     this.dataTableOpt.columns[idx].search.option = this.cates.map(item=>{
+                //         return {label:item.new_name,value:item.Category_ID}
+                //     })
+                // }
+            })
+
+            if(this.$route.query.channel == 1 && this.$route.query.store_no){
+                getStoreDetail({store_sn:this.$route.query.store_no,store_id:null,User_ID:null}).then(res=>{
+                    this.store_info = res.data
+                })
+            }
           //this.loadGoodsInfo()
 
 
@@ -700,6 +872,83 @@
     }
 </script>
 <style lang="less" scoped>
+.category-box{
+  margin: 56px 50px 60px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  .left{
+    flex: 1;
+    .row{
+      display: flex;
+      /*align-items: center;*/
+      padding: 20px 0 10px;
+      border-bottom: 1px dashed #e7e7e7;
+      .label{
+        width: 100px;
+        text-align: right;
+        color: #999;
+      }
+      .valbox{
+        color: #666;
+        flex: 1;
+
+        .cate1,.cate2{
+          &:hover{
+            color: #333;
+          }
+        }
+        .cate1,.cate2,.cateval{
+          margin-left: 10px;
+          margin-bottom: 10px;
+          display: inline-block;
+          cursor: pointer;
+        }
+        .cateval{
+          height: 26px;
+          line-height: 26px;
+          color: #F43131;
+          border: 1px solid #F43131;
+          padding: 0 6px;
+          &:hover{
+            .el-icon-close{
+              display: inline-block;
+            }
+          }
+          .name{
+
+          }
+          .el-icon-close{
+            display: none;
+          }
+        }
+      }
+    }
+  }
+  .store_info{
+    margin-left: 65px;
+    padding: 0 46px 0 80px;
+    border-left: 1px solid #eee;
+    .info-row{
+      display: flex;
+      align-items: center;
+      width: 210px;
+      color: #999;
+      .label{
+        height: 30px;
+        line-height: 30px;
+        padding-right: 10px;
+
+      }
+    }
+    .Stores_ImgPath{
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+    }
+  }
+
+}
 .cartsDialogMask{
   background: rgba(0,0,0,.5);
   position: fixed;
