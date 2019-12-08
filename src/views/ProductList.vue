@@ -39,7 +39,13 @@
             <span class="spans" style="margin-right: 0px" @click="dissetting(props.row.Products_ID)">查看详情</span>
         </template>
         <template slot="Products_Qrcode-column" slot-scope="props">
-          <img height="70px" width="70px" :src="props.row.Products_Qrcode">
+          <el-image
+            @click="changeImg(props.row.Products_Qrcode)"
+            style="width: 70px; height: 70px"
+            :src="props.row.Products_Qrcode"
+            :preview-src-list="imgPro">
+          </el-image>
+<!--          <img height="70px" width="70px" :src="props.row.Products_Qrcode">-->
         </template>
         <template slot="attr-column"  slot-scope="props">
             <div v-for="(item,index) of props.row.oattrs" >
@@ -74,6 +80,19 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+
+    <el-dialog
+      :visible.sync="centerDialogVisible"
+      modal
+      close-on-click-modal
+      custom-class="dialog"
+    >
+      <el-carousel :autoplay="false" arrow="always">
+        <el-carousel-item v-for="item in data" :key="item">
+          <img :src="item">
+        </el-carousel-item>
+      </el-carousel>
+    </el-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -85,7 +104,7 @@
         Action,
         State
     } from 'vuex-class'
-
+    import {Loading} from "element-ui";
     import {getProducts,batchSetting,getProductCategory,delProduct,lookDissetting} from '@/common/fetch';
     import {findArrayIdx, plainArray, createTmplArray, objTranslate} from '@/common/utils';
     import _ from 'underscore'
@@ -131,6 +150,11 @@
 
     export default class ProductList extends Vue {
 
+        imgPro=[]
+        changeImg(url){
+            this.imgPro=[]
+            this.imgPro.push(url)
+        }
         activeName='1'
         dataTableOpt = {
             act : 'get_self_store_prod',
@@ -338,12 +362,15 @@
         }
 
         getProduct(){
+            let nameIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'Products_Name'})
+            let oattrIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'attr'})
+            let cateIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'Product_Cate'})
             let data={
                 pageSize: this.dataTableOpt.pageSize,
                 page:this.dataTableOpt.page,
-                pro_name:this.dataTableOpt.columns[1].value,
-                sel_oattr:this.dataTableOpt.columns[6].value,
-                sel_cate:this.dataTableOpt.columns[5].value,
+                pro_name:this.dataTableOpt.columns[nameIdx].value,
+                sel_oattr:this.dataTableOpt.columns[oattrIdx].value,
+                sel_cate:this.dataTableOpt.columns[cateIdx].value,
                 status:this.activeName,
                 store_id:''
             }
@@ -352,14 +379,25 @@
                 if(res.errorCode==0){
                     this.dataTableOpt.dataList=res.data
                     this.dataTableOpt.totalCount=res.totalCount
-                    this.dataTableOpt.columns[6].search.option=res.oattrs
+                    this.dataTableOpt.columns[oattrIdx].search.option=res.oattrs
                 }
             })
         }
 
         created(){
+            let pro_name = this.$route.query.pro_name
+            let activeNames = this.$route.query.status
 
-            this.getProduct()
+            let nameIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'Products_Name'})
+            let oattrIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'attr'})
+            if(pro_name){
+                this.dataTableOpt.columns[nameIdx].value=pro_name
+            }
+            if(activeNames){
+                this.activeName=activeNames
+            }
+
+           this.getProduct()
             getProductCategory().then(res=>{
                 let cates = res.data
                 // arr2table(newArr,'Category_ID','Category_ParentID')

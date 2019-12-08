@@ -1249,13 +1249,19 @@
                                     message: '修改成功',
                                     type: 'success'
                                 });
-                                window.location.href=window.parent.location.href+'shop/products.php';
+                                //window.location.href=window.parent.location.href+'shop/setting/diy/index.html#/ProductList';
+                                this.$router.push({
+                                    name: 'ProductList'
+                                })
                             }else{
                                 this.$message({
                                     message: '添加成功',
                                     type: 'success'
                                 });
-                                window.location.href=window.parent.location.href+'shop/products.php';
+                                this.$router.push({
+                                    name: 'ProductList'
+                                })
+                                //window.location.href=window.parent.location.href+\'shop/setting/diy/index.html#/ProductList';
                             }
                         }
 
