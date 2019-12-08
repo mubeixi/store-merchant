@@ -59,105 +59,105 @@
           <el-radio label="3" >手动申请</el-radio>
         </el-radio-group>
         <block>
-<!--          <div class="myCenter">-->
-<!--            &lt;!&ndash;     消费额       &ndash;&gt;-->
-<!--            <el-checkbox-group v-model="qwe">-->
-<!--              <el-checkbox label="lastTime" name="lastTime">消费额</el-checkbox>-->
-<!--            </el-checkbox-group>-->
-<!--            <div class="first">-->
-<!--              <el-form-item  label="消费类型：" class="divFlex">-->
-<!--                <el-radio-group v-model="qwe">-->
-<!--                  <el-radio label="0" >商城总消费</el-radio>-->
-<!--                  <el-radio label="1" >一次性消费</el-radio>-->
-<!--                </el-radio-group>-->
-<!--              </el-form-item>-->
-<!--              <el-form-item  label="消费金额：" class="divFlex">-->
-<!--                <el-input class="widthInput"></el-input> 元 <span class="spans">（注：用户需消费此额度才能成为该级别分销商）</span>-->
-<!--              </el-form-item>-->
-<!--              <el-form-item  label="生效状态：" class="divFlex">-->
-<!--                <el-radio-group v-model="qwe">-->
-<!--                  <el-radio label="0" >订单付款后计入</el-radio>-->
-<!--                  <el-radio label="1" >订单确认收货后计入</el-radio>-->
-<!--                </el-radio-group>-->
-<!--              </el-form-item>-->
-<!--            </div>-->
-<!--            &lt;!&ndash;     购买礼包       &ndash;&gt;-->
-<!--            <el-checkbox-group v-model="qwe">-->
-<!--              <el-checkbox label="lastTime" name="lastTime">购买礼包</el-checkbox>-->
-<!--              <el-radio-group v-model="qwe" class="productRadio">-->
-<!--                <el-radio label="0" >任意商品</el-radio>-->
-<!--                <el-radio label="1" >特定商品</el-radio>-->
-<!--              </el-radio-group>-->
-<!--              <span class="selects">选择商品</span>-->
-<!--            </el-checkbox-group>-->
-<!--            <div class="first second">-->
-<!--              <div class="listLine">-->
-<!--                <img src="http://vod.q172.net/image/default/1FB2EA180FD04D689689880F40D1AD5A-6-2.png" class="lineImg">-->
-<!--                <div class="lineDiv">dsadasdasdasdasd</div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            &lt;!&ndash;    购买商品次数      &ndash;&gt;-->
-<!--            <el-checkbox-group v-model="qwe" class="marginBo">-->
-<!--              <el-checkbox label="lastTime" name="lastTime">购买商品次数</el-checkbox>-->
-<!--              <el-input class="inputMy"></el-input><span class="oneFont">次</span>-->
-<!--            </el-checkbox-group>-->
-<!--            &lt;!&ndash;    团队销售额      &ndash;&gt;-->
-<!--            <el-checkbox-group v-model="qwe" class="marginBo">-->
-<!--              <el-checkbox label="lastTime" name="lastTime">团队销售额</el-checkbox>-->
-<!--              <el-input class="inputMy" style="margin-left: 38px"></el-input><span class="oneFont">元</span>-->
-<!--            </el-checkbox-group>-->
-<!--            &lt;!&ndash;    直接购买身份      &ndash;&gt;-->
-<!--            <el-checkbox-group v-model="qwe" class="marginBo">-->
-<!--              <el-checkbox label="lastTime" name="lastTime">直接购买身份</el-checkbox>-->
-<!--              <el-select lass="inputMy" style="margin-left: 24px;width: 140px"></el-select>-->
-<!--              <el-input class="inputMy inputT" placeholder="级别金额" ></el-input><span class="oneFont">元</span>-->
-<!--              <el-input class="inputMy inputT" placeholder="赠送金额" ></el-input><span class="oneFont">元</span>-->
-<!--            </el-checkbox-group>-->
-<!--            &lt;!&ndash;    直邀等级数量      &ndash;&gt;-->
-<!--            <el-checkbox-group v-model="qwe" class="marginBo">-->
-<!--              <el-checkbox label="lastTime" name="lastTime">直邀等级数量</el-checkbox>-->
-<!--              <el-input class="inputMy inputT" ></el-input><span class="oneFont">人</span>-->
-<!--              <el-select lass="inputMy" style="margin-left: 24px;width: 140px"  placeholder="请选择分销等级"></el-select>-->
-<!--            </el-checkbox-group>-->
-<!--            &lt;!&ndash;    团队等级数量      &ndash;&gt;-->
-<!--            <el-checkbox-group v-model="qwe" class="marginBo" style="display: flex">-->
-<!--              <el-checkbox label="lastTime" name="lastTime">团队等级数量</el-checkbox>-->
-<!--              <div >-->
-<!--                <div>-->
-<!--                  <el-input class="inputMy inputT" ></el-input><span class="oneFont">人</span>-->
-<!--                  <el-select lass="inputMy" style="margin-left: 24px;width: 140px"  placeholder="请选择等级"></el-select>-->
-<!--                  <span class="addSpan">添加</span>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </el-checkbox-group>-->
-<!--          </div>-->
-        </block>
-          <div class="amu">
-                <div class="th">
-                  <div class="td">字段类型</div>
-                  <div class="td">字段名称</div>
-                  <div class="td">初始内容</div>
-                  <div class="td" style="width: 125px">操作</div>
+          <div class="myCenter">
+            <!--     消费额       -->
+            <el-checkbox-group v-model="qwe">
+              <el-checkbox label="lastTime" name="lastTime">消费额</el-checkbox>
+            </el-checkbox-group>
+            <div class="first">
+              <el-form-item  label="消费类型：" class="divFlex">
+                <el-radio-group v-model="qwe">
+                  <el-radio label="0" >商城总消费</el-radio>
+                  <el-radio label="1" >一次性消费</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item  label="消费金额：" class="divFlex">
+                <el-input class="widthInput"></el-input> 元 <span class="spans">（注：用户需消费此额度才能成为该级别分销商）</span>
+              </el-form-item>
+              <el-form-item  label="生效状态：" class="divFlex">
+                <el-radio-group v-model="qwe">
+                  <el-radio label="0" >订单付款后计入</el-radio>
+                  <el-radio label="1" >订单确认收货后计入</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </div>
+            <!--     购买礼包       -->
+            <el-checkbox-group v-model="qwe">
+              <el-checkbox label="lastTime" name="lastTime">购买礼包</el-checkbox>
+              <el-radio-group v-model="qwe" class="productRadio">
+                <el-radio label="0" >任意商品</el-radio>
+                <el-radio label="1" >特定商品</el-radio>
+              </el-radio-group>
+              <span class="selects">选择商品</span>
+            </el-checkbox-group>
+            <div class="first second">
+              <div class="listLine">
+                <img src="http://vod.q172.net/image/default/1FB2EA180FD04D689689880F40D1AD5A-6-2.png" class="lineImg">
+                <div class="lineDiv">dsadasdasdasdasd</div>
+              </div>
+            </div>
+            <!--    购买商品次数      -->
+            <el-checkbox-group v-model="qwe" class="marginBo">
+              <el-checkbox label="lastTime" name="lastTime">购买商品次数</el-checkbox>
+              <el-input class="inputMy"></el-input><span class="oneFont">次</span>
+            </el-checkbox-group>
+            <!--    团队销售额      -->
+            <el-checkbox-group v-model="qwe" class="marginBo">
+              <el-checkbox label="lastTime" name="lastTime">团队销售额</el-checkbox>
+              <el-input class="inputMy" style="margin-left: 38px"></el-input><span class="oneFont">元</span>
+            </el-checkbox-group>
+            <!--    直接购买身份      -->
+            <el-checkbox-group v-model="qwe" class="marginBo">
+              <el-checkbox label="lastTime" name="lastTime">直接购买身份</el-checkbox>
+              <el-select lass="inputMy" style="margin-left: 24px;width: 140px"></el-select>
+              <el-input class="inputMy inputT" placeholder="级别金额" ></el-input><span class="oneFont">元</span>
+              <el-input class="inputMy inputT" placeholder="赠送金额" ></el-input><span class="oneFont">元</span>
+            </el-checkbox-group>
+            <!--    直邀等级数量      -->
+            <el-checkbox-group v-model="qwe" class="marginBo">
+              <el-checkbox label="lastTime" name="lastTime">直邀等级数量</el-checkbox>
+              <el-input class="inputMy inputT" ></el-input><span class="oneFont">人</span>
+              <el-select lass="inputMy" style="margin-left: 24px;width: 140px"  placeholder="请选择分销等级"></el-select>
+            </el-checkbox-group>
+            <!--    团队等级数量      -->
+            <el-checkbox-group v-model="qwe" class="marginBo" style="display: flex">
+              <el-checkbox label="lastTime" name="lastTime">团队等级数量</el-checkbox>
+              <div >
+                <div>
+                  <el-input class="inputMy inputT" ></el-input><span class="oneFont">人</span>
+                  <el-select lass="inputMy" style="margin-left: 24px;width: 140px"  placeholder="请选择等级"></el-select>
+                  <span class="addSpan">添加</span>
                 </div>
-                <div class="tr">
-                  <div class="td">
-                    <el-select class="widthmbx"></el-select>
-                  </div>
-                  <div class="td">
-                    <el-input class="widthmbx"></el-input>
-                  </div>
-                  <div class="td">
-                    <el-input class="widthmbx"></el-input>
-                  </div>
-                  <div class="td" style="width: 125px">
-                    <img src="@/assets/img/mydel.png" style="cursor:pointer;">
-                  </div>
-                </div>
-                <el-button type="primary"  style="margin-top: 20px" >确定</el-button>
+              </div>
+            </el-checkbox-group>
           </div>
-        <block>
-
         </block>
+
+<!--        <block>-->
+<!--          <div class="amu">-->
+<!--            <div class="th">-->
+<!--              <div class="td">字段类型</div>-->
+<!--              <div class="td">字段名称</div>-->
+<!--              <div class="td">初始内容</div>-->
+<!--              <div class="td" style="width: 125px">操作</div>-->
+<!--            </div>-->
+<!--            <div class="tr">-->
+<!--              <div class="td">-->
+<!--                <el-select class="widthmbx"></el-select>-->
+<!--              </div>-->
+<!--              <div class="td">-->
+<!--                <el-input class="widthmbx"></el-input>-->
+<!--              </div>-->
+<!--              <div class="td">-->
+<!--                <el-input class="widthmbx"></el-input>-->
+<!--              </div>-->
+<!--              <div class="td" style="width: 125px">-->
+<!--                <img src="@/assets/img/mydel.png" style="cursor:pointer;">-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <el-button type="primary"  style="margin-top: 20px" >确定</el-button>-->
+<!--          </div>-->
+<!--        </block>-->
       </el-form-item>
 
         <el-form-item  label="佣金发放限制：" class="marginLRS divFlex">
