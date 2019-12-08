@@ -141,4 +141,14 @@ input[type="number"]{
   width: 205px;
   height: 205px;
 }
+
+.funpage{
+  .el-tabs__header{
+    margin-bottom: 0;
+  }
+  .el-tabs__nav-wrap::after{
+    display: none;
+  }
+}
+
 </style>

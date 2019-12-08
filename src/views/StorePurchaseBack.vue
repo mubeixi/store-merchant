@@ -1,15 +1,15 @@
 <template>
-  <div class="home-wrap">
+  <div class="home-wrap funpage" v-infinite-scroll="loadInfo">
 
     <div class="container">
-      <div class="tabs">
+      <div class="tabs" style="background: white;padding: 0 10px;margin-bottom: 15px">
         <el-tabs v-model="status" @tab-click="handleClick">
           <el-tab-pane :label="tab.label" :name="tab.val" v-for="(tab,idx) in tabConf"></el-tab-pane>
 <!--          <el-tab-pane label="已售完" name="2"></el-tab-pane>-->
 <!--          <el-tab-pane label="已下架" name="3"></el-tab-pane>-->
         </el-tabs>
       </div>
-      <div class="lists" v-infinite-scroll="loadInfo" infinite-scroll-immediate="true" style="overflow:auto">
+      <div class="lists">
         <div class="item" v-for="(apply,idx1) in applys" :key="idx1" >
           <div class="head flex">
             <div class="info flex flex1">
@@ -66,7 +66,20 @@
 <!--                  <el-button size="small" @click="showPayDialog(apply,idx1)" class="acion-btn" type="primary">保存库存变动</el-button>-->
 <!--                </div>-->
                 <div class="line10" v-if="inArray(apply.status,[35])">
-                  <el-button size="small" @click="payApplyFn(apply,idx1)" class="acion-btn" type="success">确认收款</el-button>
+                  <el-popover
+                    placement="top"
+                    width="160"
+                    trigger="manual"
+                    v-model="apply.checkVisible"
+                  >
+                    <p>是否确认收款?</p>
+                    <div style="text-align: right; margin: 0">
+                      <el-button size="mini" type="text" @click="apply.checkVisible = false">取消</el-button>
+                      <el-button type="primary" size="mini" @click="payApplyFn(apply,idx1)">确定</el-button>
+                    </div>
+                    <el-button slot="reference" size="small" @click.prevent="apply.checkVisible = true"  class="acion-btn" type="success">取消</el-button>
+                  </el-popover>
+
                 </div>
 <!--                <div class="line10" v-if="inArray(apply.status,[21])">-->
 <!--                  <el-button size="small" @click="recallApply(apply,idx1)" class="acion-btn" type="warning">撤回</el-button>-->
@@ -78,12 +91,36 @@
 <!--                  <el-button size="small"  @click="submitAplly(apply,idx1)" class="acion-btn" type="success">重新提交</el-button>-->
 <!--                </div>-->
                 <div class="line10" v-if="inArray(apply.status,[31])">
-                  <el-button size="small" @click="cancelFn(apply,idx1)" class="acion-btn" type="danger">取消</el-button>
+                  <el-popover
+                    placement="top"
+                    width="160"
+                    trigger="manual"
+                    v-model="apply.cancelVisible"
+                  >
+                    <p>是否取消该订单?</p>
+                    <div style="text-align: right; margin: 0">
+                      <el-button size="mini" type="text" @click="apply.cancelVisible = false">取消</el-button>
+                      <el-button type="primary" size="mini" @click="cancelFn(apply,idx1)">确定</el-button>
+                    </div>
+                    <el-button slot="reference" size="small" @click.prevent="apply.cancelVisible = true"  class="acion-btn" type="danger">取消</el-button>
+                  </el-popover>
+
                 </div>
 
                 <div class="line10" v-if="inArray(apply.status,[32])">
-                  <el-button @click="openSendDialog(apply,idx1)" size="small" class="acion-btn" type="primary">发货</el-button>
-
+                  <el-popover
+                    placement="top"
+                    width="160"
+                    trigger="manual"
+                    v-model="apply.sendVisible"
+                  >
+                    <p>是否确认发货?</p>
+                    <div style="text-align: right; margin: 0">
+                      <el-button size="mini" type="text" @click="apply.sendVisible = false">取消</el-button>
+                      <el-button type="primary" size="mini" @click="openSendDialog(apply,idx1)">确定</el-button>
+                    </div>
+                    <el-button slot="reference" size="small" @click.prevent="apply.sendVisible = true"  class="acion-btn" type="primary">发货</el-button>
+                  </el-popover>
                 </div>
                 <div @click="showLogistics(apply)" v-if="inArray(apply.status,[34,35,36])" class="font12 graytext2 logistics" >查看物流</div>
               </td>
@@ -370,6 +407,7 @@
         }
 
         openSendDialog(apply,idx){
+            apply.sendVisible = false
             this.sendDialogInstance.innerVisible = true
 
             this.sendDialogInstance.apply = apply
@@ -488,8 +526,7 @@
         }
 
         async payApplyFn(apply,idx){
-
-
+            apply.checkVisible = false
             this.ajax_idx = idx
             let rt = false
             await store_prod_back_order_confirm({order_id:apply.id}).then(res=>{
@@ -680,6 +717,7 @@
         }
 
         async cancelFn(apply,idx){
+            apply.cancelVisible = false
             this.ajax_idx = idx
             await store_prod_back_order_cancel({order_id:apply.id}).then(res=>{
                 // apply.Order_Status =  25
@@ -885,6 +923,7 @@
 
         async loadInfo(){
             if(this.ajax_idx!==null)return
+            if(this.paginate.finish)return
             const loadInstacne = this.$loading()
             await storeProductBackOrderList({...this.paginate,status:this.status}).then(res=>{
 
@@ -896,14 +935,11 @@
                     return;
                 }
 
-                // var tempStore = {
-                //     headimg:'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=1373026939,1825269194&fm=173&app=25&f=JPEG?w=500&h=402&s=118B99550496CBDE52072DEF0300E01A',
-                //     title:'店铺名称',
-                //     Stores_ID:10
-                // }
                 let rt = res.data.map(item=>{
 
-
+                    item.sendVisible = false
+                    item.cancelVisible = false
+                    item.checkVisible = false
                     for(var goods of item.prod_list){
                         if(typeof goods.attr_info !='object'){
                             goods.attr_info = goods.attr_info
@@ -960,6 +996,17 @@
     cursor pointer
 </style>
 <style lang="less" scoped>
+.home-wrap{
+  position: absolute;
+  height: 100vh;
+  width: 100%;
+  overflow-y: scroll;
+  background: #f2f2f2;
+  overflow-x: hidden;
+  &::-webkit-scrollbar{
+    display: none;
+  }
+}
 .dialog-container{
   .row{
     display: flex;
@@ -976,17 +1023,18 @@
 
 .container{
   width: 1200px;
-  margin: 77px auto;
+  margin: 0px auto;
   .tabs{
     /*margin-bottom: 10px;*/
   }
   .lists{
     .item{
       border: 1px solid #EDEDED;
+      background: white;
       margin-bottom: 30px;
       .head{
         height: 65px;
-        background: #f7f7f7;
+        background: #f8f8f8;
         align-items: center;
         padding: 0 15px;
         .info{

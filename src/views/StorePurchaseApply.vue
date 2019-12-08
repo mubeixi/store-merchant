@@ -3,7 +3,7 @@
     <div class="container">
 <!--      -->
 <!--      -->
-      <div class="lists"    >
+      <div class="lists">
         <div class="item" v-for="(apply,idx1) in applys" :key="idx1" >
           <div class="head flex">
             <div class="info flex flex1">
@@ -740,7 +740,7 @@
         async loadInfo(){
 
             if(this.ajax_idx!==null)return
-            // if(this.paginate.finish)return
+            if(this.paginate.finish)return
             const loadInstacne = this.$loading()
             await getStorePurchaseApply({...this.paginate}).then(res=>{
 
@@ -833,6 +833,7 @@
   width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
+  background: #f2f2f2;
   &::-webkit-scrollbar{
     display: none;
   }
@@ -848,7 +849,7 @@
       margin-bottom: 30px;
       .head{
         height: 65px;
-        background: #f7f7f7;
+        background: #f8f8f8;
         align-items: center;
         padding: 0 15px;
         .info{
