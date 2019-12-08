@@ -69,7 +69,17 @@
                   <el-button size="small" @click="payApply(apply,idx1)" class="acion-btn" type="success">支付</el-button>
                 </div>
                 <div class="line10" v-if="inArray(apply.Order_Status,[21])">
-                  <el-button size="small" @click="recallApply(apply,idx1)" class="acion-btn" type="warning">撤回</el-button>
+                  <el-popconfirm
+                    v-model="recallVisible"
+                  >
+                    <div style="text-align: right; margin: 0">
+                      <el-button size="mini" type="text" @click="recallVisible = false">取消</el-button>
+                      <el-button type="primary" size="mini" @click="recallApply(apply,idx1)">确定</el-button>
+                    </div>
+                    <el-button slot="reference" size="small"  class="acion-btn" type="warning">撤回</el-button>
+<!--                    -->
+                  </el-popconfirm>
+
                 </div>
                 <div class="line10" v-if="inArray(apply.Order_Status,[23])">
                   <el-button @click="completed(apply,idx1)" size="small" class="acion-btn line8" type="primary">确认收货</el-button>
@@ -487,7 +497,9 @@
             },100)
         }
 
+        recallVisible = false
         async recallApply(apply,idx){
+            this.recallVisible = false
             this.ajax_idx = idx
             await recallStorePurchaseApply({order_id:apply.Order_ID}).then(res=>{
                 // apply.Order_Status =  25
