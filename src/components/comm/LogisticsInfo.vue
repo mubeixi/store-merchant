@@ -69,7 +69,7 @@
         ajax:false,
         out_order_no:'',
         express:'',
-        express_list:['顺丰','申通','中通']
+        express_list:['顺丰','申通','中通','韵达']
       };
     },
     watch: {

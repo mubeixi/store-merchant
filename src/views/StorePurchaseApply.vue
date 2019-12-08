@@ -71,7 +71,7 @@
                 <div class="line10" v-if="inArray(apply.Order_Status,[21])">
                   <el-button size="small" @click="recallApply(apply,idx1)" class="acion-btn" type="warning">撤回</el-button>
                 </div>
-                <div class="line10" v-if="inArray(apply.Order_Status,[23])">
+                <div class="line10" v-if="1 || inArray(apply.Order_Status,[23])">
                   <el-button @click="completed(apply,idx1)" size="small" class="acion-btn line8" type="primary">确认收货</el-button>
                   <div @click="showLogistics(apply)" class="font12 graytext2 logistics" >查看物流</div>
                 </div>
@@ -504,14 +504,14 @@
 
         showLogistics(apply){
 
-            let {out_order_no='',Express=''} = {...apply.Order_Shipping,out_order_no:apply.Order_ShippingID}
-
-            if(!out_order_no || !Express)return;
+            // let {out_order_no='',Express=''} = {...apply.Order_Shipping,out_order_no:apply.Order_ShippingID}
+            //
+            // if(!out_order_no || !Express)return;
             let logisticsComponent = this.$refs.logistics
-            logisticsComponent.setExpress(Express)
-            logisticsComponent.setOutOrderNo(out_order_no)
+            // logisticsComponent.setExpress(Express)
+            // logisticsComponent.setOutOrderNo(out_order_no)
             logisticsComponent.show()
-            logisticsComponent.search()
+            // logisticsComponent.search()
         }
 
         setValFn(e,apply,goods,idx){
