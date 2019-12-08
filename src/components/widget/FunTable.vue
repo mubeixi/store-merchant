@@ -188,8 +188,7 @@
         })
         paginateOpt //分页配置
         @Prop({
-            type:String,
-            require:true
+            type:[String,Boolean],
         })
         act //请求的数据的方法
         @Prop({
@@ -291,13 +290,13 @@
                 throw new Error('act参数必传')
                 return
             }
-            //注释会覆盖原来数据 是在找不到哪里发送的请求
+
             commonReq(this.act,postData).then(res=>{
                 //看是否需要过滤
                 if(this.__list_filter_func){
-                    //this.lists = this.__list_filter_func(res)
+                    this.lists = this.__list_filter_func(res)
                 }else{
-                   //this.lists = res.data
+                   this.lists = res.data
                 }
 
             })

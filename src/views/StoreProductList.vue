@@ -13,7 +13,6 @@
       <fun-table
         :columns="dataTableOpt.columns"
         :dataList="dataTableOpt.dataList"
-        :act="dataTableOpt.act"
         :totalCount="dataTableOpt.totalCount"
         :pageSize="dataTableOpt.pageSize"
         :is_paginate="dataTableOpt.is_paginate"
@@ -784,7 +783,7 @@
         activeName='1'
         dataTableOpt = {
             act : 'get_self_store_prod',
-            dataList:false,
+            dataList:[],
             page:1,
             totalCount:100,
             pageSize:10,

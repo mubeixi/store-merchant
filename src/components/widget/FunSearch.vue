@@ -78,9 +78,9 @@
             if(val==='mini') return '12px'
         }
 
-        reset() {
+        reset(is_init) {
             this.columnsData = []
-            this.$emit('reset');
+
             this.columns.map(v => {
                 if (v.search !== false) {
                     if (!v.search) {
@@ -107,6 +107,13 @@
                 }
                 //return v;
             })
+
+
+            if(!is_init){
+                this.$emit('reset');
+            }
+
+
         }
 
         submit() {
@@ -135,7 +142,7 @@
 
 
         mounted() {
-            this.reset();
+            this.reset(true);
         }
 
 

@@ -158,7 +158,7 @@
         activeName='1'
         dataTableOpt = {
             act : 'get_self_store_prod',
-            dataList:false,
+            dataList:[],
             page:1,
             totalCount:100,
             pageSize:10,
