@@ -71,14 +71,14 @@
                     placement="top"
                     width="160"
                     trigger="manual"
-                    v-model="apply.applyVisible"
+                    v-model="apply.payVisible"
                   >
                     <p>是否支付此订单?</p>
                     <div style="text-align: right; margin: 0">
-                      <el-button size="mini" type="text" @click="apply.applyVisible = false">取消</el-button>
+                      <el-button size="mini" type="text" @click="apply.payVisible = false">取消</el-button>
                       <el-button type="primary" size="mini" @click="payApply(apply,idx1)">确定</el-button>
                     </div>
-                    <el-button slot="reference" size="small" @click.prevent="apply.applyVisible = true"  class="acion-btn" type="success">支付</el-button>
+                    <el-button slot="reference" size="small" @click.prevent="apply.payVisible = true"  class="acion-btn" type="success">支付</el-button>
                   </el-popover>
 
                 </div>
@@ -179,7 +179,7 @@
           </el-form-item>
         </el-form>
         <div style="text-align: right">
-          <el-button type="success"  @click="payDialogInstance.callFn">确定</el-button>
+          <el-button type="success" :loading="payDialogInstance.loading"  @click="payDialogInstance.callFn">{{payDialogInstance.loading?'正在支付':'确认收货'}}</el-button>
         </div>
       </div>
 
@@ -291,6 +291,7 @@
             idx:null,
             pwd:'',
             pwdError:'',
+            loading:false,
             innerVisible:false
         }
 
@@ -320,6 +321,7 @@
 
         //第一次支付
         async payApply(apply,idx){
+            apply.payVisible = false
             this.payDialogInstance.tip = `需要支付<span class="padding4-c font14" style="color:red">￥<span class="font16">${apply.Order_TotalPrice}</span></span>的货款`
             this.showPayDialog(apply,idx)
         }
@@ -379,11 +381,14 @@
             this.ajax_idx = idx
 
             let rt = false
+            this.payDialogInstance.loading = true
             await this.payEditFn().then(res=>{
                 rt = true
             }).catch(e=>{
 
             })
+
+            this.payDialogInstance.loading = false
 
             if(rt){
                 await this.refreshApplyInfo(idx)
@@ -411,9 +416,10 @@
             this.payDialogInstance.pwd = ''
             this.payDialogInstance.apply = apply
             this.payDialogInstance.idx = idx
-            this.payDialogInstance.innerVisible = true
             this.payDialogInstance.pwdError = ''
+            this.payDialogInstance.loading = false
             this.payDialogInstance.callFn = this.payApplyFn
+            this.payDialogInstance.innerVisible = true
         }
 
 
@@ -757,7 +763,7 @@
                     item.cancelVisible = false;//取消
                     item.submitVisible = false;//重新提交
                     item.completedVisible = false; //确认收货
-                    item.applyVisible = false;//支付
+                    item.payVisible = false;//支付
                     for(var goods of item.prod_list){
                         if(goods.attr_info){
                             goods.attr_info = JSON.parse(goods.attr_info)
