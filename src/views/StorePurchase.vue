@@ -319,11 +319,17 @@
             // let prod_json = this.formNumDataByApply(this.payDialogInstance.apply)
 
             orderPay({Order_ID:Order_ID,pay_type:'remainder_pay',pay_money:Order_TotalPrice,user_pay_password:pwd}).then(res=>{
+                fun.success({msg:'支付成功'})
                 this.$router.push({
                     name:'StorePurchaseApply'
                 })
             }).catch(e=>{
-
+                fun.error({msg:'支付失败'})
+                setTimeout(()=>{
+                    this.$router.push({
+                        name:'StorePurchaseApply'
+                    })
+                },500)
             })
 
 

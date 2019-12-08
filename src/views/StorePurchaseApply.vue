@@ -9,7 +9,7 @@
             <div class="info flex flex1">
               <div class="store-pic" :style="{backgroundImage:'url('+apply.supplier_img+')'}"></div>
               <div class="store-title">{{apply.supplier_name}}</div>
-              <div class="action" >(<span @click="showStore(apply.store)" class="action-item">查看信息</span>
+              <div class="action" >(<span @click="showStore(apply.active_id)" class="action-item">查看信息</span>
                 <template v-if="inArray(apply.Order_Status,[20,22,25])">
                   <span  class="padding4-c">/</span><span class="action-item" @click="changeChannel(apply)" >修改渠道</span>
                 </template>
@@ -231,7 +231,9 @@
         </div>
         <div class="row">
           <div class="label">门店地址:</div>
-          <div class="text">{{storeDialogInstance.info.Stores_Province_name}}{{storeDialogInstance.info.Stores_City_name}}{{storeDialogInstance.info.Stores_Area_name}}{{storeDialogInstance.info.Stores_Address}}</div>
+          <div class="text">{{storeDialogInstance.info.Stores_Province_name}}{{storeDialogInstance.info.Stores_City_name}}{{storeDialogInstance.info.Stores_Area_name}}{{storeDialogInstance.info.Stores_Address}}
+            <a v-if="storeDialogInstance.info.open" target="_blank" :href="storeDialogInstance.info.open"><i style="font-size: 20px;color:#F43131;"  class="el-icon-location" /></a>
+          </div>
         </div>
       </div>
 
@@ -732,10 +734,22 @@
             this.storeDialogInstance.innerVisible = false
             this.storeDialogInstance.info = {}
         }
-        showStore(store){
-            let idx = findArrayIdx(this.stores,{Stores_ID:store.Stores_ID})
+        showStore(store_id){
+            if(!store_id){
+                fun.error({msg:'该订单为向平台进货'})
+                return;
+            }
+
+            let idx = findArrayIdx(this.stores,{Stores_ID:store_id})
             if(idx!==false){
-                this.storeDialogInstance.info = this.stores[idx]
+
+                let info = this.stores[idx]
+                let open = ''
+                if(info.wx_lng && info.wx_lat){
+                    open = `https://uri.amap.com/marker?position=${info.wx_lng},${info.wx_lat}`
+                }
+
+                this.storeDialogInstance.info = {...this.stores[idx],open}
                 this.storeDialogInstance.innerVisible = true
             }else{
                 fun.error({msg:'店铺信息错误'})
