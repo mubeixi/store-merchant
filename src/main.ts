@@ -32,8 +32,6 @@ require('./assets/js/icon');
 
 Vue.config.productionTip = false;
 
-
-
 new Vue({
   mixins: [doLoginMixin],
   router,

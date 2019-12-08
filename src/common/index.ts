@@ -49,9 +49,11 @@ import {
   TimelineItem,
   Row,
   Tag,
-  Image
+  Image,
+  Popover
 } from 'element-ui';
 
+Vue.use(Popover)
 Vue.use(Tag)
 Vue.use(Row)
 Vue.use(Timeline)

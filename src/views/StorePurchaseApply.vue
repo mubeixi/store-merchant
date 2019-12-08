@@ -1,8 +1,9 @@
 <template>
-  <div class="home-wrap">
+  <div class="home-wrap" v-infinite-scroll="loadInfo">
     <div class="container">
-
-      <div class="lists" v-infinite-scroll="loadInfo" infinite-scroll-immediate="true" style="overflow:auto">
+<!--      -->
+<!--      -->
+      <div class="lists"    >
         <div class="item" v-for="(apply,idx1) in applys" :key="idx1" >
           <div class="head flex">
             <div class="info flex flex1">
@@ -66,32 +67,90 @@
 <!--                  <el-button size="small" @click="showPayDialog(apply,idx1)" class="acion-btn" type="primary">保存库存变动</el-button>-->
 <!--                </div>-->
                 <div class="line10" v-if="inArray(apply.Order_Status,[20])">
-                  <el-button size="small" @click="payApply(apply,idx1)" class="acion-btn" type="success">支付</el-button>
-                </div>
-                <div class="line10" v-if="inArray(apply.Order_Status,[21])">
-                  <el-popconfirm
-                    v-model="recallVisible"
+                  <el-popover
+                    placement="top"
+                    width="160"
+                    trigger="manual"
+                    v-model="apply.applyVisible"
                   >
+                    <p>是否支付此订单?</p>
                     <div style="text-align: right; margin: 0">
-                      <el-button size="mini" type="text" @click="recallVisible = false">取消</el-button>
-                      <el-button type="primary" size="mini" @click="recallApply(apply,idx1)">确定</el-button>
+                      <el-button size="mini" type="text" @click="apply.applyVisible = false">取消</el-button>
+                      <el-button type="primary" size="mini" @click="payApply(apply,idx1)">确定</el-button>
                     </div>
-                    <el-button slot="reference" size="small"  class="acion-btn" type="warning">撤回</el-button>
-<!--                    -->
-                  </el-popconfirm>
+                    <el-button slot="reference" size="small" @click.prevent="apply.applyVisible = true"  class="acion-btn" type="success">支付</el-button>
+                  </el-popover>
 
                 </div>
+                <div class="line10" v-if="inArray(apply.Order_Status,[21])">
+                  <el-popover
+                    placement="top"
+                    width="160"
+                    trigger="manual"
+                    v-model="apply.recallVisible"
+                  >
+                    <p>撤回该批发订单?</p>
+                    <div style="text-align: right; margin: 0">
+                      <el-button size="mini" type="text" @click="apply.recallVisible = false">取消</el-button>
+                      <el-button type="primary" size="mini" @click="recallApply(apply,idx1)">确定</el-button>
+                    </div>
+                    <el-button slot="reference" size="small" @click.prevent="apply.recallVisible = true"  class="acion-btn" type="warning">撤回</el-button>
+                  </el-popover>
+                </div>
                 <div class="line10" v-if="inArray(apply.Order_Status,[23])">
-                  <el-button @click="completed(apply,idx1)" size="small" class="acion-btn line8" type="primary">确认收货</el-button>
-                  <div @click="showLogistics(apply)" class="font12 graytext2 logistics" >查看物流</div>
+                  <el-popover
+                    placement="top"
+                    width="160"
+                    trigger="manual"
+                    v-model="apply.completedVisible"
+                  >
+                    <p>是否确认收货?</p>
+                    <div style="text-align: right; margin: 0">
+                      <el-button size="mini" type="text" @click="apply.completedVisible = false">取消</el-button>
+                      <el-button type="primary" size="mini" @click="completed(apply,idx1)">确定</el-button>
+                    </div>
+                    <el-button slot="reference" @click.prevent="apply.completedVisible = true"  size="small" class="acion-btn line8" type="primary">确认收货</el-button>
+
+                  </el-popover>
+
+
+                  <div @click.prevent="showLogistics(apply)" class="font12 graytext2 logistics" >查看物流</div>
                 </div>
                 <!--如果在修改库存，则隐藏重新提交按钮。只有先保存库存，才出现-->
 <!--                && !apply.is_change_stock-->
                 <div class="line10" v-if="inArray(apply.Order_Status,[22,25])">
-                  <el-button size="small"  @click="submitAplly(apply,idx1)" class="acion-btn" type="success">重新提交</el-button>
+                  <el-popover
+                    placement="top"
+                    width="160"
+                    trigger="manual"
+                    v-model="apply.submitVisible"
+                  >
+                    <p>确认提交?</p>
+                    <div style="text-align: right; margin: 0">
+                      <el-button size="mini" type="text" @click="apply.submitVisible = false">取消</el-button>
+                      <el-button type="primary" size="mini" @click="submitAplly(apply,idx1)">确定</el-button>
+                    </div>
+                    <el-button slot="reference" @click.prevent="apply.submitVisible = true"  size="small" class="acion-btn" type="success">重新提交</el-button>
+
+                  </el-popover>
+
                 </div>
                 <div class="line10" v-if="inArray(apply.Order_Status,[20,21,25])">
-                  <el-button size="small" @click="cancelApply(apply,idx1)" class="acion-btn" type="danger">取消</el-button>
+                  <el-popover
+                    placement="top"
+                    width="160"
+                    trigger="manual"
+                    v-model="apply.cancelVisible"
+                  >
+                    <p>是否取消该订单?</p>
+                    <div style="text-align: right; margin: 0">
+                      <el-button size="mini" type="text" @click="apply.cancelVisible = false">取消</el-button>
+                      <el-button type="primary" size="mini" @click="cancelApply(apply,idx1)">确定</el-button>
+                    </div>
+                    <el-button slot="reference" @click.prevent="apply.cancelVisible = true"  size="small" class="acion-btn" type="danger">取消</el-button>
+
+                  </el-popover>
+
                 </div>
               </td>
             </tr>
@@ -308,9 +367,12 @@
 
         async payApplyFn(){
 
+            let checkRT = false
             this.$refs.payForm.validate((valid) => {
-                if (!valid)return false
+                console.log('表单校验结果',valid)
+                if (valid)checkRT = true
             })
+            if(!checkRT)return;
 
             let {idx,pwd} = this.payDialogInstance
             //
@@ -322,21 +384,6 @@
             }).catch(e=>{
 
             })
-            //
-            // let {Order_ID,Order_TotalPrice} = this.payDialogInstance.apply
-            //
-            // let postData = {
-            //     pay_type:'remainder_pay',
-            //     user_pay_password: pwd,
-            //     Order_ID: Order_ID,
-            //     pay_money: Order_TotalPrice
-            // }
-            // await orderPay(postData,{text:'支付中'}).then(res=>{
-            //     this.payDialogCancel()
-            //     // this.payDialogInstance.pwdError = '密码错误'
-            // }).catch(e=>{
-            //     this.payDialogInstance.pwdError = e.msg
-            // })
 
             if(rt){
                 await this.refreshApplyInfo(idx)
@@ -373,7 +420,7 @@
         paginate = {
             page:1,
             finish:false,
-            pageSize:20,
+            pageSize:999,
             totalCount:0
         }
 
@@ -404,7 +451,7 @@
          * @param idx
          */
         async completed(apply,idx){
-
+            apply.completedVisible = false
             this.ajax_idx = idx
             await store_pifa_order_completed({order_id:apply.Order_ID}).then(res=>{
 
@@ -497,9 +544,15 @@
             },100)
         }
 
-        recallVisible = false
+        bindRecallFn(apply,idx){
+            console.log(apply,idx)
+            apply.recallVisible = true
+
+        }
+        //
+        // recallVisible = false
         async recallApply(apply,idx){
-            this.recallVisible = false
+            apply.recallVisible = false
             this.ajax_idx = idx
             await recallStorePurchaseApply({order_id:apply.Order_ID}).then(res=>{
                 // apply.Order_Status =  25
@@ -685,7 +738,9 @@
         }
 
         async loadInfo(){
+
             if(this.ajax_idx!==null)return
+            // if(this.paginate.finish)return
             const loadInstacne = this.$loading()
             await getStorePurchaseApply({...this.paginate}).then(res=>{
 
@@ -697,14 +752,12 @@
                     return;
                 }
 
-                // var tempStore = {
-                //     headimg:'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=1373026939,1825269194&fm=173&app=25&f=JPEG?w=500&h=402&s=118B99550496CBDE52072DEF0300E01A',
-                //     title:'店铺名称',
-                //     Stores_ID:10
-                // }
                 let rt = res.data.map(item=>{
-
-
+                    item.recallVisible = false;//显示撤回按钮
+                    item.cancelVisible = false;//取消
+                    item.submitVisible = false;//重新提交
+                    item.completedVisible = false; //确认收货
+                    item.applyVisible = false;//支付
                     for(var goods of item.prod_list){
                         if(goods.attr_info){
                             goods.attr_info = JSON.parse(goods.attr_info)
@@ -713,7 +766,6 @@
 
                     return {...item}
                 })
-                console.log(objTranslate(rt))
 
                 if(this.paginate.page===1){
                     this.applys = rt
@@ -732,6 +784,7 @@
 
         async created(){
 
+            // this.loadInfo()
             getStoreList({pageSize:999}).then(res=>{
                 this.stores = res.data
             })
@@ -774,10 +827,22 @@
     }
   }
 }
+.home-wrap{
+  position: absolute;
+  height: 100vh;
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  &::-webkit-scrollbar{
+    display: none;
+  }
+}
 .container{
   width: 1200px;
-  margin: 87px auto;
+  margin: 0px auto;
+  position: relative;
   .lists{
+
     .item{
       border: 1px solid #EDEDED;
       margin-bottom: 30px;
