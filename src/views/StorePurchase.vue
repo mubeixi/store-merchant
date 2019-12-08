@@ -112,6 +112,34 @@
       </div>
       <span slot="footer" class="dialog-footer"></span>
     </div>
+
+    <el-dialog
+      :visible.sync="payDialogInstance.innerVisible"
+      title="订单支付"
+      width="500px"
+      center
+      :close-on-press-escape="false"
+      :close-on-click-modal="false"
+      @close="payDialogCancel"
+      append-to-body
+    >
+      <div class="pay-container-wrap">
+
+        <el-form label-width="100px" class="form" :model="payDialogInstance" :rules="payRules" ref="payForm">
+          <el-form-item label="付款信息" v-if="payDialogInstance.tip">
+            <div v-html="payDialogInstance.tip"></div>
+          </el-form-item>
+          <el-form-item label="支付密码" prop="pwd" :error="payDialogInstance.pwdError" >
+            <el-input  v-model="payDialogInstance.pwd" placeholder="请输入支付密码" type="password" ></el-input>
+          </el-form-item>
+        </el-form>
+        <div style="text-align: right">
+          <el-button type="success"  @click="payDialogInstance.callFn">确定</el-button>
+        </div>
+      </div>
+
+    </el-dialog>
+
     <el-dialog
       :visible.sync="dialogInstance.innerVisible"
       title="选择商品属性"
@@ -168,7 +196,7 @@
         delCart,
         getPifaProductList,
         createOrder,
-        getProductCategory, getStoreDetail
+        getProductCategory, getStoreDetail, subStorePurchaseApply, orderPay
     } from '../common/fetch';
     import {
         numberSort,
@@ -186,6 +214,8 @@
 
     const Stores_ID = Cookies.get('Stores_ID')
     const User_ID = Cookies.get('Stores_Bind_User_ID')
+
+    const noop = ()=>{}
 
     @Component({
         watch:{
@@ -233,6 +263,98 @@
             pageSize:20,
             totalCount:0
         }
+
+
+        payRules = {
+            pwd: [
+                { required: true, message: '请输入密码', trigger: 'blur' },
+                { min: 6, message: '支付密码长度不小于6', trigger: 'blur' }
+            ],
+        }
+        payDialogInstance = {
+            callFn:noop,
+            tip:'',
+            apply:null,
+            idx:null,
+            pwd:'',
+            pwdError:'',
+            innerVisible:false
+        }
+
+
+        //第一次支付
+        async payApply(apply,idx){
+            this.payDialogInstance.tip = `需要支付<span class="padding4-c font14" style="color:red">￥<span class="font16">${apply.Order_TotalPrice}</span></span>的货款`
+            this.showPayDialog(apply,idx)
+        }
+
+        formNumDataByApply(apply){
+            console.log(apply)
+            let prod_attr = {}
+            for(var goods of apply.prod_list){
+                if(goods.prod_count<1){
+                    fun.error({msg:'产品至少选择1个'})
+                    return;
+                }
+                if(goods.attr_id){
+                    prod_attr[goods.prod_id] = {[goods.attr_id]:goods.prod_count}
+                }else{
+                    prod_attr[goods.prod_id] = {'0':goods.prod_count}
+                }
+            }
+            return JSON.stringify(prod_attr)
+        }
+
+
+        async payApplyFn(){
+
+            this.$refs.payForm.validate((valid) => {
+                if (!valid)return false
+            })
+
+            let {idx,pwd} = this.payDialogInstance
+
+            let {Order_ID,Order_TotalPrice} = this.payDialogInstance.apply
+
+            // let prod_json = this.formNumDataByApply(this.payDialogInstance.apply)
+
+            orderPay({Order_ID:Order_ID,pay_type:'remainder_pay',pay_money:Order_TotalPrice,user_pay_password:pwd}).then(res=>{
+                this.$router.push({
+                    name:'StorePurchaseApply'
+                })
+            }).catch(e=>{
+
+            })
+
+
+        }
+
+        payDialogCancel(){
+            this.payDialogInstance.innerVisible = false
+            this.payDialogInstance.apply = null
+            this.payDialogInstance.pwd = ''
+            this.payDialogInstance.pwdError = ''
+            this.payDialogInstance.callFn = noop
+            this.payDialogInstance.tip = ''//只能退出的时候重置
+        }
+
+        showPayDialog(apply,idx){
+            this.payDialogInstance.pwd = ''
+            this.payDialogInstance.apply = apply
+            // this.payDialogInstance.idx = idx
+            this.payDialogInstance.innerVisible = true
+            this.payDialogInstance.pwdError = ''
+            this.payDialogInstance.callFn = this.payApplyFn
+        }
+
+
+        paginate = {
+            page:1,
+            finish:false,
+            pageSize:20,
+            totalCount:0
+        }
+
 
         cates = []
         active_cate_idx = null
@@ -410,7 +532,7 @@
             let count = 0;
 
             //没有这个属性，也就是还没有选中这一行
-            console.log(this.dialogInstance.product.skujosn_new[idx1].sku)
+            // console.log(this.dialogInstance.product.skujosn_new[idx1].sku)
             // if(!this.dialogInstance.skuval.hasOwnProperty(this.dialogInstance.product.skujosn_new[idx1].sku)){
             //
             //
@@ -419,7 +541,7 @@
             // }
 
             let spec_info = {[this.dialogInstance.product.skujosn_new[idx1].sku]:this.dialogInstance.product.skujosn_new[idx1].val[idx2]};
-            console.log(spec_info)
+            // console.log(spec_info)
 
             //模拟一下，如果现有的规格加上现在这个，还能有数量。那么就可以被选中
             //直接用自己的属性覆盖上去，如果有同样一行的，就覆盖掉
@@ -681,9 +803,20 @@
                 this.carts.clear()
                 this.subLoading = false
 
-                this.$router.push({
-                    name:'StorePurchaseApply'
-                })
+                // Order_Fyepay: 0
+                // Order_ID: 313
+                // Order_Status: 20
+                // Order_TotalPrice: 11397
+                // Order_Type: "store_pifa"
+                // Order_Yebc: 11397
+                // desc: ""
+                let apply = res.data
+
+                //发起支付
+                this.showPayDialog(apply)
+                // this.$router.push({
+                //     name:'StorePurchaseApply'
+                // })
             },err=>{
                 this.subLoading = false
             })
@@ -741,13 +874,13 @@
 
             let Cate_ID = ''
 
-            // if(this.s1.hasOwnProperty(Category_ID) && this.s1.Category_ID){
-            //     Cate_ID = this.s1.Category_ID
-            // }
-            //
-            // if(this.s2.hasOwnProperty(Category_ID) && this.s2.Category_ID){
-            //     Cate_ID = this.s2.Category_ID
-            // }
+            if(this.s1.hasOwnProperty('Category_ID') && this.s1.Category_ID){
+                Cate_ID = this.s1.Category_ID
+            }
+
+            if(this.s2.hasOwnProperty('Category_ID') && this.s2.Category_ID){
+                Cate_ID = this.s2.Category_ID
+            }
 
             let postData = {Products_Name:this.keyword,...this.paginate,Cate_ID}
 
@@ -1117,7 +1250,7 @@
         height: 30px;
 
         min-width: 50px;
-        padding: 0 2px;
+        padding: 0 4px;
         line-height: 30px;
         text-align: center;
         border: 1px solid #e7e7e7;

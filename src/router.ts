@@ -73,7 +73,7 @@ const routerInstance = new Router({
       name:'StorePurchase',
       component: StorePurchase,
       meta:{
-        title:'选择进货渠道'
+        title:'进货'
       }
     },
     {
