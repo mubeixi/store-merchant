@@ -527,12 +527,13 @@
             //添加
             if(!cartInstance.add(goods))return;
 
+            console.log(goods)
             this.fly_img_url = goods.img_url
             this.isMove = true
             let _self = this
 
             let randId = Date.now()+goods.Products_ID
-            let eleStr = `<img src="${goods.ImgPath}" class="fly-pic" id="${randId}" style="{left:${this.curPosX}px,top:${this.curPosY}px}" />`
+            let eleStr = `<img src="${goods.img_url}" class="fly-pic" id="${randId}" style="{left:${this.curPosX}px,top:${this.curPosY}px}" />`
 
             let imgs = document.getElementById('imgs')
             imgs.innerHTML += eleStr;
