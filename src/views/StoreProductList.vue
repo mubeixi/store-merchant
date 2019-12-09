@@ -63,14 +63,14 @@
       </el-table>
     </el-dialog>
 
-    <div class="foot" v-show="cartsDialogInstance.footVisible">
-      <div class="count" style="cursor: pointer">
+    <div class="foot noselect" v-show="cartsDialogInstance.footVisible">
+      <div class="count" style="cursor: pointer" @click="cartDialogOpen">
         <!--          /{{paginate.totalCount}}-->
         <div class="text">
-          <span @click="cartDialogOpen"  v-show="!cartsDialogInstance.innerVisible">已选取<span class="danger-color">{{count_num}}</span>个商品</span>
-          <span @click="cartDialogCancel" v-show="cartsDialogInstance.innerVisible">已选取<span class="danger-color">{{count_num}}</span>个商品</span>
-          <i @click="cartDialogOpen"  v-show="!cartsDialogInstance.innerVisible" class="el-icon-arrow-up"></i>
-          <i @click="cartDialogCancel" v-show="cartsDialogInstance.innerVisible" class="el-icon-arrow-down"></i>
+          <span   v-show="!cartsDialogInstance.innerVisible">已选取<span class="danger-color">{{count_num}}</span>个商品</span>
+          <span  v-show="cartsDialogInstance.innerVisible">已选取<span class="danger-color">{{count_num}}</span>个商品</span>
+          <i   v-show="!cartsDialogInstance.innerVisible" class="el-icon-arrow-up"></i>
+          <i  v-show="cartsDialogInstance.innerVisible" class="el-icon-arrow-down"></i>
         </div>
       </div>
       <el-button class="sub-channel" @click="changeChannel" >退货渠道<span v-if="channelDialogInstance.channel">:{{channelDialogInstance.channel=='shop'?'平台':'门店'}}</span><i class="el-icon-arrow-up"></i></el-button>
@@ -81,7 +81,7 @@
     <div class="cartsDialog" v-show="cartsDialogInstance.innerVisible"  v-loading="cartsDialogInstance.loading">
       <div class="carts-dialog-container" v-if="carts.lists.length>0" >
         <div class="goods-item" v-for="(goods,idx) of carts.lists" :key="idx"  >
-          <div class="cover" :style="{backgroundImage: 'url('+goods.ImgPath+')'}"><i @click="cartRemoveFn(goods)" class="el-icon-error"></i></div>
+          <div class="cover" :style="{backgroundImage: 'url('+goods.img_url+')'}"><i @click="cartRemoveFn(goods)" class="el-icon-error"></i></div>
           <div class="title">{{goods.Products_Name}}</div>
           <!--{{formatSpec(goods.spec_key,',')}}-->
           <div class="attr">{{goods.Productsattrstrval||'无规格'}}</div>
@@ -359,6 +359,7 @@
             console.log(postData)
             storeProductBack(postData,{text:'提交退货请求'}).then(res=>{
 
+                cartInstance.clear()
                 fun.success({msg:'发起退货成功'})
                 this.openBackFn()
                 this.cartDialogCancel()
@@ -526,12 +527,13 @@
             //添加
             if(!cartInstance.add(goods))return;
 
-            this.fly_img_url = goods.ImgPath
+            console.log(goods)
+            this.fly_img_url = goods.img_url
             this.isMove = true
             let _self = this
 
             let randId = Date.now()+goods.Products_ID
-            let eleStr = `<img src="${goods.ImgPath}" class="fly-pic" id="${randId}" style="{left:${this.curPosX}px,top:${this.curPosY}px}" />`
+            let eleStr = `<img src="${goods.img_url}" class="fly-pic" id="${randId}" style="{left:${this.curPosX}px,top:${this.curPosY}px}" />`
 
             let imgs = document.getElementById('imgs')
             imgs.innerHTML += eleStr;
@@ -566,8 +568,19 @@
         cartCurrentItem = null
 
         cartPlusFn(goods,num){
-
             this.setCartCurrentItem(goods)
+            if(goods.prd_attr_id){
+                if(num+1>this.cartCurrentItem.sku_stock[goods.prd_attr_id]){
+                    fun.error({msg:'库存已达最大值'});
+                    return;
+                }
+            }else{
+                if(num+1>this.cartCurrentItem.Products_Count){
+                    fun.error({msg:'库存已达最大值'});
+                    return;
+                }
+            }
+
             this.cartNumChange(num+1,num)
         }
 
@@ -588,39 +601,39 @@
             let select_store_id = 0
 
             //如果有门店，需要换成从门店进货
-            if(this.$route.query.store_no && this.products.length>0){
-                select_store_id = this.products[0].Stores_ID
-            }
+            // if(this.$route.query.store_no && this.products.length>0){
+            //     select_store_id = this.products[0].Stores_ID
+            // }
+            //
+            // let postData = {
+            //     cart_key:'CartList',
+            //     active:'store_pifa',
+            //     prod_id:this.cartCurrentItem.Products_ID,
+            //     qty:(nVal-oVal),
+            //     active_id: `${Stores_ID}_${select_store_id}`
+            // }
+            //
+            // if(this.cartCurrentItem.Productsattrstrval){
+            //     if(!this.cartCurrentItem.prd_attr_id){
+            //         fun.error({msg:'prd_attr_id缺失'});
+            //         return;
+            //     }
+            //     postData.attr_id = this.cartCurrentItem.prd_attr_id
+            // }
 
-            let postData = {
-                cart_key:'CartList',
-                active:'store_pifa',
-                prod_id:this.cartCurrentItem.Products_ID,
-                qty:(nVal-oVal),
-                active_id: `${Stores_ID}_${select_store_id}`
-            }
-
-            if(this.cartCurrentItem.Productsattrstrval){
-                if(!this.cartCurrentItem.prd_attr_id){
-                    fun.error({msg:'prd_attr_id缺失'});
-                    return;
-                }
-                postData.attr_id = this.cartCurrentItem.prd_attr_id
-            }
-
-            let add_card_rt = false
+            // let add_card_rt = false
 
 
-            this.cartsDialogInstance.loading = true
-            await updateCart(postData).then(res=>{
-                add_card_rt = true
-                this.cartsDialogInstance.loading = false
-                this.cartCurrentItem.num = nVal
-            },err=>{
-                this.cartsDialogInstance.loading = false
-            })
-
-            if(!add_card_rt)return;
+            // this.cartsDialogInstance.loading = true
+            // await updateCart(postData).then(res=>{
+            //     add_card_rt = true
+            //     this.cartsDialogInstance.loading = false
+            //     this.cartCurrentItem.num = nVal
+            // },err=>{
+            //     this.cartsDialogInstance.loading = false
+            // })
+            //
+            // if(!add_card_rt)return;
 
             this.cartCurrentItem.num = nVal
 
@@ -731,7 +744,7 @@
         cartDialogOpen(){
             // document.body.className += 'el-popup-parent--hidden'
             // document.body.style.PaddingRight = '17px'
-            this.cartsDialogInstance.innerVisible = true
+            this.cartsDialogInstance.innerVisible = !this.cartsDialogInstance.innerVisible
         }
 
         cartDialogCancel(){

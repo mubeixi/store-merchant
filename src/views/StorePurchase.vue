@@ -74,13 +74,13 @@
 
       </div>
       <div class="foot">
-        <div class="count" style="cursor: pointer">
+        <div class="count noselect" style="cursor: pointer" @click="cartDialogTaggle">
 <!--          /{{paginate.totalCount}}-->
           <div class="text">
-            <span @click="cartDialogOpen"  v-show="!cartsDialogInstance.innerVisible">已选取<span class="danger-color">{{count_num}}</span>个普通商品</span>
-            <span @click="cartDialogCancel" v-show="cartsDialogInstance.innerVisible">已选取<span class="danger-color">{{count_num}}</span>个普通商品</span>
-            <i @click="cartDialogOpen"  v-show="!cartsDialogInstance.innerVisible" class="el-icon-arrow-up"></i>
-            <i @click="cartDialogCancel" v-show="cartsDialogInstance.innerVisible" class="el-icon-arrow-down"></i>
+            <span   v-show="!cartsDialogInstance.innerVisible">已选取<span class="danger-color">{{count_num}}</span>个普通商品</span>
+            <span  v-show="cartsDialogInstance.innerVisible">已选取<span class="danger-color">{{count_num}}</span>个普通商品</span>
+            <i   v-show="!cartsDialogInstance.innerVisible" class="el-icon-arrow-up"></i>
+            <i  v-show="cartsDialogInstance.innerVisible" class="el-icon-arrow-down"></i>
           </div>
         </div>
         <el-button class="sub-btn" @click="subFn" v-loading="subLoading">提交进货单</el-button>
@@ -319,11 +319,17 @@
             // let prod_json = this.formNumDataByApply(this.payDialogInstance.apply)
 
             orderPay({Order_ID:Order_ID,pay_type:'remainder_pay',pay_money:Order_TotalPrice,user_pay_password:pwd}).then(res=>{
+                fun.success({msg:'支付成功'})
                 this.$router.push({
                     name:'StorePurchaseApply'
                 })
             }).catch(e=>{
-
+                fun.error({msg:'支付失败'})
+                setTimeout(()=>{
+                    this.$router.push({
+                        name:'StorePurchaseApply'
+                    })
+                },500)
             })
 
 
@@ -594,10 +600,10 @@
         //     return {choose,disabled,use}
         // }
 
-        cartDialogOpen(){
+        cartDialogTaggle(){
             // document.body.className += 'el-popup-parent--hidden'
             // document.body.style.PaddingRight = '17px'
-            this.cartsDialogInstance.innerVisible = true
+            this.cartsDialogInstance.innerVisible = !this.cartsDialogInstance.innerVisible
         }
 
         cartDialogCancel(){
