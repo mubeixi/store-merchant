@@ -203,7 +203,9 @@
         </div>
         <div class="row">
           <div class="label">门店地址:</div>
-          <div class="text">{{storeDialogInstance.info.Stores_Province_name}}{{storeDialogInstance.info.Stores_City_name}}{{storeDialogInstance.info.Stores_Area_name}}{{storeDialogInstance.info.Stores_Address}}</div>
+          <div class="text">{{storeDialogInstance.info.Stores_Province_name}}{{storeDialogInstance.info.Stores_City_name}}{{storeDialogInstance.info.Stores_Area_name}}{{storeDialogInstance.info.Stores_Address}}
+            <a v-if="storeDialogInstance.info.open" target="_blank" :href="storeDialogInstance.info.open"><i style="font-size: 20px;color:#F43131;"  class="el-icon-location" /></a>
+          </div>
         </div>
       </div>
 
@@ -913,7 +915,15 @@
             }
             let idx = findArrayIdx(this.stores,{Stores_ID:receive_id})
             if(idx!==false){
-                this.storeDialogInstance.info = this.stores[idx]
+
+                let info = this.stores[idx]
+                let open = ''
+                if(info.wx_lng && info.wx_lat){
+                    open = `https://uri.amap.com/marker?position=${info.wx_lng},${info.wx_lat}`
+                }
+
+                this.storeDialogInstance.info = {...this.stores[idx],open}
+
                 this.storeDialogInstance.innerVisible = true
             }else{
                 fun.error({msg:'店铺信息错误'})
