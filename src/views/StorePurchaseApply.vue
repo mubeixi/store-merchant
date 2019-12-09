@@ -1,8 +1,13 @@
 <template>
   <div class="home-wrap" v-infinite-scroll="loadInfo">
     <div class="container">
-<!--      -->
-<!--      -->
+      <div class="tabs" style="background: white;">
+        <el-tabs v-model="status" @tab-click="handleClick">
+          <el-tab-pane :label="tab.label" :name="tab.val" v-for="(tab,idx) in tabConf"></el-tab-pane>
+          <!--          <el-tab-pane label="已售完" name="2"></el-tab-pane>-->
+          <!--          <el-tab-pane label="已下架" name="3"></el-tab-pane>-->
+        </el-tabs>
+      </div>
       <div class="lists">
         <div class="item" v-for="(apply,idx1) in applys" :key="idx1" >
           <div class="head flex">
@@ -184,7 +189,6 @@
       </div>
 
     </el-dialog>
-
     <el-dialog
       :visible.sync="channelDialogInstance.innerVisible"
       title="切换渠道"
@@ -255,10 +259,7 @@
     import {objTranslate,findArrayIdx} from '@/common/utils';
     import {fun} from '@/common';
     import LogisticsInfo from '@/components/comm/LogisticsInfo'
-
-
     const noop = ()=>{}
-
 
     @Component({
         mixins:[],
@@ -267,8 +268,69 @@
         }
     })
 
-
     export default class StorePurchaseApply extends Vue {
+
+        status= ''
+        // 20：待支付-------平台 | 发货门店：无----------------------------------------------------------申请门店：彻底删除、取消、更换渠道商、修改采购数量并提交（支付）
+        //
+        // 21：待处理-------平台 | 发货门店：驳回（退款）、修改采购数量（只能减，退款）、出库操作----申请门店：取消（退款）、撤回
+        //
+        // 22：已驳回-------平台 | 发货门店：无----------------------------------------------------------申请门店：更换渠道商、修改采购数量（驳回时已退款）并提交（支付款）
+        //
+        // 23：已出库-------平台 | 发货门店：无----------------------------------------------------------申请门店：确认收货
+        //
+        // 24：已完成-------平台 | 发货门店：无----------------------------------------------------------申请门店：无
+        //
+        // 25：已撤回-------平台 | 发货门店：无----------------------------------------------------------申请门店：取消（退款）、更换渠道商、修改采购数量（退款 | 支付）并提交
+        //
+        // 26：已取消-------平台 | 发货门店：无----------------------------------------------------------申请门店：彻底删除
+        //
+        tabConf = [
+            {
+                label:'全部',
+                val:''
+            },
+            {
+                label:'待支付',
+                val:'20'
+            },
+            {
+                label:'待处理',
+                val:'21'
+            },
+            {
+                label:'已驳回',
+                val:'22'
+            },
+            {
+                label:'已出库',
+                val:'23'
+            },
+            {
+                label:'已完成',
+                val:'24'
+            },
+            {
+                label:'已撤回',
+                val:'25'
+            },
+            {
+                label:'已取消',
+                val:'26'
+            },
+        ]
+
+        handleClick(){
+            this.paginate = {
+                page:1,
+                finish:false,
+                pageSize:20,
+                totalCount:0
+            }
+
+            this.loadInfo()
+        }
+
 
         applys = []
         stores = []
@@ -853,14 +915,15 @@
   width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-  background: #f2f2f2;
+  background: #fff;
   &::-webkit-scrollbar{
     display: none;
   }
 }
 .container{
-  width: 1200px;
-  margin: 0px auto;
+  padding: 20px;
+  /*width: 1200px;*/
+  /*margin: 30px auto;*/
   position: relative;
   .lists{
 
@@ -913,6 +976,7 @@
       .purchases{
         border-collapse:collapse;
         width: 100%;
+        background: white;
         .goods-list{
 
           &:last-child{

@@ -2,7 +2,7 @@
   <div class="home-wrap funpage" v-infinite-scroll="loadInfo">
 
     <div class="container">
-      <div class="tabs" style="background: white;padding: 0 10px;margin-bottom: 15px">
+      <div class="tabs" style="background: white;">
         <el-tabs v-model="status" @tab-click="handleClick">
           <el-tab-pane :label="tab.label" :name="tab.val" v-for="(tab,idx) in tabConf"></el-tab-pane>
 <!--          <el-tab-pane label="已售完" name="2"></el-tab-pane>-->
@@ -1011,7 +1011,7 @@
   height: 100vh;
   width: 100%;
   overflow-y: scroll;
-  background: #f2f2f2;
+  background: #fff;
   overflow-x: hidden;
   &::-webkit-scrollbar{
     display: none;
@@ -1032,8 +1032,9 @@
 }
 
 .container{
-  width: 1200px;
-  margin: 0px auto;
+  /*width: 1200px;*/
+  /*margin: 30px auto;*/
+  padding: 20px;
   .tabs{
     /*margin-bottom: 10px;*/
   }
@@ -1088,6 +1089,7 @@
       .purchases{
         border-collapse:collapse;
         width: 100%;
+        background: white;
         .goods-list{
 
           &:last-child{
