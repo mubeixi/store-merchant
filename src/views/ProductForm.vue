@@ -2031,4 +2031,11 @@ table{
   .relative{
     position: relative;
   }
+  .setting /deep/ .el-dialog__body{
+    height: 700px;
+    overflow: auto;
+  }
+  .setting /deep/ .el-dialog{
+    margin-top: 60px !important;
+  }
 </style>
