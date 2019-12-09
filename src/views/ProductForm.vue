@@ -382,7 +382,7 @@
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
               <el-input   v-model="nobi_ratio" style="width: 80px;margin-left: 19px;"></el-input>
-              % <span class="msg">(所占发放比例百分比)</span>
+              % <span class="msg">(按照团队最多9级来发放级别差奖励，当下级有和自己同级别身份的就不再发放)</span>
             </el-form-item>
           </div>
         </div>
@@ -393,7 +393,7 @@
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
               <el-input    v-model="area_Proxy_Reward" style="width: 80px;margin-left: 19px;"></el-input>
-              % <span class="msg">(所占发放比例百分比)</span>
+              % <span class="msg">(按照消费者收货地址所在地发放区域代理奖励)</span>
             </el-form-item>
           </div>
         </div>
@@ -404,7 +404,7 @@
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
               <el-input   v-model="sha_Reward" style="width: 80px;margin-left: 19px;"></el-input>
-              % <span class="msg">(所占发放比例百分比)</span>
+              % <span class="msg">(按照整个商城利润来对每个股东平均进行发放)</span>
             </el-form-item>
           </div>
         </div>
@@ -415,7 +415,7 @@
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
               <el-input   v-model="commission_ratio" style="width: 80px;margin-left: 19px;"></el-input>
-              % <span class="msg"><block v-if="self_commi=='2'&&parent_commi=='2'">(此项设置无效)</block><block v-else>(下面佣金返利所占发放比例比例百分比)</block></span>
+              % <span class="msg"><block v-if="self_commi=='2'&&parent_commi=='2'">(此项设置无效)</block><block v-else>(按照下方设置对各个身份、各个等级的分销商发放奖励)</block></span>
             </el-form-item>
           </div>
         </div>
@@ -425,7 +425,7 @@
           </div>
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;margin-left: 19px">
-              <el-radio-group style="display: flex;align-items: center;padding-top: 20px;" v-model="self_commi" >
+              <el-radio-group style="display: flex;align-items: center;padding-top: 20px;" v-model="parent_commi" >
                 <el-radio label="1" style="display: block;margin-bottom: 15px" >按百分比发放</el-radio>
                 <el-radio label="2" style="display: block;margin-bottom: 15px" >按固定金额发放</el-radio>
                </el-radio-group>
@@ -438,7 +438,7 @@
           </div>
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;margin-left: 19px">
-              <el-radio-group style="display: flex;align-items: center;padding-top: 20px;" v-model="parent_commi">
+              <el-radio-group style="display: flex;align-items: center;padding-top: 20px;" v-model="self_commi">
                 <el-radio label="1" style="display: block;margin-bottom: 15px" >按百分比发放</el-radio>
                 <el-radio label="2" style="display: block;margin-bottom: 15px" >按固定金额发放</el-radio>
               </el-radio-group>
@@ -456,14 +456,14 @@
                 <el-form-item label="" prop="sort"  class="padding15-t marginBootom"  v-for="(dis,disIndex) of Dis_Level_arr" :key="disIndex">
                   <span class="label">{{dis}}</span>
                   <el-input   style="width: 70px" v-model="distriboutor_config[fenIndex][disIndex]"></el-input>
-                  <block v-if="self_commi=='2'"><span style="margin-left: 10px">元</span></block>
+                  <block v-if="parent_commi=='2'"><span style="margin-left: 10px">元</span></block>
                   <block v-else>% <span class="msg">(佣金比例百分比)</span></block>
                 </el-form-item>
                 <el-form-item label="" prop="sort"  class="padding15-t marginBootom"  v-if="prodConfig.Dis_Self_Bonus==1">
                   <span class="label">自销</span>
                   <!--手动加了一个-->
                   <el-input   style="width: 70px" v-model="distriboutor_config[fenIndex][Dis_Level_arr.length]"></el-input>
-                  <block v-if="parent_commi=='2'"><span style="margin-left: 10px">元</span></block>
+                  <block v-if="self_commi=='2'"><span style="margin-left: 10px">元</span></block>
                   <block v-else>% <span class="msg">(佣金比例百分比)</span></block>
                 </el-form-item>
               </div>

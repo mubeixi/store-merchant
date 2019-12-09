@@ -300,15 +300,37 @@
                 type:type,
                 ids:JSON.stringify(this.selectValue)
             }
-            batchSetting(data).then(res=>{
-                if(res.errorCode==0){
-                    this.$message({
-                        message: res.msg,
-                        type: 'success'
-                    });
-                    this.getProduct()
-                }
-            })
+            if(type==4){
+                this.$confirm('此操作将会按照默认佣金设置对您选择的商品佣金进行重置，您确定吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    batchSetting(data).then(res=>{
+                        if(res.errorCode==0){
+                            this.$message({
+                                message: res.msg,
+                                type: 'success'
+                            });
+                            this.getProduct()
+                        }
+                    })
+
+                }).catch(() => {
+
+                });
+            }else{
+                batchSetting(data).then(res=>{
+                    if(res.errorCode==0){
+                        this.$message({
+                            message: res.msg,
+                            type: 'success'
+                        });
+                        this.getProduct()
+                    }
+                })
+            }
+
         }
         //删除
         delProduct(props){
