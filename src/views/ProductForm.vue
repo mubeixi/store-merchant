@@ -415,7 +415,33 @@
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
               <el-input   v-model="commission_ratio" style="width: 80px;margin-left: 19px;"></el-input>
-              % <span class="msg">(下面佣金返利所占发放比例比例百分比)</span>
+              % <span class="msg"><block v-if="self_commi=='2'&&parent_commi=='2'">(此项设置无效)</block><block v-else>(下面佣金返利所占发放比例比例百分比)</block></span>
+            </el-form-item>
+          </div>
+        </div>
+        <div class="commissionDiv">
+          <div class="titles">
+            上级分销佣金发放模式
+          </div>
+          <div class="rightTitle">
+            <el-form-item label="" prop="sort" style="margin-bottom: 0px;margin-left: 19px">
+              <el-radio-group style="display: flex;align-items: center;padding-top: 20px;" v-model="self_commi" >
+                <el-radio label="1" style="display: block;margin-bottom: 15px" >按百分比发放</el-radio>
+                <el-radio label="2" style="display: block;margin-bottom: 15px" >按固定金额发放</el-radio>
+               </el-radio-group>
+            </el-form-item>
+          </div>
+        </div>
+        <div class="commissionDiv"  v-if="prodConfig.Dis_Self_Bonus==1">
+          <div class="titles">
+            自销佣金发放模式
+          </div>
+          <div class="rightTitle">
+            <el-form-item label="" prop="sort" style="margin-bottom: 0px;margin-left: 19px">
+              <el-radio-group style="display: flex;align-items: center;padding-top: 20px;" v-model="parent_commi">
+                <el-radio label="1" style="display: block;margin-bottom: 15px" >按百分比发放</el-radio>
+                <el-radio label="2" style="display: block;margin-bottom: 15px" >按固定金额发放</el-radio>
+              </el-radio-group>
             </el-form-item>
           </div>
         </div>
@@ -430,13 +456,15 @@
                 <el-form-item label="" prop="sort"  class="padding15-t marginBootom"  v-for="(dis,disIndex) of Dis_Level_arr" :key="disIndex">
                   <span class="label">{{dis}}</span>
                   <el-input   style="width: 70px" v-model="distriboutor_config[fenIndex][disIndex]"></el-input>
-                  % <span class="msg">(佣金比例百分比)</span>
+                  <block v-if="self_commi=='2'"><span style="margin-left: 10px">元</span></block>
+                  <block v-else>% <span class="msg">(佣金比例百分比)</span></block>
                 </el-form-item>
                 <el-form-item label="" prop="sort"  class="padding15-t marginBootom"  v-if="prodConfig.Dis_Self_Bonus==1">
                   <span class="label">自销</span>
                   <!--手动加了一个-->
                   <el-input   style="width: 70px" v-model="distriboutor_config[fenIndex][Dis_Level_arr.length]"></el-input>
-                  % <span class="msg">(佣金比例百分比)</span>
+                  <block v-if="parent_commi=='2'"><span style="margin-left: 10px">元</span></block>
+                  <block v-else>% <span class="msg">(佣金比例百分比)</span></block>
                 </el-form-item>
               </div>
             </div>
@@ -556,7 +584,8 @@
         }
     })
     export default class AddProduct extends Vue {
-
+        self_commi='1'
+        parent_commi='1'
         vipType='1'
         vipNum=0
         pageEl = this
@@ -1241,6 +1270,8 @@
                         }
                     }
                     productInfo.prod_limit=JSON.stringify(prodObj)
+                    productInfo.self_commi=this.self_commi
+                    productInfo.parent_commi=this.parent_commi
                     systemOperateProd(productInfo,{}).then(res=>{
                         if(res.errorCode==0){
                             this.isLoading=false;
@@ -1499,6 +1530,8 @@
                 await systemProdDetail({prod_id:id}).then(res=>{
 
                     productInfo=res.data;
+                    this.parent_commi=String(res.data.commi_type.parent_commi)
+                    this.self_commi=String(res.data.commi_type.self_commi)
                     this.textTitle=res.data.active_desc;
                     this.initialPro=res.data;
                     this.noEditField=res.data.no_edit_field;
@@ -1927,11 +1960,13 @@
   border-left: 1px solid  @border;
   box-sizing: border-box;
   margin-left: -1px;
+  flex-wrap: wrap;
 }
 .fenxiaoshang{
   background-color: #F8F8F8;
   /*width: 320px;*/
   margin-right: 15px;
+  margin-bottom: 20px;
   .label{
     display: inline-block;
     /*min-width: 60px;*/
