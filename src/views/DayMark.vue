@@ -576,6 +576,7 @@
                         message: '开始时间不能大于结束时间',
                         type: 'warning'
                     });
+                    this.loading=false;
                     return;
                 }
 
@@ -587,6 +588,7 @@
                 postData.start_time = this.form.start_time;
                 postData.end_time = this.form.end_time;
             }else {
+                this.loading=false;
                 return;
             }
 
