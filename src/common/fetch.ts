@@ -264,6 +264,8 @@ export const store_prod_back_order_confirm = (data:object={},options:any=false) 
 //获取物流公司列表
 export const getShippingList = (data:object={},options:any=false) => fetch('get_shipping', data, options);
 
+//获取分销商等级
+export const systemLevelList = (data:object={},options:any=false) => fetch('system_level_list', data, options);
 
 //获取门店商品列表
 export const getProducts = (data:object={},options:any=false) => fetch('get_products', data, options);
