@@ -38,8 +38,11 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
   // 数据加密
   let data = createToken(param);
 
+  // console.log(process.env.VUE_APP_API_BASE_URL)
   url = (process.env.NODE_ENV === 'production' ? baseApiUrl : '') + url;
-  console.log(url, param);
+  // url = (process.env.NODE_ENV === 'production' ? process.env.VUE_APP_API_BASE_URL : '') + url;
+  // url = (process.env.NODE_ENV === 'production' ? window.pro_base_apiurl : '') + url;
+  // console.log(url, param);
 
   if (options) {
     window.funLoading = Loading.service(options)
