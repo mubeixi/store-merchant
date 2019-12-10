@@ -3,7 +3,7 @@
     <div class="labelMain">
       <el-form size="small">
         <el-form-item  label="级别名称：" class="marginLR">
-          <el-input style="width: 350px"></el-input>
+          <el-input style="width: 350px" v-model="Level_Name"></el-input>
         </el-form-item>
 
         <el-form-item  label="级别描述：" class="marginLR">
@@ -13,7 +13,7 @@
             resize="none"
             :autosize="{ minRows: 3, maxRows: 10}"
             placeholder="请输入内容"
-            v-model="textarea">
+            v-model="Level_Description">
           </el-input>
         </el-form-item>
 
@@ -34,14 +34,14 @@
 
         <el-form-item  label="佣金人数限制：" class="marginLRS divFlex">
           <div class="divFlex">
-            <div class="marginRight">
-              一级<el-input  class="inputMargin"></el-input>个
+            <div class="marginRight" v-if="level>=1">
+              一级<el-input v-model="Level_PeopleLimit[0]"  class="inputMargin"></el-input>个
             </div>
-            <div class="marginRight">
-              二级<el-input class="inputMargin"></el-input>个
+            <div class="marginRight" v-if="level>=2">
+              二级<el-input v-model="Level_PeopleLimit[1]" class="inputMargin"></el-input>个
             </div>
-            <div  class="marginRight">
-              三级<el-input  class="inputMargin"></el-input>个
+            <div  class="marginRight" v-if="level>=3">
+              三级<el-input v-model="Level_PeopleLimit[2]"  class="inputMargin"></el-input>个
             </div>
           </div>
           <div class="fontSize">
@@ -52,41 +52,41 @@
 
 
         <el-form-item  label="达标方式选择：" class="marginLRS divFlex">
-        <el-radio-group v-model="qwe">
-          <el-radio label="0" >满足任一条件</el-radio>
-          <el-radio label="1" >满足全部条件</el-radio>
-          <el-radio label="2" >不限制</el-radio>
-          <el-radio label="3" >手动申请</el-radio>
+        <el-radio-group v-model="arrive_limit">
+          <el-radio label="3" >满足任一条件</el-radio>
+          <el-radio label="4" >满足全部条件</el-radio>
+          <el-radio label="1" >不限制</el-radio>
+          <el-radio label="2" >手动申请</el-radio>
         </el-radio-group>
-        <block>
+        <block v-if="arrive_limit==3||arrive_limit==4">
           <div class="myCenter">
             <!--     消费额       -->
-            <el-checkbox-group v-model="qwe">
+            <el-checkbox-group v-model="pay_money.checked">
               <el-checkbox label="lastTime" name="lastTime">消费额</el-checkbox>
             </el-checkbox-group>
             <div class="first">
               <el-form-item  label="消费类型：" class="divFlex">
-                <el-radio-group v-model="qwe">
-                  <el-radio label="0" >商城总消费</el-radio>
-                  <el-radio label="1" >一次性消费</el-radio>
+                <el-radio-group v-model="pay_money.value.type"  :disabled="!pay_money.checked">
+                  <el-radio label="1" >商城总消费</el-radio>
+                  <el-radio label="2" >一次性消费</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item  label="消费金额：" class="divFlex">
-                <el-input class="widthInput"></el-input> 元 <span class="spans">（注：用户需消费此额度才能成为该级别分销商）</span>
+                <el-input v-model="pay_money.value.money"  :disabled="!pay_money.checked" class="widthInput"></el-input> 元 <span class="spans">（注：用户需消费此额度才能成为该级别分销商）</span>
               </el-form-item>
               <el-form-item  label="生效状态：" class="divFlex">
-                <el-radio-group v-model="qwe">
-                  <el-radio label="0" >订单付款后计入</el-radio>
-                  <el-radio label="1" >订单确认收货后计入</el-radio>
+                <el-radio-group v-model="pay_money.value.arrive_status" :disabled="!pay_money.checked">
+                  <el-radio label="2" >订单付款后计入</el-radio>
+                  <el-radio label="4" >订单确认收货后计入</el-radio>
                 </el-radio-group>
               </el-form-item>
             </div>
             <!--     购买礼包       -->
-            <el-checkbox-group v-model="qwe">
+            <el-checkbox-group v-model="buy_prod.checked">
               <el-checkbox label="lastTime" name="lastTime">购买礼包</el-checkbox>
-              <el-radio-group v-model="qwe" class="productRadio">
-                <el-radio label="0" >任意商品</el-radio>
-                <el-radio label="1" >特定商品</el-radio>
+              <el-radio-group v-model="buy_prod.value.type" class="productRadio" :disabled="!buy_prod.checked">
+                <el-radio label="1" >任意商品</el-radio>
+                <el-radio label="2" >特定商品</el-radio>
               </el-radio-group>
               <span class="selects">选择商品</span>
             </el-checkbox-group>
@@ -97,30 +97,46 @@
               </div>
             </div>
             <!--    购买商品次数      -->
-            <el-checkbox-group v-model="qwe" class="marginBo">
+            <el-checkbox-group v-model="buy_times.checked" class="marginBo">
               <el-checkbox label="lastTime" name="lastTime">购买商品次数</el-checkbox>
-              <el-input class="inputMy"></el-input><span class="oneFont">次</span>
+              <el-input class="inputMy" v-model="buy_times.value" :disabled="!buy_times.checked"></el-input><span class="oneFont">次</span>
             </el-checkbox-group>
             <!--    团队销售额      -->
-            <el-checkbox-group v-model="qwe" class="marginBo">
+            <el-checkbox-group v-model="team_sales.checked" class="marginBo">
               <el-checkbox label="lastTime" name="lastTime">团队销售额</el-checkbox>
-              <el-input class="inputMy" style="margin-left: 38px"></el-input><span class="oneFont">元</span>
+              <el-input class="inputMy"  v-model="team_sales.value" :disabled="!team_sales.checked" style="margin-left: 38px"></el-input><span class="oneFont">元</span>
             </el-checkbox-group>
             <!--    直接购买身份      -->
-            <el-checkbox-group v-model="qwe" class="marginBo">
+            <el-checkbox-group v-model="direct_buy.checked" class="marginBo">
               <el-checkbox label="lastTime" name="lastTime">直接购买身份</el-checkbox>
-              <el-select lass="inputMy" style="margin-left: 24px;width: 140px"></el-select>
-              <el-input class="inputMy inputT" placeholder="级别金额" ></el-input><span class="oneFont">元</span>
-              <el-input class="inputMy inputT" placeholder="赠送金额" ></el-input><span class="oneFont">元</span>
+              <el-select lass="inputMy" v-model="direct_buy.value.type" :disabled="!direct_buy.checked" style="margin-left: 24px;width: 140px">
+                <el-option label="直接购买" value="1" ></el-option>
+                <el-option label="送产品" value="2" ></el-option>
+                <el-option label="存入余额" value="3" ></el-option>
+              </el-select>
+              <block v-if="direct_buy.value.type==1">
+                <el-input   v-model="direct_buy.value.money" class="inputMy inputT" placeholder="级别金额" :disabled="!direct_buy.checked"></el-input><span class="oneFont">元</span>
+              </block>
+              <block v-if="direct_buy.value.type==3">
+                <el-input   v-model="direct_buy.value.present" class="inputMy inputT" placeholder="赠送金额" :disabled="!direct_buy.checked"></el-input><span class="oneFont">元</span>
+              </block>
+              <block v-if="direct_buy.value.type==2">
+                <span class="selects">选择商品</span>
+              </block>
             </el-checkbox-group>
             <!--    直邀等级数量      -->
-            <el-checkbox-group v-model="qwe" class="marginBo">
+            <el-checkbox-group v-model="Level_Name" class="marginBo" style="display: flex">
               <el-checkbox label="lastTime" name="lastTime">直邀等级数量</el-checkbox>
-              <el-input class="inputMy inputT" ></el-input><span class="oneFont">人</span>
-              <el-select lass="inputMy" style="margin-left: 24px;width: 140px"  placeholder="请选择分销等级"></el-select>
+              <div >
+                <div>
+                  <el-input class="inputMy inputT" ></el-input><span class="oneFont">人</span>
+                  <el-select lass="inputMy" style="margin-left: 24px;width: 140px"  placeholder="请选择分销等级"></el-select>
+                  <span class="addSpan">添加</span>
+                </div>
+              </div>
             </el-checkbox-group>
             <!--    团队等级数量      -->
-            <el-checkbox-group v-model="qwe" class="marginBo" style="display: flex">
+            <el-checkbox-group v-model="Level_Name" class="marginBo" style="display: flex">
               <el-checkbox label="lastTime" name="lastTime">团队等级数量</el-checkbox>
               <div >
                 <div>
@@ -133,43 +149,43 @@
           </div>
         </block>
 
-<!--        <block>-->
-<!--          <div class="amu">-->
-<!--            <div class="th">-->
-<!--              <div class="td">字段类型</div>-->
-<!--              <div class="td">字段名称</div>-->
-<!--              <div class="td">初始内容</div>-->
-<!--              <div class="td" style="width: 125px">操作</div>-->
-<!--            </div>-->
-<!--            <div class="tr">-->
-<!--              <div class="td">-->
-<!--                <el-select class="widthmbx"></el-select>-->
-<!--              </div>-->
-<!--              <div class="td">-->
-<!--                <el-input class="widthmbx"></el-input>-->
-<!--              </div>-->
-<!--              <div class="td">-->
-<!--                <el-input class="widthmbx"></el-input>-->
-<!--              </div>-->
-<!--              <div class="td" style="width: 125px">-->
-<!--                <img src="@/assets/img/mydel.png" style="cursor:pointer;">-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <el-button type="primary"  style="margin-top: 20px" >确定</el-button>-->
-<!--          </div>-->
-<!--        </block>-->
+        <block v-if="arrive_limit==2">
+          <div class="amu">
+            <div class="th">
+              <div class="td">字段类型</div>
+              <div class="td">字段名称</div>
+              <div class="td">初始内容</div>
+              <div class="td" style="width: 125px">操作</div>
+            </div>
+            <div class="tr">
+              <div class="td">
+                <el-select class="widthmbx"></el-select>
+              </div>
+              <div class="td">
+                <el-input class="widthmbx"></el-input>
+              </div>
+              <div class="td">
+                <el-input class="widthmbx"></el-input>
+              </div>
+              <div class="td" style="width: 125px">
+                <img src="@/assets/img/mydel.png" style="cursor:pointer;">
+              </div>
+            </div>
+            <el-button type="primary"  style="margin-top: 20px" >确定</el-button>
+          </div>
+        </block>
       </el-form-item>
 
-        <el-form-item  label="佣金发放限制：" class="marginLRS divFlex">
+        <el-form-item  label="佣金发放限制：" class="marginLRS divFlex" v-if="direct_buy.checked&&(arrive_limit==3||arrive_limit==4)">
           <div class="divFlex">
-            <div class="marginRight">
-              一级<el-input  class="inputMargin"></el-input>元
+            <div class="marginRight" v-if="level>=1">
+              一级<el-input v-model="commi_rules[0]"  class="inputMargin"></el-input>元
             </div>
-            <div class="marginRight">
-              二级<el-input class="inputMargin"></el-input>元
+            <div class="marginRight" v-if="level>=2">
+              二级<el-input v-model="commi_rules[1]" class="inputMargin"></el-input>元
             </div>
-            <div  class="marginRight">
-              三级<el-input  class="inputMargin"></el-input>元
+            <div  class="marginRight" v-if="level>=3">
+              三级<el-input v-model="commi_rules[2]"  class="inputMargin"></el-input>元
             </div>
           </div>
           <div class="fontSize">
@@ -208,13 +224,59 @@
 
     export default class DistributorLevel extends Vue {
 
-        textarea=''
-        qwe="0"
+        Level_Name=''//级别名称
+        Level_Description=''//等级描述
+        Level_Icon=''//级别标识
+        level=3 //级别等级
+        //佣金人数限制
+        Level_PeopleLimit=['','','']
+        //发放佣金设置
+        commi_rules=['','','']
+        arrive_limit='3' //达标方式
+
+        //消费额
+        pay_money={
+            checked: false,
+            value:{
+                type:'1',
+                arrive_status:'2',
+                money:''
+            }
+        }
+        //直接购买
+        direct_buy={
+            checked:false,
+            value:{
+                type:'1',
+                money: '',
+                present:'',
+                gift_id:''
+            }
+        }
+        //购买商品
+        buy_prod={
+            checked:false,
+            value:{
+                type:'1',
+                prod:''
+            }
+        }
+        //购买商品次数
+        buy_times={
+            checked:false,
+            value:''
+        }
+        //团队销售额
+        team_sales={
+            checked:false,
+            value:''
+        }
 
         upThumbSuccessCall(url_list){
-           console.log(url_list)
+           this.Level_Icon=url_list[0].url
         }
         async created(){
+              this.level=this.$route.query.level
 
 
         }
@@ -337,6 +399,7 @@
     color: #428CF7;
     font-size: 12px;
     margin-left: 12px;
+    cursor: pointer;
   }
   .submit{
     margin-left: 380px;
@@ -352,6 +415,7 @@
     padding: 24px 95px 38px 42px;
     box-sizing: border-box;
     border: 1px solid #EEEEEE;
+    margin-top: 10px;
     .th{
       background-color: #F2F7FF;
       display: flex;

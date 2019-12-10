@@ -410,12 +410,36 @@
         </div>
         <div class="commissionDiv">
           <div class="titles">
-            佣金比例
+            分销佣金比例
           </div>
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
               <el-input   v-model="commission_ratio" style="width: 80px;margin-left: 19px;"></el-input>
               % <span class="msg"><block v-if="self_commi=='2'&&parent_commi=='2'">(此项设置无效)</block><block v-else>(按照下方设置对各个身份、各个等级的分销商发放奖励)</block></span>
+            </el-form-item>
+          </div>
+        </div>
+        <div class="commissionDiv">
+          <div class="titles">
+            管理佣金比例
+          </div>
+          <div class="rightTitle">
+            <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
+              <el-input   v-model="manage_Reward" style="width: 80px;margin-left: 19px;"></el-input>
+              % <span class="msg"><block v-if="manage_commi=='2'">(此项设置无效)</block><block v-else>(在分销等级发放之外额外发放，当下级有和自己同级别身份就不再发放)</block></span>
+            </el-form-item>
+          </div>
+        </div>
+        <div class="commissionDiv">
+          <div class="titles">
+            管理佣金发放模式
+          </div>
+          <div class="rightTitle">
+            <el-form-item label="" prop="sort" style="margin-bottom: 0px;margin-left: 19px">
+              <el-radio-group style="display: flex;align-items: center;padding-top: 20px;" v-model="manage_commi" >
+                <el-radio label="1" style="display: block;margin-bottom: 15px" >按百分比发放</el-radio>
+                <el-radio label="2" style="display: block;margin-bottom: 15px" >按固定金额发放</el-radio>
+              </el-radio-group>
             </el-form-item>
           </div>
         </div>
@@ -459,10 +483,17 @@
                   <block v-if="parent_commi=='2'"><span style="margin-left: 10px">元</span></block>
                   <block v-else>% <span class="msg">(佣金比例百分比)</span></block>
                 </el-form-item>
+                <el-form-item label="" prop="sort"  class="padding15-t marginBootom">
+                  <span class="label">管理</span>
+                  <!--手动加了一个-->
+                  <el-input   style="width: 70px" v-model="distriboutor_config[fenIndex][110]"></el-input>
+                  <block v-if="manage_commi=='2'"><span style="margin-left: 10px">元</span></block>
+                  <block v-else>% <span class="msg">(佣金比例百分比)</span></block>
+                </el-form-item>
                 <el-form-item label="" prop="sort"  class="padding15-t marginBootom"  v-if="prodConfig.Dis_Self_Bonus==1">
                   <span class="label">自销</span>
                   <!--手动加了一个-->
-                  <el-input   style="width: 70px" v-model="distriboutor_config[fenIndex][Dis_Level_arr.length]"></el-input>
+                  <el-input   style="width: 70px" v-model="distriboutor_config[fenIndex][prodConfig.Dis_Level]"></el-input>
                   <block v-if="self_commi=='2'"><span style="margin-left: 10px">元</span></block>
                   <block v-else>% <span class="msg">(佣金比例百分比)</span></block>
                 </el-form-item>
@@ -586,6 +617,8 @@
     export default class AddProduct extends Vue {
         self_commi='1'
         parent_commi='1'
+        manage_commi='1'
+        manage_Reward=''
         vipType='1'
         vipNum=0
         pageEl = this
@@ -598,7 +631,8 @@
         prodConfig={
             prod_type_list:[],
             shipping_company_dropdown:{},
-            Shop_Commision_Reward_Json:{}
+            Shop_Commision_Reward_Json:{},
+            Dis_Level:''
         }
         distriboutor_config = []
         Dis_Level_arr = []
@@ -1118,6 +1152,7 @@
                         area_Proxy_Reward:this.area_Proxy_Reward,
                         sha_Reward:this.sha_Reward,
                         commission_ratio:this.commission_ratio,
+                        manage_Reward:this.manage_Reward
                     };
                     if(this.ruleForm.orderType==2){
                         let arr=[];
@@ -1245,6 +1280,7 @@
                             'values':skuList
                         })
                     }
+                    //const allowLevel = [1,2,3,4,110]
                     //分销商 价格
                     if(this.dis_level_list.length>0){
                         let disArr=this.dis_level_list;
@@ -1253,7 +1289,8 @@
                             let arr=disArr[dis].Level_ID;
                             //如果没有自销分销商
                             if(this.prodConfig.Dis_Self_Bonus==0){
-                                this.distriboutor_config[dis].pop()
+                                let c=this.prodConfig.Dis_Level
+                                delete this.distriboutor_config[dis][c];
                             }
                             let arr2=this.distriboutor_config[dis];
                             disObj[arr]=arr2;
@@ -1323,7 +1360,7 @@
                 child_arr = [];
 
                 for(var item of dataArr){
-                    if(item.child)continue
+                    if(!item.child)continue
                     for(var child of cate.child){
                         if(child.Category_ID === item.Category_ID){
                             child_arr.push(item.Category_ID)
@@ -1504,6 +1541,7 @@
                 this.sha_Reward=res.data.Shop_Commision_Reward_Json.sha_Reward;
                 this.area_Proxy_Reward=res.data.Shop_Commision_Reward_Json.area_Proxy_Reward;
                 this.commission_ratio=res.data.Shop_Commision_Reward_Json.commission_Reward;
+                this.manage_Reward=res.data.Shop_Commision_Reward_Json.manage_Reward;
             }).catch();
 
             let id = this.$route.query.prod_id;
@@ -1532,6 +1570,7 @@
                     productInfo=res.data;
                     this.parent_commi=String(res.data.commi_type.parent_commi)
                     this.self_commi=String(res.data.commi_type.self_commi)
+                    this.manage_commi=String(res.data.commi_type.manage_commi)
                     this.textTitle=res.data.active_desc;
                     this.initialPro=res.data;
                     this.noEditField=res.data.no_edit_field;
@@ -1563,25 +1602,27 @@
                     this.ruleForm.refund=productInfo.Product_backup;//退货id
                     this.ruleForm.Products_IsPaysBalance=productInfo.Products_IsPaysBalance?true:false;//是否使用余额
 
+
                     this.distriboutor_config=[];
-                    let tmpl_child_data=[];
-                    if(this.prodConfig.Dis_Self_Bonus==1){
-                         tmpl_child_data = createTmplArray(0,(this.Dis_Level_arr.length+1))
-                    }else{
-                        tmpl_child_data = createTmplArray(0,(this.Dis_Level_arr.length))
-                    }
-
-                    this.distriboutor_config = createTmplArray(tmpl_child_data,this.dis_level_list.length)
-
-                    let mb=-1
-                    for(let i in productInfo.Products_Distributes){
-                        mb++
-                        let mx=-1
-                        for(let j in productInfo.Products_Distributes[i]){
-                            mx++
-                            this.distriboutor_config[mb][mx] = productInfo.Products_Distributes[i][j]
+                    for(let it in productInfo.Products_Distributes){
+                        if(Array.isArray(productInfo.Products_Distributes[it])){
+                            let obj={
+                            }
+                            console.log("qqqqqq")
+                            // for(let item of productInfo.Products_Distributes[it]){
+                            //     console.log(item,"sss")
+                            // }
+                            for(let inde=0;inde<=this.prodConfig.Dis_Level;inde++){
+                                obj[inde]=productInfo.Products_Distributes[it][inde]
+                            }
+                            obj['110']=''
+                            this.distriboutor_config.push(obj)
+                        }else{
+                            this.distriboutor_config.push(productInfo.Products_Distributes[it])
                         }
+
                     }
+
 
                     //限购
                     if(productInfo.prod_limit!=''){
@@ -1597,6 +1638,7 @@
                     this.area_Proxy_Reward=productInfo.area_Proxy_Reward;
                     this.sha_Reward=productInfo.sha_Reward;
                     this.commission_ratio=productInfo.commission_ratio;
+                    this.manage_Reward=productInfo.manage_Reward
 
                     this.Products_Promise=[];
                     if(productInfo.Products_SoldOut){
