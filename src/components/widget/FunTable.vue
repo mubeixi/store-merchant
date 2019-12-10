@@ -80,6 +80,7 @@
     }
 
     import {RenderContent} from '@/components/widget/RenderContent';
+    import col from "element-ui/packages/col/src/col";
 
     @Component({
         components:{
@@ -265,7 +266,16 @@
          * 选中的值
          */
         handleSelectionChange(val){
-            this.$emit('selectVal', val); // 将当前对象传到父组件
+            let tempA = val.map(item=>JSON.stringify(item))
+            let tempB = this.lists.map(item=>JSON.stringify(item))
+
+            var sa = new Set(tempA);
+            var sb = new Set(tempB);
+
+            //补集
+            let complement  = [...tempA.filter(x => !sb.has(x)), ...tempB.filter(x => !sa.has(x))];
+            let other = complement.map(item=>JSON.parse(item))
+            this.$emit('selectVal', val,other); // 将当前对象传到父组件
         }
 
         /**
