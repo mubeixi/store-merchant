@@ -27,12 +27,13 @@
     ]
   },
   "include": [
-    "src/main.ts"
-//    "src/**/*.ts",
-//    "src/**/*.tsx",
-//    "src/**/*.vue",
-//    "tests/**/*.ts",
-//    "tests/**/*.tsx"
+    "fun.ts"
+    //    "src/main.ts"
+    //    "src/**/*.ts",
+    //    "src/**/*.tsx",
+    //    "src/**/*.vue",
+    //    "tests/**/*.ts",
+    //    "tests/**/*.tsx"
   ],
   "exclude": [
     "node_modules"
