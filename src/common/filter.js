@@ -1,5 +1,6 @@
 import { PLUGINSLIST } from './data';
-import { baseApiUrl,staticUrl } from '@/common/env';
+
+import { baseApiUrl,staticUrl } from './env';
 // const staticUrl = process.env.VUE_APP_STATIC_URL
 
 export default [

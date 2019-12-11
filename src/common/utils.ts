@@ -1,5 +1,6 @@
 // @ts-nocheck
 import Vue from 'vue';
+import {fun} from "./index";
 // import {staticUrl} from "@/common/env";
 const staticUrl = process.env.VUE_APP_STATIC_URL
 
@@ -412,3 +413,39 @@ export const compare_obj = (obj1,obj2) => {
   return true
 
 }
+
+
+//------------ 收货地址函数 -------------
+//数组转化
+export const array_change = function (arr) {
+  var array = [];
+  // console.log('utls')
+  // console.log(arr)
+  for (var i in arr) {
+    array.push({ 'id': i, 'name': arr[i] });
+  }
+  return array;
+}
+
+//获取数组下标  用于收货地址选择的显示
+export const get_arr_index = function (arr, id) {
+  for (var i in arr) {
+    if (arr[i]['id'] == id) {
+      return i;
+    }
+  }
+}
+
+export const emptyObject = (obj, strice) => {
+  for (var prop in obj) {
+    if (obj[prop] === '' || obj[prop] === undefined || obj[prop] === null || obj[prop] === 'null' || obj[prop] === 'undefined') {
+      if (strice) {
+        fun.error({msg:'参数' + prop + '不能为空'});
+        console.log('参数' + prop + '不能为空');
+        return false;
+      }
+      delete obj[prop];
+    }
+  }
+  return obj;
+};

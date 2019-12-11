@@ -349,7 +349,7 @@
       :show="bindCateDialogShow"/>
     <bind-store-component
       @cancel="bindStoreCancel"
-      :onSuccess="bindStoreSuccessCall"
+      @success="bindStoreSuccessCall"
       :pageEl="pageEl"
       :has="store_list"
       :show="dialogStoreShow"
@@ -1384,7 +1384,7 @@
         bindStoreCancel(){
             this.dialogStoreShow = false
         }
-        bindStoreSuccessCall(list, pageEl){
+        bindStoreSuccessCall(list){
             this.store_list = list
             this.store_id_list = list.map(store=>{
                 return store.Stores_ID

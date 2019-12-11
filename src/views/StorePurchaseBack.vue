@@ -751,14 +751,14 @@
 
         showLogistics(apply){
 
-            // let {out_order_no='',Express=''} = {...apply.Order_Shipping,out_order_no:apply.Order_ShippingID}
-            //
-            // if(!out_order_no || !Express)return;
+            let {out_order_no='',Express=''} = {...apply.Order_Shipping,out_order_no:apply.Order_ShippingID}
+
+            if(!out_order_no || !Express)return;
             let logisticsComponent = this.$refs.logistics
-            // logisticsComponent.setExpress(Express)
-            // logisticsComponent.setOutOrderNo(out_order_no)
+            logisticsComponent.setExpress(Express)
+            logisticsComponent.setOutOrderNo(out_order_no)
             logisticsComponent.show()
-            // logisticsComponent.search()
+            logisticsComponent.search()
         }
 
         setValFn(e,apply,goods,idx){
