@@ -247,7 +247,6 @@
       </div>
 
     </el-dialog>
-
     <bind-store-component
       top="15vh"
       @cancel="bindStoreCancel"
@@ -858,15 +857,11 @@
             if(this.ajax_idx!==null)return
             if(this.paginate.finish)return
             const loadInstacne = this.$loading()
-            await getStorePurchaseApply({...this.paginate}).then(res=>{
+            await getStorePurchaseApply({...this.paginate,order_status:this.status}).then(res=>{
 
                 this.paginate.totalCount = res.totalCount
 
-                //长度为0停止了
-                if(res.data.length===0){
-                    this.paginate.finish = true
-                    return;
-                }
+
 
                 let rt = res.data.map(item=>{
                     item.recallVisible = false;//显示撤回按钮
@@ -888,6 +883,12 @@
                     window.scrollTo({left:0,top:0})
                 }else{
                     this.applys = this.applys.concat(rt)
+                }
+
+                //长度为0停止了
+                if(res.data.length===0){
+                    this.paginate.finish = true
+                    return;
                 }
 
                 this.paginate.page ++

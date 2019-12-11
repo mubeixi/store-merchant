@@ -970,11 +970,7 @@
 
                 this.paginate.totalCount = res.totalCount
 
-                //长度为0停止了
-                if(res.data.length===0){
-                    this.paginate.finish = true
-                    return;
-                }
+
 
                 let rt = res.data.map(item=>{
 
@@ -996,6 +992,12 @@
                     window.scrollTo({left:0,top:0})
                 }else{
                     this.applys = this.applys.concat(rt)
+                }
+
+                //长度为0停止了
+                if(res.data.length===0){
+                    this.paginate.finish = true
+                    return;
                 }
 
                 this.paginate.page ++
