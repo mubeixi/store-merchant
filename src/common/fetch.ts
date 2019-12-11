@@ -39,9 +39,9 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
   let data = createToken(param);
 
   // console.log(process.env.VUE_APP_API_BASE_URL)
-  url = (process.env.NODE_ENV === 'production' ? baseApiUrl : '') + url;
+  // url = (process.env.NODE_ENV === 'production' ? baseApiUrl : '') + url;
   // url = (process.env.NODE_ENV === 'production' ? process.env.VUE_APP_API_BASE_URL : '') + url;
-  // url = (process.env.NODE_ENV === 'production' ? window.pro_base_apiurl : '') + url;
+  url = (process.env.NODE_ENV === 'production' ? window.pro_base_apiurl : '') + url;
   // console.log(url, param);
 
   if (options) {

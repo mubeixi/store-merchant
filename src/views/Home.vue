@@ -54,6 +54,8 @@
     import RightComponent from '@/components/RightComponent.vue';
 
     import {front_url} from '../common/env';
+    // const front_url = process.env.VUE_APP_FRONT_URL
+
     import {ss} from '@/common/tool/ss';
     import Cookies from 'js-cookie';
     import QrcodeVue from 'qrcode.vue';

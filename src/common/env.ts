@@ -1,5 +1,3 @@
-
-
 export const staticUrl = 'https://new401.bafangka.com';
 
 export const front_url = 'https://new401.bafangka.com/fre/';
@@ -15,7 +13,3 @@ console.log('process.env is',process.env)
 // }
 
 export const baseApiUrl = isDev?'':'https://new401.bafangka.com';//'http://www.qiyeban.com';
-
-
-
-

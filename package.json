@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "vue-cli-service serve",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --report --mode test",
-    "buildtest": "vue-cli-service build",
+    "build": "vue-cli-service build --report",
+    "fun": "vue-cli-service build --mode fun",
     "lint": "vue-cli-service lint",
     "push": "node ./push.js",
     "ftp": "node ./ftp.js"
