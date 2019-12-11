@@ -5,10 +5,10 @@ const shell = require('shelljs');
 // 全局模式下，就不需要用shell开头了。
 // require('shelljs/global');
 
-// if (shell.exec('npm run buildtest').code !== 0) { // 执行npm run build 命令
-//   shell.echo('Error: Git commit failed');
-//   shell.exit(1);
-// }
+if (shell.exec('npm run buildtest').code !== 0) { // 执行npm run build 命令
+  shell.echo('Error: Git commit failed');
+  shell.exit(1);
+}
 
 // 不能在一股脑全部添加了
 const options = {
