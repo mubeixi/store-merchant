@@ -88,9 +88,9 @@
                 <el-radio label="1" >任意商品</el-radio>
                 <el-radio label="2" >特定商品</el-radio>
               </el-radio-group>
-              <span class="selects">选择商品</span>
+              <span class="selects" @click="showSetting">选择商品</span>
             </el-checkbox-group>
-            <div class="first second">
+            <div class="first second" v-if="buy_prod.value.type=='2'">
               <div class="listLine">
                 <img src="http://vod.q172.net/image/default/1FB2EA180FD04D689689880F40D1AD5A-6-2.png" class="lineImg">
                 <div class="lineDiv">dsadasdasdasdasd</div>
@@ -121,28 +121,38 @@
                 <el-input   v-model="direct_buy.value.present" class="inputMy inputT" placeholder="赠送金额" :disabled="!direct_buy.checked"></el-input><span class="oneFont">元</span>
               </block>
               <block v-if="direct_buy.value.type==2">
-                <span class="selects">选择商品</span>
+                <span class="selects">选择赠品</span>
               </block>
             </el-checkbox-group>
             <!--    直邀等级数量      -->
-            <el-checkbox-group v-model="Level_Name" class="marginBo" style="display: flex">
+            <el-checkbox-group v-model="direct_sons.checked" class="marginBo" style="display: flex">
               <el-checkbox label="lastTime" name="lastTime">直邀等级数量</el-checkbox>
               <div >
-                <div>
-                  <el-input class="inputMy inputT" ></el-input><span class="oneFont">人</span>
-                  <el-select lass="inputMy" style="margin-left: 24px;width: 140px"  placeholder="请选择分销等级"></el-select>
-                  <span class="addSpan">添加</span>
+                <div v-for="(item,index) of direct_sons.value" style="margin-bottom: 10px">
+                  <el-input class="inputMy inputT" v-model="item.count" :disabled="!direct_sons.checked"></el-input><span class="oneFont">人</span>
+                  <el-select v-model="item.level_id" lass="inputMy" :disabled="!direct_sons.checked" style="margin-left: 24px;width: 140px"  placeholder="请选择分销等级">
+                    <block v-for="(mb,md) of disList" :key="md">
+                      <el-option :label="mb.Level_Name" :value="mb.Level_ID" ></el-option>
+                    </block>
+                  </el-select>
+                  <span class="addSpan" @click="addDirect" v-if="index==0">添加</span>
+                  <span  class="addSpan" v-else @click="delDirect(index)">删除</span>
                 </div>
               </div>
             </el-checkbox-group>
             <!--    团队等级数量      -->
-            <el-checkbox-group v-model="Level_Name" class="marginBo" style="display: flex">
+            <el-checkbox-group v-model="team_sons.checked" class="marginBo" style="display: flex">
               <el-checkbox label="lastTime" name="lastTime">团队等级数量</el-checkbox>
               <div >
-                <div>
-                  <el-input class="inputMy inputT" ></el-input><span class="oneFont">人</span>
-                  <el-select lass="inputMy" style="margin-left: 24px;width: 140px"  placeholder="请选择等级"></el-select>
-                  <span class="addSpan">添加</span>
+                <div v-for="(it,ind) of team_sons.value" style="margin-bottom: 10px">
+                  <el-input v-model="it.count" class="inputMy inputT" :disabled="!team_sons.checked"></el-input><span class="oneFont">人</span>
+                  <el-select v-model="it.level_id" lass="inputMy" :disabled="!team_sons.checked" style="margin-left: 24px;width: 140px"  placeholder="请选择等级">
+                      <block v-for="(mb,md) of disList" :key="md">
+                        <el-option :label="mb.Level_Name" :value="mb.Level_ID" ></el-option>
+                      </block>
+                  </el-select>
+                  <span class="addSpan" @click="addTeam" v-if="ind==0">添加</span>
+                  <span class="addSpan" v-else @click="delTeam(ind)">删除</span>
                 </div>
               </div>
             </el-checkbox-group>
@@ -200,6 +210,39 @@
       </el-form>
     </div>
 
+    <el-dialog title="选择商品" :visible.sync="settingShow" width="80%" style="height: 900px;overflow: auto">
+      <fun-table
+        :columns="dataTableOpt.columns"
+        :dataList="dataTableOpt.dataList"
+        :act="dataTableOpt.act"
+        :totalCount="dataTableOpt.totalCount"
+        :pageSize="dataTableOpt.pageSize"
+        :is_paginate="dataTableOpt.is_paginate"
+        :formSize="'small'"
+        :isRow="false"
+        @handleSizeChange="handleSizeChange"
+        @currentChange="currentChange"
+        @selectVal="selectVal"
+        @submit="submit"
+        @reset="reset"
+      >
+        <template slot="Products_Name-column" slot-scope="props" >
+          <div style="display: flex;align-items: center;margin-left: 10px">
+            <img width="90px" height="100px" :src="props.row.img_url">
+            <span style="margin-left: 10px">{{props.row.Products_Name}}</span>
+          </div>
+        </template>
+        <template slot="Products_PriceX-column"  slot-scope="props">
+          <span>¥ {{props.row.Products_PriceX}}</span>
+        </template>
+        <template slot="Products_Sales-column" slot-scope="props">
+          <span>{{props.row.Products_Sales}}/{{props.row.Products_Count}}</span>
+        </template>
+      </fun-table>
+    </el-dialog>
+
+
+
   </div>
 </template>
 
@@ -210,11 +253,45 @@
         Watch
     } from 'vue-property-decorator';
     import UploadComponents from "@/components/comm/UploadComponents.vue";
+    import {findArrayIdx, plainArray, createTmplArray, objTranslate} from '@/common/utils';
     import {
         Action,
         State
     } from 'vuex-class'
     import fa from "element-ui/src/locale/lang/fa";
+    import {
+        systemLevelList,getProducts,getProductCategory
+    } from '@/common/fetch'
+    const getParentsCount = (arr,key,pkey,val,tempArr)=>{
+        var idx = false
+        for(var i in arr){
+            let item = arr[i]
+            if(item[key] == val[pkey]){
+                idx = i
+                break;
+            }
+        }
+        if(idx!==false){
+            tempArr.push(1)
+            //循环
+            getParentsCount(arr,key,pkey,arr[idx],tempArr)
+        }
+    }
+    const restArr = (arr,key)=>{
+        let plainArr = []
+        plainArray(arr,key,plainArr)
+        for(var i in plainArr){
+            let item = plainArr[i]
+            item.parent_count = 0;
+            let tempArr = []
+            if(item['Category_ParentID']){
+                getParentsCount(plainArr,'Category_ID','Category_ParentID',item,tempArr)
+                item.parent_count = objTranslate(tempArr).length
+            }
+            item.new_name = createTmplArray('　├　',item.parent_count).join('')+item.Category_Name
+        }
+        return plainArr
+    }
     @Component({
         mixins:[],
         components: {
@@ -223,6 +300,133 @@
     })
 
     export default class DistributorLevel extends Vue {
+        settingShow=false
+        cate=[]
+        dataTableOpt = {
+            act : 'get_self_store_prod',
+            dataList:[],
+            page:1,
+            totalCount:100,
+            pageSize:10,
+            is_paginate:true,//是否显示分页 默认显示
+            columns : [
+                {
+                    prop: "Products_ID",
+                    label: "产品ID",
+                    align:'center',
+                    width:138,
+                    // align: "center",
+                    // sortable: true,
+                    //后面这些是filter使用的
+                    search: false //不需要搜索ID,所以都不需要了
+                },
+                {
+                    prop: "Products_Name",
+                    label: "商品名称",
+                    value:'',
+                    align:'center',
+                    field: "Products_Name",
+                    // align: "center",
+                    // sortable: true,
+                    //后面这些是filter使用的
+                    required: true,
+                    search: {
+                        type: 'input',
+                        operate: 'like',
+                    }
+                },
+                {
+                    prop: "Products_PriceX",
+                    label: "商品价格",
+                    width:120,
+                    align:'center',
+                    search: false
+                },
+                {
+                    prop: "Product_Cate",
+                    label: "商品分类",
+                    align:'center',
+                    showIf:(row)=>false,
+                    value:'',
+                    search: {
+                        type: 'select',
+                        operate: 'like',
+                        option:[]
+                    }
+                },
+                {
+                    prop: "Products_CreateTime",
+                    label: "发布时间",
+                    align:'center',
+                    width:150,
+                    search: false
+                },
+                {
+                    prop: "Products_Sales",
+                    label: "销量/库存",
+                    align:'center',
+                    width:150,
+                    search: false
+                },
+            ]
+        }
+
+        selectValue=[]
+        //获取选中数据
+        selectVal(val,vals){
+            console.log(val,vals,"sssss")
+            this.selectValue=[]
+            for(let item of val){
+                this.selectValue.push(item.Products_ID)
+            }
+        }
+        //重置
+        reset(){
+            for(let it in this.dataTableOpt.columns){
+                this.dataTableOpt.columns[it].value=''
+            }
+            this.getProduct()
+        }
+        //搜索
+        submit(){
+            this.getProduct()
+        }
+        //一页多少行
+        handleSizeChange(val){
+            this.dataTableOpt.pageSize=val
+            this.getProduct()
+        }
+        //当前页数
+        currentChange(val){
+            this.dataTableOpt.page=val
+            this.getProduct()
+        }
+        getProduct(){
+            let nameIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'Products_Name'})
+            let oattrIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'attr'})
+            let cateIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'Product_Cate'})
+            let data={
+                pageSize: this.dataTableOpt.pageSize,
+                page:this.dataTableOpt.page,
+                pro_name:this.dataTableOpt.columns[nameIdx].value,
+                sel_cate:this.dataTableOpt.columns[cateIdx].value,
+                store_id:''
+            }
+
+            getProducts(data).then(res=>{
+                if(res.errorCode==0){
+                    this.dataTableOpt.dataList=res.data
+                    this.dataTableOpt.totalCount=res.totalCount
+                    this.dataTableOpt.columns[oattrIdx].search.option=res.oattrs
+                }
+            })
+        }
+
+
+        showSetting(){
+            this.getProduct()
+            this.settingShow=true
+        }
 
         Level_Name=''//级别名称
         Level_Description=''//等级描述
@@ -272,12 +476,69 @@
             value:''
         }
 
+        //直接邀请
+        direct_sons={
+            checked:false,
+            value:[
+                {
+                    level_id:'',
+                    count:''
+                }
+            ]
+        }
+        //团队等级数量
+        team_sons={
+            checked:false,
+            value:[
+                {
+                    level_id:'',
+                    count:''
+                }
+            ]
+        }
+        //添加直接邀请
+        addDirect(){
+            if(!this.direct_sons.checked)return
+            this.direct_sons.value.push({level_id:'', count:''})
+        }
+        delDirect(index){
+            this.direct_sons.value.splice(index, 1);
+        }
+        //团队等级数量
+        addTeam(){
+            if(!this.team_sons.checked)return
+            this.team_sons.value.push({level_id:'', count:''})
+        }
+        delTeam(index){
+            this.team_sons.value.splice(index, 1);
+        }
+
         upThumbSuccessCall(url_list){
            this.Level_Icon=url_list[0].url
         }
+
+        disList=[]
         async created(){
               this.level=this.$route.query.level
 
+            systemLevelList().then(res=>{
+                if(res.errorCode==0){
+                    this.disList=res.data
+                }
+            })
+            getProductCategory().then(res=>{
+                let cates = res.data
+                // arr2table(newArr,'Category_ID','Category_ParentID')
+                this.cates = restArr(cates,'child')
+                //修改
+                let idx = findArrayIdx(this.dataTableOpt.columns,{prop:'Product_Cate',label:'商品分类'})
+                console.log(idx)
+                if(idx!==false){
+                    this.dataTableOpt.columns[idx].search.option = this.cates.map(item=>{
+                        return {label:item.new_name,value:item.Category_ID}
+                    })
+                }
+            })
 
         }
 
