@@ -6,6 +6,8 @@
       :top="top"
       width="70%"
       @close="cancel"
+      :close-on-click-modal="maskClose"
+      :close-on-press-escape="maskClose"
       append-to-body
       class="innerDislog"
     >
@@ -119,6 +121,11 @@
   export default {
     name: 'BindStoreComponent',
     props: {
+      //默认不允许点击关闭
+      maskClose:{
+        type:Boolean,
+        default:false
+      },
       get_top:{
         type:Number,
         default:0,
