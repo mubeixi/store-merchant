@@ -119,7 +119,7 @@
                   </el-popover>
 
 
-                  <div @click.prevent="showLogistics(apply)" class="font12 graytext2 logistics" >查看物流</div>
+                  <div @click.prevent="showLogistics(apply)" v-if="apply.Order_ShippingID" class="font12 graytext2 logistics" >查看物流</div>
                 </div>
                 <!--如果在修改库存，则隐藏重新提交按钮。只有先保存库存，才出现-->
 <!--                && !apply.is_change_stock-->
@@ -666,7 +666,10 @@
 
             let {out_order_no='',Express=''} = {...apply.Order_Shipping,out_order_no:apply.Order_ShippingID}
             //
-            if(!out_order_no || !Express)return;
+            if(!out_order_no || !Express){
+              fun.error({msg:'该订单无需物流或者物流信息错误'})
+              return
+            }
             let logisticsComponent = this.$refs.logistics
             logisticsComponent.setExpress(Express)
             logisticsComponent.setOutOrderNo(out_order_no)

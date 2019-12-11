@@ -122,7 +122,7 @@
                     <el-button slot="reference" size="small" @click.prevent="apply.sendVisible = true"  class="acion-btn" type="primary">发货</el-button>
                   </el-popover>
                 </div>
-                <div @click="showLogistics(apply)" v-if="inArray(apply.status,[34,35,36])" class="font12 graytext2 logistics" >查看物流</div>
+                <div @click="showLogistics(apply)" v-if="apply.Order_ShippingID && inArray(apply.status,[34,35,36])" class="font12 graytext2 logistics" >查看物流</div>
               </td>
             </tr>
           </table>
@@ -784,7 +784,10 @@
 
             let {out_order_no='',Express=''} = {...apply.Order_Shipping,out_order_no:apply.Order_ShippingID}
 
-            if(!out_order_no || !Express)return;
+            if(!out_order_no || !Express){
+              fun.error({msg:'该订单无需物流或者物流信息错误'})
+              return;
+            }
             let logisticsComponent = this.$refs.logistics
             logisticsComponent.setExpress(Express)
             logisticsComponent.setOutOrderNo(out_order_no)

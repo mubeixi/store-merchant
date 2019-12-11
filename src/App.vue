@@ -3,11 +3,15 @@
     <router-view/>
   </div>
 </template>
+<script>
+export default {
+  
+}
+</script>
 <style lang="stylus">
   @import "assets/css/app.styl";
 </style>
 <style lang="less">
-
 .el-carousel__container{
   height: auto;
 }
