@@ -160,6 +160,7 @@
             this.isShow=false
         }
         selectGi(){
+            this.searchList();
             this.isShow=true;
         }
         searchList(){

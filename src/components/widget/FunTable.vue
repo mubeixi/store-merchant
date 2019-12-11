@@ -81,6 +81,18 @@
 
     import {RenderContent} from '@/components/widget/RenderContent';
     import col from "element-ui/packages/col/src/col";
+    import {objTranslate} from "../../common/utils";
+
+    const valInArr = (val,arr)=>{
+        let rt = false
+        for(var i in arr){
+            if(arr[i]==val){
+                rt = true;
+                break;
+            }
+        }
+        return rt;
+    }
 
     @Component({
         components:{
@@ -205,17 +217,19 @@
 
         toggleSelection() {
 
-            this.$refs.funTable.clearSelection();
-            console.log('初始化选中的')
+            //this.$refs.funTable.clearSelection();
+            console.log('初始化选中的',objTranslate(this.has))
             if(!this.vkey || !this.has || !_.isArray(this.has) || this.has.length<1){
+                console.log('清空数据')
                 this.$refs.funTable.clearSelection();
                 return;
             };
 
             let rows = []
 
+            console.log(objTranslate(this.lists))
             for(var item of this.lists){
-                if(this.has.indexOf(item[this.vkey]+'')!==-1){
+                if(valInArr(item[this.vkey],this.has)){
                     rows.push(item)
                 }
             }
@@ -227,7 +241,7 @@
                     rows.forEach(row => {
                         _self.$refs.funTable.toggleRowSelection(row,true);
                     });
-                },100)
+                },10)
 
             }
         }
