@@ -285,6 +285,11 @@
       domainFn(url){
           return domain(url)
       }
+
+      /**
+       *
+       * @param list array
+       */
       handleInitHas(list){
           console.log(list)
           this.fileList = list.map((url,idx)=>{

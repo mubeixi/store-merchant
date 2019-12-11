@@ -61,71 +61,76 @@
         <block v-if="arrive_limit==3||arrive_limit==4">
           <div class="myCenter">
             <!--     消费额       -->
-            <el-checkbox-group v-model="pay_money.checked">
+            <el-checkbox-group v-model="pay_money.checked" :disabled="direct_buy.checked">
               <el-checkbox label="lastTime" name="lastTime">消费额</el-checkbox>
             </el-checkbox-group>
             <div class="first">
               <el-form-item  label="消费类型：" class="divFlex">
-                <el-radio-group v-model="pay_money.value.type"  :disabled="!pay_money.checked">
+                <el-radio-group v-model="pay_money.value.type"  :disabled="!pay_money.checked||direct_buy.checked">
                   <el-radio label="1" >商城总消费</el-radio>
                   <el-radio label="2" >一次性消费</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item  label="消费金额：" class="divFlex">
-                <el-input v-model="pay_money.value.money"  :disabled="!pay_money.checked" class="widthInput"></el-input> 元 <span class="spans">（注：用户需消费此额度才能成为该级别分销商）</span>
+                <el-input v-model="pay_money.value.money"  :disabled="!pay_money.checked||direct_buy.checked" class="widthInput"></el-input> 元 <span class="spans">（注：用户需消费此额度才能成为该级别分销商）</span>
               </el-form-item>
               <el-form-item  label="生效状态：" class="divFlex">
-                <el-radio-group v-model="pay_money.value.arrive_status" :disabled="!pay_money.checked">
+                <el-radio-group v-model="pay_money.value.arrive_status" :disabled="!pay_money.checked||direct_buy.checked">
                   <el-radio label="2" >订单付款后计入</el-radio>
                   <el-radio label="4" >订单确认收货后计入</el-radio>
                 </el-radio-group>
               </el-form-item>
             </div>
             <!--     购买礼包       -->
-            <el-checkbox-group v-model="buy_prod.checked">
+            <el-checkbox-group v-model="buy_prod.checked"  :disabled="direct_buy.checked">
               <el-checkbox label="lastTime" name="lastTime">购买礼包</el-checkbox>
-              <el-radio-group v-model="buy_prod.value.type" class="productRadio" :disabled="!buy_prod.checked">
+              <el-radio-group v-model="buy_prod.value.type" class="productRadio" :disabled="!buy_prod.checked||direct_buy.checked">
                 <el-radio label="1" >任意商品</el-radio>
                 <el-radio label="2" >特定商品</el-radio>
               </el-radio-group>
-              <span class="selects" @click="showSetting">选择商品</span>
+              <span class="selects" @click="showSetting"  v-if="buy_prod.value.type=='2'&&buy_prod.checked">选择商品</span>
             </el-checkbox-group>
-            <div class="first second" v-if="buy_prod.value.type=='2'">
-              <div class="listLine">
-                <img src="http://vod.q172.net/image/default/1FB2EA180FD04D689689880F40D1AD5A-6-2.png" class="lineImg">
-                <div class="lineDiv">dsadasdasdasdasd</div>
+            <div class="first second" v-if="buy_prod.value.type=='2'&&buy_prod.checked&&productData.length>0">
+              <div class="listLine" v-for="(item,index) of productData">
+                <img :src="item.img_url||item.ImgPath" class="lineImg">
+                <div class="lineDiv">{{item.Products_Name}}</div>
               </div>
             </div>
             <!--    购买商品次数      -->
-            <el-checkbox-group v-model="buy_times.checked" class="marginBo">
+            <el-checkbox-group v-model="buy_times.checked" class="marginBo"  :disabled="direct_buy.checked">
               <el-checkbox label="lastTime" name="lastTime">购买商品次数</el-checkbox>
               <el-input class="inputMy" v-model="buy_times.value" :disabled="!buy_times.checked"></el-input><span class="oneFont">次</span>
             </el-checkbox-group>
             <!--    团队销售额      -->
-            <el-checkbox-group v-model="team_sales.checked" class="marginBo">
+            <el-checkbox-group v-model="team_sales.checked" class="marginBo"  :disabled="direct_buy.checked">
               <el-checkbox label="lastTime" name="lastTime">团队销售额</el-checkbox>
               <el-input class="inputMy"  v-model="team_sales.value" :disabled="!team_sales.checked" style="margin-left: 38px"></el-input><span class="oneFont">元</span>
             </el-checkbox-group>
             <!--    直接购买身份      -->
-            <el-checkbox-group v-model="direct_buy.checked" class="marginBo">
+            <el-checkbox-group v-model="direct_buy.checked" class="marginBo inputMyDa">
               <el-checkbox label="lastTime" name="lastTime">直接购买身份</el-checkbox>
               <el-select lass="inputMy" v-model="direct_buy.value.type" :disabled="!direct_buy.checked" style="margin-left: 24px;width: 140px">
                 <el-option label="直接购买" value="1" ></el-option>
                 <el-option label="送产品" value="2" ></el-option>
                 <el-option label="存入余额" value="3" ></el-option>
               </el-select>
-              <block v-if="direct_buy.value.type==1">
+              <block>
                 <el-input   v-model="direct_buy.value.money" class="inputMy inputT" placeholder="级别金额" :disabled="!direct_buy.checked"></el-input><span class="oneFont">元</span>
               </block>
               <block v-if="direct_buy.value.type==3">
                 <el-input   v-model="direct_buy.value.present" class="inputMy inputT" placeholder="赠送金额" :disabled="!direct_buy.checked"></el-input><span class="oneFont">元</span>
               </block>
               <block v-if="direct_buy.value.type==2">
-                <span class="selects">选择赠品</span>
+                <span class="selects" @click="selectGi">选择赠品</span>
+                <el-tooltip :content="text"  placement="top" effect="light">
+                  <div style="display:inline-block;height: 20px;line-height: 20px;font-size: 14px">
+                    <div  class="lst" style="display: block" v-if="text">{{text}}</div>
+                  </div>
+                </el-tooltip>
               </block>
             </el-checkbox-group>
             <!--    直邀等级数量      -->
-            <el-checkbox-group v-model="direct_sons.checked" class="marginBo" style="display: flex">
+            <el-checkbox-group v-model="direct_sons.checked" class="marginBo" style="display: flex"  :disabled="direct_buy.checked">
               <el-checkbox label="lastTime" name="lastTime">直邀等级数量</el-checkbox>
               <div >
                 <div v-for="(item,index) of direct_sons.value" style="margin-bottom: 10px">
@@ -141,7 +146,7 @@
               </div>
             </el-checkbox-group>
             <!--    团队等级数量      -->
-            <el-checkbox-group v-model="team_sons.checked" class="marginBo" style="display: flex">
+            <el-checkbox-group v-model="team_sons.checked" class="marginBo" style="display: flex"  :disabled="direct_buy.checked">
               <el-checkbox label="lastTime" name="lastTime">团队等级数量</el-checkbox>
               <div >
                 <div v-for="(it,ind) of team_sons.value" style="margin-bottom: 10px">
@@ -167,21 +172,25 @@
               <div class="td">初始内容</div>
               <div class="td" style="width: 125px">操作</div>
             </div>
-            <div class="tr">
+            <div class="tr" v-for="(item,index) of manual_rules">
               <div class="td">
-                <el-select class="widthmbx"></el-select>
+                <el-select class="widthmbx" v-model="item.type">
+                  <el-option label="文本框" value="input" ></el-option>
+                  <el-option label="选择框" value="select" ></el-option>
+                  <el-option label="地区选择" value="address" ></el-option>
+                </el-select>
               </div>
               <div class="td">
-                <el-input class="widthmbx"></el-input>
+                <el-input class="widthmbx" v-model="item.name"></el-input>
               </div>
               <div class="td">
-                <el-input class="widthmbx"></el-input>
+                <el-input class="widthmbx" v-model="item.place" :disabled="item.type=='address'"></el-input>
               </div>
               <div class="td" style="width: 125px">
-                <img src="@/assets/img/mydel.png" style="cursor:pointer;">
+                <img src="@/assets/img/mydel.png" style="cursor:pointer;" @click="delManual(index)">
               </div>
             </div>
-            <el-button type="primary"  style="margin-top: 20px" >确定</el-button>
+            <el-button type="primary"  style="margin-top: 20px" @click="addManual">增加</el-button>
           </div>
         </block>
       </el-form-item>
@@ -205,13 +214,16 @@
 
         <el-form-item class="submit">
           <el-button   class="close" >返回</el-button>
-          <el-button type="primary"  class="submits" >确定</el-button>
+          <el-button type="primary"  class="submits"  @click="saveData">确定</el-button>
         </el-form-item>
       </el-form>
     </div>
 
     <el-dialog title="选择商品" :visible.sync="settingShow" width="80%" style="height: 900px;overflow: auto">
       <fun-table
+        ref="funTableComp"
+        vkey="Products_ID"
+        :has="selectValue"
         :columns="dataTableOpt.columns"
         :dataList="dataTableOpt.dataList"
         :act="dataTableOpt.act"
@@ -221,7 +233,7 @@
         :formSize="'small'"
         :isRow="false"
         @handleSizeChange="handleSizeChange"
-        @currentChange="currentChange"
+        @currentChange="currentChanges"
         @selectVal="selectVal"
         @submit="submit"
         @reset="reset"
@@ -241,7 +253,77 @@
       </fun-table>
     </el-dialog>
 
-
+    <el-dialog
+      title="选择赠品"
+      width="60%"
+      @close="cardCancel"
+      append-to-body
+      :visible.sync="isShow"
+      class="setting"
+    >
+      <div class="cardTitle" style="margin-bottom: 10px">
+        <div class="cardTitle" style="margin-right: 10px">
+          产品名称： <el-input    class="sortInput" style="width: 100px" v-model="nameMbx"></el-input>
+        </div>
+        <el-button  type="primary" @click="searchList">搜索</el-button>
+      </div>
+      <el-table
+        ref="multipleTable"
+        :data="GivingGifts"
+        tooltip-effect="dark"
+        style="width: 100%"
+        highlight-current-row
+        @current-change="handleSelectionChange"
+      >
+        <el-table-column
+          type="index"
+          label="#"
+          width="55">
+        </el-table-column>
+        <el-table-column
+          label="赠品名称"
+          prop="gift_name"
+          width="120">
+        </el-table-column>
+        <el-table-column
+          prop="Products_Name"
+          label="产品名称"
+          width="300px"
+        >
+          <template slot-scope="scope">
+            <div class="fixDisplay">
+              <div style="width: 100px;height: 100px">
+                <img :src="GivingGifts[scope.$index].img_url" style="width: 100%;height: 100%">
+              </div>
+              <div style="width: 200px;margin-left: 10px;">{{GivingGifts[scope.$index].Products_Name}}</div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="valid_days"
+          label="领取有效天数"
+          show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column
+          prop="limit_times"
+          label="限制领取次数"
+          show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column
+          prop="Products_Count"
+          label="剩余库存"
+          show-overflow-tooltip>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+        style="margin-top: 20px;text-align: center;"
+        @current-change="currentChange"
+        background
+        :page-size="pageSize"
+        layout="prev, pager, next"
+        :total="totalCount">
+      </el-pagination>
+    </el-dialog>
 
   </div>
 </template>
@@ -260,7 +342,7 @@
     } from 'vuex-class'
     import fa from "element-ui/src/locale/lang/fa";
     import {
-        systemLevelList,getProducts,getProductCategory
+        systemLevelList,getProducts,getProductCategory,getGivingGifts,systemLevelAdd,systemLevelDetail,systemLevelEdit
     } from '@/common/fetch'
     const getParentsCount = (arr,key,pkey,val,tempArr)=>{
         var idx = false
@@ -300,6 +382,52 @@
     })
 
     export default class DistributorLevel extends Vue {
+        //赠品操作
+        isShow=false
+        nameMbx='';
+        GivingGifts=[]
+        text=''
+        send_id=''
+        totalCount=0
+        page=1
+        pageSize=8
+        currentChange(val){
+            this.page=val;
+            this.searchList()
+        }
+        //取消
+        cardCancel(){
+            this.isShow=false
+        }
+        selectGi(){
+            this.searchList();
+            this.isShow=true;
+        }
+        searchList(){
+            let data={
+                page:this.page,
+                pageSize:this.pageSize,
+                pro_name:this.nameMbx
+            }
+            getGivingGifts(data).then(res=>{
+                if(res.errorCode==0){
+                    this.GivingGifts=res.data;
+                }
+            })
+        }
+        handleSelectionChange(val){
+            if(val){
+                console.log(val.Products_Name,"sss")
+                this.isShow=false
+                this.text=val.Products_Name
+                this.send_id=val.id
+                this.direct_buy.value.gift_id=val.id
+                this.$refs.multipleTable.setCurrentRow();
+            }
+        }
+        //赠品结束
+
+
         settingShow=false
         cate=[]
         dataTableOpt = {
@@ -372,13 +500,29 @@
         }
 
         selectValue=[]
+        productData=[]
         //获取选中数据
         selectVal(val,vals){
             console.log(val,vals,"sssss")
-            this.selectValue=[]
+            //this.selectValue=[]
+            this.productData=[]
+
             for(let item of val){
-                this.selectValue.push(item.Products_ID)
+                this.productData.push(item)
+                if(this.selectValue.indexOf(item.Products_ID)==-1){
+                    this.selectValue.push(item.Products_ID)
+                    //this.productData.push(item)
+                }
             }
+            for(let it of  vals){
+                for(let i=0;i<this.selectValue.length;i++){
+                    if(this.selectValue[i]==it.Products_ID){
+                        this.selectValue.splice(i,1)
+                        //this.productData.splice(i,1)
+                    }
+                }
+            }
+
         }
         //重置
         reset(){
@@ -397,7 +541,7 @@
             this.getProduct()
         }
         //当前页数
-        currentChange(val){
+        currentChanges(val){
             this.dataTableOpt.page=val
             this.getProduct()
         }
@@ -417,7 +561,6 @@
                 if(res.errorCode==0){
                     this.dataTableOpt.dataList=res.data
                     this.dataTableOpt.totalCount=res.totalCount
-                    this.dataTableOpt.columns[oattrIdx].search.option=res.oattrs
                 }
             })
         }
@@ -496,6 +639,20 @@
                 }
             ]
         }
+        //手动申请
+        manual_rules=[
+            {type:"input",name:"",place:""}
+        ]
+        //添加手动申请
+        addManual(){
+            this.manual_rules.push({type:"input",name:"",place:""})
+        }
+        //删除某条
+        delManual(index){
+            if(this.manual_rules.length<=1)return
+            this.manual_rules.splice(index,1)
+        }
+
         //添加直接邀请
         addDirect(){
             if(!this.direct_sons.checked)return
@@ -517,10 +674,147 @@
            this.Level_Icon=url_list[0].url
         }
 
-        disList=[]
-        async created(){
-              this.level=this.$route.query.level
+        saveData(){
+            let info={
+                Level_Name:this.Level_Name,
+                Level_Icon:this.Level_Icon,
+                arrive_limit:this.arrive_limit,
+                Level_Description:this.Level_Description
+            }
+            info.Level_PeopleLimit={}
+            if(this.direct_buy.checked){
+                info.commi_rules={}
+            }
+            for(let i=0;i<this.level;i++){
+                info.Level_PeopleLimit[i+1]=this.Level_PeopleLimit[i]
+                if(this.direct_buy.checked){
+                    info.commi_rules[i+1]=this.commi_rules[i]
+                }
+            }
+            if(this.direct_buy.checked){
+                info.commi_rules=JSON.stringify(info.commi_rules)
+            }
+            info.Level_PeopleLimit=JSON.stringify(info.Level_PeopleLimit)
+            if(this.arrive_limit=='3'||this.arrive_limit=='4'){
+                info.level_rules={
+                    pay_money:{...this.pay_money},
+                    direct_buy:{...this.direct_buy},
+                    buy_prod:{...this.buy_prod},
+                    buy_times:{...this.buy_times},
+                    team_sales:{...this.team_sales},
+                    direct_sons:{...this.direct_sons},
+                    team_sons:{...this.direct_sons}
+                }
+                if(info.level_rules.buy_prod.value.type==1){
+                    info.level_rules.buy_prod.value.prod=0
+                }else{
+                    let str=''
+                    for(let item of this.selectValue){
+                        str+=item+','
+                    }
+                    str=str.slice(0,str.length-1)
+                    info.level_rules.buy_prod.value.prod=str
+                }
+                for(let my in info.level_rules){
+                    info.level_rules[my].checked=info.level_rules[my].checked?'1':'0'
+                }
+                info.level_rules=JSON.stringify(info.level_rules)
+            }
+            if(this.arrive_limit=='2'){
+                info.manual_rules=JSON.stringify(this.manual_rules)
+            }
 
+
+            if(this.LevelID){
+                info.level_id=this.LevelID
+                systemLevelEdit(info).then(res=>{
+                    this.$message({
+                        message: res.msg,
+                        type: 'success'
+                    });
+                })
+            }else{
+                systemLevelAdd(info).then(res=>{
+                    this.$message({
+                        message: res.msg,
+                        type: 'success'
+                    });
+                })
+            }
+
+        }
+
+        disList=[]
+        LevelID=''
+        async created(){
+            this.level=this.$route.query.level
+            this.LevelID=this.$route.query.LevelID
+            if(this.LevelID){
+                systemLevelDetail({level_id:this.LevelID}).then(res=>{
+                    let dataList=res.data
+                    if(res.errorCode==0){
+                        this.Level_Name=dataList.Level_Name
+                        this.Level_Description=dataList.Level_Description
+                        this.arrive_limit=dataList.arrive_limit
+                        //缩略图
+                        //@ts-ignore
+                        this.Level_Icon = dataList.Level_Icon
+                        //组件里面初始化
+                        //@ts-ignore
+                        this.$refs.thumb.handleInitHas([this.Level_Icon])
+                        this.Level_PeopleLimit=[]
+                        this.commi_rules=[]
+                        for(let it in dataList.Level_PeopleLimit){
+                            this.Level_PeopleLimit.push(dataList.Level_PeopleLimit[it])
+                        }
+                        for(let it in dataList.commi_rules){
+                            this.commi_rules.push(dataList.commi_rules[it])
+                        }
+                        for(let item in dataList.level_rules_edit){
+                            dataList.level_rules_edit[item].checked=dataList.level_rules_edit[item].checked==1?true:false
+                        }
+
+                        this.pay_money=dataList.level_rules_edit['pay_money']
+                        this.direct_buy=dataList.level_rules_edit['direct_buy']
+                        this.buy_prod=dataList.level_rules_edit['buy_prod']
+                        this.buy_times=dataList.level_rules_edit['buy_times']
+                        this.team_sales=dataList.level_rules_edit['team_sales']
+                        this.direct_sons=dataList.level_rules_edit['direct_sons']
+                        this.team_sons=dataList.level_rules_edit['team_sons']
+
+                        if(this.direct_sons.value.length<=0){
+                            this.direct_sons.value=[{
+                                level_id:'',
+                                count:''
+                            }]
+                        }
+                        if(this.team_sons.value.length<=0){
+                            this.team_sons.value=[{
+                                level_id:'',
+                                count:''
+                            }]
+                        }
+
+                        //手动申请
+                        if(dataList.manual_rules.length>0){
+                            this.manual_rules=dataList.manual_rules
+                        }
+                        //赠品
+                        if(this.direct_buy.checked&&this.direct_buy.value.type=='2'){
+                            this.text=this.direct_buy.data.Products_Name
+                        }
+
+                        //选择商品循环出来
+                       if(this.buy_prod.data.length>0){
+                           this.productData=this.buy_prod.data
+                           let arr=this.buy_prod.value.prod.split(',')
+                           this.selectValue=arr
+                       }
+
+                    }
+
+                })
+            }
             systemLevelList().then(res=>{
                 if(res.errorCode==0){
                     this.disList=res.data
@@ -558,6 +852,9 @@
   .marginLRS{
     margin-left: 7px;
   }
+}
+.inputMyDa /deep/ .el-input__inner{
+  padding-left: 10px;
 }
 .divFlex{
   display: flex;
@@ -620,6 +917,7 @@
     font-size: 12px;
     margin-left: 10px;
     cursor: pointer;
+    display: inline-block;
   }
 
   .second{
@@ -712,4 +1010,29 @@
       }
     }
   }
+/*赠品*/
+.cardTitle{
+  display: flex;
+  align-items: center;
+}
+.current{
+  cursor: pointer;
+  color: #79B0FF;
+  margin-left: 10px;
+}
+.fixDisplay{
+  display: flex;
+  align-items: center;
+}
+.lst{
+  margin-left: 10px;
+  width: 100px;
+  overflow: hidden;
+  height: 17px;
+  line-height: 23px;
+  display: inline-block;
+}
+/deep/ .el-table__row  {
+  cursor: pointer;
+}
 </style>
