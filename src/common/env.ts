@@ -1,5 +1,3 @@
-
-
 export const staticUrl = 'https://new401.bafangka.com';
 
 export const front_url = 'https://new401.bafangka.com/fre/';
@@ -14,8 +12,4 @@ console.log('process.env is',process.env)
 //   throw new Error('请配置pro_base_apiurl');
 // }
 
-export const baseApiUrl = isDev?'':'https://new401.bafangka.com';//'http://www.qiyeban.com';
-
-
-
-
+export const baseApiUrl = isDev?'':process.env.VUE_APP_API_BASE_URL;//'http://www.qiyeban.com';

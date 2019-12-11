@@ -3,7 +3,7 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import './registerServiceWorker';
-import {baseApiUrl} from "./common/env";
+
 
 import VueResource from 'vue-resource';
 import Common from './common/index';
@@ -15,9 +15,6 @@ Vue.use(VueResource);
 import FunTable from "@/components/widget/FunTable.vue";
 Vue.component('fun-table',FunTable);
 
-// window.editorBaseUrl = baseApiUrl;
-// import VueKindEditor from '@/components/kindeditor/index';
-// Vue.use(VueKindEditor)
 
 // @ts-ignore
 Vue.http.options.emulateJSON = true;

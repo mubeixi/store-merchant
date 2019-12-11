@@ -2,58 +2,63 @@
   <div class="selectPage">
     <el-dialog
       :visible.sync="innerVisible"
-      title="关联门店"
+      :title="label"
+      :top="top"
       width="70%"
       @close="cancel"
+      :close-on-click-modal="maskClose"
+      :close-on-press-escape="maskClose"
       append-to-body
       class="innerDislog"
     >
       <div class="filter flex">
-
-          <el-select v-model="province" size="small" placeholder="省份">
-            <el-option
-              v-for="item in province_list"
-              :key="item"
-              :label="item"
-              :value="item">
-            </el-option>
-          </el-select>
-          <div class="padding10-c"></div>
-          <el-select v-model="city" size="small" placeholder="城市">
-            <el-option
-              v-for="item in city_list"
-              :key="item"
-              :label="item"
-              :value="item">
-            </el-option>
-          </el-select>
-        <div class="padding10-c"></div>
-          <el-select v-model="area" size="small" placeholder="区/县">
-            <el-option
-              v-for="item in area_list"
-              :key="item"
-              :label="item"
-              :value="item">
-            </el-option>
-          </el-select>
-        <div class="padding10-c"></div>
-        <el-button size="small" type="primary">搜索</el-button>
-
-
+        <el-select size="small" clearable v-model="province_idx"  placeholder="省份">
+          <el-option
+            v-for="(item,idx) in province_list"
+            :key="idx"
+            :label="item.name"
+            :value="idx">
+          </el-option>
+        </el-select>
+        <div class="space"></div>
+        <el-select size="small" clearable v-model="city_idx"  placeholder="城市">
+          <el-option
+            v-for="(item,idx) in city_list"
+            :key="idx"
+            :label="item.name"
+            :value="idx">
+          </el-option>
+        </el-select>
+        <div class="space"></div>
+        <el-select size="small" clearable v-model="area_idx"  placeholder="区/县">
+          <el-option
+            v-for="(item,idx) in area_list"
+            :key="idx"
+            :label="item.name"
+            :value="idx">
+          </el-option>
+        </el-select>
+        <div class="space"></div>
+        <el-input class="w300" size="small" v-model="store_name" placeholder="门店名称" />
+        <div class="space"></div>
+        <el-input class="w180" size="small" v-model="store_no" placeholder="门店编码" />
+        <div class="space"></div>
+        <el-button @click="_init_data" size="small"  type="primary">搜索</el-button>
 
       </div>
+
       <div class="container">
         <el-table
           :data="list"
           v-loading="loading"
-          stripe
           max-height="500"
           ref="multipleTable"
+          :highlight-current-row="single"
           @selection-change="handleSelectionChange"
           @row-click="handleRowChange"
           row-class-name="fun-table-row"
           style="width: 100%">
-          <el-table-column type="selection">
+          <el-table-column type="selection" v-if="!single">
           </el-table-column>
           <el-table-column
             width="60"
@@ -107,20 +112,46 @@
 <script>
   import { getStoreList } from '../../common/fetch';
   import { domain } from '@/common/utils';
-  import {City} from '../../common/city';
+  import { City } from '../../common/city';
+  import { emptyObject } from '../../common/utils';
 
-  function noop() {}
+  function noop() {
+  }
 
   export default {
     name: 'BindStoreComponent',
     props: {
+      //默认不允许点击关闭
+      maskClose:{
+        type:Boolean,
+        default:false
+      },
+      get_top:{
+        type:Number,
+        default:0,
+      },
+      self_store_id:{
+        type:Number|String,
+      },
+      top:{
+        type:String,
+      },
+      label: {
+        type: String,
+        default: '选择门店'
+      },
+      single: {
+        type: Boolean,
+        default: false
+      },
       //store_id_list,只包含id
-      has:{
-        type:Array,
-        default:[]
+      has: {
+        type: Array,
+        default: ()=>[]
       },
       pageEl: {
-        type: Object
+        type: Object,
+        default:()=>{}
       },
       onSuccess: {
         type: Function,
@@ -136,14 +167,19 @@
     },
     data() {
       return {
-        province:'',
-        city:'',
-        area:'',
-        province_list:[],
-        city_list:[],
-        area_list:[],
+        store_name:'',
+        store_no:'',
+        province_idx:'',
+        province: {},
+        city: {},
+        city_idx:'',
+        area: {},
+        area_idx:'',
+        province_list: [],
+        city_list: [],
+        area_list: [],
         loading: true,
-        finish:false,
+        finish: false,
         innerVisible: false,
         multipleSelection: [],
         list: [],
@@ -156,14 +192,52 @@
       };
     },
     watch: {
-      province:{
-        handler(val){
-          this.city_list = City.getCityList(val)
+      province_idx: {
+        handler(val) {
+
+          if (!val && val!=0) {
+            this.province = {};
+            this.city = {};
+            this.city_idx = '';
+            this.area = {};
+            this.area_idx = '';
+
+            this.city_list = []
+            this.area_list = []
+          }else{
+
+            this.province = this.province_list[val]
+            this.city_list = City.getCityList(this.province.id);
+
+          }
+
+
         }
       },
-      city:{
-        handler(val){
-          this.area_list = City.getAreaList(this.province,val)
+      city_idx: {
+        handler(val) {
+          if (!val && val!=0) {
+            this.city = {};
+            this.area_idx = '';
+            this.area = {};
+            this.area_list = []
+
+          }else{
+            this.city = this.city_list[val]
+            this.area_list = City.getAreaList(this.province.id, this.city.id);
+          }
+
+        }
+      },
+      area_idx: {
+        handler(val) {
+          if (!val && val!=0) {
+            this.area_idx = '';
+            this.area = {};
+          }else{
+            this.area = this.area_list[val]
+          }
+
         }
       },
       show: {
@@ -171,7 +245,7 @@
         handler(val) {
           this.innerVisible = val;
 
-          if(val){
+          if (val) {
             this.paginate.page = 1;
           }
 
@@ -196,13 +270,23 @@
         return this.ids.join(',');
       }
     },
-
     created() {
 
-      this.province_list = City.getProvinceList()
+      this.province_list = City.getProvinceList();
 
     },
     methods: {
+      _init_data(){
+        this.paginate =  {
+          page: 1,
+          total: 0,
+          pageSize: 999
+        }
+        this.loadStoreInfo((arr) => {
+          //this.finish = true;
+          this.list = arr;
+        });
+      },
       getPic(jsonstr) {
         if (!jsonstr) return '';
         let obj = JSON.parse(jsonstr);
@@ -223,9 +307,20 @@
         this.loading = true;
         let _self = this;
         //构造请求
-        let postData = JSON.parse(JSON.stringify(this.paginate));
+        let postData = {
+          ...this.paginate,
+          stores_name:_self.store_name,
+          search_stores_sn:_self.store_no,
+          province:_self.province.id,
+          city:_self.city.id,
+          area:_self.area.id,
+          get_top:this.get_top,
+          self_store_id:this.self_store_id
+        };
 
-        getStoreList(postData)
+        console.log(postData)
+
+        getStoreList(emptyObject(postData))
           .then(res => {
             setTimeout(function () {
               _self.loading = false;
@@ -257,27 +352,38 @@
         });
       },
       selectCoupon({}) {
-        this.onSuccess.call(this, this.multipleSelection, this.pageEl);
+        this.$emit('success',this.multipleSelection)
+        // this.onSuccess.call(this, this.multipleSelection, this.pageEl);
       },
       cancel() {
         this.$emit('cancel');
       },
       handleSelectionChange(val) {
-        console.log(val);
-        this.multipleSelection = val;
+        let data = null
+        if(this.single){
+          data = val.pop();
+        }else{
+          data = val
+        }
+
+        this.multipleSelection =data
+
 
         // for(var item of val){
         //   if(this.multipleSelection.indexOf(item.Coupon_ID)===-1){
         //     this.multipleSelection.push(item.Coupon_ID);
         //   }
         // }
-
       }
     }
   };
 </script>
 <style lang="less" scoped>
-.filter{
-  /*margin-bottom: 10px;*/
-}
+  .filter {
+    margin-bottom: 10px;
+
+    .space {
+      width: 10px;
+    }
+  }
 </style>

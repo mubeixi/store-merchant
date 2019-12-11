@@ -155,13 +155,27 @@
             </el-select>
           </el-form-item>
           <el-form-item label=" " prop="store_no" v-show="channelDialogInstance.channel!='shop'">
-            <el-input  v-model="channelDialogInstance.store_no" placeholder="请输入门店编码" ></el-input>
+            <div class="flex">
+              <el-input  v-model="channelDialogInstance.store_no" placeholder="请输入门店编码" ></el-input>
+              <div class="w10"></div>
+              <el-button @click="dialogStoreShow=true">筛选门店</el-button>
+            </div>
           </el-form-item>
         </el-form>
         <div class="btn" @click="changeBackChannel">确定</div>
       </div>
 
     </el-dialog>
+
+    <bind-store-component
+      top="15vh"
+      @cancel="bindStoreCancel"
+      @success="bindStoreSuccessCall"
+      :single="true"
+      :get_top="1"
+      :self_store_id="self_store_id"
+      :show="dialogStoreShow"
+    />
 
   </div>
 </template>
@@ -174,8 +188,15 @@
         Action,
         State
     } from 'vuex-class'
-
-    import {getProducts,batchSetting,getProductCategory,delProduct,storeProductBack} from '@/common/fetch';
+    import BindStoreComponent from '../components/comm/BindStoreComponent'
+    import {
+        getProducts,
+        batchSetting,
+        getProductCategory,
+        delProduct,
+        storeProductBack,
+        getStoreDetail
+    } from '@/common/fetch';
     import {findArrayIdx, plainArray, createTmplArray, objTranslate,compare_obj} from '@/common/utils';
     import _ from 'underscore'
     import {float} from "html2canvas/dist/types/css/property-descriptors/float";
@@ -224,7 +245,7 @@
     @Component({
         mixins:[],
         components: {
-
+            BindStoreComponent
         },
         computed:{
             count_num(){
@@ -234,6 +255,25 @@
     })
 
     export default class StoreProductList extends Vue {
+
+        self_store_id = Cookies.get('Stores_ID')
+        dialogStoreShow = false
+
+        bindStoreCancel(){
+            this.dialogStoreShow = false
+        }
+        bindStoreSuccessCall(store_info){
+
+            console.log(store_info)
+            if(store_info && store_info.hasOwnProperty('stores_sn')){
+                this.channelDialogInstance.store_no = store_info.stores_sn
+                this.dialogStoreShow = false
+            }else{
+                fun.error({msg:'店铺选择错误'})
+            }
+
+        }
+
 
         fly_img_url = ''
         curPosX = 0
@@ -966,6 +1006,12 @@
                     })
                 }
             })
+
+            getStoreDetail({store_id:this.self_store_id}).then(res=>{
+                //去掉平台
+                !res.data.allow_from_plat && this.channelDialogInstance.channels.splice(1)
+            })
+
         }
 
         mounted(){

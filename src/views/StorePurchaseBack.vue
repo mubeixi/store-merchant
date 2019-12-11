@@ -176,7 +176,11 @@
             </el-select>
           </el-form-item>
           <el-form-item label=" " prop="store_no" v-show="channelDialogInstance.channel!='shop'">
-            <el-input  v-model="channelDialogInstance.store_no" placeholder="请输入门店编码" ></el-input>
+            <div class="flex">
+              <el-input  v-model="channelDialogInstance.store_no" placeholder="请输入门店编码" ></el-input>
+              <div class="w10"></div>
+              <el-button @click="dialogStoreShow=true">筛选门店</el-button>
+            </div>
           </el-form-item>
         </el-form>
         <div class="btn" @click="changeApplyChannel">确定</div>
@@ -210,8 +214,6 @@
       </div>
 
     </el-dialog>
-
-
     <el-dialog
       :visible.sync="sendDialogInstance.innerVisible"
       title="退货订单发货"
@@ -248,6 +250,15 @@
 
       </div>
     </el-dialog>
+    <bind-store-component
+      top="15vh"
+      @cancel="bindStoreCancel"
+      @success="bindStoreSuccessCall"
+      :single="true"
+      :get_top="1"
+      :self_store_id="self_store_id"
+      :show="dialogStoreShow"
+    />
 
   </div>
 </template>
@@ -280,11 +291,14 @@
         get_store_prod_back_order_detail,
         getShippingList,
         store_prod_back_order_send,
-        store_prod_back_order_confirm
+        store_prod_back_order_confirm,
+        getStoreDetail
     } from '../common/fetch';
     import {objTranslate,findArrayIdx} from '@/common/utils';
     import {fun} from '@/common';
+    import BindStoreComponent from '../components/comm/BindStoreComponent'
     import LogisticsInfo from '@/components/comm/LogisticsInfo'
+    import Cookies from 'js-cookie';
 
 
     const noop = ()=>{}
@@ -293,7 +307,7 @@
     @Component({
         mixins:[],
         components: {
-            LogisticsInfo
+            LogisticsInfo,BindStoreComponent
         },
         watch:{
             // status(nval,oval){
@@ -307,8 +321,25 @@
 
     export default class StorePurchaseApply extends Vue {
 
-        status= ''
+        self_store_id = Cookies.get('Stores_ID')
+        dialogStoreShow = false
 
+        bindStoreCancel(){
+            this.dialogStoreShow = false
+        }
+        bindStoreSuccessCall(store_info){
+
+            console.log(store_info)
+            if(store_info && store_info.hasOwnProperty('stores_sn')){
+                this.channelDialogInstance.store_no = store_info.stores_sn
+                this.dialogStoreShow = false
+            }else{
+                fun.error({msg:'店铺选择错误'})
+            }
+
+        }
+
+        status= ''
         tabConf = [
             {
                 label:'全部',
@@ -436,7 +467,7 @@
         channelDialogInstance = {
             apply:null,
             store_no:null,
-            channel:null,
+            channel:'store',
             channels:[{id:1,name:'门店进货',val:'store'}, {id:2,name:'平台进货',val:'shop'}],
             innerVisible:false
         }
@@ -751,14 +782,14 @@
 
         showLogistics(apply){
 
-            // let {out_order_no='',Express=''} = {...apply.Order_Shipping,out_order_no:apply.Order_ShippingID}
-            //
-            // if(!out_order_no || !Express)return;
+            let {out_order_no='',Express=''} = {...apply.Order_Shipping,out_order_no:apply.Order_ShippingID}
+
+            if(!out_order_no || !Express)return;
             let logisticsComponent = this.$refs.logistics
-            // logisticsComponent.setExpress(Express)
-            // logisticsComponent.setOutOrderNo(out_order_no)
+            logisticsComponent.setExpress(Express)
+            logisticsComponent.setOutOrderNo(out_order_no)
             logisticsComponent.show()
-            // logisticsComponent.search()
+            logisticsComponent.search()
         }
 
         setValFn(e,apply,goods,idx){
@@ -939,11 +970,7 @@
 
                 this.paginate.totalCount = res.totalCount
 
-                //长度为0停止了
-                if(res.data.length===0){
-                    this.paginate.finish = true
-                    return;
-                }
+
 
                 let rt = res.data.map(item=>{
 
@@ -967,6 +994,12 @@
                     this.applys = this.applys.concat(rt)
                 }
 
+                //长度为0停止了
+                if(res.data.length===0){
+                    this.paginate.finish = true
+                    return;
+                }
+
                 this.paginate.page ++
 
             },err=>{
@@ -976,6 +1009,11 @@
         }
 
         async created(){
+
+            getStoreDetail({store_id:this.self_store_id}).then(res=>{
+                //去掉平台
+                !res.data.allow_from_plat && this.channelDialogInstance.channels.splice(1)
+            })
 
             getStoreList({pageSize:999}).then(res=>{
                 this.stores = res.data

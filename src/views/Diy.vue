@@ -56,6 +56,9 @@
 
     import {ss} from '@/common/tool/ss';
     import {front_url} from '../common/env';
+
+    // const front_url = process.env.VUE_APP_FRONT_URL
+
     import Cookies from 'js-cookie';
     import QrcodeVue from 'qrcode.vue';
     import {serialize} from '@/common/utils';

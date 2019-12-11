@@ -1,5 +1,7 @@
 import { PLUGINSLIST } from './data';
-import { baseApiUrl,staticUrl } from '@/common/env';
+
+import { baseApiUrl,staticUrl } from './env';
+// const staticUrl = process.env.VUE_APP_STATIC_URL
 
 export default [
   {
@@ -28,6 +30,7 @@ export default [
     name: 'domain',
     methods: (url) => {
       if (!url) return '';
+      // if (url.indexOf('http') == -1) return process.env.VUE_APP_API_STATIC_URL + url;
       if (url.indexOf('http') == -1) return staticUrl + url;
       return url;
     }
