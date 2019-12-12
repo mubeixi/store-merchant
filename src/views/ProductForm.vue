@@ -1364,17 +1364,21 @@
                 for(var item of dataArr){
                     //如果不是子一级目录就不要
                     if(item.child)continue
-                    for(var child of cate.child){
-                        if(child.Category_ID === item.Category_ID){
-                            child_arr.push(item.Category_ID)
+                    if(cate.hasOwnProperty('child') && _.isArray(cate.child)){
+                        for(var child of cate.child){
+                            if(child.Category_ID === item.Category_ID){
+                                child_arr.push(item.Category_ID)
+                            }
                         }
                     }
+
                 }
 
                 //如果有子的，那么就把父级也加进去
                 if(child_arr.length>0){
-
                     cate_data[cate.Category_ID] = [...child_arr]
+                }else{
+                    cate_data[cate.Category_ID] = []
                 }
 
             }
