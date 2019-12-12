@@ -1353,14 +1353,17 @@
         bindCateSuccessCall(dataType, type, path, tooltip, dataArr, pageEl, idx2,ext){
 
             let origin_cate_list = ext//获取所有的菜单数据，方便后面拼接。
-
+            console.log('原始数据',origin_cate_list)
+            console.log('返回的数据',dataArr)
             let child_arr = [];
             let cate_data = {}
             for(var cate of origin_cate_list){
                 child_arr = [];
 
+                //把所有选中的子级类目加进去
                 for(var item of dataArr){
-                    if(!item.child)continue
+                    //如果不是子一级目录就不要
+                    if(item.child)continue
                     for(var child of cate.child){
                         if(child.Category_ID === item.Category_ID){
                             child_arr.push(item.Category_ID)
@@ -1368,11 +1371,15 @@
                     }
                 }
 
+                //如果有子的，那么就把父级也加进去
                 if(child_arr.length>0){
+
                     cate_data[cate.Category_ID] = [...child_arr]
                 }
 
             }
+
+            console.log(cate_data)
 
             this.cate_list = dataArr.map(cate=>{
                 return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
