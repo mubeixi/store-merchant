@@ -483,12 +483,12 @@
             let select_store_id = 0
 
             //如果有门店，需要换成从门店进货
-            if(this.$route.query.store_no && this.products.length>0){
-              select_store_id = this.products[0].Stores_ID
+            if(this.$route.query.store_no && this.$route.query.channel == 1 && this.store_info.Stores_ID){
+              select_store_id = this.store_info.Stores_ID
             }
 
             let postData = {
-                cart_key:'CartList',
+                cart_key:'StorePifa',
                 active:'store_pifa',
                 prod_id:this.cartCurrentItem.Products_ID,
                 qty:(nVal-oVal),
@@ -522,7 +522,7 @@
         }
 
         async cartRemoveFn(goods){
-            let postData = {cart_key:'CartList'}
+            let postData = {cart_key:'StorePifa'}
 
             let prod_attr = {}
             if(goods.prd_attr_id){
@@ -713,12 +713,12 @@
             let select_store_id = 0
 
             //如果有门店，需要换成从门店进货
-            if(this.$route.query.store_no && this.products.length>0){
-              select_store_id = this.products[0].Stores_ID
+            if(this.$route.query.store_no && this.$route.query.channel == 1 && this.store_info.Stores_ID){
+              select_store_id = this.store_info.Stores_ID
             }
 
             let postData = {
-                cart_key:'CartList',
+                cart_key:'StorePifa',
                 active:'store_pifa',
                 prod_id:this.dialogInstance.product.Products_ID,
                 qty:this.dialogInstance.num,
@@ -808,7 +808,7 @@
                 fun.error({msg:'购物车中无产品'})
                 return;
             }
-            let postData = {cart_key:'CartList'}
+            let postData = {cart_key:'StorePifa'}
             let prod_attr = {}
             for(var goods of this.carts.lists){
                 if(goods.num<1){
@@ -976,7 +976,15 @@
         }
 
         syncCardList(){
-            return getCartList({act:'get_cart',cart_key:'CartList'}).then(res=>{
+
+            let select_store_id = 0
+
+            //如果有门店，需要换成从门店进货
+            if(this.$route.query.store_no && this.$route.query.channel == 1 && this.store_info.Stores_ID){
+                select_store_id = this.store_info.Stores_ID
+            }
+
+            return getCartList({act:'get_cart',cart_key:'StorePifa',store_pifa_receive_id:select_store_id}).then(res=>{
               return res.data.CartList
             })
         }
@@ -1002,7 +1010,7 @@
 
         }
 
-        created(){
+        async created(){
 
             this.loadGoodsInfo()
             if(!this.$route.query.channel){
@@ -1012,8 +1020,20 @@
                 })
                 return;
             }
-            this.syncCardList().then((CartList)=>{
+
+            if(this.$route.query.channel == 1 && this.$route.query.store_no){
+                await getStoreDetail({store_sn:this.$route.query.store_no,store_id:null,User_ID:null}).then(res=>{
+                    this.store_info = res.data
+                })
+            }
+
+            await this.syncCardList().then((CartList)=>{
                 console.log(CartList)
+                //需要清空
+                if(CartList.length<1){
+                    this.carts.clear()
+                    return;
+                }
                 for(var key in  CartList){
                     for(var idx in CartList[key]){
                         let goods = CartList[key][idx]
@@ -1043,11 +1063,7 @@
                 // }
             })
 
-            if(this.$route.query.channel == 1 && this.$route.query.store_no){
-                getStoreDetail({store_sn:this.$route.query.store_no,store_id:null,User_ID:null}).then(res=>{
-                    this.store_info = res.data
-                })
-            }
+
           //this.loadGoodsInfo()
 
 
@@ -1446,7 +1462,7 @@
 }
 
 .main{
-
+  background: white;
   margin: 0 auto 50px;
   padding-bottom: 30px;
   .lists{
