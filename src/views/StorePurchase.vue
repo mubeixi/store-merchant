@@ -1,5 +1,6 @@
 <template>
-  <div class="page-wrap">
+  <div class="page-wrap" v-infinite-scroll="loadGoodsInfo">
+<!--    infinite-scroll-immediate="true" style="overflow:auto"-->
     <div class="container-wrap">
       <div class="head">
         <div class="search">
@@ -56,7 +57,7 @@
         </div>
       </div>
       <div class="main" v-loading="loading">
-        <div class="lists" v-infinite-scroll="loadGoodsInfo" infinite-scroll-immediate="true" style="overflow:auto">
+        <div class="lists"  >
           <div class="item" v-for="(item,idx) in products" :class="'item'+idx"  @click="openDialog(item,idx)"  @mouseover="mouseoverFn">
             <div class="cover">
               <div class="thumb" :style="{backgroundImage:'url('+item.ImgPath+')'}"></div>
@@ -112,7 +113,6 @@
       </div>
       <span slot="footer" class="dialog-footer"></span>
     </div>
-
     <el-dialog
       :visible.sync="payDialogInstance.innerVisible"
       title="订单支付"
@@ -139,7 +139,6 @@
       </div>
 
     </el-dialog>
-
     <el-dialog
       :visible.sync="dialogInstance.innerVisible"
       title="选择商品属性"
@@ -222,13 +221,15 @@
             s2:{
                 deep:true,
                 handler(val){
-                    this.searchFn()
+                    console.log('xiugai')
+                    // this.searchFn()
                 }
             },
             s1:{
                 deep:true,
                 handler(val){
-                    this.searchFn()
+                    console.log('xiugai')
+                    // this.searchFn()
                 }
             }
         },
@@ -379,6 +380,8 @@
             this.s2 = {}
             this.active_cate_idx2 = null
 
+            this.searchFn()
+
             //
             // this.active_cate_idx = idx
             // let isHas = findArrayIdx(this.select_cates,{Category_ID:item.Category_ID})
@@ -394,6 +397,8 @@
 
             this.s2 = item
             this.active_cate_idx2 = idx
+
+            this.searchFn()
 
 
         }
@@ -999,6 +1004,7 @@
 
         created(){
 
+            this.loadGoodsInfo()
             if(!this.$route.query.channel){
                 fun.error({msg:'请选择进货渠道'})
                 this.$router.push({
