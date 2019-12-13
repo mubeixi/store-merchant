@@ -1,41 +1,13 @@
 <template>
   <div class="home-wrap">
-    <div style="width: 1200px;margin: 100px auto;border:1px solid #e7e7e7;padding: 10px;">
-<!--      get_self_store_prod-->
-      <div class="padding10">
-        <el-button  size="mini" class="" type="primary" >发布商品</el-button>
-        <el-button  size="mini" class="" type="primary" >批量设置佣金</el-button>
-        <el-button  size="mini" class="" type="primary" >批量重生二维码</el-button>
-        <el-button  size="mini" class="" type="primary" >批量上架</el-button>
-        <el-button  size="mini" class="" type="primary" >批量下架</el-button>
-        <el-button  size="mini" class="" type="primary" >退货</el-button>
-      </div>
-      <fun-table
-        :columns="dataTableOpt.columns"
-        :dataList="dataTableOpt.dataList"
-        :act="dataTableOpt.act"
-        @selectVal="selectVal"
-      >
-        <template slot="Products_Qrcode-column" slot-scope="props">
-          <img height="60px" :src="props.row.Products_Qrcode" />
-        </template>
-        <template slot="attr-column"  slot-scope="props">
-          <span class="padding4-c" v-if="props.row.Products_IsNew">
-            <el-tag type="success">新品</el-tag>
-          </span>
-          <span class="padding4-c" v-if="props.row.Products_IsHot">
-            <el-tag type="warning"> 热门</el-tag>
-          </span>
-        </template>
-        <template slot="ImgPath-column" slot-scope="props">
-          <img height="60px" :src="props.row.ImgPath" />
-        </template>
-        <template slot="operate-column" slot-scope="props">
-          <span @click="handleOperate(props)">编辑</span>
-          <span @click="handleOperate(props)">删除</span>
-          <span @click="handleOperate(props)">退货</span>
-        </template>
-      </fun-table>
+
+    <div style="width: 100%;height: 500px;background-color: red">
+      <el-form size="small">
+        <div>dsd</div>
+        <el-button :loading="isLoading" @click="submit">提交</el-button>
+      </el-form>
+      dasssssssssssssssssssssssssssss
+
     </div>
   </div>
 </template>
@@ -91,7 +63,10 @@
     })
 
     export default class Empty extends Vue {
-
+        isLoading=false
+        submit(){
+            this.isLoading=true
+        }
         ids = []
 
         dataTableOpt = {

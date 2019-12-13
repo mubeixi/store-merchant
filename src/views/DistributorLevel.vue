@@ -2,11 +2,11 @@
   <div class="labelManagement">
     <div class="labelMain">
       <el-form size="small">
-        <el-form-item  label="级别名称：" class="marginLR">
+        <el-form-item  label="级别名称：" class="marginLR" style="margin-left: 57px">
           <el-input style="width: 350px" v-model="Level_Name"></el-input>
         </el-form-item>
 
-        <el-form-item  label="级别描述：" class="marginLR">
+        <el-form-item  label="级别描述：" class="marginLR" style="margin-left: 57px">
           <el-input
             style="width: 480px"
             type="textarea"
@@ -17,7 +17,7 @@
           </el-input>
         </el-form-item>
 
-        <el-form-item label="级别标识："  class="marginLR labelCenter">
+        <el-form-item label="级别标识："  class="marginLR labelCenter" style="margin-left: 57px">
           <div class="divFlex">
             <upload-components
               size="mini"
@@ -213,8 +213,8 @@
         </el-form-item>
 
         <el-form-item class="submit">
-          <el-button   class="close" >返回</el-button>
-          <el-button type="primary"  class="submits"  @click="saveData">确定</el-button>
+          <el-button    class="close"  @click="backLev">返回</el-button>
+          <el-button   :loading="loadingSubmit" type="primary"  class="submits"  @click="saveData">确定</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -344,6 +344,7 @@
     import {
         systemLevelList,getProducts,getProductCategory,getGivingGifts,systemLevelAdd,systemLevelDetail,systemLevelEdit
     } from '@/common/fetch'
+    import {options} from "vue-resource/src/util";
     const getParentsCount = (arr,key,pkey,val,tempArr)=>{
         var idx = false
         for(var i in arr){
@@ -427,6 +428,9 @@
         }
         //赠品结束
 
+        backLev(){
+            window.location.href=window.parent.location.origin+'/member/distribute/level.php?level='+this.level
+        }
 
         settingShow=false
         cate=[]
@@ -673,8 +677,10 @@
         upThumbSuccessCall(url_list){
            this.Level_Icon=url_list[0].url
         }
-
+        loadingSubmit=false
         saveData(){
+            if(this.loadingSubmit) return
+            this.loadingSubmit=true
             let info={
                 Level_Name:this.Level_Name,
                 Level_Icon:this.Level_Icon,
@@ -724,30 +730,39 @@
                 info.manual_rules=JSON.stringify(this.manual_rules)
             }
 
-
+            let  that=this
             if(this.LevelID){
                 info.level_id=this.LevelID
+
                 systemLevelEdit(info).then(res=>{
-                    this.$message({
-                        message: res.msg,
-                        type: 'success'
-                    });
-                    setTimeout(function () {
-                        window.location.href=window.parent.location.href+'member/distribute/level.php?level='+this.LevelID
-                    },2000)
+                    // this.$message({
+                    //     message: res.msg,
+                    //     type: 'success'
+                    // });
+                    this.loadingSubmit=false
+                    window.location.href=window.parent.location.origin+'/member/distribute/level.php?level='+that.level
+                    // setTimeout(function () {
+                    //     window.location.href=window.parent.location.origin+'/member/distribute/level.php?level='+that.level
+                    // },1000)
+                }).catch(e=>{
+                    this.loadingSubmit=false
                 })
             }else{
                 systemLevelAdd(info).then(res=>{
-                    this.$message({
-                        message: res.msg,
-                        type: 'success'
-                    });
-                    setTimeout(function () {
-                        window.location.href=window.parent.location.href+'member/distribute/level.php?level='+this.LevelID
-                    },2000)
+                    // this.$message({
+                    //     message: res.msg,
+                    //     type: 'success'
+                    // });
+                    this.loadingSubmit=false
+                    window.location.href=window.parent.location.origin+'/member/distribute/level.php?level='+that.level
+                    // setTimeout(function () {
+                    //     window.location.href=window.parent.location.origin+'/member/distribute/level.php?level='+that.level
+                    // },1000)
+                }).catch(e=>{
+                    this.loadingSubmit=false
                 })
             }
-
+            this.isLoading=false
         }
 
         disList=[]
@@ -769,8 +784,10 @@
                         //@ts-ignore
                         this.Level_Icon = dataList.Level_Icon
                         //组件里面初始化
-                        //@ts-ignore
-                        this.$refs.thumb.handleInitHas([this.Level_Icon])
+                        if(this.Level_Icon){
+                            //@ts-ignore
+                            this.$refs.thumb.handleInitHas([this.Level_Icon])
+                        }
                         this.Level_PeopleLimit=[]
                         this.commi_rules=[]
                         for(let it in dataList.Level_PeopleLimit){
@@ -856,10 +873,10 @@
 .labelMain{
   padding: 20px 0px;
   .marginLR{
-    margin-left: 22px;
+    margin-left: 30px;
   }
   .marginLRS{
-    margin-left: 7px;
+    margin-left:30px;
   }
 }
 .inputMyDa /deep/ .el-input__inner{

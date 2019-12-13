@@ -288,11 +288,11 @@ export const initScene = (data:object={},options:object={}) => fetch('init_scene
 export const addScene = (data:object={},options:object={}) => fetch('add_scene', data , options);
 
 //设置分销商等级
-export const systemLevelAdd = (data:object={},options:object={}) => fetch('system_level_add', data , options);
+export const systemLevelAdd = (data:object={},options:any=false) => fetch('system_level_add', data , options);
 //编辑分销商等级
-export const systemLevelEdit = (data:object={},options:object={}) => fetch('system_level_edit', data , options);
+export const systemLevelEdit = (data:object={},options:any=false) => fetch('system_level_edit', data , options);
 //获取分销商等级详情
-export const systemLevelDetail = (data:object={},options:object={}) => fetch('system_level_detail', data , options);
+export const systemLevelDetail = (data:object={},options:any=false) => fetch('system_level_detail', data , options);
 
 
 function get_Appid() {
