@@ -46,7 +46,7 @@
                       <span class="minus" @click="minusFn(apply,item,idx1)">
                         <i class="el-icon-minus icon"></i>
                       </span>
-                      <input class="input" :value="item.prod_count" @blur="setValFn($event,apply,item,idx1)" />
+                      <input class="input" type="number" min="1" :value="item.prod_count" @blur="setValFn($event,apply,item,idx1)" />
                       <span class="plus" @click="plusFn(apply,item,idx1)">
                         <i class="el-icon-plus icon"></i>
                       </span>
@@ -607,6 +607,13 @@
 
                 }else{
                     rt = true
+
+                    this.refreshApplyInfo(idx)
+
+                    setTimeout(function () {
+                        _self.ajax_idx = null
+                    },100)
+
                 }
             })
             // await subStorePurchaseApply({order_id:apply.Order_ID}).then(res=>{
@@ -615,14 +622,7 @@
             //
             // })
 
-            if(true){
-                await this.refreshApplyInfo(idx)
-            }
 
-
-            setTimeout(function () {
-                _self.ajax_idx = null
-            },100)
         }
 
         async cancelApply(apply,idx){
@@ -685,6 +685,13 @@
                 Attr_ID  = goods.attr_info.attr_val.Product_Attr_ID
             }
             let newVal = e.target.value,oldVal = goods.prod_count
+
+            if(newVal<1){
+                goods.prod_count = oldVal
+                e.target.value = oldVal
+                fun.error({msg:'最少请设置1'})
+                return;
+            }
             console.log(e.target.value)
 
             goods.prod_count = newVal
@@ -703,7 +710,7 @@
                 //如果设置失败，数量要变回来
                 errcall(res){
                     goods.prod_count = oldVal
-                    // e.target.value = oldVal
+                    e.target.value = oldVal
                 }
             })
 
@@ -743,6 +750,10 @@
         minusFn(apply,goods,idx){
 
             // apply.is_change_stock = true
+            if(goods.prod_count<2){
+                fun.error({msg:'数量最低选择1'})
+                return;
+            }
 
             let Attr_ID = null
             if(goods.attr_info && goods.attr_info.attr_val){

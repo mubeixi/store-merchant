@@ -941,8 +941,8 @@
             this.$nextTick().then(()=>{
 
                 document.body.className += 'el-popup-parent--hidden'
-
                 let handle = document.querySelector('.foot')
+                if(!handle)return
                 let preBoundingClientRect = handle.getBoundingClientRect()
                 this.lastPosY = preBoundingClientRect.top
                 this.lastPosX = document.body.offsetWidth/2
@@ -967,6 +967,14 @@
         }
 
         created(){
+
+            if(!this.$route.query.channel){
+                fun.error({msg:'请选择进货渠道'})
+                this.$router.push({
+                    name:'StoreChannel'
+                })
+                return;
+            }
             this.syncCardList().then((CartList)=>{
                 console.log(CartList)
                 for(var key in  CartList){
