@@ -811,7 +811,11 @@
                     return;
                 }
                 if(goods.prd_attr_id){
-                    prod_attr[goods.Products_ID] = [goods.prd_attr_id]
+                    //要的是数组
+                    if(!prod_attr.hasOwnProperty(goods.Products_ID) || !_.isArray(prod_attr[goods.Products_ID])){
+                        prod_attr[goods.Products_ID] = []
+                    }
+                    prod_attr[goods.Products_ID].push(goods.prd_attr_id)
                 }else{
                     prod_attr[goods.Products_ID] = []
                 }
