@@ -97,7 +97,7 @@
           <div class="attr">{{goods.Productsattrstrval||'无规格'}}</div>
           <div class="numbox" >
            <span class="label">数量: </span>
-            <input class="input" v-model="goods.num" readonly />
+            <input class="input" type="number" min="1" :value="goods.num" @blur="cartSetValFn($event,goods)" />
             <div class="num-btns">
               <span @click="cartPlusFn(goods,goods.num)" class="num-btn plus-btn"><i class="el-icon-arrow-up"></i></span>
               <span @click="cartMinusFn(goods,goods.num)" class="num-btn minus-btn"><i class="el-icon-arrow-down"></i></span>
@@ -439,8 +439,24 @@
 
         cartCurrentItem = null
 
-        cartPlusFn(goods,num){
+        cartSetValFn(e,goods){
 
+            let newVal = e.target.value,oldVal = goods.num
+
+            if(newVal<1){
+                goods.prod_count = oldVal
+                e.target.value = oldVal
+                fun.error({msg:'最少请设置1'})
+                return;
+            }
+
+            this.setCartCurrentItem(goods)
+            this.cartNumChange(newVal,oldVal)
+
+
+        }
+
+        cartPlusFn(goods,num){
             this.setCartCurrentItem(goods)
             this.cartNumChange(num+1,num)
         }
