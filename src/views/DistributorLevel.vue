@@ -732,6 +732,9 @@
                         message: res.msg,
                         type: 'success'
                     });
+                    setTimeout(function () {
+                        window.location.href=window.parent.location.href+'member/distribute/level.php?level='+this.LevelID
+                    },2000)
                 })
             }else{
                 systemLevelAdd(info).then(res=>{
@@ -739,6 +742,9 @@
                         message: res.msg,
                         type: 'success'
                     });
+                    setTimeout(function () {
+                        window.location.href=window.parent.location.href+'member/distribute/level.php?level='+this.LevelID
+                    },2000)
                 })
             }
 
@@ -747,7 +753,10 @@
         disList=[]
         LevelID=''
         async created(){
-            this.level=this.$route.query.level
+
+            if(this.$route.query.level){
+                this.level=this.$route.query.level
+            }
             this.LevelID=this.$route.query.LevelID
             if(this.LevelID){
                 systemLevelDetail({level_id:this.LevelID}).then(res=>{
