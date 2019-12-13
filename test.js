@@ -4,6 +4,7 @@
 const shell = require('shelljs');
 // 全局模式下，就不需要用shell开头了。
 // require('shelljs/global');
+shell.exec('git pull origin master');
 
 if (shell.exec('npm run buildtest').code !== 0) { // 执行npm run build 命令
   shell.echo('Error: Git commit failed');
@@ -53,7 +54,7 @@ ftpDeploy.deploy(config, (err, res) => {
   if (err) {
     console.log(err);
   } else {
-    
+
     console.log('finished:', res);
     process.exit()
   }
