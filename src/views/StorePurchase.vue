@@ -810,6 +810,7 @@
                     fun.error({msg:'产品至少选择1个'})
                     return;
                 }
+
                 if(goods.prd_attr_id){
                     //要的是数组
                     if(!prod_attr.hasOwnProperty(goods.Products_ID) || !_.isArray(prod_attr[goods.Products_ID])){
