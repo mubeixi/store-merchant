@@ -49,7 +49,7 @@
             <div class="label"><i class="el-icon-phone" /></div>
             <div class="text">{{store_info.Stores_Telephone}}</div>
           </div>
-          <div class="info-row">
+          <div class="info-row" @click="openMap" style="cursor: pointer" title="点击查看店铺位置">
             <div class="label"><i class="el-icon-location" /></div>
             <div class="text">{{store_info.Stores_Province_name}}{{store_info.Stores_City_name}}{{store_info.Stores_Area_name}}{{store_info.Stores_Address}}</div>
           </div>
@@ -985,6 +985,16 @@
           // Stores_City_name:'郑州',
           // Stores_Area_name:'金水区',
           // Stores_Address:'评山区龙田街道龙兴北路135号'
+        }
+
+        openMap(){
+            let open = '',info = this.store_info;
+
+            if(info.wx_lng && info.wx_lat){
+                open = `https://uri.amap.com/marker?position=${info.wx_lng},${info.wx_lat}`
+                window.open(open)
+            }
+
         }
 
         created(){
