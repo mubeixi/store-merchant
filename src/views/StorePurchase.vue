@@ -1,5 +1,6 @@
 <template>
-  <div class="page-wrap">
+  <div class="page-wrap" v-infinite-scroll="loadGoodsInfo">
+<!--    infinite-scroll-immediate="true" style="overflow:auto"-->
     <div class="container-wrap">
       <div class="head">
         <div class="search">
@@ -49,14 +50,14 @@
             <div class="label"><i class="el-icon-phone" /></div>
             <div class="text">{{store_info.Stores_Telephone}}</div>
           </div>
-          <div class="info-row">
+          <div class="info-row" @click="openMap" style="cursor: pointer" title="点击查看店铺位置">
             <div class="label"><i class="el-icon-location" /></div>
             <div class="text">{{store_info.Stores_Province_name}}{{store_info.Stores_City_name}}{{store_info.Stores_Area_name}}{{store_info.Stores_Address}}</div>
           </div>
         </div>
       </div>
       <div class="main" v-loading="loading">
-        <div class="lists" v-infinite-scroll="loadGoodsInfo" infinite-scroll-immediate="true" style="overflow:auto">
+        <div class="lists"  >
           <div class="item" v-for="(item,idx) in products" :class="'item'+idx"  @click="openDialog(item,idx)"  @mouseover="mouseoverFn">
             <div class="cover">
               <div class="thumb" :style="{backgroundImage:'url('+item.ImgPath+')'}"></div>
@@ -97,7 +98,7 @@
           <div class="attr">{{goods.Productsattrstrval||'无规格'}}</div>
           <div class="numbox" >
            <span class="label">数量: </span>
-            <input class="input" v-model="goods.num" readonly />
+            <input class="input" type="number" min="1" :value="goods.num" @blur="cartSetValFn($event,goods)" />
             <div class="num-btns">
               <span @click="cartPlusFn(goods,goods.num)" class="num-btn plus-btn"><i class="el-icon-arrow-up"></i></span>
               <span @click="cartMinusFn(goods,goods.num)" class="num-btn minus-btn"><i class="el-icon-arrow-down"></i></span>
@@ -112,7 +113,6 @@
       </div>
       <span slot="footer" class="dialog-footer"></span>
     </div>
-
     <el-dialog
       :visible.sync="payDialogInstance.innerVisible"
       title="订单支付"
@@ -139,7 +139,6 @@
       </div>
 
     </el-dialog>
-
     <el-dialog
       :visible.sync="dialogInstance.innerVisible"
       title="选择商品属性"
@@ -222,13 +221,15 @@
             s2:{
                 deep:true,
                 handler(val){
-                    this.searchFn()
+                    console.log('xiugai')
+                    // this.searchFn()
                 }
             },
             s1:{
                 deep:true,
                 handler(val){
-                    this.searchFn()
+                    console.log('xiugai')
+                    // this.searchFn()
                 }
             }
         },
@@ -379,6 +380,8 @@
             this.s2 = {}
             this.active_cate_idx2 = null
 
+            this.searchFn()
+
             //
             // this.active_cate_idx = idx
             // let isHas = findArrayIdx(this.select_cates,{Category_ID:item.Category_ID})
@@ -394,6 +397,8 @@
 
             this.s2 = item
             this.active_cate_idx2 = idx
+
+            this.searchFn()
 
 
         }
@@ -439,8 +444,24 @@
 
         cartCurrentItem = null
 
-        cartPlusFn(goods,num){
+        cartSetValFn(e,goods){
 
+            let newVal = e.target.value,oldVal = goods.num
+
+            if(newVal<1){
+                goods.prod_count = oldVal
+                e.target.value = oldVal
+                fun.error({msg:'最少请设置1'})
+                return;
+            }
+
+            this.setCartCurrentItem(goods)
+            this.cartNumChange(newVal,oldVal)
+
+
+        }
+
+        cartPlusFn(goods,num){
             this.setCartCurrentItem(goods)
             this.cartNumChange(num+1,num)
         }
@@ -462,12 +483,12 @@
             let select_store_id = 0
 
             //如果有门店，需要换成从门店进货
-            if(this.$route.query.store_no && this.products.length>0){
-              select_store_id = this.products[0].Stores_ID
+            if(this.$route.query.store_no && this.$route.query.channel == 1 && this.store_info.Stores_ID){
+              select_store_id = this.store_info.Stores_ID
             }
 
             let postData = {
-                cart_key:'CartList',
+                cart_key:'StorePifa',
                 active:'store_pifa',
                 prod_id:this.cartCurrentItem.Products_ID,
                 qty:(nVal-oVal),
@@ -501,7 +522,7 @@
         }
 
         async cartRemoveFn(goods){
-            let postData = {cart_key:'CartList'}
+            let postData = {cart_key:'StorePifa'}
 
             let prod_attr = {}
             if(goods.prd_attr_id){
@@ -692,12 +713,12 @@
             let select_store_id = 0
 
             //如果有门店，需要换成从门店进货
-            if(this.$route.query.store_no && this.products.length>0){
-              select_store_id = this.products[0].Stores_ID
+            if(this.$route.query.store_no && this.$route.query.channel == 1 && this.store_info.Stores_ID){
+              select_store_id = this.store_info.Stores_ID
             }
 
             let postData = {
-                cart_key:'CartList',
+                cart_key:'StorePifa',
                 active:'store_pifa',
                 prod_id:this.dialogInstance.product.Products_ID,
                 qty:this.dialogInstance.num,
@@ -787,15 +808,20 @@
                 fun.error({msg:'购物车中无产品'})
                 return;
             }
-            let postData = {cart_key:'CartList'}
+            let postData = {cart_key:'StorePifa'}
             let prod_attr = {}
             for(var goods of this.carts.lists){
                 if(goods.num<1){
                     fun.error({msg:'产品至少选择1个'})
                     return;
                 }
+
                 if(goods.prd_attr_id){
-                    prod_attr[goods.Products_ID] = [goods.prd_attr_id]
+                    //要的是数组
+                    if(!prod_attr.hasOwnProperty(goods.Products_ID) || !_.isArray(prod_attr[goods.Products_ID])){
+                        prod_attr[goods.Products_ID] = []
+                    }
+                    prod_attr[goods.Products_ID].push(goods.prd_attr_id)
                 }else{
                     prod_attr[goods.Products_ID] = []
                 }
@@ -941,8 +967,8 @@
             this.$nextTick().then(()=>{
 
                 document.body.className += 'el-popup-parent--hidden'
-
                 let handle = document.querySelector('.foot')
+                if(!handle)return
                 let preBoundingClientRect = handle.getBoundingClientRect()
                 this.lastPosY = preBoundingClientRect.top
                 this.lastPosX = document.body.offsetWidth/2
@@ -950,7 +976,15 @@
         }
 
         syncCardList(){
-            return getCartList({act:'get_cart',cart_key:'CartList'}).then(res=>{
+
+            let select_store_id = 0
+
+            //如果有门店，需要换成从门店进货
+            if(this.$route.query.store_no && this.$route.query.channel == 1 && this.store_info.Stores_ID){
+                select_store_id = this.store_info.Stores_ID
+            }
+
+            return getCartList({act:'get_cart',cart_key:'StorePifa',store_pifa_receive_id:select_store_id}).then(res=>{
               return res.data.CartList
             })
         }
@@ -966,9 +1000,40 @@
           // Stores_Address:'评山区龙田街道龙兴北路135号'
         }
 
-        created(){
-            this.syncCardList().then((CartList)=>{
+        openMap(){
+            let open = '',info = this.store_info;
+
+            if(info.wx_lng && info.wx_lat){
+                open = `https://uri.amap.com/marker?position=${info.wx_lng},${info.wx_lat}`
+                window.open(open)
+            }
+
+        }
+
+        async created(){
+
+            this.loadGoodsInfo()
+            if(!this.$route.query.channel){
+                fun.error({msg:'请选择进货渠道'})
+                this.$router.push({
+                    name:'StoreChannel'
+                })
+                return;
+            }
+
+            if(this.$route.query.channel == 1 && this.$route.query.store_no){
+                await getStoreDetail({store_sn:this.$route.query.store_no,store_id:null,User_ID:null}).then(res=>{
+                    this.store_info = res.data
+                })
+            }
+
+            await this.syncCardList().then((CartList)=>{
                 console.log(CartList)
+                //需要清空
+                if(CartList.length<1){
+                    this.carts.clear()
+                    return;
+                }
                 for(var key in  CartList){
                     for(var idx in CartList[key]){
                         let goods = CartList[key][idx]
@@ -998,11 +1063,7 @@
                 // }
             })
 
-            if(this.$route.query.channel == 1 && this.$route.query.store_no){
-                getStoreDetail({store_sn:this.$route.query.store_no,store_id:null,User_ID:null}).then(res=>{
-                    this.store_info = res.data
-                })
-            }
+
           //this.loadGoodsInfo()
 
 
@@ -1401,7 +1462,7 @@
 }
 
 .main{
-
+  background: white;
   margin: 0 auto 50px;
   padding-bottom: 30px;
   .lists{

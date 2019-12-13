@@ -195,7 +195,7 @@
       province_idx: {
         handler(val) {
 
-          if (!val && val!=0) {
+          if (!val && val!==0) {
             this.province = {};
             this.city = {};
             this.city_idx = '';
@@ -207,6 +207,12 @@
           }else{
 
             this.province = this.province_list[val]
+
+            this.city = {};
+            this.city_idx = '';
+            this.area = {};
+            this.area_idx = '';
+
             this.city_list = City.getCityList(this.province.id);
 
           }
@@ -216,7 +222,7 @@
       },
       city_idx: {
         handler(val) {
-          if (!val && val!=0) {
+          if (!val && val!==0) {
             this.city = {};
             this.area_idx = '';
             this.area = {};
@@ -224,6 +230,8 @@
 
           }else{
             this.city = this.city_list[val]
+            this.area_idx = '';
+            this.area = {};
             this.area_list = City.getAreaList(this.province.id, this.city.id);
           }
 
@@ -231,7 +239,8 @@
       },
       area_idx: {
         handler(val) {
-          if (!val && val!=0) {
+          console.log('area修改了'+val)
+          if (!val && val!==0) {
             this.area_idx = '';
             this.area = {};
           }else{
