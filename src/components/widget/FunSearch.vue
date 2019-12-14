@@ -36,7 +36,7 @@
         <div class="col">
           <div>
             <el-button :size="size" @click="submit" type="primary">搜索</el-button>
-            <el-button :size="size" @click="reset">重置</el-button>
+            <el-button :size="size" @click="resets">重置</el-button>
           </div>
         </div>
       </div>
@@ -78,7 +78,13 @@
             if(val==='mini') return '12px'
         }
 
+        //每次都回重新重置 重置选中的数据有问题
+        resets(){
+            this.$emit('reset');
+        }
         reset(is_init) {
+            //重置没反应
+            //this.$emit('reset');
             this.columnsData = []
 
             this.columns.map(v => {
@@ -109,9 +115,9 @@
             })
 
 
-            if(!is_init){
-                this.$emit('reset');
-            }
+            // if(!is_init){
+            //     this.$emit('reset');
+            // }
 
 
         }

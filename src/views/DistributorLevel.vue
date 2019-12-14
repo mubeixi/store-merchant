@@ -219,11 +219,12 @@
       </el-form>
     </div>
 
-    <el-dialog title="选择商品" :visible.sync="settingShow" width="80%" style="height: 900px;overflow: auto">
+    <el-dialog class="myProduct" title="选择商品" :visible.sync="settingShow" width="80%" style="height: 900px;overflow: auto">
       <fun-table
         ref="funTableComp"
         vkey="Products_ID"
         :has="selectValue"
+        :showSave=true
         :columns="dataTableOpt.columns"
         :dataList="dataTableOpt.dataList"
         :act="dataTableOpt.act"
@@ -232,6 +233,7 @@
         :is_paginate="dataTableOpt.is_paginate"
         :formSize="'small'"
         :isRow="false"
+        @closeDialog="closeDialog"
         @handleSizeChange="handleSizeChange"
         @currentChange="currentChanges"
         @selectVal="selectVal"
@@ -256,6 +258,7 @@
     <el-dialog
       title="选择赠品"
       width="60%"
+
       @close="cardCancel"
       append-to-body
       :visible.sync="isShow"
@@ -299,16 +302,16 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="valid_days"
-          label="领取有效天数"
-          show-overflow-tooltip>
-        </el-table-column>
-        <el-table-column
-          prop="limit_times"
-          label="限制领取次数"
-          show-overflow-tooltip>
-        </el-table-column>
+<!--        <el-table-column-->
+<!--          prop="valid_days"-->
+<!--          label="领取有效天数"-->
+<!--          show-overflow-tooltip>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column-->
+<!--          prop="limit_times"-->
+<!--          label="限制领取次数"-->
+<!--          show-overflow-tooltip>-->
+<!--        </el-table-column>-->
         <el-table-column
           prop="Products_Count"
           label="剩余库存"
@@ -428,6 +431,9 @@
         }
         //赠品结束
 
+        closeDialog(){
+            this.settingShow=false
+        }
         backLev(){
             window.location.href=window.parent.location.origin+'/member/distribute/level.php?level='+this.level
         }
@@ -530,9 +536,11 @@
         }
         //重置
         reset(){
+            console.log("11111111")
             for(let it in this.dataTableOpt.columns){
                 this.dataTableOpt.columns[it].value=''
             }
+            this.selectValue=[]
             this.getProduct()
         }
         //搜索
@@ -808,6 +816,12 @@
                         this.direct_sons=dataList.level_rules_edit['direct_sons']
                         this.team_sons=dataList.level_rules_edit['team_sons']
 
+                        if(this.buy_prod.checked&&this.buy_prod.value.type=='2'){
+                            for(let item of  this.buy_prod.data){
+                                this.selectValue.push(item.Products_ID)
+                            }
+                        }
+
                         if(this.direct_sons.value.length<=0){
                             this.direct_sons.value=[{
                                 level_id:'',
@@ -1061,4 +1075,9 @@
 /deep/ .el-table__row  {
   cursor: pointer;
 }
+  .myProduct /deep/ .el-dialog{
+    height: 600px;
+    overflow: auto;
+  }
+
 </style>

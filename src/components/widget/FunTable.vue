@@ -48,8 +48,12 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="totalCount">
       </el-pagination>
+      <div class="myButton" v-if="showSave">
+        <el-button size="small" type="primary" @click="closeDialog">保存</el-button>
+      </div>
     </div>
   </div>
+
 </template>
 
 <script lang="ts">
@@ -210,6 +214,11 @@
         })
         __list_filter_func //拿到结果后数据过滤的
 
+        @Prop({
+            type:Boolean,
+            default:false
+        })
+        showSave //是否显示保存
 
         lists = []
         currentPage = 1
@@ -252,6 +261,10 @@
             }
            // console.log(`${column.prop}-column`)
             return `${column.prop}-column`
+        }
+
+        closeDialog(){
+            this.$emit('closeDialog')
         }
 
         handleSizeChange(val) {
@@ -350,4 +363,15 @@
   color: #333 !important;
   background-color: #f8f8f8 !important;
 }
+  .myButton{
+    position: fixed;
+    bottom: 0px;
+    width: 80%;
+    margin-left: -20px;
+    background-color: #fff;
+    border-top: 1px solid #EEEEEE;
+    height: 50px;
+    line-height: 50px;
+    z-index: 999;
+  }
 </style>
