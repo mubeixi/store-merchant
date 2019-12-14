@@ -40,6 +40,7 @@
         </template>
         <template slot="Products_Sales-column" slot-scope="props">
           <span>{{props.row.Products_Sales}}/{{props.row.Products_Count}}</span>
+          <div class="skuClass" @click="lookSku(props.row.Products_ID)" v-if="props.row.Products_Type!=0">规格库存</div>
         </template>
         <template slot="operate-column" slot-scope="props">
           <span v-if="cartsDialogInstance.footVisible" class="spans" @click="openDialog(props.row,props.idx)">退货</span>
@@ -177,6 +178,14 @@
       :show="dialogStoreShow"
     />
 
+
+    <el-dialog title="规格库存" :visible.sync="skuShow" top="300px" width="40%">
+      <el-table :data="skuList">
+        <el-table-column property="attr_txt" label="规格" ></el-table-column>
+        <el-table-column property="count" label="库存" ></el-table-column>
+        <el-table-column property="price" label="价格"></el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -195,7 +204,8 @@
         getProductCategory,
         delProduct,
         storeProductBack,
-        getStoreDetail
+        getStoreDetail,
+        getProductAtts
     } from '@/common/fetch';
     import {findArrayIdx, plainArray, createTmplArray, objTranslate,compare_obj} from '@/common/utils';
     import _ from 'underscore'
@@ -256,6 +266,7 @@
 
     export default class StoreProductList extends Vue {
 
+
         self_store_id = Cookies.get('Stores_ID')
         dialogStoreShow = false
 
@@ -274,6 +285,20 @@
 
         }
 
+        skuList=[]
+        skuShow=false
+        lookSku(id){
+            this.skuShow=true
+            let data={
+                store_id:this.self_store_id,
+                product_id:id
+            }
+            getProductAtts(data).then(res=>{
+                if(res.errorCode==0){
+                    this.skuList=res.data
+                }
+            })
+        }
 
         fly_img_url = ''
         curPosX = 0
@@ -293,6 +318,8 @@
             innerVisible:false,
             store_sn:''
         }
+
+        //getProductAtts
 
 
         changeBackChannel(){
@@ -1548,4 +1575,8 @@
     }
   }
 
+  .skuClass{
+    color: #409EFF;
+    cursor: pointer;
+  }
 </style>

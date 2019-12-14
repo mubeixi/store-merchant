@@ -261,8 +261,8 @@ export const store_prod_back_order_send = (data:object={},options:any=false) => 
 
 export const store_prod_back_order_confirm = (data:object={},options:any=false) => fetch('store_prod_back_order_confirm', data, options);
 
-
-
+//查看商品规格数量
+export const getProductAtts = (data:object={},options:any=false) => fetch('get_product_atts', data, options);
 
 //获取物流公司列表
 export const getShippingList = (data:object={},options:any=false) => fetch('get_shipping', data, options);
