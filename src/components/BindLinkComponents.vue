@@ -21,8 +21,9 @@
           </el-tab-pane>
           <el-tab-pane label="跳转微信小程序" name="mini" :disabled="!config.mini.show">
             <div class="line10"><el-input v-model="innerDialog.mini.innerText" placeholder="在此输入链接地址"></el-input></div>
-            <div class="line10"><el-input v-model="innerDialog.mini.appid" placeholder="在此输入小程序appid"></el-input></div>
-            <div class="line10"><el-input v-model="innerDialog.mini.url" placeholder="在此输入备用跳转地址"></el-input></div>
+            <div class="line10"><el-input v-model="innerDialog.mini.appid" placeholder="在此输入小程序appid（小程序跳转)"></el-input></div>
+            <div class="line10"><el-input v-model="innerDialog.mini.origin_id" placeholder="在此输入小程序原始id(app跳转)"></el-input></div>
+            <div class="line10"><el-input v-model="innerDialog.mini.url" placeholder="在此输入备用跳转地址(低版本时将跳转到此网址)"></el-input></div>
           </el-tab-pane>
           <el-tab-pane label="选择页面" name="page" :disabled="!config.page.show">
             <el-tabs class="tabs-child" v-model="innerDialog.customizeIndex">
@@ -332,7 +333,8 @@
           mini:{
             innerText:'',
             appid:'',
-            url:''
+            url:'',
+            origin_id:''
           },
           data: ['手动输入', '选择页面'],
           index: 'customize',
@@ -491,7 +493,7 @@
           path = this.innerDialog.mini.innerText
           tooltip = `小程序：${path}`;
           type = 'mini';
-          dataItem = {url:this.innerDialog.mini.url,appid:this.innerDialog.mini.appid}
+          dataItem = {url:this.innerDialog.mini.url,appid:this.innerDialog.mini.appid,origin_id:this.innerDialog.mini.origin_id}
 
         }else if (this.innerDialog.index === 'page') {
           switch (this.innerDialog.customizeIndex) {
