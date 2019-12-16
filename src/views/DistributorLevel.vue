@@ -689,6 +689,15 @@
         saveData(){
             if(this.loadingSubmit) return
             this.loadingSubmit=true
+
+            if(!this.Level_Name){
+                this.$notify.error({
+                    title: '错误',
+                    message: '请填写分销商名称'
+                });
+                this.loadingSubmit=false
+                return;
+            }
             let info={
                 Level_Name:this.Level_Name,
                 Level_Icon:this.Level_Icon,
