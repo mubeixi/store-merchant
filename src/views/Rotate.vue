@@ -3,14 +3,14 @@
     <el-form size="small">
       <div class="rotateName line15">
         <el-form-item label="活动名称：" prop="name">
-          <el-input v-model="name" style="width: 350px"></el-input>
+          <el-input v-model="title" style="width: 350px"></el-input>
         </el-form-item>
       </div>
 
       <div class="rotateName line15">
         <el-form-item label="活动时间：" prop="name">
           <el-date-picker
-            v-model="value2"
+            v-model="dateValue"
             type="datetimerange"
             align="right"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -23,13 +23,13 @@
 
       <div class="rotateName line15 " style="padding-left: 24px">
         <el-form-item label="每人参与总次数：" prop="name">
-          <el-input v-model="name" style="width: 75px"></el-input>
+          <el-input v-model="total_count" style="width: 75px"></el-input>
           <span class="paddingL10">次</span>
         </el-form-item>
       </div>
       <div class="rotateName line15 paddingL10"  >
         <el-form-item label="每人每天参与总次数：" prop="name">
-          <el-input v-model="name" style="width: 75px"></el-input>
+          <el-input v-model="day_count" style="width: 75px"></el-input>
           <span class="paddingL10">次</span>
         </el-form-item>
       </div>
@@ -47,21 +47,22 @@
 <!--                    <el-input placeholder="请输入积分数量" style="width: 130px;margin-left: 15px"></el-input>-->
                   </block>
                   <block>
-                    <span class="spans" @click="showSetting">选择赠品</span>
+                    <span class="spans"  @click="selectGi">选择赠品</span>
                   </block>
                   <block>
                     <span class="spans" >选择优惠券</span>
                   </block>
                 </el-form-item>
-                <div class="first second" >
-                  <div class="listLine" v-for="(item,index) of productData">
-                    <img :src="item.img_url||item.ImgPath" class="lineImg">
-                    <div class="lineDiv">{{item.Products_Name}}</div>
-                  </div>
-                </div>
 <!--                <div class="first second" >-->
-<!--                  <div class="listLine" style="height: 37px">-->
-<!--                    <div class="lineDiv" style="margin-left: 0px">产品哈哈哈哈</div>-->
+<!--                  <div class="listLine" v-for="(item,index) of productData">-->
+<!--                    <img :src="item.img_url||item.ImgPath" class="lineImg">-->
+<!--                    <div class="lineDiv">{{item.Products_Name}}</div>-->
+<!--                  </div>-->
+<!--                </div>-->
+
+<!--                <div class="first second" >-->
+<!--                  <div class="listLine" style="height: 37px" v-for="(item,index) of productDatas">-->
+<!--                    <div class="lineDiv" style="margin-left: 0px">{{item.title}}</div>-->
 <!--                  </div>-->
 <!--                </div>-->
                 <el-form-item label="奖品数量：" prop="name">
@@ -94,40 +95,73 @@
     </el-form>
 
 
-    <el-dialog class="myProduct" title="选择赠品" :visible.sync="settingShow" width="60%" style="height: 900px;overflow: auto">
-      <fun-table
-        ref="funTableComp"
-        vkey="Products_ID"
-        :has="selectValue"
-        :columns="dataTableOpt.columns"
-        :dataList="dataTableOpt.dataList"
-        :act="dataTableOpt.act"
-        :totalCount="dataTableOpt.totalCount"
-        :pageSize="dataTableOpt.pageSize"
-        :is_paginate="dataTableOpt.is_paginate"
-        :formSize="'small'"
-        :isRow="false"
-        @closeDialog="closeDialog"
-        @handleSizeChange="handleSizeChange"
-        @currentChange="currentChanges"
-        @selectVal="selectVal"
-        @submit="submit"
-        @reset="reset"
+    <el-dialog
+      title="选择赠品"
+      width="60%"
+
+      @close="cardCancel"
+      append-to-body
+      :visible.sync="isShow"
+      class="setting"
+    >
+      <div class="cardTitle" style="margin-bottom: 10px">
+        <div class="cardTitle" style="margin-right: 10px">
+          产品名称： <el-input    class="sortInput" style="width: 100px" v-model="nameMbx"></el-input>
+        </div>
+        <el-button  type="primary" @click="searchList">搜索</el-button>
+      </div>
+      <el-table
+        ref="multipleTable"
+        :data="GivingGifts"
+        tooltip-effect="dark"
+        style="width: 100%"
+        highlight-current-row
+        @current-change="handleSelectionChange"
       >
-        <template slot="Products_Name-column" slot-scope="props" >
-          <div style="display: flex;align-items: center;margin-left: 10px">
-            <img width="90px" height="100px" :src="props.row.img_url">
-            <span style="margin-left: 10px">{{props.row.Products_Name}}</span>
-          </div>
-        </template>
-        <template slot="Products_PriceX-column"  slot-scope="props">
-          <span>¥ {{props.row.Products_PriceX}}</span>
-        </template>
-        <template slot="Products_Sales-column" slot-scope="props">
-          <span>{{props.row.Products_Sales}}/{{props.row.Products_Count}}</span>
-        </template>
-      </fun-table>
+        <el-table-column
+          type="index"
+          label="#"
+          width="55">
+        </el-table-column>
+        <el-table-column
+          label="赠品名称"
+          prop="gift_name"
+          width="120">
+        </el-table-column>
+        <el-table-column
+          prop="Products_Name"
+          label="产品名称"
+          width="300px"
+        >
+          <template slot-scope="scope">
+            <div class="fixDisplay">
+              <div style="width: 100px;height: 100px">
+                <img :src="GivingGifts[scope.$index].img_url" style="width: 100%;height: 100%">
+              </div>
+              <div style="width: 200px;margin-left: 10px;">{{GivingGifts[scope.$index].Products_Name}}</div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Products_Count"
+          label="剩余库存"
+          show-overflow-tooltip>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+        style="margin-top: 20px;text-align: center;"
+        @current-change="currentChange"
+        background
+        :page-size="pageSize"
+        layout="prev, pager, next"
+        :total="totalCount">
+      </el-pagination>
     </el-dialog>
+
+
+
+
+
   </div>
 </template>
 
@@ -143,7 +177,7 @@
     } from 'vuex-class'
     import fa from "element-ui/src/locale/lang/fa";
     import {
-        getGivingGifts
+        getGivingGifts,getGivingCoupons
     } from '@/common/fetch';
     import {findArrayIdx, plainArray, createTmplArray, objTranslate} from '@/common/utils';
     @Component({
@@ -155,133 +189,55 @@
 
     export default class Rotate extends Vue {
         //静态页面使用
-        name=''
-        value2=''
-        tyep=""
+        title=''
+        total_count=''
+        day_count=''
+        dateValue=''
 
-        //选择商品
-        settingShow=false
-        cate=[]
-        dataTableOpt = {
-            act : 'get_self_store_prod',
-            dataList:[],
-            page:1,
-            totalCount:100,
-            pageSize:10,
-            is_paginate:true,//是否显示分页 默认显示
-            columns : [
-                {
-                    prop: "id",
-                    label: "赠品ID",
-                    align:'center',
-                    width:138,
-                    // align: "center",
-                    // sortable: true,
-                    //后面这些是filter使用的
-                    search: false //不需要搜索ID,所以都不需要了
-                },
-                {
-                    prop: "gift_name",
-                    label: "赠品名称",
-                    align:'center',
-                    width:138,
-                    // align: "center",
-                    // sortable: true,
-                    //后面这些是filter使用的
-                    search: false //不需要搜索ID,所以都不需要了
-                },
-                {
-                    prop: "Products_Name",
-                    label: "商品名称",
-                    value:'',
-                    align:'center',
-                    field: "Products_Name",
-                    // align: "center",
-                    // sortable: true,
-                    //后面这些是filter使用的
-                    required: true,
-                    search: {
-                        type: 'input',
-                        operate: 'like',
-                    }
-                }
-            ]
+        //赠品操作
+        isShow=false
+        nameMbx='';
+        GivingGifts=[]
+        text=''
+        send_id=''
+        totalCount=0
+        page=1
+        pageSize=8
+        currentChange(val){
+            this.page=val;
+            this.searchList()
         }
-
-        selectValue=[]
-        productData=[]
-        closeDialog(){
-            this.settingShow=false
+        //取消
+        cardCancel(){
+            this.isShow=false
         }
-        //获取选中数据
-        selectVal(val,vals){
-            console.log(val,vals,"sssss")
-            //this.selectValue=[]
-            this.productData=[]
-
-            for(let item of val){
-                this.productData.push(item)
-                if(this.selectValue.indexOf(item.Products_ID)==-1){
-                    this.selectValue.push(item.Products_ID)
-                    //this.productData.push(item)
-                }
-            }
-            for(let it of  vals){
-                for(let i=0;i<this.selectValue.length;i++){
-                    if(this.selectValue[i]==it.Products_ID){
-                        this.selectValue.splice(i,1)
-                        //this.productData.splice(i,1)
-                    }
-                }
-            }
-
+        selectGi(){
+            this.searchList();
+            this.isShow=true;
         }
-        //重置
-        reset(){
-            console.log("11111111")
-            for(let it in this.dataTableOpt.columns){
-                this.dataTableOpt.columns[it].value=''
-            }
-            this.selectValue=[]
-            this.getProduct()
-        }
-        //搜索
-        submit(){
-            this.getProduct()
-        }
-        //一页多少行
-        handleSizeChange(val){
-            this.dataTableOpt.pageSize=val
-            this.getProduct()
-        }
-        //当前页数
-        currentChanges(val){
-            this.dataTableOpt.page=val
-            this.getProduct()
-        }
-        getProduct(){
-            let nameIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'Products_Name'})
-            let oattrIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'attr'})
-            let cateIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'Product_Cate'})
+        searchList(){
             let data={
-                pageSize: this.dataTableOpt.pageSize,
-                page:this.dataTableOpt.page,
-                pro_name:this.dataTableOpt.columns[nameIdx].value
+                page:this.page,
+                pageSize:this.pageSize,
+                pro_name:this.nameMbx
             }
-
             getGivingGifts(data).then(res=>{
                 if(res.errorCode==0){
-                    this.dataTableOpt.dataList=res.data
-                    this.dataTableOpt.totalCount=res.totalCount
+                    this.GivingGifts=res.data;
                 }
             })
         }
-        showSetting(){
-            this.getProduct()
-            this.settingShow=true
+        handleSelectionChange(val){
+            if(val){
+                console.log(val.Products_Name,"sss")
+                this.isShow=false
+                this.text=val.Products_Name
+                this.send_id=val.id
+                //this.direct_buy.value.gift_id=val.id
+                this.$refs.multipleTable.setCurrentRow();
+            }
         }
-        //选择商品结束
-
+        //赠品结束
 
 
     }
@@ -371,5 +327,35 @@
   .myButton{
     margin-top: 44px;
     margin-left: 275px;
+  }
+
+  /*赠品*/
+  .cardTitle{
+    display: flex;
+    align-items: center;
+  }
+  .current{
+    cursor: pointer;
+    color: #79B0FF;
+    margin-left: 10px;
+  }
+  .fixDisplay{
+    display: flex;
+    align-items: center;
+  }
+  .lst{
+    margin-left: 10px;
+    width: 100px;
+    overflow: hidden;
+    height: 17px;
+    line-height: 23px;
+    display: inline-block;
+  }
+  /deep/ .el-table__row  {
+    cursor: pointer;
+  }
+  .myProduct /deep/ .el-dialog{
+    height: 600px;
+    overflow: auto;
   }
 </style>
