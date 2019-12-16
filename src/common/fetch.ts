@@ -18,9 +18,13 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
   // @ts-ignore
   param.act = act;
 
-  param.env = 'customer';
+  param.env = 'system';
   // param.Users_Account = get_Users_Account();
   // @ts-ignore
+
+  if(!param.hasOwnProperty('access_token')){
+    param.access_token = GET_ACCESS_TOKEN()
+  }
 
   if(!param.Users_ID){
     param.Users_ID = get_Users_ID();
@@ -299,6 +303,7 @@ function get_Appid() {
   return 'xhh';
 }
 
+export const GET_ACCESS_TOKEN = ()=>Cookie.get('access_token');
 export const get_User_ID = () => Cookie.get('Stores_Bind_User_ID');
 export const get_Users_ID = () => Cookie.get('Users_ID');
 export const get_Stores_ID = () => Cookie.get('Stores_ID');

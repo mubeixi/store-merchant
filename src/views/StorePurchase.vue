@@ -447,7 +447,7 @@
         cartSetValFn(e,goods){
 
             let newVal = e.target.value,oldVal = goods.num
-
+            if(newVal==oldVal)return;
             if(newVal<1){
                 goods.prod_count = oldVal
                 e.target.value = oldVal
