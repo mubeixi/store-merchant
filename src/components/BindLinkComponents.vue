@@ -576,6 +576,10 @@
           dataItem, this.pageEl, this.idx2);
 
         this.innerDialog.customizeLink = '';//重置手动输入链接为空
+        this.innerDialog.mini.url = ''
+        this.innerDialog.mini.appid = ''
+        this.innerDialog.mini.origin_id = ''
+        this.innerDialog.mini.innerText = ''
         // this.$emit('change', {
         //     dataType,
         //     type,

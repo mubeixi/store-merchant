@@ -626,6 +626,7 @@
                     this.isAjax = false
                     if (res.errorCode === 0) {
 
+                        console.log(res.data.Home_ID)
 
                         //保存Home_ID
                         if(res.data.Home_ID){
@@ -637,6 +638,25 @@
                                 //str.replace(/\?.*/g, "")
                                 let oldURL =location.href;
                                 let newUrl = oldURL.replace(/\?.*/g,"?Home_ID="+res.data.Home_ID)
+                                console.log('需要跳转到的页面',newUrl)
+                                location.href = newUrl;
+                                location.reload();
+                                return;
+
+                            }
+
+                            if(this.isDiy && (GetQueryByString(location.href,'Home_ID')==0 || !GetQueryByString(location.href,'Home_ID')) ){
+                                //需要刷新页面
+                                //str.replace(/\?.*/g, "")
+                                let oldURL =location.href;
+                                let newUrl = ''
+
+                                if(oldURL.indexOf('?')!=-1){
+                                    newUrl = oldURL.replace(/\?.*/g,"?Home_ID="+res.data.Home_ID)
+                                }else{
+                                    newUrl = oldURL+"?Home_ID="+res.data.Home_ID
+                                }
+
                                 console.log('需要跳转到的页面',newUrl)
                                 location.href = newUrl;
                                 location.reload();
