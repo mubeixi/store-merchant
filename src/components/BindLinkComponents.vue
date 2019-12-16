@@ -9,9 +9,8 @@
     >
       <div class="container">
         <el-tabs v-model="innerDialog.index" tab-position="left" class="leftMenuEl">
-          <el-tab-pane label="自定义链接" name="customize" :disabled="!config.customize.show">
+          <el-tab-pane label="跳转网页" name="customize" :disabled="!config.customize.show">
             <el-input v-model="innerDialog.customizeLink" placeholder="在此输入链接地址">
-
               <template slot="prepend">
                 <el-select style="width: 90px" v-model="innerDialog.customizeStart"  placeholder="请选择">
                   <el-option label="http://" value="http://"></el-option>
@@ -19,6 +18,11 @@
                 </el-select>
               </template>
             </el-input>
+          </el-tab-pane>
+          <el-tab-pane label="跳转微信小程序" name="mini" :disabled="!config.mini.show">
+            <div class="line10"><el-input v-model="innerDialog.mini.innerText" placeholder="在此输入链接地址"></el-input></div>
+            <div class="line10"><el-input v-model="innerDialog.mini.appid" placeholder="在此输入小程序appid"></el-input></div>
+            <div class="line10"><el-input v-model="innerDialog.mini.url" placeholder="在此输入备用跳转地址"></el-input></div>
           </el-tab-pane>
           <el-tab-pane label="选择页面" name="page" :disabled="!config.page.show">
             <el-tabs class="tabs-child" v-model="innerDialog.customizeIndex">
@@ -324,6 +328,11 @@
       return {
         innerVisible: false,
         innerDialog: {
+          mini:{
+            innerText:'',
+            appid:'',
+            url:''
+          },
           data: ['手动输入', '选择页面'],
           index: 'customize',
           customizeLink: '',
@@ -412,6 +421,9 @@
           }
         },
         config: {
+          mini:{
+            show:true,
+          },
           customize: {
             show: true
           },
@@ -442,10 +454,13 @@
         let data = [];
         if (this.config.customize) {
           if (this.config.customize.show !== false) {
-            data.push('自定义链接');
+            data.push('跳转网页');
           }
           if (this.config.page.show !== false) {
             data.push('选择页面');
+          }
+          if (this.config.mini.show !== false) {
+            data.push('跳转小程序');
           }
         }
         return data;
@@ -496,9 +511,15 @@
         let type = '';
         if (this.innerDialog.index === 'customize') {
           path = this.innerDialog.customizeStart + this.innerDialog.customizeLink;
-          tooltip = `自定义链接：${path}`;
+          tooltip = `跳转网页：${path}`;
           type = 'third';
-        } else if (this.innerDialog.index === 'page') {
+        } else if (this.innerDialog.index === 'mini'){
+          path = this.innerDialog.mini.innerText
+          tooltip = `小程序：${path}`;
+          type = 'mini';
+          dataItem = {url:this.innerDialog.mini.url,appid:this.innerDialog.mini.appid}
+
+        }else if (this.innerDialog.index === 'page') {
           switch (this.innerDialog.customizeIndex) {
             case '1':
               path = this.innerDialog.system.checked;
@@ -572,6 +593,8 @@
           path,
           tooltip,
           dataItem, this.pageEl, this.idx2);
+
+        this.innerDialog.customizeLink = '';//重置手动输入链接为空
         // this.$emit('change', {
         //     dataType,
         //     type,

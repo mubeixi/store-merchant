@@ -77,6 +77,7 @@ function setAttrData() {
 
           //console.log(dataType, type, path, tooltip, dataItem,pageEl,idx2)
           Vue.set(this.value.list[idx2], 'link', path);
+          Vue.set(this.value.list[idx2], 'ext', dataItem);
           Vue.set(this.value.list[idx2], 'linkType', type);
           Vue.set(this.value.list[idx2], 'tooltip', tooltip);
 
