@@ -311,7 +311,7 @@
         <el-radio-group v-model="ruleForm.orderType" :disabled="noEditField.prod_order_type" @change="changeRadio">
           <el-radio label="0" style="display: block;margin-bottom: 15px" >实物订单  <span class="font12">( 买家下单 -> 买家付款 -> 商家发货 -> 买家收货 -> 订单完成 )</span> </el-radio>
           <el-radio label="1" style="display: block;margin-bottom: 15px" >虚拟订单  <span class="font12">( 买家下单 -> 买家付款 -> 系统发送消费券码到买家手机 -> 商家认证消费 -> 订单完成 )</span></el-radio>
-          <el-radio label="2"  style="display: block;margin-bottom: 15px" ><span @click="clickRadio">其他  <span class="font12">( 买家下单 -> 买家付款 -> 订单完成 ) <el-button type="primary" v-if="!noEditField.prod_order_type" sizi="mini">设置</el-button></span></span> </el-radio>
+          <el-radio label="2"  style="display: block;margin-bottom: 15px" ><span>其他  <span class="font12">( 买家下单 -> 买家付款 -> 订单完成 ) <el-button type="primary"  @click="clickRadio" v-if="!noEditField.prod_order_type" sizi="mini">设置</el-button></span></span> </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="商品库存" prop="Products_Count">
@@ -476,7 +476,7 @@
           <div class="aiHai">
             <div class="fenxiaoshang" v-for="(fen,fenIndex) of dis_level_list" :key="fenIndex">
               <div class="fenTitle">{{fen.Level_Name}}</div>
-              <div class="paddingAll">
+              <div class="paddingAll" v-if="distriboutor_config[fenIndex]">
                 <el-form-item label="" prop="sort"  class="padding15-t marginBootom"  v-for="(dis,disIndex) of Dis_Level_arr" :key="disIndex">
                   <span class="label">{{dis}}</span>
                   <el-input   style="width: 70px" v-model="distriboutor_config[fenIndex][disIndex]"></el-input>
@@ -966,9 +966,9 @@
             this.multipleSelection = val;
         }
         changeRadio(){
-            if(this.ruleForm.orderType==2){
-                this.isShow=true;
-            }
+            // if(this.ruleForm.orderType==2){
+            //     this.isShow=true;
+            // }
         }
         clickRadio(){
             this.isShow=true;
@@ -1309,6 +1309,7 @@
                     productInfo.prod_limit=JSON.stringify(prodObj)
                     productInfo.self_commi=this.self_commi
                     productInfo.parent_commi=this.parent_commi
+                    productInfo.manage_commi=this.manage_commi
                     systemOperateProd(productInfo,{}).then(res=>{
                         if(res.errorCode==0){
                             this.isLoading=false;
@@ -1538,14 +1539,25 @@
                 this.$set(this,'distriboutor_config',tempArr);
                 //this.distriboutor_config = tempArr;
                 //修改分校等级
+                let obj={}
+                let indexMy=0
+                //木贝西
                 for(let item in this.prodConfig.Shop_Commision_Reward_Json.Distribute){
+                    indexMy++
+                    for(let mb in this.prodConfig.Shop_Commision_Reward_Json.Distribute[item]){
+                        obj[mb]=0
+                    }
                         for(let i=0;i<this.dis_level_list.length;i++){
-                            if(item==this.dis_level_list[i].Level_ID){
+                            if(item==(this.dis_level_list[i].Level_ID)){
                                 this.distriboutor_config[i]=this.prodConfig.Shop_Commision_Reward_Json.Distribute[item];
                             }
                         }
 
                 }
+                //this.distriboutor_config[6]=obj
+
+
+
 
                 this.platForm_Income_Reward=res.data.Shop_Commision_Reward_Json.platForm_Income_Reward;
                 this.nobi_ratio=res.data.Shop_Commision_Reward_Json.noBi_Reward;
@@ -1615,14 +1627,27 @@
 
 
                     this.distriboutor_config=[];
+                    //木贝西
+                    //当商品之后又新增分销商
+                    // for(let mb in this.prodConfig.Shop_Commision_Reward_Json.Distribute){
+                    //     for(let it of this.prodConfig.Shop_Commision_Reward_Json.dis_level_list){
+                    //         if(mb!=it.Level_ID){
+                    //            this.prodConfig.Shop_Commision_Reward_Json.Distribute[it.Level_ID]={}
+                    //         }
+                    //     }
+                    // }
+                    for(let mb in this.prodConfig.Shop_Commision_Reward_Json.Distribute){
+                        for(let it in productInfo.Products_Distributes){
+                              if(mb!=it){
+                                  productInfo.Products_Distributes[mb]=this.prodConfig.Shop_Commision_Reward_Json.Distribute[mb]
+                              }
+                        }
+                    }
                     for(let it in productInfo.Products_Distributes){
                         if(Array.isArray(productInfo.Products_Distributes[it])){
                             let obj={
                             }
-                            console.log("qqqqqq")
-                            // for(let item of productInfo.Products_Distributes[it]){
-                            //     console.log(item,"sss")
-                            // }
+
                             for(let inde=0;inde<=this.prodConfig.Dis_Level;inde++){
                                 obj[inde]=productInfo.Products_Distributes[it][inde]
                             }
@@ -1633,6 +1658,8 @@
                         }
 
                     }
+
+
 
 
                     //限购
