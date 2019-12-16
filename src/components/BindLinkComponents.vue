@@ -96,6 +96,7 @@
 <script>
   import { getProductCategory, getProductList,getDiyPageList,getSystemUrl,getDiyUrl } from '@/common/fetch';
   import { deepCopy } from '@/common/utils';
+  import {fun} from '../common';
 
   function refreshCateData(arr) {
 
@@ -340,53 +341,6 @@
           customizeIndex: '1',
           system: {
             data:[],
-            // data: [
-            //   {
-            //     id: 1,
-            //     text: '系统消息',
-            //     path:'/pages/systemMsg/systemMsg'
-            //   },
-            //   {
-            //     id: 2,
-            //     text: '签到',
-            //     path:'/pages/qiandao/qiandao'
-            //   },
-            //   {
-            //     id: 3,
-            //     text: '我的收藏',
-            //     path:'/pages/collection/collection'
-            //   },
-            //   {
-            //     id: 4,
-            //     text: '我的优惠券',
-            //     path:'/pages/coupon/coupon'
-            //   },
-            //   {
-            //     id: 5,
-            //     text: '赠品中心',
-            //     path:'/pages/myGift/myGift'
-            //   },
-            //   {
-            //     id: 6,
-            //     text: '任务中心',
-            //     path:'/pages/taskCenter/taskCenter'
-            //   },
-            //   {
-            //     id: 7,
-            //     text: '会员中心',
-            //     path:'/pages/vipGrade/vipGrade'
-            //   },
-            //   {
-            //     id: 8,
-            //     text: '购物车',
-            //     path:'/pages/cart/cart'
-            //   },
-            //   {
-            //     id: 9,
-            //     text: '分销中心',
-            //     path:'/pages/fenxiao/fenxiao'
-            //   },
-            // ],
             isHasData: false,
             checked: '',
             checkedObj: {}
@@ -514,6 +468,26 @@
           tooltip = `跳转网页：${path}`;
           type = 'third';
         } else if (this.innerDialog.index === 'mini'){
+
+          if(!this.innerDialog.mini.innerText){
+            fun.error({msg:'小程序地址必填'})
+            return;
+          }
+
+          if(!this.innerDialog.mini.appid){
+            fun.error({msg:'appid必填'})
+            return;
+          }
+
+          if(!this.innerDialog.mini.url){
+            fun.error({msg:'备用地址必填'})
+            return;
+          }
+
+          if(this.innerDialog.mini.url.indexOf('http')==-1){
+            fun.error({msg:'备用地址必须包含http(https)'})
+            return;
+          }
           path = this.innerDialog.mini.innerText
           tooltip = `小程序：${path}`;
           type = 'mini';
