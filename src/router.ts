@@ -28,6 +28,8 @@ import NotFound from '@/views/NotFound.vue';
 import ProductList from '@/views/ProductList.vue';
 import StoreProductList from '@/views/StoreProductList.vue';
 import DistributorLevel from '@/views/DistributorLevel.vue';
+import Rotate from '@/views/Rotate.vue';
+
 const routerInstance = new Router({
   routes: [
     {
@@ -210,6 +212,14 @@ const routerInstance = new Router({
       component: DistributorLevel,
       meta:{
         title:'分销商级别设置'
+      }
+    },
+    {
+      path: '/Rotate',
+      name: 'Rotate',
+      component: Rotate,
+      meta:{
+        title:'幸运大抽奖'
       }
     },
     {
