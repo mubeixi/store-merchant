@@ -481,6 +481,11 @@
             return;
           }
 
+          if(!this.innerDialog.mini.origin_id){
+            fun.error({msg:'原始id必填'})
+            return;
+          }
+
           if(!this.innerDialog.mini.url){
             fun.error({msg:'备用地址必填'})
             return;
