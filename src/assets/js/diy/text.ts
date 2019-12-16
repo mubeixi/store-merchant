@@ -106,6 +106,7 @@ function setAttrData() {
           pageEl.bindLinkDialogShow = false;
 
           Vue.set(this.value, 'link', path);
+          Vue.set(this.value, 'ext', dataItem);
           Vue.set(this.value, 'linkType', type);
           Vue.set(this.value, 'tooltip', tooltip);
 

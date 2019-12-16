@@ -9,9 +9,8 @@
     >
       <div class="container">
         <el-tabs v-model="innerDialog.index" tab-position="left" class="leftMenuEl">
-          <el-tab-pane label="自定义链接" name="customize" :disabled="!config.customize.show">
+          <el-tab-pane label="跳转网页" name="customize" :disabled="!config.customize.show">
             <el-input v-model="innerDialog.customizeLink" placeholder="在此输入链接地址">
-
               <template slot="prepend">
                 <el-select style="width: 90px" v-model="innerDialog.customizeStart"  placeholder="请选择">
                   <el-option label="http://" value="http://"></el-option>
@@ -19,6 +18,12 @@
                 </el-select>
               </template>
             </el-input>
+          </el-tab-pane>
+          <el-tab-pane label="跳转微信小程序" name="mini" :disabled="!config.mini.show">
+            <div class="line10"><el-input v-model="innerDialog.mini.innerText" placeholder="在此输入链接地址"></el-input></div>
+            <div class="line10"><el-input v-model="innerDialog.mini.appid" placeholder="在此输入小程序appid（小程序跳转)"></el-input></div>
+            <div class="line10"><el-input v-model="innerDialog.mini.origin_id" placeholder="在此输入小程序原始id(app跳转)"></el-input></div>
+            <div class="line10"><el-input v-model="innerDialog.mini.url" placeholder="在此输入备用跳转地址(低版本时将跳转到此网址)"></el-input></div>
           </el-tab-pane>
           <el-tab-pane label="选择页面" name="page" :disabled="!config.page.show">
             <el-tabs class="tabs-child" v-model="innerDialog.customizeIndex">
@@ -92,6 +97,7 @@
 <script>
   import { getProductCategory, getProductList,getDiyPageList,getSystemUrl,getDiyUrl } from '@/common/fetch';
   import { deepCopy } from '@/common/utils';
+  import {fun} from '../common';
 
   function refreshCateData(arr) {
 
@@ -324,6 +330,12 @@
       return {
         innerVisible: false,
         innerDialog: {
+          mini:{
+            innerText:'',
+            appid:'',
+            url:'',
+            origin_id:''
+          },
           data: ['手动输入', '选择页面'],
           index: 'customize',
           customizeLink: '',
@@ -331,53 +343,6 @@
           customizeIndex: '1',
           system: {
             data:[],
-            // data: [
-            //   {
-            //     id: 1,
-            //     text: '系统消息',
-            //     path:'/pages/systemMsg/systemMsg'
-            //   },
-            //   {
-            //     id: 2,
-            //     text: '签到',
-            //     path:'/pages/qiandao/qiandao'
-            //   },
-            //   {
-            //     id: 3,
-            //     text: '我的收藏',
-            //     path:'/pages/collection/collection'
-            //   },
-            //   {
-            //     id: 4,
-            //     text: '我的优惠券',
-            //     path:'/pages/coupon/coupon'
-            //   },
-            //   {
-            //     id: 5,
-            //     text: '赠品中心',
-            //     path:'/pages/myGift/myGift'
-            //   },
-            //   {
-            //     id: 6,
-            //     text: '任务中心',
-            //     path:'/pages/taskCenter/taskCenter'
-            //   },
-            //   {
-            //     id: 7,
-            //     text: '会员中心',
-            //     path:'/pages/vipGrade/vipGrade'
-            //   },
-            //   {
-            //     id: 8,
-            //     text: '购物车',
-            //     path:'/pages/cart/cart'
-            //   },
-            //   {
-            //     id: 9,
-            //     text: '分销中心',
-            //     path:'/pages/fenxiao/fenxiao'
-            //   },
-            // ],
             isHasData: false,
             checked: '',
             checkedObj: {}
@@ -412,6 +377,9 @@
           }
         },
         config: {
+          mini:{
+            show:true,
+          },
           customize: {
             show: true
           },
@@ -442,10 +410,13 @@
         let data = [];
         if (this.config.customize) {
           if (this.config.customize.show !== false) {
-            data.push('自定义链接');
+            data.push('跳转网页');
           }
           if (this.config.page.show !== false) {
             data.push('选择页面');
+          }
+          if (this.config.mini.show !== false) {
+            data.push('跳转小程序');
           }
         }
         return data;
@@ -496,9 +467,40 @@
         let type = '';
         if (this.innerDialog.index === 'customize') {
           path = this.innerDialog.customizeStart + this.innerDialog.customizeLink;
-          tooltip = `自定义链接：${path}`;
+          tooltip = `跳转网页：${path}`;
           type = 'third';
-        } else if (this.innerDialog.index === 'page') {
+        } else if (this.innerDialog.index === 'mini'){
+
+          if(!this.innerDialog.mini.innerText){
+            fun.error({msg:'小程序地址必填'})
+            return;
+          }
+
+          if(!this.innerDialog.mini.appid){
+            fun.error({msg:'appid必填'})
+            return;
+          }
+
+          if(!this.innerDialog.mini.origin_id){
+            fun.error({msg:'原始id必填'})
+            return;
+          }
+
+          if(!this.innerDialog.mini.url){
+            fun.error({msg:'备用地址必填'})
+            return;
+          }
+
+          if(this.innerDialog.mini.url.indexOf('http')==-1){
+            fun.error({msg:'备用地址必须包含http(https)'})
+            return;
+          }
+          path = this.innerDialog.mini.innerText
+          tooltip = `小程序：${path}`;
+          type = 'mini';
+          dataItem = {url:this.innerDialog.mini.url,appid:this.innerDialog.mini.appid,origin_id:this.innerDialog.mini.origin_id}
+
+        }else if (this.innerDialog.index === 'page') {
           switch (this.innerDialog.customizeIndex) {
             case '1':
               path = this.innerDialog.system.checked;
@@ -572,6 +574,12 @@
           path,
           tooltip,
           dataItem, this.pageEl, this.idx2);
+
+        this.innerDialog.customizeLink = '';//重置手动输入链接为空
+        this.innerDialog.mini.url = ''
+        this.innerDialog.mini.appid = ''
+        this.innerDialog.mini.origin_id = ''
+        this.innerDialog.mini.innerText = ''
         // this.$emit('change', {
         //     dataType,
         //     type,

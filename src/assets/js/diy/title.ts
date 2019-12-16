@@ -130,6 +130,7 @@ function setAttrData() {
       //     pageEl.bindLinkDialogShow = false;
       //
       //     Vue.set(this.value, 'link', path);
+      // Vue.set(this.value, 'ext', dataItem);
       //     Vue.set(this.value, 'linkType', type);
       //     Vue.set(this.value, 'tooltip', tooltip);
       //
@@ -183,6 +184,7 @@ function setAttrData() {
           pageEl.bindLinkDialogShow = false;
 
           Vue.set(this.value.more[idx2], 'link', path);
+          Vue.set(this.value.list[idx2], 'ext', dataItem);
           Vue.set(this.value.more[idx2], 'linkType', type);
           Vue.set(this.value.more[idx2], 'tooltip', tooltip);
 
