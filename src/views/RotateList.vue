@@ -11,6 +11,8 @@
       </el-select>
       <el-input class="input-name" v-model="active_name" placeholder="请输入活动名称"></el-input>
       <el-button type="primary" @click="searchLists">查询</el-button>
+
+      <el-button type="primary" style="margin-left: 300px;width: 150px" @click="goRotate">新增抽奖活动</el-button>
     </div>
     <!-- 筛选end -->
     <!-- 列表start -->
@@ -92,6 +94,13 @@
     })
 
     export default class RotateList extends Vue {
+
+        goRotate(){
+            this.$router.push({
+                name:'Rotate'
+            })
+        }
+
         active_name=''
         statuss=[]
         scenesList=[];//列表数据
@@ -236,6 +245,7 @@
       }
     }
     .list {
+      margin-left: 26px;
       /deep/ .el-table {
         .el-table--scrollable-x .el-table__body-wrapper {
           overflow: hidden !important;
@@ -274,6 +284,7 @@
     .fenye {
       margin-top: 48px;
       width: 1240px;
+      margin-left: 26px;
       text-align: center;
       padding-bottom: 76px;
     }
