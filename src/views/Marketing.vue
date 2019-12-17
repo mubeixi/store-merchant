@@ -42,23 +42,23 @@
 <!--             筛选start-->
             <div class="condition">
                 <el-select v-model="typeValue" placeholder="请选择活动类型">
-                  <template  v-for="(item,index) in types">
+                      <template  v-for="(item,index) in types">
+                        <el-option
+                          :label="item"
+                          :value="index">
+                        </el-option>
+                      </template>
+                </el-select>
+                <el-select class="select2" v-model="state" placeholder="请选择活动状态">
+                  <template  v-for="(it,ind) in statuss">
                     <el-option
-                      :label="item"
-                      :value="index">
+                      :label="it"
+                      :value="ind">
                     </el-option>
                   </template>
-            </el-select>
-            <el-select class="select2" v-model="state" placeholder="请选择活动状态">
-              <template  v-for="(it,ind) in statuss">
-                <el-option
-                  :label="it"
-                  :value="ind">
-                </el-option>
-              </template>
-            </el-select>
-            <el-input class="input-name" v-model="active_name" placeholder="请输入活动名称"></el-input>
-            <el-button type="primary" @click="searchList">查询</el-button>
+                </el-select>
+                <el-input class="input-name" v-model="active_name" placeholder="请输入活动名称"></el-input>
+                <el-button type="primary" @click="searchList">查询</el-button>
             </div>
             <!-- 筛选end -->
             <!-- 列表start -->
