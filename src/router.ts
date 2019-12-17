@@ -29,6 +29,7 @@ import ProductList from '@/views/ProductList.vue';
 import StoreProductList from '@/views/StoreProductList.vue';
 import DistributorLevel from '@/views/DistributorLevel.vue';
 import Rotate from '@/views/Rotate.vue';
+import RotateList from '@/views/RotateList.vue';
 
 const routerInstance = new Router({
   routes: [
@@ -220,6 +221,14 @@ const routerInstance = new Router({
       component: Rotate,
       meta:{
         title:'幸运大抽奖'
+      }
+    },
+    {
+      path: '/RotateList',
+      name: 'RotateList',
+      component: RotateList,
+      meta:{
+        title:'幸运大抽奖列表'
       }
     },
     {
