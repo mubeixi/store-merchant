@@ -305,7 +305,13 @@ export const systemLevelEdit = (data:object={},options:any=false) => fetch('syst
 //获取分销商等级详情
 export const systemLevelDetail = (data:object={},options:any=false) => fetch('system_level_detail', data , options);
 //新增大转盘接口
-export const addTurn = (data:object={},options:any=false) => fetch('add_turn', data , options);
+export const addTurn = (data:object={},options:any=false) => fetch('addTurn', data , options);
+//获取大转盘列表接口
+export const getTurns = (data:object={},options:any=false) => fetch('getTurns', data , options);
+//终止大转盘列表接口
+export const stopTurn = (data:object={},options:any=false) => fetch('stopTurn', data , options);
+//获取大转盘详情
+export const getTurn = (data:object={},options:any=false) => fetch('getTurn', data , options);
 
 
 function get_Appid() {

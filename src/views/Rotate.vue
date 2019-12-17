@@ -3,13 +3,14 @@
     <el-form size="small">
       <div class="rotateName line15">
         <el-form-item label="活动名称：" >
-          <el-input v-model="title" style="width: 350px"></el-input>
+          <el-input v-model="title" style="width: 350px" :disabled="!editCan"></el-input>
         </el-form-item>
       </div>
 
       <div class="rotateName line15">
         <el-form-item label="活动时间：" >
           <el-date-picker
+            :disabled="!editCan"
             v-model="dateValue"
             type="datetimerange"
             align="right"
@@ -23,13 +24,13 @@
 
       <div class="rotateName line15 " style="padding-left: 24px">
         <el-form-item label="每人参与总次数：" >
-          <el-input v-model="total_count" style="width: 75px"></el-input>
+          <el-input :disabled="!editCan" v-model="total_count" style="width: 75px"></el-input>
           <span class="paddingL10">次</span>
         </el-form-item>
       </div>
       <div class="rotateName line15 paddingL10"  >
         <el-form-item label="每人每天参与总次数：">
-          <el-input v-model="day_count" style="width: 75px"></el-input>
+          <el-input :disabled="!editCan" v-model="day_count" style="width: 75px"></el-input>
           <span class="paddingL10">次</span>
         </el-form-item>
       </div>
@@ -38,13 +39,13 @@
           <div class="rotateList line10" v-for="(item,index) of rotateList" :key="index">
               <div class="rotateDiv" >
                 <el-form-item label="奖品设置：" >
-                  <el-select v-model="item.type" placeholder="请选择奖品" @change="changeSelect(index)" style="width: 130px">
+                  <el-select :disabled="!editCan" v-model="item.type" placeholder="请选择奖品" @change="changeSelect(index)" style="width: 130px">
                     <el-option label="赠品" value="gift"></el-option>
                     <el-option label="优惠券" value="coupon"></el-option>
                     <el-option label="积分" value="score"></el-option>
                   </el-select>
                   <block v-if="item.type==='score'">
-                    <el-input placeholder="请输入积分数量" v-model="item.value" style="width: 130px;margin-left: 15px"></el-input>
+                    <el-input :disabled="!editCan" placeholder="请输入积分数量" v-model="item.value" style="width: 130px;margin-left: 15px"></el-input>
                   </block>
                   <block v-if="item.type==='gift'">
                     <span class="spans"  @click="selectGi(index)">选择赠品</span>
@@ -54,23 +55,25 @@
                   </block>
                 </el-form-item>
                 <div class="first second" v-if="item.type==='gift'">
-                  <div class="listLine" v-if="item.text">
+                  <div class="listLine" v-if="item.pname||item.lose_txt">
                     <img :src="item.img_url" class="lineImg">
-                    <div class="lineDiv">{{item.text}}</div>
+                    <div class="lineDiv" v-if="item.pname">{{item.pname}}</div>
+                    <div class="lineDiv" style="color: red" v-else>{{item.lose_txt}}</div>
                   </div>
                 </div>
 
                 <div class="first second"  v-if="item.type==='coupon'">
-                  <div class="listLine" style="height: 37px" v-if="item.text">
-                    <div class="lineDiv" style="margin-left: 0px">{{item.text}}</div>
+                  <div class="listLine" style="height: 37px" v-if="item.cname||item.lose_txt">
+                    <div class="lineDiv" style="margin-left: 0px" v-if="item.cname">{{item.cname}}</div>
+                    <div class="lineDiv" style="margin-left: 0px;color: red" v-else>{{item.lose_txt}}</div>
                   </div>
                 </div>
                 <el-form-item label="奖品数量："    >
-                  <el-input v-model="item.count" style="width: 75px" type="number"></el-input>
+                  <el-input :disabled="!editCan" v-model="item.count" style="width: 75px" type="number"></el-input>
                   <span class="paddingL10">个</span>
                 </el-form-item>
                 <el-form-item label="奖品概率：" >
-                  <el-input v-model="item.rate" style="width: 75px"></el-input>
+                  <el-input :disabled="!editCan" v-model="item.rate" style="width: 75px"></el-input>
                   <span class="paddingL10">%</span>
                 </el-form-item>
               </div>
@@ -84,13 +87,13 @@
 
       <div class="rotateRule">
         <el-form-item label="活动规则：" >
-          <el-input v-model="describe" style="width: 500px" type="textarea"  :autosize="{ minRows: 3, maxRows: 10}" resize="none"></el-input>
+          <el-input :disabled="!editCan" v-model="describe" style="width: 500px" type="textarea"  :autosize="{ minRows: 3, maxRows: 10}" resize="none"></el-input>
         </el-form-item>
       </div>
 
       <div class="myButton">
-        <el-button >返回</el-button>
-        <el-button type="primary" :loading="isLoadng" style="margin-left: 20px" @click="saveTurn">保存</el-button>
+        <el-button @click="goBack">返回</el-button>
+        <el-button type="primary" :loading="isLoadng" :disabled="!editCan" style="margin-left: 20px" @click="saveTurn">保存</el-button>
       </div>
     </el-form>
 
@@ -222,7 +225,7 @@
     } from 'vuex-class'
     import fa from "element-ui/src/locale/lang/fa";
     import {
-        getGivingGifts,getGivingCoupons,addTurn
+        getGivingGifts,getGivingCoupons,addTurn,getTurn
     } from '@/common/fetch';
     import {findArrayIdx, plainArray, createTmplArray, objTranslate} from '@/common/utils';
     @Component({
@@ -237,7 +240,7 @@
         title=''
         total_count=''
         day_count=''
-        dateValue=''
+        dateValue=[]
         describe=''//活动描述
 
         rotateList=[{
@@ -272,6 +275,7 @@
             this.isShow=false
         }
         selectGi(index){
+            if(!this.editCan)return
             this.rotateIndex=index
             this.searchList();
             this.isShow=true;
@@ -293,7 +297,7 @@
                 this.isShow=false
                 console.log(val)
                 this.rotateList[this.rotateIndex].img_url=val.img_url
-                this.rotateList[this.rotateIndex].text=val.Products_Name
+                this.rotateList[this.rotateIndex].pname=val.Products_Name
                 this.rotateList[this.rotateIndex].value=val.id
                 this.$refs.multipleTable.setCurrentRow();
             }
@@ -315,6 +319,7 @@
             this.isShows=false
         }
         selectGis(index){
+            if(!this.editCan)return
             this.rotateIndex=index
             this.searchLists();
             this.isShows=true;
@@ -334,7 +339,7 @@
         handleSelectionChanges(val){
             if(val){
                 this.isShows=false
-                this.rotateList[this.rotateIndex].text=val.title
+                this.rotateList[this.rotateIndex].cname=val.title
                 this.rotateList[this.rotateIndex].value=val.id
                 this.$refs.multipleTables.setCurrentRow();
             }
@@ -343,6 +348,8 @@
 
 
         addList(){
+            if(!this.editCan)return
+
             if(this.rotateList.length<8){
                 this.rotateList.push({
                     type:'score',
@@ -358,6 +365,7 @@
             }
         }
         delList(index){
+            if(!this.editCan)return
             this.rotateList.splice(index,1)
         }
 
@@ -373,13 +381,55 @@
                 day_count:this.day_count,
                 prize_rule:JSON.stringify(this.rotateList)
             }
+            let id =this.$route.query.id
+            if(id){
+                info.id=id
+            }
+            let that=this
             addTurn(info).then(res=>{
                 if(res.errorCode==0){
-
+                    this.$message({
+                        message:res.msg,
+                        type: 'success'
+                    })
+                    setTimeout(function () {
+                        that.$router.push({
+                            name: 'RotateList'
+                        })
+                    },1000)
                 }
 
+            }).catch(e=>{
+                this.isLoadng=false
             })
-            this.isLoadng=false
+
+        }
+
+        goBack(){
+            this.$router.push({
+                name: 'RotateList'
+            })
+        }
+        editCan=true
+
+        created(){
+            let id =this.$route.query.id
+            if(id){
+                getTurn({id:id}).then(res=>{
+                    if(res.errorCode==0){
+                        console.log(res,"ss")
+                        this.day_count=res.data.day_count
+                        this.total_count=res.data.total_count
+                        this.title=res.data.title
+                        this.dateValue.push(res.data.start_time)
+                        this.dateValue.push(res.data.end_time)
+                        this.rotateList=res.data.rules
+                        this.describe=res.data.describe
+                        this.editCan=res.data.status==0?true:false
+                    }
+                })
+            }
+
         }
 
     }
