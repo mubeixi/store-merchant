@@ -326,11 +326,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="商品详情">
-        <div>
-          <kind-editor id="container" height="400px" width="800px" :content.sync="editorText"
-                      :afterChange="afterChange()"
-                      :loadStyleMode="false"
-                      @on-content-change="onContentChange" />
+        <div style="padding-right: 30px">
+          <wzw-editor :content.sync="editorText" :afterChange="afterChange()" @on-content-change="onContentChange"></wzw-editor>
+<!--          <kind-editor id="container" height="400px" width="800px" :content.sync="editorText"-->
+<!--                      :afterChange="afterChange()"-->
+<!--                      :loadStyleMode="false"-->
+<!--                      @on-content-change="onContentChange" />-->
         </div>
       </el-form-item>
       <el-form-item>
@@ -565,6 +566,7 @@
     <div class="setting ponint" @click="commission=true">
       佣金设置
     </div>
+
   </div>
 </template>
 
@@ -582,7 +584,8 @@
     import BindCateComponents from '@/components/BindCateComponents.vue';
     import BindStoreComponent from "@/components/comm/BindStoreComponent.vue";
     import SettingComponent from "@/components/comm/SettingComponent.vue";
-    import KindEditor from "@/components/comm/kindeditor.vue"
+    // import KindEditor from "@/components/comm/kindeditor.vue"
+    import WzwEditor from "../components/comm/WzwEditor.vue";
 
     import {
         getProductCategory,
@@ -610,7 +613,8 @@
         components: {
             BindStoreComponent,
             SettingComponent,
-            KindEditor,
+            WzwEditor,
+            // KindEditor,
             UploadComponents,BindCateComponents
         }
     })

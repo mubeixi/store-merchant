@@ -13,16 +13,15 @@ window.funLoading = false
 
 const fetch = function (act: String, param: Object = {}, options = false, url: String = '/api/little_program/shopconfig.php', method: String = 'post') {
 
-  console.log(param)
+  // console.log(param)
   if (!act) Vue.$fun.warning('获取信息失败');
 
   // @ts-ignore
   param.act = act;
-
   param.env = 'system';
   // param.Users_Account = get_Users_Account();
 
-  console.log('生效了')
+  // console.log('生效了')
   // console.log(param.hasOwnProperty('access_token'),'dddddddddddddd')
   if(!param.hasOwnProperty('access_token')){
     // @ts-ignore
@@ -43,10 +42,11 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
   }
   // param.appid = get_Appid();
 
-  console.log(param)
+  // console.log(param)
   // 数据加密
   let data = createToken(param);
-  console.log(data)
+
+  // console.log(data)
 
   // console.log(process.env.VUE_APP_API_BASE_URL)
   url = (process.env.NODE_ENV === 'production' ? baseApiUrl : '') + url;
@@ -137,6 +137,8 @@ export const getUsersInfo = (data:object={},options:any=false) => fetch('get_use
 export const getProductCountInfo  = (data:object={},options:any=false) => fetch('get_users_info', data, options);
 
 export const uploadImgByBase64 = (data:object={},options:any=false) => fetch('upload_image', data, options);
+
+export const uploadFileFn = (data:object={},options:any=false) => fetch('upload_image', data, options);
 
 export const getSysuser = (data:object={},options:any=false) => fetch('get_sysuser', data, options);
 
@@ -339,6 +341,7 @@ function ObjectToArr(object, addkey) {
   addkey = addkey || '';
   var arrs = {};
   for (var i in object) {
+
     var newkey = addkey + (addkey === '' ? i : '[' + i + ']');
     if (typeof object[i] !== 'object') {
       if (object[i] !== '') {
@@ -364,6 +367,7 @@ function ObjectToArr(object, addkey) {
 function ObjectToString(object, arrs) {
   arrs = arrs || '';
   for (var i in object) {
+
     if (typeof object[i] !== 'object') {
       if (object[i] !== '') {
         if (i !== 'timestamp' && i !== 'sign') {
