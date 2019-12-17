@@ -2,13 +2,13 @@
   <div class="RotateAll">
     <el-form size="small">
       <div class="rotateName line15">
-        <el-form-item label="活动名称：" prop="name">
+        <el-form-item label="活动名称：" >
           <el-input v-model="title" style="width: 350px"></el-input>
         </el-form-item>
       </div>
 
       <div class="rotateName line15">
-        <el-form-item label="活动时间：" prop="name">
+        <el-form-item label="活动时间：" >
           <el-date-picker
             v-model="dateValue"
             type="datetimerange"
@@ -22,75 +22,75 @@
       </div>
 
       <div class="rotateName line15 " style="padding-left: 24px">
-        <el-form-item label="每人参与总次数：" prop="name">
+        <el-form-item label="每人参与总次数：" >
           <el-input v-model="total_count" style="width: 75px"></el-input>
           <span class="paddingL10">次</span>
         </el-form-item>
       </div>
       <div class="rotateName line15 paddingL10"  >
-        <el-form-item label="每人每天参与总次数：" prop="name">
+        <el-form-item label="每人每天参与总次数：">
           <el-input v-model="day_count" style="width: 75px"></el-input>
           <span class="paddingL10">次</span>
         </el-form-item>
       </div>
 
       <div class="rotateLast line10">
-          <div class="rotateList">
-              <div class="rotateDiv">
-                <el-form-item label="奖品设置：" prop="name">
-                  <el-select v-model="tyep" placeholder="请选择奖品" style="width: 130px">
-                    <el-option label="赠品" value="shanghai"></el-option>
-                    <el-option label="优惠券" value="beijing"></el-option>
-                    <el-option label="积分" value="hah"></el-option>
+          <div class="rotateList line10" v-for="(item,index) of rotateList" :key="index">
+              <div class="rotateDiv" >
+                <el-form-item label="奖品设置：" >
+                  <el-select v-model="item.type" placeholder="请选择奖品" @change="changeSelect(index)" style="width: 130px">
+                    <el-option label="赠品" value="gift"></el-option>
+                    <el-option label="优惠券" value="coupon"></el-option>
+                    <el-option label="积分" value="score"></el-option>
                   </el-select>
-                  <block>
-<!--                    <el-input placeholder="请输入积分数量" style="width: 130px;margin-left: 15px"></el-input>-->
+                  <block v-if="item.type==='score'">
+                    <el-input placeholder="请输入积分数量" v-model="item.value" style="width: 130px;margin-left: 15px"></el-input>
                   </block>
-                  <block>
-                    <span class="spans"  @click="selectGi">选择赠品</span>
+                  <block v-if="item.type==='gift'">
+                    <span class="spans"  @click="selectGi(index)">选择赠品</span>
                   </block>
-                  <block>
-                    <span class="spans" >选择优惠券</span>
+                  <block v-if="item.type==='coupon'">
+                    <span class="spans" @click="selectGis(index)">选择优惠券</span>
                   </block>
                 </el-form-item>
-<!--                <div class="first second" >-->
-<!--                  <div class="listLine" v-for="(item,index) of productData">-->
-<!--                    <img :src="item.img_url||item.ImgPath" class="lineImg">-->
-<!--                    <div class="lineDiv">{{item.Products_Name}}</div>-->
-<!--                  </div>-->
-<!--                </div>-->
+                <div class="first second" v-if="item.type==='gift'">
+                  <div class="listLine" v-if="item.text">
+                    <img :src="item.img_url" class="lineImg">
+                    <div class="lineDiv">{{item.text}}</div>
+                  </div>
+                </div>
 
-<!--                <div class="first second" >-->
-<!--                  <div class="listLine" style="height: 37px" v-for="(item,index) of productDatas">-->
-<!--                    <div class="lineDiv" style="margin-left: 0px">{{item.title}}</div>-->
-<!--                  </div>-->
-<!--                </div>-->
-                <el-form-item label="奖品数量：" prop="name">
-                  <el-input v-model="name" style="width: 75px"></el-input>
+                <div class="first second"  v-if="item.type==='coupon'">
+                  <div class="listLine" style="height: 37px" v-if="item.text">
+                    <div class="lineDiv" style="margin-left: 0px">{{item.text}}</div>
+                  </div>
+                </div>
+                <el-form-item label="奖品数量："    >
+                  <el-input v-model="item.count" style="width: 75px" type="number"></el-input>
                   <span class="paddingL10">个</span>
                 </el-form-item>
-                <el-form-item label="奖品概率：" prop="name">
-                  <el-input v-model="name" style="width: 75px"></el-input>
+                <el-form-item label="奖品概率：" >
+                  <el-input v-model="item.rate" style="width: 75px"></el-input>
                   <span class="paddingL10">%</span>
                 </el-form-item>
               </div>
               <div class="rotateImg">
-<!--                <img class="imgWidth" src="@/assets/img/rotateAdd.png">-->
-                <img class="imgWidth" src="@/assets/img/rotateDel.png">
+                <img class="imgWidth" src="@/assets/img/rotateAdd.png" @click="addList"  v-if="index==0">
+                <img class="imgWidth" src="@/assets/img/rotateDel.png" @click="delList(index)" v-else>
               </div>
           </div>
 
       </div>
 
       <div class="rotateRule">
-        <el-form-item label="活动规则：" prop="name">
-          <el-input v-model="name" style="width: 500px" type="textarea"  :autosize="{ minRows: 3, maxRows: 10}" resize="none"></el-input>
+        <el-form-item label="活动规则：" >
+          <el-input v-model="describe" style="width: 500px" type="textarea"  :autosize="{ minRows: 3, maxRows: 10}" resize="none"></el-input>
         </el-form-item>
       </div>
 
       <div class="myButton">
         <el-button >返回</el-button>
-        <el-button type="primary" style="margin-left: 20px">保存</el-button>
+        <el-button type="primary" :loading="isLoadng" style="margin-left: 20px" @click="saveTurn">保存</el-button>
       </div>
     </el-form>
 
@@ -121,17 +121,16 @@
         <el-table-column
           type="index"
           label="#"
-          width="55">
+          >
         </el-table-column>
         <el-table-column
           label="赠品名称"
           prop="gift_name"
-          width="120">
+          >
         </el-table-column>
         <el-table-column
           prop="Products_Name"
-          label="产品名称"
-          width="300px"
+          label="产品名称" width="300px"
         >
           <template slot-scope="scope">
             <div class="fixDisplay">
@@ -159,7 +158,53 @@
     </el-dialog>
 
 
-
+    <el-dialog
+      title="选择优惠券"
+      width="40%"
+      @close="cardCancels"
+      append-to-body
+      :visible.sync="isShows"
+      class="setting"
+    >
+      <div class="cardTitle" style="margin-bottom: 10px">
+        <div class="cardTitle" style="margin-right: 10px">
+          优惠券名称： <el-input    class="sortInput" style="width: 100px" v-model="nameMbxs"></el-input>
+        </div>
+        <el-button  type="primary" @click="searchLists">搜索</el-button>
+      </div>
+      <el-table
+        ref="multipleTables"
+        :data="GivingGiftss"
+        tooltip-effect="dark"
+        style="width: 100%"
+        highlight-current-row
+        @current-change="handleSelectionChanges"
+      >
+        <el-table-column
+          type="index"
+          label="#"
+        >
+        </el-table-column>
+        <el-table-column
+          label="优惠券ID"
+          prop="id"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="title"
+          label="优惠券名称"
+          >
+        </el-table-column>
+      </el-table>
+      <el-pagination
+        style="margin-top: 20px;text-align: center;"
+        @current-change="currentChanges"
+        background
+        :page-size="pageSizes"
+        layout="prev, pager, next"
+        :total="totalCounts">
+      </el-pagination>
+    </el-dialog>
 
 
   </div>
@@ -177,7 +222,7 @@
     } from 'vuex-class'
     import fa from "element-ui/src/locale/lang/fa";
     import {
-        getGivingGifts,getGivingCoupons
+        getGivingGifts,getGivingCoupons,addTurn
     } from '@/common/fetch';
     import {findArrayIdx, plainArray, createTmplArray, objTranslate} from '@/common/utils';
     @Component({
@@ -193,13 +238,28 @@
         total_count=''
         day_count=''
         dateValue=''
+        describe=''//活动描述
+
+        rotateList=[{
+            type:'score',
+            value:'',
+            count:'',
+            rate:''
+        }]
+        rotateIndex=0 //当前点击的是
+
+        changeSelect(index){
+            for(let it in this.rotateList[index]){
+                if(it=='type') continue
+                this.rotateList[index][it]=''
+
+            }
+        }
 
         //赠品操作
         isShow=false
         nameMbx='';
         GivingGifts=[]
-        text=''
-        send_id=''
         totalCount=0
         page=1
         pageSize=8
@@ -211,7 +271,8 @@
         cardCancel(){
             this.isShow=false
         }
-        selectGi(){
+        selectGi(index){
+            this.rotateIndex=index
             this.searchList();
             this.isShow=true;
         }
@@ -229,16 +290,97 @@
         }
         handleSelectionChange(val){
             if(val){
-                console.log(val.Products_Name,"sss")
                 this.isShow=false
-                this.text=val.Products_Name
-                this.send_id=val.id
-                //this.direct_buy.value.gift_id=val.id
+                console.log(val)
+                this.rotateList[this.rotateIndex].img_url=val.img_url
+                this.rotateList[this.rotateIndex].text=val.Products_Name
+                this.rotateList[this.rotateIndex].value=val.id
                 this.$refs.multipleTable.setCurrentRow();
             }
         }
         //赠品结束
+        //优惠券操作
+        isShows=false
+        nameMbxs='';
+        GivingGiftss=[]
+        totalCounts=0
+        pages=1
+        pageSizes=8
+        currentChanges(val){
+            this.pages=val;
+            this.searchLists()
+        }
+        //取消
+        cardCancels(){
+            this.isShows=false
+        }
+        selectGis(index){
+            this.rotateIndex=index
+            this.searchLists();
+            this.isShows=true;
+        }
+        searchLists(){
+            let data={
+                page:this.pages,
+                pageSize:this.pageSizes,
+                cou_name:this.nameMbxs
+            }
+            getGivingCoupons(data).then(res=>{
+                if(res.errorCode==0){
+                    this.GivingGiftss=res.data;
+                }
+            })
+        }
+        handleSelectionChanges(val){
+            if(val){
+                this.isShows=false
+                this.rotateList[this.rotateIndex].text=val.title
+                this.rotateList[this.rotateIndex].value=val.id
+                this.$refs.multipleTables.setCurrentRow();
+            }
+        }
+        //优惠券结束
 
+
+        addList(){
+            if(this.rotateList.length<8){
+                this.rotateList.push({
+                    type:'score',
+                    value:'',
+                    count:'',
+                    rate:''
+                })
+            }else{
+                this.$message({
+                    message: '最多设置8个活动',
+                    type: 'warning'
+                });
+            }
+        }
+        delList(index){
+            this.rotateList.splice(index,1)
+        }
+
+        isLoadng=false
+        saveTurn(){
+            this.isLoadng=true
+            let info={
+                title:this.title,
+                start_time:this.dateValue[0],
+                end_time:this.dateValue[1],
+                describe:this.describe,
+                total_count:this.total_count,
+                day_count:this.day_count,
+                prize_rule:JSON.stringify(this.rotateList)
+            }
+            addTurn(info).then(res=>{
+                if(res.errorCode==0){
+
+                }
+
+            })
+            this.isLoadng=false
+        }
 
     }
 

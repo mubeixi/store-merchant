@@ -17,6 +17,7 @@
         @row-click="handleRowChange"
         @selection-change="handleSelectionChange">
         <el-table-column
+          v-if="isSelect"
           type="selection"
           align="center"
           width="70">
@@ -219,6 +220,11 @@
             default:false
         })
         showSave //是否显示保存
+        @Prop({
+            type:Boolean,
+            default:true
+        })
+        isSelect //是否多选
 
         lists = []
         currentPage = 1

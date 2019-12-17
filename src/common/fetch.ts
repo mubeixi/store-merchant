@@ -297,6 +297,8 @@ export const systemLevelAdd = (data:object={},options:any=false) => fetch('syste
 export const systemLevelEdit = (data:object={},options:any=false) => fetch('system_level_edit', data , options);
 //获取分销商等级详情
 export const systemLevelDetail = (data:object={},options:any=false) => fetch('system_level_detail', data , options);
+//新增大转盘接口
+export const addTurn = (data:object={},options:any=false) => fetch('add_turn', data , options);
 
 
 function get_Appid() {
