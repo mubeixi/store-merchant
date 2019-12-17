@@ -24,8 +24,7 @@
     <div class="handle">
       <el-button @click="saveData(0)" type="primary" size="small">保存</el-button>
       <el-button v-if="is_dev" @click="clearPlugin" size="small" type="danger">清空组件</el-button>
-<!--      <el-button @click="saveData(1)" size="small">上架</el-button>-->
-<!--      <el-button @click="saveData(1)" size="small">保存并上架</el-button>-->
+
       <div class="preBox" >
         <el-button @click="saveData(0,1)" size="small">预览</el-button>
         <div class="tooltip" v-show="centerDialogVisible" @click="centerDialogVisible=false">

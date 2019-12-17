@@ -6,6 +6,7 @@ import {ls} from "@/common/tool/ls";
 
 import Cookie from 'js-cookie';
 
+
 require('./tool/base64');
 
 window.funLoading = false
@@ -20,11 +21,14 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
 
   param.env = 'system';
   // param.Users_Account = get_Users_Account();
-  // @ts-ignore
 
+  console.log('生效了')
+  // console.log(param.hasOwnProperty('access_token'),'dddddddddddddd')
   if(!param.hasOwnProperty('access_token')){
+    // @ts-ignore
     param.access_token = GET_ACCESS_TOKEN()
   }
+
 
   if(!param.Users_ID){
     param.Users_ID = get_Users_ID();
@@ -39,8 +43,10 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
   }
   // param.appid = get_Appid();
 
+  console.log(param)
   // 数据加密
   let data = createToken(param);
+  console.log(data)
 
   // console.log(process.env.VUE_APP_API_BASE_URL)
   url = (process.env.NODE_ENV === 'production' ? baseApiUrl : '') + url;
@@ -51,6 +57,7 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
   if (options) {
     window.funLoading = Loading.service(options)
   }
+
 
   return new Promise(((resolve, reject) => {
 
