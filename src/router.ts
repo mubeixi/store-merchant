@@ -30,6 +30,10 @@ import StoreProductList from '@/views/StoreProductList.vue';
 import DistributorLevel from '@/views/DistributorLevel.vue';
 import Rotate from '@/views/Rotate.vue';
 import RotateList from '@/views/RotateList.vue';
+import ProductStatistics from '@/views/statistics/ProductStatistics.vue'
+import VipStatistics from '@/views/statistics/VipStatistics.vue'
+import TransactionStatistics from '@/views/statistics/TransactionStatistics.vue'
+
 
 const routerInstance = new Router({
   routes: [
@@ -229,6 +233,30 @@ const routerInstance = new Router({
       component: RotateList,
       meta:{
         title:'幸运大抽奖列表'
+      }
+    },
+    {
+      path: '/ProductStatistics',
+      name: 'ProductStatistics',
+      component: ProductStatistics,
+      meta:{
+        title:'商品统计'
+      }
+    },
+    {
+      path: '/VipStatistics',
+      name: 'VipStatistics',
+      component: VipStatistics,
+      meta:{
+        title:'会员统计'
+      }
+    },
+    {
+      path: '/TransactionStatistics',
+      name: 'TransactionStatistics',
+      component: TransactionStatistics,
+      meta:{
+        title:'交易统计'
       }
     },
     {

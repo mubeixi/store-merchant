@@ -81,18 +81,18 @@
       </el-table>
     </el-dialog>
 
-    <el-dialog
-      :visible.sync="centerDialogVisible"
-      modal
-      close-on-click-modal
-      custom-class="dialog"
-    >
-      <el-carousel :autoplay="false" arrow="always">
-        <el-carousel-item v-for="item in data" :key="item">
-          <img :src="item">
-        </el-carousel-item>
-      </el-carousel>
-    </el-dialog>
+<!--    <el-dialog-->
+<!--      :visible.sync="centerDialogVisible"-->
+<!--      modal-->
+<!--      close-on-click-modal-->
+<!--      custom-class="dialog"-->
+<!--    >-->
+<!--      <el-carousel :autoplay="false" arrow="always">-->
+<!--        <el-carousel-item v-for="item in data" :key="item">-->
+<!--          <img :src="item">-->
+<!--        </el-carousel-item>-->
+<!--    </el-carousel>-->
+<!--    </el-dialog>-->
   </div>
 </template>
 <script lang="ts">
