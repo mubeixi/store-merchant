@@ -25,6 +25,12 @@
     import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
     import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
     import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+    import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+    import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
+    import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
+    import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
+    import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+    import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 
     import Image from '@ckeditor/ckeditor5-image/src/image';
     import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
@@ -43,6 +49,8 @@
     import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
     import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
 
+    //从office中复制文档
+    import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 
 
 
@@ -73,6 +81,7 @@
 
     const toolbar = {
         items: [
+            'heading', '|',
             'bold', 'italic', 'link', 'undo', 'redo',
             '|',
             'fontFamily','fontSize','fontColor','fontBackgroundColor',
@@ -80,6 +89,8 @@
             'blockQuote',"indent", "outdent","insertTable",
             '|',
             'imageUpload','mediaEmbed',
+            '|',
+            'underline','strikethrough','code','subscript','superscript',
 
         ]
     }
@@ -126,11 +137,11 @@
             language: "zh-cn",
             toolbar:toolbar,
             plugins:[
-                EssentialsPlugin, BoldPlugin, ItalicPlugin, LinkPlugin, ParagraphPlugin,
+                EssentialsPlugin, BoldPlugin, ItalicPlugin, LinkPlugin, ParagraphPlugin,Underline,Subscript,Superscript,Code,Strikethrough,Heading,
                 FontFamily,FontBackgroundColor,FontColor,FontSize,
                 SimpleUploadAdapter,WordCount,
                 Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize,ImageUpload,MediaEmbed,
-                BlockQuote,Indent, Table, TableToolbar
+                BlockQuote,Indent, Table, TableToolbar,PasteFromOffice
             ],
             extraPlugins: [
                 myUpload,wordCountPlugin
