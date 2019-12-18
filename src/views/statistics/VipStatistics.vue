@@ -234,7 +234,7 @@
 
 //title
 .firstTitle{
-  background-color: #E4E4E4;
+  background-color: #f3f3f3;
   width: 100%;
   height: 50px;
   display: flex;
