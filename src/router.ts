@@ -32,6 +32,8 @@ import Rotate from '@/views/Rotate.vue';
 import RotateList from '@/views/RotateList.vue';
 import ProductStatistics from '@/views/statistics/ProductStatistics.vue'
 import VipStatistics from '@/views/statistics/VipStatistics.vue'
+import TransactionStatistics from '@/views/statistics/TransactionStatistics.vue'
+
 
 const routerInstance = new Router({
   routes: [
@@ -247,6 +249,14 @@ const routerInstance = new Router({
       component: VipStatistics,
       meta:{
         title:'会员统计'
+      }
+    },
+    {
+      path: '/TransactionStatistics',
+      name: 'TransactionStatistics',
+      component: TransactionStatistics,
+      meta:{
+        title:'交易统计'
       }
     },
     {
