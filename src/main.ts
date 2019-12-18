@@ -16,6 +16,8 @@ Vue.use(VueResource);
 import FunTable from "@/components/widget/FunTable.vue";
 Vue.component('fun-table',FunTable);
 
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 
 // @ts-ignore
 Vue.http.options.emulateJSON = true;

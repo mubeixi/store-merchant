@@ -30,6 +30,7 @@ import StoreProductList from '@/views/StoreProductList.vue';
 import DistributorLevel from '@/views/DistributorLevel.vue';
 import Rotate from '@/views/Rotate.vue';
 import RotateList from '@/views/RotateList.vue';
+import ProductStatistics from '@/views/statistics/ProductStatistics.vue'
 
 const routerInstance = new Router({
   routes: [
@@ -229,6 +230,14 @@ const routerInstance = new Router({
       component: RotateList,
       meta:{
         title:'幸运大抽奖列表'
+      }
+    },
+    {
+      path: '/ProductStatistics',
+      name: 'ProductStatistics',
+      component: ProductStatistics,
+      meta:{
+        title:'商品统计'
       }
     },
     {
