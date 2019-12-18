@@ -81,7 +81,7 @@
   import {Component, Vue, Prop} from 'vue-property-decorator';
   import {mapActions, mapState} from 'vuex';
   import { baseApiUrl } from '@/common/env';
-  import { createToken, get_Users_ID } from '@/common/fetch';
+  import {createToken, GET_ACCESS_TOKEN, get_Users_ID} from '@/common/fetch';
   import { domain,objTranslate} from '@/common/utils';
 
 
@@ -108,7 +108,8 @@
               let param = {
                   Users_ID: get_Users_ID(),
                   act: act,
-                  env : 'wx_mp'
+                  env : 'wx_mp',
+                  access_token:GET_ACCESS_TOKEN()
               };
               let ajaxData = createToken(param);
               return ajaxData;

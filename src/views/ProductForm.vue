@@ -327,11 +327,12 @@
       </el-form-item>
       <el-form-item label="商品详情">
         <div style="padding-right: 30px">
-          <wzw-editor :content.sync="editorText" :afterChange="afterChange()" @on-content-change="onContentChange"></wzw-editor>
-<!--          <kind-editor id="container" height="400px" width="800px" :content.sync="editorText"-->
-<!--                      :afterChange="afterChange()"-->
-<!--                      :loadStyleMode="false"-->
-<!--                      @on-content-change="onContentChange" />-->
+<!--      :content.sync="editorText"    -->
+<!--          <wzw-editor ref="richtext"   :afterChange="afterChange()" @on-content-change="onContentChange"></wzw-editor>-->
+          <kind-editor id="container" height="400px" width="800px" :content.sync="editorText"
+                      :afterChange="afterChange()"
+                      :loadStyleMode="false"
+                      @on-content-change="onContentChange" />
         </div>
       </el-form-item>
       <el-form-item>
@@ -584,8 +585,8 @@
     import BindCateComponents from '@/components/BindCateComponents.vue';
     import BindStoreComponent from "@/components/comm/BindStoreComponent.vue";
     import SettingComponent from "@/components/comm/SettingComponent.vue";
-    // import KindEditor from "@/components/comm/kindeditor.vue"
-    import WzwEditor from "../components/comm/WzwEditor.vue";
+    import KindEditor from "@/components/comm/kindeditor.vue"
+    // import WzwEditor from "../components/comm/WzwEditor.vue";
 
     import {
         getProductCategory,
@@ -613,8 +614,8 @@
         components: {
             BindStoreComponent,
             SettingComponent,
-            WzwEditor,
-            // KindEditor,
+            // WzwEditor,
+            KindEditor,
             UploadComponents,BindCateComponents
         }
     })
@@ -842,7 +843,12 @@
             }
             // console.log(url_list,this.currentSpecItemIdx)
         }
-        onContentChange (val) {
+        onContentChange2 (val) {
+            // console.log(val)
+            this.editorText = val
+        }
+        onContentChange(val) {
+            // console.log(val)
             this.ruleForm.content = val
         }
         afterChange () {
@@ -1625,7 +1631,14 @@
                     this.ruleForm.goods=String(productInfo.Products_IsShippingFree);//运费选择
                     this.ruleForm.freight=String(productInfo.Shipping_Free_Company);
                     this.ruleForm.orderType=String(productInfo.prod_order_type);//订单类型
+
                     this.editorText=productInfo.Products_Description;//富文本类型
+
+                    // this.$nextTick().then(()=>{
+                    //     this.$refs.richtext.setData(productInfo.Products_Description)
+                    // })
+
+
                     this.ruleForm.refund=productInfo.Product_backup;//退货id
                     this.ruleForm.Products_IsPaysBalance=productInfo.Products_IsPaysBalance?true:false;//是否使用余额
 
@@ -1787,6 +1800,12 @@
             this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
                 loadingObj.close()
             });
+
+        }
+
+        mounted(){
+
+
 
         }
 
