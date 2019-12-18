@@ -29,6 +29,7 @@
     import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
     import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
     import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
+    import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
     import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
     import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 
@@ -49,6 +50,7 @@
     // import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
     import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
     import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
+    import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 
     //从office中复制文档
     import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
@@ -83,7 +85,7 @@
     const toolbar = {
         items: [
             'heading', '|',
-            'bold', 'italic', 'link', 'undo', 'redo',
+            'bold', 'italic', 'link', 'undo', 'redo','horizontalLine',
             '|',
             'fontFamily','fontSize','fontColor','fontBackgroundColor',
             '|',
@@ -91,7 +93,7 @@
             '|',
             'imageUpload','imageResize','mediaEmbed',
             '|',
-            'underline','strikethrough','code','subscript','superscript',
+            'underline','strikethrough','code','codeBlock','subscript','superscript',
 
         ]
     }
@@ -138,16 +140,30 @@
             language: "zh-cn",
             toolbar:toolbar,
             plugins:[
-                EssentialsPlugin, BoldPlugin, ItalicPlugin, LinkPlugin, ParagraphPlugin,Underline,Subscript,Superscript,Code,Strikethrough,Heading,
+                EssentialsPlugin, BoldPlugin, ItalicPlugin, LinkPlugin, ParagraphPlugin,Underline,Subscript,Superscript,Code,Strikethrough,Heading,CodeBlock,
                 FontFamily,FontBackgroundColor,FontColor,FontSize,
                 SimpleUploadAdapter,WordCount,
                 Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize,ImageUpload,ImageUploadProgress,MediaEmbed,
-                BlockQuote,Indent, Table, TableToolbar,PasteFromOffice
+                BlockQuote,Indent, Table, TableToolbar,PasteFromOffice,HorizontalLine
             ],
             extraPlugins: [
                 myUpload,wordCountPlugin
             ], // 添加自定义图片上传适配插件
+            codeBlock: {
+                languages: [
+                    // Do not render the CSS class for the plain text code blocks.
+                    { language: 'plaintext', label: 'Plain text', class: '' },
 
+                    // Use the "php-code" class for PHP code blocks.
+                    { language: 'php', label: 'PHP', class: 'php-code' },
+
+                    // Use the "js" class for JavaScript code blocks.
+                    { language: 'javascript', label: 'JavaScript', class: 'js' },
+
+                    // Python code blocks will have the default "language-python" CSS class.
+                    { language: 'python', label: 'Python' }
+                ]
+            },
             image:{
                 toolbar: [
                     'imageStyle:full',
