@@ -76,6 +76,10 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
 
 };
 
+export const getFileList = (act='fun',data:object={},options:any=false)=> fetch(act, data, options,'http://localhost:9100/file')
+
+export const getDirectoryList = (act='fun',data:object={},options:any=false)=> fetch(act, data, options,'http://localhost:9100/directory')
+
 export const commonReq = (act,data:object={},options:any=false)=> fetch(act, data, options)
 
 export const login = (data:object={},options:any=false) => fetch('users_login', data, options)

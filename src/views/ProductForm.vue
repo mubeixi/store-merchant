@@ -326,13 +326,13 @@
         </el-select>
       </el-form-item>
       <el-form-item label="商品详情">
-        <div style="padding-right: 30px">
+        <div style="padding-right: 200px">
 <!--      :content.sync="editorText"    -->
-<!--          <wzw-editor ref="richtext"   :afterChange="afterChange()" @on-content-change="onContentChange"></wzw-editor>-->
-          <kind-editor id="container" height="400px" width="800px" :content.sync="editorText"
-                      :afterChange="afterChange()"
-                      :loadStyleMode="false"
-                      @on-content-change="onContentChange" />
+          <wzw-editor ref="richtext"   :afterChange="afterChange()" @on-content-change="onContentChange"></wzw-editor>
+<!--          <kind-editor id="container" height="400px" width="800px" :content.sync="editorText"-->
+<!--                      :afterChange="afterChange()"-->
+<!--                      :loadStyleMode="false"-->
+<!--                      @on-content-change="onContentChange" />-->
         </div>
       </el-form-item>
       <el-form-item>
@@ -585,8 +585,8 @@
     import BindCateComponents from '@/components/BindCateComponents.vue';
     import BindStoreComponent from "@/components/comm/BindStoreComponent.vue";
     import SettingComponent from "@/components/comm/SettingComponent.vue";
-    import KindEditor from "@/components/comm/kindeditor.vue"
-    // import WzwEditor from "../components/comm/WzwEditor.vue";
+    // import KindEditor from "@/components/comm/kindeditor.vue"
+    import WzwEditor from "../components/comm/WzwEditor.vue";
 
     import {
         getProductCategory,
@@ -614,8 +614,8 @@
         components: {
             BindStoreComponent,
             SettingComponent,
-            // WzwEditor,
-            KindEditor,
+            WzwEditor,
+            // KindEditor,
             UploadComponents,BindCateComponents
         }
     })
