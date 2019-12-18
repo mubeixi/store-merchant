@@ -39,6 +39,7 @@
     import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
     import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
     import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
+    import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress';
 
     import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
     import Indent from '@ckeditor/ckeditor5-indent/src/indent';
@@ -140,7 +141,7 @@
                 EssentialsPlugin, BoldPlugin, ItalicPlugin, LinkPlugin, ParagraphPlugin,Underline,Subscript,Superscript,Code,Strikethrough,Heading,
                 FontFamily,FontBackgroundColor,FontColor,FontSize,
                 SimpleUploadAdapter,WordCount,
-                Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize,ImageUpload,MediaEmbed,
+                Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize,ImageUpload,ImageUploadProgress,MediaEmbed,
                 BlockQuote,Indent, Table, TableToolbar,PasteFromOffice
             ],
             extraPlugins: [
