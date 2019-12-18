@@ -37,9 +37,9 @@
     import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
     import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
     import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
-    import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
     import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
     import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress';
+    import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 
     import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
     import Indent from '@ckeditor/ckeditor5-indent/src/indent';
@@ -89,7 +89,7 @@
             '|',
             'blockQuote',"indent", "outdent","insertTable",
             '|',
-            'imageUpload','mediaEmbed',
+            'imageUpload','imageResize','mediaEmbed',
             '|',
             'underline','strikethrough','code','subscript','superscript',
 
@@ -154,6 +154,13 @@
                     'imageStyle:side',
                     '|',
                     'imageTextAlternative'
+                ],
+                styles: [
+                    'full',
+                    'side',
+                    'alignLeft',
+                    'alignCenter',
+                    'alignRight'
                 ],
                 upload:{
                     types:[ 'jpeg', 'png', 'gif', 'bmp']
