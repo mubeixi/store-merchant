@@ -62,7 +62,7 @@ export default class InsertImageUi extends Plugin {
 
       // Execute command when an item from the dropdown is selected.
       this.listenTo( dropdownView, 'execute', evt => {
-        console.log("选择了")
+        console.log("选择了"+evt.source.commandParam)
         editor.execute( evt.source.commandName, { value: evt.source.commandParam } );
         editor.editing.view.focus();
       } );
