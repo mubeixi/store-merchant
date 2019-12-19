@@ -315,6 +315,8 @@ export const stopTurn = (data:object={},options:any=false) => fetch('stopTurn', 
 //获取大转盘详情
 export const getTurn = (data:object={},options:any=false) => fetch('getTurn', data , options);
 
+// 获取商品类目销量、销售额统计
+export const systemProdCateSales = (data:object={},options:any=false) => fetch('systemProdCateSales',data,options);
 
 function get_Appid() {
   return 'xhh';

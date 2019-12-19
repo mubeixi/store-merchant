@@ -14,14 +14,12 @@
             </div>
 
             <el-date-picker
-              v-model="value"
-              type="daterange"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              v-model="start_time"
+              type="date"
               value-format="yyyy-MM-dd"
               size="small"
-              style="width: 280px"
-              :default-time="['00:00:00', '23:59:59']"
+              placeholder="请选择日期"
+              style="width: 130px"
             ></el-date-picker>
           </div>
         </div>
@@ -87,12 +85,11 @@
 
             <el-date-picker
               v-model="value"
-              type="daterange"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              type="date"
               value-format="yyyy-MM-dd"
               size="small"
-              style="width: 280px"
+              placeholder="请选择日期"
+              style="width: 130px"
               :default-time="['00:00:00', '23:59:59']"
             ></el-date-picker>
           </div>
@@ -188,13 +185,15 @@
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { Action, State } from "vuex-class";
 import fa from "element-ui/src/locale/lang/fa";
-import { getCrowds, addBatch, getGivingCoupons } from "@/common/fetch";
+import { systemProdCateSales } from "@/common/fetch";
 @Component({
   mixins: [],
   components: {}
 })
 export default class ProductStatistics extends Vue {
   value = "";
+  start_time = '';
+  protypelist = [];
   show() {
     // 基于准备好的dom，初始化echarts实例
     let firstChart = this.$echarts.init(document.getElementById("firstChart"));
@@ -321,8 +320,16 @@ export default class ProductStatistics extends Vue {
       ]
     });
   }
+  systemProdCateSales(){
+    systemProdCateSales({start_time:''}).then(res=>{
+      this.protypelist = res.data;
+    },err=>{
+
+    })
+  }
   mounted() {
     this.show();
+    this.systemProdCateSales();
   }
 }
 </script>
