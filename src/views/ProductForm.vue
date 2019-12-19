@@ -1769,12 +1769,15 @@
                         child_arr = [];
 
                         for(var item of dataArr){
-                            if(item.child)continue
-                            for(var child of cate.child){
-                                if(child.Category_ID === item.Category_ID){
-                                    child_arr.push(item.Category_ID)
+                            if(item.child)continue;
+                            if(cate.hasOwnProperty('child')){
+                                for(var child of cate.child){
+                                    if(child.Category_ID === item.Category_ID){
+                                        child_arr.push(item.Category_ID)
+                                    }
                                 }
                             }
+
                         }
 
                         if(child_arr.length>0){
