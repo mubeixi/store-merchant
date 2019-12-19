@@ -58,8 +58,6 @@
 
         </div>
 
-
-
 <!--      <template v-if="type==='vidoe' &&file_temp_list.length>0">-->
 <!--        <div>{{file_temp_list[0]}}</div>-->
 <!--&lt;!&ndash;        <video :src="file_temp_list[0]|domain"></video>&ndash;&gt;-->
@@ -366,6 +364,10 @@
 
       }
       success(response, file, fileList) {
+          if(response.errorCode!=0){
+              fun.error({msg:response.msg})
+              return;
+          }
           console.log('response is ',response,fileList)
           let call = this.onSuccess
           if(response && response.data){
