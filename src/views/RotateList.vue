@@ -46,6 +46,19 @@
           width="145">
         </el-table-column>
         <el-table-column
+          prop="create_time"
+          label="二维码"
+          width="100">
+          <template slot-scope="scope">
+            <el-image
+              @click="changeImg(scenesList[scope.$index].qrcode)"
+              style="width: 70px; height: 70px;cursor: pointer"
+              :src="scenesList[scope.$index].qrcode"
+              :preview-src-list="imgPro">
+            </el-image>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="handle"
           label="操作"
           width="250">
@@ -94,6 +107,13 @@
     })
 
     export default class RotateList extends Vue {
+
+        imgPro=[]
+        changeImg(url){
+            this.imgPro=[]
+            this.imgPro.push(url)
+        }
+
 
         goRotate(){
             this.$router.push({
