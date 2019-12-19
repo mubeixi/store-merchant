@@ -15,7 +15,7 @@ export const doLoginMixin = {
       Cookies.set('Users_ID', 'wkbq6nc2kc')
       Cookies.set('Stores_Bind_User_ID', '48')//为了区分其他的user_id，所以弄了这个代表店铺的user_id
       Cookies.set('Stores_ID', '24')
-      Cookies.set('access_token', 'PWJPi6b5vTqmG9AeURSaZ4SMXDB5o1IW')
+      Cookies.set('access_token', '6e1fTknUsl4oIs5aHFgOqWgxjeAxJVL9')
     }
 
     // if(!Cookies.get('Users_ID')){

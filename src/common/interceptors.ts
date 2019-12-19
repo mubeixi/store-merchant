@@ -28,9 +28,9 @@ export default function (request, next) {
           Cookies.set('Stores_ID', '')
           Cookies.set('access_token', '')
 
-          // setTimeout(() => {
-          //   location.href = '/member/login.php';
-          // },1000)
+          setTimeout(() => {
+            location.href = '/member/login.php';
+          },1000)
         break;
         case 0:
         case 100:
