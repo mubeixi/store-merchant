@@ -372,14 +372,17 @@
         isLoadng=false
         saveTurn(){
             this.isLoadng=true
+
             let info={
                 title:this.title,
-                start_time:this.dateValue[0],
-                end_time:this.dateValue[1],
                 describe:this.describe,
                 total_count:this.total_count,
                 day_count:this.day_count,
                 prize_rule:JSON.stringify(this.rotateList)
+            }
+            if(this.dateValue.length==2){
+                    info.start_time=this.dateValue[0]
+                    info.end_time=this.dateValue[1]
             }
             let id =this.$route.query.id
             if(id){
