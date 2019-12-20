@@ -5,12 +5,12 @@
         <div class="firstTitle">
           <div class="titleFont">交易数据</div>
           <div class="titleButton">
-            <el-button type="primary" size="small">导出数据</el-button>
+            <el-button type="primary" size="small" @click="proOutput">导出数据</el-button>
 
             <div class="buttonRadio">
-              <div class="radioDiv">昨天</div>
-              <div class="radioDiv">最近7天</div>
-              <div class="radioDiv">最近30天</div>
+              <div class="radioDiv" @click="getLastday(1,'stat')">昨天</div>
+              <div class="radioDiv" @click="getLastday(7,'stat')">最近7天</div>
+              <div class="radioDiv" @click="getLastday(30,'stat')">最近30天</div>
             </div>
 
             <el-date-picker
@@ -20,6 +20,7 @@
               size="small"
               placeholder="请选择日期"
               style="width: 130px"
+              @change="statHandle"
             ></el-date-picker>
           </div>
         </div>
@@ -47,12 +48,12 @@
         <div class="firstTitle">
           <div class="titleFont">交易数据</div>
           <div class="titleButton">
-            <el-button type="primary" size="small">导出数据</el-button>
+            <el-button type="primary" size="small" @click="outputHandle">导出数据</el-button>
 
             <div class="buttonRadio">
-              <div class="radioDiv">昨天</div>
-              <div class="radioDiv">最近7天</div>
-              <div class="radioDiv">最近30天</div>
+              <div class="radioDiv" @click="getLastday(1,'sale')">昨天</div>
+              <div class="radioDiv" @click="getLastday(7,'sale')">最近7天</div>
+              <div class="radioDiv" @click="getLastday(30,'sale')">最近30天</div>
             </div>
 
             <el-date-picker
@@ -62,7 +63,7 @@
               size="small"
               placeholder="请选择日期"
               style="width: 130px"
-              :default-time="['00:00:00', '23:59:59']"
+              @change="salesTimeHandle"
             ></el-date-picker>
           </div>
         </div>
@@ -91,7 +92,11 @@
         <el-pagination
           background
           layout="prev, pager, next"
-          :total="1000"
+          :total="sale_total"
+          :current-page="page"
+          @current-change="getCurrent"
+          @prev-click="getPrev"
+          @next-click="getNext"
           style="width:100%;text-align:right;margin-top:40px;">
         </el-pagination>
         </div>
@@ -123,6 +128,10 @@ export default class ProductStatistics extends Vue {
   moneyToggle:Boolean = false
   proSalesList = []
   sale_time = ''
+  sale_total = 0
+  page = 1
+  pageSize = 10
+  lastTime = ''
   option = {
       tooltip: {
         trigger: "item",
@@ -225,6 +234,58 @@ export default class ProductStatistics extends Vue {
           },
         }]
   }
+  add0(num){
+    if(num<10) {
+      return '0'+num
+    }else {
+      return num
+    }
+  }
+  /**
+   * 获取前number天
+   */
+  getLastday(number=1,type='stat'){
+    let date = new Date();
+    let yestdayTime = date.getTime() - number * 24 * 3600 * 1000
+    let year = new Date(yestdayTime).getFullYear();
+    let month = new Date(yestdayTime).getMonth() + 1;
+    let day = new Date(yestdayTime).getDate();
+    let lastTime = year + '-' + this.add0(month) + '-' + this.add0(day)
+    if(type=='stat') {
+      this.start_time = lastTime;
+      this.systemProdCateSales();
+    }else if(type == 'sale') {
+      this.sale_time = lastTime
+      this.systemProdSales();
+    }
+  }
+  // 销售数据导出
+  outputHandle(){
+    this.systemProdSales('output');
+  }
+  // 总数据导出
+  proOutput(){
+    this.systemProdCateSales('output');
+  }
+  getCurrent(e){
+    this.page = e;
+    this.systemProdSales();
+  }
+  getPrev(e){
+    this.page = e;
+    this.systemProdSales();
+  }
+  getNext(e){
+    this.page = e;
+    this.systemProdSales();
+  }
+  statHandle(){
+    this.systemProdCateSales();
+  }
+  salesTimeHandle(){
+    this.page = 1;
+    this.systemProdSales();
+  }
   countToggleHandle(){
     this.countToggle = !this.countToggle;
     if(this.countToggle) {
@@ -237,15 +298,8 @@ export default class ProductStatistics extends Vue {
   }
   moneyToggleHandle(){
     this.moneyToggle = !this.moneyToggle;
-    let postData = {
-      order: this.moneyToggle ? 'desc' : 'asc',
-      page: 1,
-      pageSize: 10,
-      start_time: this.sale_time,
-    }
-    systemProdSales(postData).then(res=>{
-      this.proSalesList = res.data;
-    });
+    this.page = 1;
+    this.systemProdSales();
   }
   initEcharts(){
         this.option.legend.data = this.names
@@ -254,26 +308,48 @@ export default class ProductStatistics extends Vue {
         let  myChart = this.$echarts.init(this.$refs.chart);
         myChart.setOption(this.option);
   }
-  systemProdCateSales(){
-    systemProdCateSales({start_time:''}).then(res=>{
-      console.log(res)
+  systemProdCateSales(arg=""){
+    let postData = {
+      start_time: this.start_time,
+      output: arg === 'output' ? 1 : 0
+    }
+    if(arg==='output') {
+      console.log('output')
+      systemProdCateSales(postData,{loading: true}).then(res=>{
+          res.data.file_path && window.open(res.data.file_path,'_self');
+        })
+        return;
+    }else {
+      systemProdCateSales(postData,{loading: true}).then(res=>{
       this.protypelist = res.data.list;
       this.names = res.data.name;
       this.sales_count = res.data.sales_count;
       this.sales_money = res.data.sales_money;
       this.initEcharts();
-    },err=>{
-
-    })
+      },err=>{
+      })
+    }
+    
   }
-  systemProdSales(){
-    systemProdSales({
+  systemProdSales(arg=''){
+    let postData = {
+      order: this.moneyToggle ? 'desc' : 'asc',
       start_time: this.sale_time,
-      page: 1,
-      pageSize: 10,
-    }).then(res=>{
-      this.proSalesList = res.data;
-    })
+      page: this.page,
+      pageSize: this.pageSize,
+      output: arg === 'output' ? 1 : 0
+    }
+    if(arg === 'output') {
+        systemProdSales(postData,{loading: true}).then(res=>{
+          res.data.file_path && window.open(res.data.file_path,'_self');
+        })
+        return;
+    }else {
+      systemProdSales(postData,{loading: true}).then(res=>{
+        this.proSalesList = res.data;
+        this.sale_total = res.totalCount
+      })
+    }
   }
   mounted() {
     // 基于准备好的dom，初始化echarts实例
@@ -382,9 +458,11 @@ export default class ProductStatistics extends Vue {
         border-top: 1px solid #e4e4e4;
       }
       .td{
+        display: flex;
         width: 20%;
         height: 50px;
-        line-height: 50px;
+        justify-content: center;
+        align-items: center;
         text-align: center;
         border-right: 1px solid #e4e4e4;
         &:last-child{
