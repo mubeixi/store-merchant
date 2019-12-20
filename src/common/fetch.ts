@@ -324,6 +324,13 @@ export const systemProdCateSales = (data:object={},options:any=false) => fetch('
 // 商品销量情况统计
 export const systemProdSales = (data: object={}, options: any=false) => fetch('systemProdSales', data, options);
 
+//会员增长情况统计
+export const systemUserGroupStatistic = (data: object={}, options: any=false) => fetch('systemUserGroupStatistic', data, options);
+//会员增长情况统计
+export const systemUserFromStatistic = (data: object={}, options: any=false) => fetch('systemUserFromStatistic', data, options);
+//会员消费统计
+export const systemUserBuyStatistic = (data: object={}, options: any=false) => fetch('systemUserBuyStatistic', data, options);
+
 function get_Appid() {
   return 'xhh';
 }
