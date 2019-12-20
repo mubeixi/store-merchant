@@ -130,12 +130,12 @@
             </el-option>
           </el-select>
         </el-form-item>
-
+        <div style="height: 80px;width: 100%;background-color: #ffffff"></div>
       </el-form>
 
-      <div class="all">
-        <el-button style="margin-left: 60px" @click="goCrowd" >取消</el-button>
-        <el-button :loading="loading" style="margin-left: 100px"  type="primary" @click="saveData">保存</el-button>
+      <div class="bottomFixed">
+        <el-button size="small" :loading="loading"   type="primary" @click="saveData">保存提交</el-button>
+        <el-button size="small"  @click="goCrowd" >返回</el-button>
       </div>
     </div>
   </div>
@@ -315,4 +315,22 @@
 .all{
   margin-top: 42px;
 }
+
+  .bottomFixed{
+    position: fixed;
+    padding: 10px 0;
+    box-sizing: border-box;
+    bottom: 0;
+    width: 100%;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    background-color: #fff;
+    box-shadow: 0 -3px 5px #eee;
+    z-index: 1;
+    transition: right .2s ease;
+  }
 </style>

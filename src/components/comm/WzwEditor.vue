@@ -2,7 +2,7 @@
 <!--  <textarea name="content" id="editor"></textarea>-->
   <div class="wrap">
 <!--    :value="content"-->
-    <ckeditor tag-name="textarea"  :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
+    <ckeditor  @ready="onReady" tag-name="textarea"  :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
     <div class="font12 graytext">您已输入<span id="js-word" style="color: #409EFF">0</span>行,共<span style="color: #409EFF" id="js-characters">0</span>字</div>
   </div>
 </template>
@@ -12,6 +12,7 @@
     //
     // import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
     import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+    import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
     import "@ckeditor/ckeditor5-build-classic/build/translations/zh-cn.js";
 
 
@@ -56,8 +57,24 @@
     import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 
 
+    import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
+    import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
+    // const InsertImage = (e)=>{
+    //
+    //     // 使用 CKeditor 提供的 API 修改上传适配器
+    //     e.plugins.get("WordCount").on('update', ( evt, stats ) => {
+    //
+    //     } );
+    //
+    // }
+    // class InsertImage extends Plugin {
+    //     init() {
+    //         console.log( 'InsertImage was initialized' );
+    //     }
+    // }
 
+    import InsertImage from './insert-image/InsertImage';
 
 
     import {myUploadLoader} from './myUploadLoader';
@@ -91,7 +108,7 @@
             '|',
             'blockQuote',"indent", "outdent","insertTable",
             '|',
-            'imageUpload','imageResize','mediaEmbed',
+            'imageUpload','mediaEmbed','InsertImage',
             '|',
             'underline','strikethrough','code','codeBlock','subscript','superscript',
 
@@ -132,6 +149,7 @@
 
     export default class WzwEditor extends Vue{
 
+        editorInstance = null
         editor = ClassicEditor
         Characters = 0
         Words = 0
@@ -143,7 +161,7 @@
                 EssentialsPlugin, BoldPlugin, ItalicPlugin, LinkPlugin, ParagraphPlugin,Underline,Subscript,Superscript,Code,Strikethrough,Heading,CodeBlock,
                 FontFamily,FontBackgroundColor,FontColor,FontSize,
                 SimpleUploadAdapter,WordCount,
-                Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize,ImageUpload,ImageUploadProgress,MediaEmbed,
+                Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize,ImageUpload,ImageUploadProgress,MediaEmbed,InsertImage,
                 BlockQuote,Indent, Table, TableToolbar,PasteFromOffice,HorizontalLine
             ],
             extraPlugins: [
@@ -224,6 +242,36 @@
         setData(txt){
             console.log(txt)
             this.editorData = txt
+        }
+
+        onReady(editor){
+
+            this.editorInstance = editor
+            // editor.ui.componentFactory.add( 'insertImage', locale => {
+            //     const view = new ButtonView( locale );
+            //
+            //     view.set( {
+            //         label: 'Insert image',
+            //         icon: imageIcon,
+            //         tooltip: true
+            //     } );
+            //
+            //     // Callback executed once the image is clicked.
+            //     view.on( 'execute', () => {
+            //         const imageUrl = prompt( 'Image URL' );
+            //
+            //         editor.model.change( writer => {
+            //             const imageElement = writer.createElement( 'image', {
+            //                 src: imageUrl
+            //             } );
+            //
+            //             // Insert the image in the current selection location.
+            //             editor.model.insertContent( imageElement, editor.model.document.selection );
+            //         } );
+            //     } );
+            //
+            //     return view;
+            // } );
         }
 
         mounted() {

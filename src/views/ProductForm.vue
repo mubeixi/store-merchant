@@ -328,18 +328,23 @@
       <el-form-item label="商品详情">
         <div style="padding-right: 200px">
 <!--      :content.sync="editorText"    -->
-          <wzw-editor ref="richtext"   :afterChange="afterChange()" @on-content-change="onContentChange"></wzw-editor>
-<!--          <kind-editor id="container" height="400px" width="800px" :content.sync="editorText"-->
-<!--                      :afterChange="afterChange()"-->
-<!--                      :loadStyleMode="false"-->
-<!--                      @on-content-change="onContentChange" />-->
+<!--          <wzw-editor ref="richtext"   :afterChange="afterChange()" @on-content-change="onContentChange"></wzw-editor>-->
+          <kind-editor id="container" height="400px" width="800px" :content.sync="editorText"
+                      :afterChange="afterChange()"
+                      :loadStyleMode="false"
+                      @on-content-change="onContentChange" />
         </div>
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary" :loading="isLoading" @click="submitForm('ruleForm')">{{addText}}</el-button>
-        <el-button @click="resetForm('ruleForm')">重置</el-button>
-      </el-form-item>
+      <div style="height: 80px;width: 100%;background-color: #ffffff"></div>
     </el-form>
+
+
+
+    <div class="bottomFixed">
+      <el-button size="small" type="primary" :loading="isLoading" @click="submitForm('ruleForm')">提交保存</el-button>
+      <el-button size="small" @click="resetForm('ruleForm')">重置</el-button>
+      <el-button size="small" @click="goProduct">返回</el-button>
+    </div>
     <bind-cate-components
       :multiple="true"
       @cancel="bindCateCancel"
@@ -585,8 +590,8 @@
     import BindCateComponents from '@/components/BindCateComponents.vue';
     import BindStoreComponent from "@/components/comm/BindStoreComponent.vue";
     import SettingComponent from "@/components/comm/SettingComponent.vue";
-    // import KindEditor from "@/components/comm/kindeditor.vue"
-    import WzwEditor from "../components/comm/WzwEditor.vue";
+    import KindEditor from "@/components/comm/kindeditor.vue"
+    // import WzwEditor from "../components/comm/WzwEditor.vue";
 
     import {
         getProductCategory,
@@ -614,12 +619,19 @@
         components: {
             BindStoreComponent,
             SettingComponent,
-            WzwEditor,
-            // KindEditor,
+            // WzwEditor,
+            KindEditor,
             UploadComponents,BindCateComponents
         }
     })
     export default class AddProduct extends Vue {
+        goProduct(){
+            this.$router.push({
+                name:'ProductList'
+            })
+        }
+
+
         self_commi='1'
         parent_commi='1'
         manage_commi='1'
@@ -1074,6 +1086,7 @@
             this.allPrice=true;
         }
         upThumbSuccessCall(url_list){
+            console.log(url_list)
             if(_.isArray(url_list)){
                 this.thumb = url_list.map(item=>{
                     return item.url
@@ -1769,12 +1782,15 @@
                         child_arr = [];
 
                         for(var item of dataArr){
-                            if(item.child)continue
-                            for(var child of cate.child){
-                                if(child.Category_ID === item.Category_ID){
-                                    child_arr.push(item.Category_ID)
+                            if(item.child)continue;
+                            if(cate.hasOwnProperty('child')){
+                                for(var child of cate.child){
+                                    if(child.Category_ID === item.Category_ID){
+                                        child_arr.push(item.Category_ID)
+                                    }
                                 }
                             }
+
                         }
 
                         if(child_arr.length>0){
@@ -2141,4 +2157,22 @@ table{
   .setting /deep/ .el-dialog{
     margin-top: 60px !important;
   }
+
+.bottomFixed{
+  position: fixed;
+  padding: 10px 0;
+  box-sizing: border-box;
+  bottom: 0;
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  background-color: #fff;
+  box-shadow: 0 -3px 5px #eee;
+  z-index: 1;
+  transition: right .2s ease;
+}
 </style>
