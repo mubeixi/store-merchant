@@ -25,6 +25,18 @@ export const domain = (url) => {
   return url;
 }
 
+export const sortBy = (props) =>{
+  return function(a,b) {
+      return a[props] - b[props];
+  }
+}
+
+export const notSortBy = (props) =>{
+  return function(a,b) {
+      return b[props] - a[props];
+  }
+}
+
 /**
  *从指定字符串str中获取name=val的val值
  * 一般用于从location.href查找指定的参数

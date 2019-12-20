@@ -70,7 +70,7 @@
           </div>
         </el-form-item>
         <div class="bottomFixed">
-            <el-button class="close" size="small" @click="closeThis">关闭</el-button>
+            <el-button class="close" size="small" @click="closeThis">返回</el-button>
         </div>
       </el-form>
     </div>
