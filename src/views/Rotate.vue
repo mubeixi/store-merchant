@@ -87,7 +87,7 @@
 
       <div class="rotateRule">
         <el-form-item label="活动规则：" >
-          <el-input :disabled="!editCan" v-model="describe" style="width: 500px" type="textarea"  :autosize="{ minRows: 3, maxRows: 10}" resize="none"></el-input>
+          <el-input :disabled="!editCan" v-model="describe" style="width: 500px" type="textarea"  :autosize="{ minRows: 4, maxRows: 10}" resize="none"></el-input>
         </el-form-item>
       </div>
 
@@ -463,7 +463,7 @@
 
   .rotateLast{
     width: 100%;
-    padding: 15px 0px 38px 30px;
+    padding: 15px 0px 28px 30px;
     background-color: #F8F8F8;
     box-sizing: border-box;
   }
