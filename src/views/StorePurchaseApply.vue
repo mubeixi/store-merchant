@@ -28,7 +28,7 @@
               <el-tooltip v-if="apply.reason" class="" effect="dark" :content="apply.reason" placement="top">
                 <i class="el-icon-warning-outline danger-color padding10-c"></i>
               </el-tooltip>
-              <i @click="delApply(apply,idx1)" v-if="inArray(apply.Order_Status,[20,23,25])"  title="删除订单" class="el-icon-delete-solid"></i>
+              <i @click="delApply(apply,idx1)" v-if="inArray(apply.Order_Status,[20,26])"  title="删除订单" class="el-icon-delete-solid"></i>
             </div>
           </div>
           <table class="purchases"
