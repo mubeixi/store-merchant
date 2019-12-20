@@ -8,6 +8,7 @@
 
     </div>
     <div class="section table">
+      <div class="padding15-r graytext2 text-center" v-if="lists.length<221">暂无数据</div>
       <el-table
         class="wzw-tableS"
         :height="height"

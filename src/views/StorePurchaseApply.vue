@@ -9,6 +9,7 @@
         </el-tabs>
       </div>
       <div class="lists">
+        <div class="padding15-r graytext2 text-center" v-if="applys.length<1">暂无数据</div>
         <div class="item" v-for="(apply,idx1) in applys" :key="idx1" >
           <div class="head flex">
             <div class="info flex flex1">

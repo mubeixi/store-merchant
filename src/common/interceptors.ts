@@ -9,6 +9,7 @@
 
 import {fun} from "./index";
 import Cookies from 'js-cookie';
+import {isDev} from "./env";
 export default function (request, next) {
   next((response) => {
 
@@ -22,15 +23,18 @@ export default function (request, next) {
         case 66001:
           fun.error({msg:response.body.msg})
 
-          //清空cookies
-          Cookies.set('Users_ID', '')
-          Cookies.set('Stores_Bind_User_ID', '')//为了区分其他的user_id，所以弄了这个代表店铺的user_id
-          Cookies.set('Stores_ID', '')
-          Cookies.set('access_token', '')
+          if(!isDev){
+            //清空cookies
+            Cookies.set('Users_ID', '')
+            Cookies.set('Stores_Bind_User_ID', '')//为了区分其他的user_id，所以弄了这个代表店铺的user_id
+            Cookies.set('Stores_ID', '')
+            Cookies.set('access_token', '')
 
-          setTimeout(() => {
-            location.href = '/member/login.php';
-          },1000)
+            setTimeout(() => {
+              location.href = '/member/login.php';
+            },1000)
+          }
+
         break;
         case 0:
         case 100:

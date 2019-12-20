@@ -1000,6 +1000,7 @@
             let cateIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'Product_Cate'})
 
             let data={
+                store_id:Stores_ID,
                 pageSize: this.dataTableOpt.pageSize,
                 page:this.dataTableOpt.page,
                 pro_name:this.dataTableOpt.columns[nameIdx].value,

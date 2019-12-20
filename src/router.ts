@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Router from 'vue-router';
 Vue.use(Router);
 
+import Page from '@/views/PageTmpl.vue';
+
 import Home from './views/Home';
 import Diy from './views/Diy';
 import Empty from './views/Empty';
@@ -33,6 +35,8 @@ import RotateList from '@/views/RotateList.vue';
 import ProductStatistics from '@/views/statistics/ProductStatistics.vue'
 import VipStatistics from '@/views/statistics/VipStatistics.vue'
 import TransactionStatistics from '@/views/statistics/TransactionStatistics.vue'
+
+import Contribute from '@/views/distributor/Contribute.vue';
 
 
 const routerInstance = new Router({
@@ -210,6 +214,22 @@ const routerInstance = new Router({
       meta:{
         title:'门店商品列表'
       }
+    },
+    {
+      path:'/distributor',
+      component:Page,
+      meta:{
+        title:'分销'
+      },
+      children:[
+        {
+          path:'contribute',
+          component:Contribute,
+          // meta:{
+          //   title:'分销贡献'
+          // }
+        }
+      ]
     },
     {
       path: '/DistributorLevel',

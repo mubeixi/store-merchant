@@ -140,6 +140,9 @@
         return plainArr
     }
 
+    // import Cookies from 'js-cookie';
+    // const Stores_ID = Cookies.get('Stores_ID')
+    // const User_ID = Cookies.get('Stores_Bind_User_ID')
 
     @Component({
         mixins:[],
