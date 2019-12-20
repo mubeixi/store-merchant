@@ -23,50 +23,22 @@
             ></el-date-picker>
           </div>
         </div>
-        <div id="firstChart" style="width: 100%;height: 580px"></div>
+        <div ref="chart" style="width: 100%;height: 580px"></div>
         <div class="fourTable">
               <div class="fourTableAll">
                   <div class="th">
                     <div class="td">分类名称</div>
-                    <div class="td">销售数量↓</div>
+                    <div class="td" @click="countToggleHandle">销售数量<span class="arrow">{{countToggle?'↑':'↓'}}</span></div>
                     <div class="td">数量比例</div>
                     <div class="td">销售金额</div>
                     <div class="td">金额比例</div>
                   </div>
-                  <div class="tr">
-                    <div class="td">彩妆</div>
-                    <div class="td">689</div>
-                    <div class="td">50%</div>
-                    <div class="td">￥2456.90</div>
-                    <div class="td">28%</div>
-                  </div>
-                  <div class="tr">
-                    <div class="td">食品</div>
-                    <div class="td">689</div>
-                    <div class="td">50%</div>
-                    <div class="td">￥2456.90</div>
-                    <div class="td">28%</div>
-                  </div>
-                  <div class="tr">
-                    <div class="td">家电</div>
-                    <div class="td">689</div>
-                    <div class="td">50%</div>
-                    <div class="td">￥2456.90</div>
-                    <div class="td">28%</div>
-                  </div>
-                  <div class="tr">
-                    <div class="td">女装</div>
-                    <div class="td">689</div>
-                    <div class="td">50%</div>
-                    <div class="td">￥2456.90</div>
-                    <div class="td">28%</div>
-                  </div>
-                  <div class="tr">
-                    <div class="td">鞋包</div>
-                    <div class="td">689</div>
-                    <div class="td">50%</div>
-                    <div class="td">￥2456.90</div>
-                    <div class="td">28%</div>
+                  <div class="tr" v-for="(item,index) of protypelist" :key="index">
+                    <div class="td">{{item.Category_Name}}</div>
+                    <div class="td">{{item.sales_count}}</div>
+                    <div class="td">{{item.sales_count_prop}}%</div>
+                    <div class="td">{{item.sales_money}}</div>
+                    <div class="td">{{item.sales_money_prop}}%</div>
                   </div>
               </div>
         </div>
@@ -84,7 +56,7 @@
             </div>
 
             <el-date-picker
-              v-model="value"
+              v-model="sale_time"
               type="date"
               value-format="yyyy-MM-dd"
               size="small"
@@ -98,76 +70,23 @@
               <div class="fourTableAll">
                   <div class="th">
                     <div class="td">分类名称</div>
-                    <div class="td">浏览量↓</div>
+                    <div class="td" @click="moneyToggleHandle">浏览量<span class="arrow">{{moneyToggle?'↑':'↓'}}</span></div>
                     <div class="td">浏览人数</div>
                     <div class="td">付款人数</div>
                     <div class="td">单品转换率</div>
                     <div class="td">销售数量</div>
                     <div class="td">销售金额</div>
                   </div>
-                  <div class="tr">
-                    <div class="td">冬季时尚保暖女款羽绒服</div>
-                    <div class="td">689</div>
-                    <div class="td">2563</div>
-                    <div class="td">168</div>
-                    <div class="td">28%</div>
-                    <div class="td">587</div>
-                    <div class="td">￥2456.90</div>
+                  <div class="tr" v-for="(item,index) of proSalesList" :key="index">
+                    <div class="td">{{item.Products_Name}}</div>
+                    <div class="td">{{item.view_count}}</div>
+                    <div class="td">{{item.view_user_count}}</div>
+                    <div class="td">{{item.pay_user_count}}</div>
+                    <div class="td">{{item.conversion_rate}}%</div>
+                    <div class="td">{{item.sales_count}}</div>
+                    <div class="td">￥{{item.sales_money}}</div>
                   </div>
-                  <div class="tr">
-                    <div class="td">冬季时尚保暖女款羽绒服</div>
-                    <div class="td">689</div>
-                    <div class="td">2563</div>
-                    <div class="td">168</div>
-                    <div class="td">28%</div>
-                    <div class="td">587</div>
-                    <div class="td">￥2456.90</div>
-                  </div>
-                  <div class="tr">
-                    <div class="td">冬季时尚保暖女款羽绒服</div>
-                    <div class="td">689</div>
-                    <div class="td">2563</div>
-                    <div class="td">168</div>
-                    <div class="td">28%</div>
-                    <div class="td">587</div>
-                    <div class="td">￥2456.90</div>
-                  </div>
-                  <div class="tr">
-                    <div class="td">冬季时尚保暖女款羽绒服</div>
-                    <div class="td">689</div>
-                    <div class="td">2563</div>
-                    <div class="td">168</div>
-                    <div class="td">28%</div>
-                    <div class="td">587</div>
-                    <div class="td">￥2456.90</div>
-                  </div>
-                  <div class="tr">
-                    <div class="td">冬季时尚保暖女款羽绒服</div>
-                    <div class="td">689</div>
-                    <div class="td">2563</div>
-                    <div class="td">168</div>
-                    <div class="td">28%</div>
-                    <div class="td">587</div>
-                    <div class="td">￥2456.90</div>
-                  </div>
-                  <div class="tr">
-                    <div class="td">冬季时尚保暖女款羽绒服</div>
-                    <div class="td">689</div>
-                    <div class="td">2563</div>
-                    <div class="td">168</div>
-                    <div class="td">28%</div>
-                    <div class="td">587</div>
-                    <div class="td">￥2456.90</div>
-                  </div>
-                  <div class="tr">
-                    <div class="td">冬季时尚保暖女款羽绒服</div>
-                    <div class="td">689</div>
-                    <div class="td">2563</div>
-                    <div class="td">168</div>
-                    <div class="td">28%</div>
-                    <div class="td">587</div>
-                    <div class="td">￥2456.90</div>
-                  </div>
+                  
               </div>
         <el-pagination
           background
@@ -185,25 +104,26 @@
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { Action, State } from "vuex-class";
 import fa from "element-ui/src/locale/lang/fa";
-import { systemProdCateSales } from "@/common/fetch";
+import { systemProdCateSales,systemProdSales } from "@/common/fetch";
+import {notSortBy, sortBy} from '@/common/utils';
 @Component({
   mixins: [],
-  components: {}
+  components: {},
+  watch: {
+    
+  }
 })
 export default class ProductStatistics extends Vue {
-  value = "";
-  start_time = '';
-  protypelist = [];
-  show() {
-    // 基于准备好的dom，初始化echarts实例
-    let firstChart = this.$echarts.init(document.getElementById("firstChart"));
-    // 绘制图表
-    firstChart.setOption({
-      // title: {
-      //   text: "南丁格尔玫瑰图",
-      //   subtext: "纯属虚构",
-      //   x: "center"
-      // },
+  value = ""
+  start_time = ''
+  protypelist = []
+  sales_money = []
+  sales_count = []
+  countToggle:Boolean = false
+  moneyToggle:Boolean = false
+  proSalesList = []
+  sale_time = ''
+  option = {
       tooltip: {
         trigger: "item",
         formatter: "{a} <br/>{b} : {c} ({d}%)"
@@ -228,19 +148,6 @@ export default class ProductStatistics extends Vue {
           "洗护",
           "学习"
         ]
-      },
-      toolbox: {
-        show: true,
-        feature: {
-          mark: { show: true },
-          dataView: { show: true, readOnly: false },
-          magicType: {
-            show: true,
-            type: ["pie", "funnel"]
-          },
-          restore: { show: true },
-          saveAsImage: { show: true }
-        }
       },
       calculable: true,
       series: [
@@ -316,20 +223,64 @@ export default class ProductStatistics extends Vue {
                   }
               }
           },
-        }
-      ]
+        }]
+  }
+  countToggleHandle(){
+    this.countToggle = !this.countToggle;
+    if(this.countToggle) {
+      // 向下排序，销量从高到低
+      this.protypelist.sort(sortBy('sales_count'))
+    }else {
+      // 向上排序，销量从低到高
+      this.protypelist.sort(notSortBy('sales_count'))
+    }
+  }
+  moneyToggleHandle(){
+    this.moneyToggle = !this.moneyToggle;
+    let postData = {
+      order: this.moneyToggle ? 'desc' : 'asc',
+      page: 1,
+      pageSize: 10,
+      start_time: this.sale_time,
+    }
+    systemProdSales(postData).then(res=>{
+      this.proSalesList = res.data;
     });
+  }
+  initEcharts(){
+        this.option.legend.data = this.names
+        this.option.series[0].data = this.sales_count;
+        this.option.series[1].data = this.sales_money;
+        let  myChart = this.$echarts.init(this.$refs.chart);
+        myChart.setOption(this.option);
   }
   systemProdCateSales(){
     systemProdCateSales({start_time:''}).then(res=>{
-      this.protypelist = res.data;
+      console.log(res)
+      this.protypelist = res.data.list;
+      this.names = res.data.name;
+      this.sales_count = res.data.sales_count;
+      this.sales_money = res.data.sales_money;
+      this.initEcharts();
     },err=>{
 
     })
   }
+  systemProdSales(){
+    systemProdSales({
+      start_time: this.sale_time,
+      page: 1,
+      pageSize: 10,
+    }).then(res=>{
+      this.proSalesList = res.data;
+    })
+  }
   mounted() {
-    this.show();
+    // 基于准备好的dom，初始化echarts实例
+    let myChart = this.$echarts.init(this.$refs.chart);
+    myChart.setOption(this.option);
     this.systemProdCateSales();
+    this.systemProdSales();
   }
 }
 </script>
@@ -342,6 +293,14 @@ export default class ProductStatistics extends Vue {
 }
 .wrap {
   min-width: 1200px;
+}
+.arrow {
+  font-size: 18px;
+  font-weight: 700;
+  margin-left: 5px;
+}
+.arrow.up {
+  transform: rotate(180deg);
 }
 .firstChart {
   width: 100%;

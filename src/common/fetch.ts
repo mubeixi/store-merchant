@@ -321,6 +321,8 @@ export const getTurn = (data:object={},options:any=false) => fetch('getTurn', da
 
 // 获取商品类目销量、销售额统计
 export const systemProdCateSales = (data:object={},options:any=false) => fetch('systemProdCateSales',data,options);
+// 商品销量情况统计
+export const systemProdSales = (data: object={}, options: any=false) => fetch('systemProdSales', data, options);
 
 function get_Appid() {
   return 'xhh';
