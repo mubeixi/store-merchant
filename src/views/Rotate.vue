@@ -87,13 +87,13 @@
 
       <div class="rotateRule">
         <el-form-item label="活动规则：" >
-          <el-input :disabled="!editCan" v-model="describe" style="width: 500px" type="textarea"  :autosize="{ minRows: 4, maxRows: 10}" resize="none"></el-input>
+          <el-input :disabled="!editCan" v-model="describe" style="width: 500px" type="textarea"  :autosize="{ minRows: 5, maxRows: 10}" resize="none"></el-input>
         </el-form-item>
       </div>
 
-      <div class="myButton">
-        <el-button @click="goBack">返回</el-button>
-        <el-button type="primary" :loading="isLoadng" :disabled="!editCan" style="margin-left: 20px" @click="saveTurn">保存</el-button>
+      <div class="bottomFixed">
+        <el-button size="small" type="primary" :loading="isLoadng" :disabled="!editCan" @click="saveTurn">保存提交</el-button>
+        <el-button size="small" @click="goBack">返回</el-button>
       </div>
     </el-form>
 
@@ -514,7 +514,7 @@
 
   .rotateRule{
     width: 100%;
-    padding: 15px 0px 28px 66px;
+    padding: 15px 0px 15px 66px;
     background-color: #F8F8F8;
     box-sizing: border-box;
   }
@@ -552,5 +552,22 @@
   .myProduct /deep/ .el-dialog{
     height: 600px;
     overflow: auto;
+  }
+  .bottomFixed{
+    position: fixed;
+    padding: 10px 0;
+    box-sizing: border-box;
+    bottom: 0;
+    width: 100%;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    background-color: #fff;
+    box-shadow: 0 -3px 5px #eee;
+    z-index: 1;
+    transition: right .2s ease;
   }
 </style>

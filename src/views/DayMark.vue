@@ -258,13 +258,15 @@
                         <el-input type="text" maxlength="11" :disabled="!form.mobile_che" v-model="form.mobile"></el-input>
                     </div>
                 </el-form-item>
-                <el-form-item class="submit">
-                    <el-button type="primary" :loading="loading" class="submits" @click="onSubmit">新建活动</el-button>
-                    <el-button   class="close" @click="goMarking">返回</el-button>
-                </el-form-item>
+                <div style="height: 80px;width: 100%;background-color: #ffffff"></div>
             </el-form>
         </div>
 
+
+      <div class="bottomFixed">
+        <el-button size="small"  type="primary" :loading="loading" class="submits" @click="onSubmit">保存提交</el-button>
+        <el-button  size="small"  class="close" @click="goMarking">返回</el-button>
+      </div>
 
       <el-dialog
         title="选择赠品"
@@ -823,14 +825,14 @@
                 }
             }
             .submit {
-              .submits{
-                margin-left: 102px;
-                margin-top: 97px;
-              }
-              .close{
-                margin-left: 40px;
-                margin-top: 97px;
-              }
+              /*.submits{*/
+              /*  margin-left: 102px;*/
+              /*  margin-top: 97px;*/
+              /*}*/
+              /*.close{*/
+              /* // margin-left: 40px;*/
+              /*  margin-top: 97px;*/
+              /*}*/
             }
             /deep/ .el-table td {
                 padding: 0 !important;
@@ -907,5 +909,23 @@
   }
     /deep/ .el-table__row  {
       cursor: pointer;
+    }
+
+    .bottomFixed{
+      position: fixed;
+      padding: 10px 0;
+      box-sizing: border-box;
+      bottom: 0;
+      width: 100%;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-align: center;
+      align-items: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      background-color: #fff;
+      box-shadow: 0 -3px 5px #eee;
+      z-index: 1;
+      transition: right .2s ease;
     }
 </style>
