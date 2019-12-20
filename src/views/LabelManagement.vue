@@ -2,17 +2,17 @@
   <div class="labelManagement">
       <div class="labelMain">
             <div style="margin-bottom: 15px">
-              <el-select v-model="types" placeholder="请选择标签类型" size="mini" style="width: 175px;margin-right: 10px;">
+              <el-select v-model="types" placeholder="请选择标签类型" size="small" style="width: 175px;margin-right: 10px;">
                 <el-option
                   v-for="(it,ind) in typesList"
                   :label="it"
                   :value="ind">
                 </el-option>
               </el-select>
-              <el-input size="mini" placeholder="请输入标签名称" v-model="labelName" style="width: 175px"></el-input>
-              <el-button size="mini" class="el-button"  style="margin-left: 23px" @click="searchList">搜索</el-button>
+              <el-input size="small" placeholder="请输入标签名称" v-model="labelName" style="width: 175px"></el-input>
+              <el-button size="small" class="el-button"  style="margin-left: 23px" @click="searchList">搜索</el-button>
 <!--              <el-button size="mini" class="el-button">导出标签</el-button>-->
-              <el-button size="mini" class="el-button floatRight" @click="goAddLabel">新建标签</el-button>
+              <el-button size="small" class="el-button floatRight" @click="goAddLabel">新建标签</el-button>
             </div>
             <el-table
               class="wzw-tableS"

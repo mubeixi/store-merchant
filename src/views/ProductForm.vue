@@ -335,11 +335,16 @@
                       @on-content-change="onContentChange" />
         </div>
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary" :loading="isLoading" @click="submitForm('ruleForm')">{{addText}}</el-button>
-        <el-button @click="resetForm('ruleForm')">重置</el-button>
-      </el-form-item>
+      <div style="height: 80px;width: 100%;background-color: #ffffff"></div>
     </el-form>
+
+
+
+    <div class="bottomFixed">
+      <el-button size="small" type="primary" :loading="isLoading" @click="submitForm('ruleForm')">提交保存</el-button>
+      <el-button size="small" @click="resetForm('ruleForm')">重置</el-button>
+      <el-button size="small" @click="goProduct">返回</el-button>
+    </div>
     <bind-cate-components
       :multiple="true"
       @cancel="bindCateCancel"
@@ -620,6 +625,13 @@
         }
     })
     export default class AddProduct extends Vue {
+        goProduct(){
+            this.$router.push({
+                name:'ProductList'
+            })
+        }
+
+
         self_commi='1'
         parent_commi='1'
         manage_commi='1'
@@ -2145,4 +2157,22 @@ table{
   .setting /deep/ .el-dialog{
     margin-top: 60px !important;
   }
+
+.bottomFixed{
+  position: fixed;
+  padding: 10px 0;
+  box-sizing: border-box;
+  bottom: 0;
+  width: 100%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  background-color: #fff;
+  box-shadow: 0 -3px 5px #eee;
+  z-index: 1;
+  transition: right .2s ease;
+}
 </style>
