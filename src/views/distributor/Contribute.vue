@@ -9,11 +9,8 @@
       :columns="dataTableOpt.columns"
       :isSelect="dataTableOpt.isSelect"
       :act="dataTableOpt.act"
-      :totalCount="dataTableOpt.totalCount"
-      :pageSize="dataTableOpt.pageSize"
       :is_paginate="dataTableOpt.is_paginate"
       :formSize="'small'"
-      :isRow="true"
     >
       <template slot="time-column" slot-scope="props" >
         <div style="display: flex;align-items: center;">
@@ -207,10 +204,7 @@
         dataTableOpt = {
             act : 'contributeRules',
             dataList:[],
-            page:1,
             isSelect:false,
-            totalCount:0,
-            pageSize:10,
             is_paginate:true,//是否显示分页 默认显示
             columns : [
                 {
