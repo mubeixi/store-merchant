@@ -8,8 +8,9 @@
 
     </div>
     <div class="section table">
-      <div class="padding15-r graytext2 text-center" v-if="lists.length<221">暂无数据</div>
+<!--      <div class="padding15-r graytext2 text-center" v-if="lists.length<221">暂无数据</div>-->
       <el-table
+        v-loading="getDataLoding"
         class="wzw-tableS"
         :height="height"
         :data="lists"
@@ -71,24 +72,17 @@
     import {commonReq} from '@/common/fetch';
     import MyRender from './MyRender'
     import _ from 'underscore'
-
     const noop = ()=>{}
     const extendFn = (obj)=>{
-        var o = {},
-            attr = Array.prototype.slice.call(arguments).slice(1);
-
+        var o = {},attr = Array.prototype.slice.call(arguments).slice(1);
         attr.forEach(function(val, index) {
             if (val in obj) { o[val] = obj[val]; }
         });
-
         return o;
-
     }
-
     import {RenderContent} from '@/components/widget/RenderContent';
     import col from "element-ui/packages/col/src/col";
     import {objTranslate} from "../../common/utils";
-
     const valInArr = (val,arr)=>{
         let rt = false
         for(var i in arr){
@@ -135,17 +129,33 @@
               handler(val){
 
               }
+          },
+          _totalCount:{
+              handler(val){
+                  this.totalCount = val
+              }
+          },
+
+          _pageSize:{
+              handler(val){
+                  this.pageSize = val
+              }
+          },
+          _page:{
+              handler(val){
+                  this.currentPage = val
+              }
           }
         },
         filters:{
 
         }
     })
+
     export default class FunTable extends Vue {
         filterColVal(row,columName){
             return row[columName]
         }
-
         @Prop({
             type:String,
         })
@@ -163,20 +173,32 @@
         height
 
         @Prop({
-            type:Number,
-            default:10
+            type:Boolean,
+            default:false
         })
-        pageSize
+        is_paginate //是否分页
+        @Prop({
+            type:Number,
+            default:1
+        })
+        _page //分页配置
         @Prop({
             type:Number,
             default:10
         })
-        totalCount
+        _pageSize
+        @Prop({
+            type:Number,
+            default:0
+        })
+        _totalCount
+
         @Prop({
             type:String,
             default:'small'
         })
         formSize
+
         @Prop({
             type:Array,
             required:true,
@@ -188,24 +210,16 @@
         })
         dataList //可能是已经有的数据，如果有该配置。那么就不需要加载数据了
 
-        @Prop({
-            type:Boolean,
-            default:false
-        })
-        is_paginate //是否分页
+
 
         @Prop({
             type:Boolean,
             default:false
         })
         isRow //是否点击某行某行选中
-        @Prop({
-            type:Object,
-            default:() => {
-                return {page:1,pageSize:20}
-            }
-        })
-        paginateOpt //分页配置
+
+
+
         @Prop({
             type:[String,Boolean],
         })
@@ -215,6 +229,23 @@
             default:false
         })
         __list_filter_func //拿到结果后数据过滤的
+
+        @Prop({
+            type:Object,
+            default:{}
+        })
+        extParam
+
+        @Prop({
+            type:[Function,Boolean],
+            default:(parama,extParam)=>{
+                let newOBJ ={}
+                Object.assign(newOBJ,parama,extParam)
+                return newOBJ
+            }
+        })
+        __params_filter_func //发起请求前参数混合的
+
 
         @Prop({
             type:Boolean,
@@ -227,8 +258,14 @@
         })
         isSelect //是否多选
 
+        //loading
+        getDataLoding = false
+
         lists = []
-        currentPage = 1
+
+        currentPage = 1 //当前页
+        totalCount = 0 //分页数据
+        pageSize = 10 //页面数据
 
 
         toggleSelection() {
@@ -276,12 +313,21 @@
 
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`);
+            this.pageSize = val
+            this.currentPage = 1
             this.$emit('handleSizeChange', val); // 将当前对象传到父组件
+            if(this.act){
+                this.loadData()
+            }
         }
 
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`)
+            this.currentPage = val
             this.$emit('currentChange', val); // 将当前对象传到父组件
+            if(this.act){
+                this.loadData()
+            }
         }
 
         filterFn(){
@@ -319,23 +365,37 @@
 
         }
 
-        loadData(){
+        async loadData({paramObj={}}={}){
 
             if(this.dataList)return;
             let postData = {},
                 filterData = this.buildFilterFormData()
 
             //pageSize等配置
-            extendFn(postData,this.paginateOpt)
+            if(this.is_paginate){
+                Object.assign(postData,{page:this.currentPage,pageSize:this.pageSize})
+            }
+
 
             //筛选条件
-            extendFn(postData,filterData)
+            Object.assign(postData,filterData)
             if(!this.act){
                 throw new Error('act参数必传')
                 return
             }
 
-            commonReq(this.act,postData).then(res=>{
+            this.getDataLoding = true
+
+
+            Object.assign(postData,paramObj)
+
+            //修改参数
+            if(this.__params_filter_func){
+                postData = this.__params_filter_func(postData,this.extParam)
+            }
+            await commonReq(this.act,postData).then(res=>{
+                this.totalCount = res.totalCount
+
                 //看是否需要过滤
                 if(this.__list_filter_func){
                     this.lists = this.__list_filter_func(res)
@@ -343,15 +403,24 @@
                    this.lists = res.data
                 }
 
-            })
+                // if(this.currentPage * this.pageSize<this.totalCount){
+                //     this.currentPage++
+                // }
+
+            }).catch(e=>{})
+
+            this.getDataLoding = false
 
         }
 
 
+
         created(){
 
+            if(this.act){
+                this.loadData()
+            }
 
-           //this.loadData()
         }
 
 

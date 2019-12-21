@@ -5,7 +5,7 @@
 </template>
 <script>
 export default {
-  
+
 }
 </script>
 <style lang="stylus">
@@ -135,9 +135,7 @@ input[type="number"]{
 }
 
 
-.danger-color{
-  color: #F43131;
-}
+
 
 .fly-pic{
   position:fixed;

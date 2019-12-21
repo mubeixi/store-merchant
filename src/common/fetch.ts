@@ -287,6 +287,19 @@ export const getShippingList = (data:object={},options:any=false) => fetch('get_
 //获取分销商等级
 export const systemLevelList = (data:object={},options:any=false) => fetch('system_level_list', data, options);
 
+//分销 贡献奖规则列表查询
+export const getDistributorContribute = (data:object={},options:any=false) => fetch('contributeRules', data, options);
+
+export const createdDistributorContribute = (data:object={},options:any=false) => fetch('createContributeRule', data, options);
+
+export const beginDistributorStatistics = (data:object={},options:any=false) => fetch('beginStatistics', data, options);
+
+export const getDistributorContributeDetail = (data:object={},options:any=false) => fetch('getContributeDetail', data, options);
+
+
+export const sendDistributorContributeMoney = (data:object={},options:any=false) => fetch('sendContributeMoney', data, options);
+
+
 //获取门店商品列表
 export const getProducts = (data:object={},options:any=false) => fetch('get_products', data, options);
 
