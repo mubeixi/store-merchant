@@ -13,8 +13,8 @@
       <fun-table
         :columns="dataTableOpt.columns"
         :dataList="dataTableOpt.dataList"
-        :totalCount="dataTableOpt.totalCount"
-        :pageSize="dataTableOpt.pageSize"
+        :_totalCount="dataTableOpt.totalCount"
+        :_pageSize="dataTableOpt.pageSize"
         :is_paginate="dataTableOpt.is_paginate"
         :formSize="'small'"
         :isRow="true"
@@ -865,8 +865,8 @@
             act : 'get_self_store_prod',
             dataList:[],
             page:1,
-            totalCount:100,
-            pageSize:102,
+            totalCount:0,
+            pageSize:10,
             is_paginate:true,//是否显示分页 默认显示
             columns : [
                 {

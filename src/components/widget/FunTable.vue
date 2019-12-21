@@ -231,6 +231,23 @@
         __list_filter_func //拿到结果后数据过滤的
 
         @Prop({
+            type:Object,
+            default:{}
+        })
+        extParam
+
+        @Prop({
+            type:[Function,Boolean],
+            default:(parama,extParam)=>{
+                let newOBJ ={}
+                Object.assign(newOBJ,parama,extParam)
+                return newOBJ
+            }
+        })
+        __params_filter_func //发起请求前参数混合的
+
+
+        @Prop({
             type:Boolean,
             default:false
         })
@@ -371,6 +388,11 @@
 
 
             Object.assign(postData,paramObj)
+
+            //修改参数
+            if(this.__params_filter_func){
+                postData = this.__params_filter_func(postData,this.extParam)
+            }
             await commonReq(this.act,postData).then(res=>{
                 this.totalCount = res.totalCount
 
