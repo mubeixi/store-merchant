@@ -333,6 +333,9 @@ export const systemUserBuyStatistic = (data: object={}, options: any=false) => f
 
 //订单来源统计
 export const systemOrderFromStatistic = (data: object={}, options: any=false) => fetch('systemOrderFromStatistic', data, options);
+// 交易数据统计
+export const systemSalesStatistic = (data: object={}, options: any=false) => fetch('systemSalesStatistic', data, options);
+
 
 function get_Appid() {
   return 'xhh';
