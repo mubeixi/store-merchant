@@ -225,18 +225,18 @@
           </div>
 
           <el-date-picker
-            v-model="value"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择日期"
-            class="selectDate"
+            @change="fourMehtod"
+            v-model="fourTime"
+            type="month"
             size="small"
-          >
+            class="selectDate"
+            value-format="yyyy-MM-dd"
+            placeholder="选择月">
           </el-date-picker>
 
         </div>
       </div>
-      <div id="fourChart" style="width: 100%;height: 460px"></div>
+      <div ref="fourChart" style="width: 100%;height: 460px"></div>
 
       <div class="fourTable">
             <div class="fourTableAll">
@@ -279,7 +279,7 @@
         State
     } from 'vuex-class'
     import fa from "element-ui/src/locale/lang/fa";
-    import  {getCrowds,addBatch,getGivingCoupons} from '@/common/fetch'
+    import  {systemOrderFromStatistic} from '@/common/fetch'
     @Component({
         mixins:[],
         components: {
@@ -290,6 +290,52 @@
     export default class TransactionStatistics extends Vue {
         value=''
 
+
+        fourTime=''
+        fourOpttion={
+            tooltip : {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                x : 'center',
+                y : 'bottom',
+                data:[]
+            },
+            calculable : true,
+            series : [
+                {
+                    name:'付款人数',
+                    type:'pie',
+                    radius : [20, 110],
+                    center : ['25%', '50%'],
+                    data:[
+                    ]
+                },
+                {
+                    name:'付款金额',
+                    type:'pie',
+                    radius : [30, 110],
+                    center : ['75%', '50%'],
+                    data:[]
+                }
+            ]
+        }
+        fourMehtod(item){
+            let that=this
+            let data={
+                fourTime:that.fourTime
+            }
+            systemOrderFromStatistic(data).then(res=>{
+                if(res.errorCode==0){
+                    let fourChart = that.$echarts.init(this.$refs.fourChart)
+                    that.fourOpttion.legend.data=res.data.env
+                    that.fourOpttion.series[0].data=res.data.pay_count
+                    that.fourOpttion.series[1].data=res.data.pay_money
+                    fourChart.setOption(that.fourOpttion);
+                }
+            })
+        }
 
         show(){
             // 基于准备好的dom，初始化echarts实例
@@ -426,75 +472,16 @@
                 ]
             })
 
-            fourChart.setOption({
-                title : {
-                    text: '南丁格尔玫瑰图',
-                    subtext: '纯属虚构',
-                    x:'center'
-                },
-                tooltip : {
-                    trigger: 'item',
-                    formatter: "{a} <br/>{b} : {c} ({d}%)"
-                },
-                legend: {
-                    x : 'center',
-                    y : 'bottom',
-                    data:['rose1','rose2','rose3','rose4','rose5','rose6','rose7','rose8']
-                },
-                toolbox: {
-                    show : true,
-                    feature : {
-                        mark : {show: true},
-                        dataView : {show: true, readOnly: false},
-                        magicType : {
-                            show: true,
-                            type: ['pie', 'funnel']
-                        },
-                        restore : {show: true},
-                        saveAsImage : {show: true}
-                    }
-                },
-                calculable : true,
-                series : [
-                    {
-                        name:'半径模式',
-                        type:'pie',
-                        radius : [20, 110],
-                        center : ['25%', '50%'],
-                        data:[
-                            {value:10, name:'rose1'},
-                            {value:5, name:'rose2'},
-                            {value:15, name:'rose3'},
-                            {value:25, name:'rose4'},
-                            {value:20, name:'rose5'},
-                            {value:35, name:'rose6'},
-                            {value:30, name:'rose7'},
-                            {value:40, name:'rose8'}
-                        ]
-                    },
-                    {
-                        name:'面积模式',
-                        type:'pie',
-                        radius : [30, 110],
-                        center : ['75%', '50%'],
-                        data:[
-                            {value:10, name:'rose1'},
-                            {value:5, name:'rose2'},
-                            {value:15, name:'rose3'},
-                            {value:25, name:'rose4'},
-                            {value:20, name:'rose5'},
-                            {value:35, name:'rose6'},
-                            {value:30, name:'rose7'},
-                            {value:40, name:'rose8'}
-                        ]
-                    }
-                ]
-            })
+
 
 
         }
         mounted(){
             this.show()
+        }
+
+        created(){
+            this.fourMehtod();
         }
 
 
