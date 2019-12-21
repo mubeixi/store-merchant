@@ -188,12 +188,12 @@
       <div class="firstTitle">
         <div class="titleFont">交易数据</div>
         <div class="titleButton">
-          <el-button type="primary" size="small">导出数据</el-button>
+          <el-button type="primary" size="small" @click="threeMethod('output')">导出数据</el-button>
 
           <div class="buttonRadio">
-            <div class="radioDiv">昨天</div>
-            <div class="radioDiv">最近7天</div>
-            <div class="radioDiv">最近30天</div>
+            <div class="radioDiv" @click="threeDayChange(1)">昨天</div>
+            <div class="radioDiv" @click="threeDayChange(7)">最近7天</div>
+            <div class="radioDiv" @click="threeDayChange(30)">最近30天</div>
           </div>
 
           <el-date-picker
@@ -355,7 +355,7 @@
                     }
                 ]
             }
-        three_time = ''
+        three_time = []
         threeMethod(arg){
           let that = this;
           let data = {
@@ -365,13 +365,43 @@
           }
           systemSalesStatistic(data).then(res=>{
             console.log(res)
-            let three_chart = that.$echarts.init(that.$refs.threeChart)
-            that.threeChartOption.xAxis[0].data = res.data.money_range
-            that.threeChartOption.series[0].data = res.data.count
-            three_chart.setOption(that.threeChartOption)
+            if(arg == 'output') {
+              res.data.file_path && window.open(res.data.file_path,'_self');
+            }else {
+              let three_chart = that.$echarts.init(that.$refs.threeChart)
+              that.threeChartOption.xAxis[0].data = res.data.money_range
+              that.threeChartOption.series[0].data = res.data.count
+              three_chart.setOption(that.threeChartOption)
+            }
           })
         }
-
+        add0(num){
+          if(num<10) {
+            return '0'+num
+          }else {
+            return num
+          }
+        }
+        // 时间调整
+        threeDayChange(number) {
+          console.log('hhh')
+          let date = new Date();
+          let yestdayTime = date.getTime() - number * 24 * 3600 * 1000
+          let year = new Date(yestdayTime).getFullYear();
+          let month = new Date(yestdayTime).getMonth() + 1;
+          let day = new Date(yestdayTime).getDate();
+          let lastTime = year + '-' + this.add0(month) + '-' + this.add0(day)
+          if(number == 1) {
+            // 昨天，start_time和end_time 传同一个
+            this.three_time[0] = lastTime;
+            this.three_time[1] = lastTime;
+          }else {
+            this.three_time[0] = lastTime;
+            this.three_time[1] = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate();
+          }
+          console.log(this.three_time)
+          this.threeMethod();
+        }
         
         fourlist = []
         fourTime=''
