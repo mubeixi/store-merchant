@@ -37,6 +37,7 @@ import VipStatistics from '@/views/statistics/VipStatistics.vue'
 import TransactionStatistics from '@/views/statistics/TransactionStatistics.vue'
 
 import Contribute from '@/views/distributor/Contribute.vue';
+import ContributeDetail from '@/views/distributor/ContributeDetail.vue';
 
 
 const routerInstance = new Router({
@@ -223,11 +224,19 @@ const routerInstance = new Router({
       },
       children:[
         {
-          path:'contribute',
+          path:'contributeList',
           component:Contribute,
-          // meta:{
-          //   title:'分销贡献'
-          // }
+          meta:{
+            title:'分销贡献'
+          }
+        },
+        {
+          path:'contributeDeatil',
+          name:'DistributorContribute',
+          component:ContributeDetail,
+          meta:{
+            title:'分销贡献详情'
+          }
         }
       ]
     },

@@ -8,8 +8,9 @@
 
     </div>
     <div class="section table">
-      <div class="padding15-r graytext2 text-center" v-if="lists.length<221">暂无数据</div>
+<!--      <div class="padding15-r graytext2 text-center" v-if="lists.length<221">暂无数据</div>-->
       <el-table
+        v-loading="getDataLoding"
         class="wzw-tableS"
         :height="height"
         :data="lists"
@@ -71,24 +72,17 @@
     import {commonReq} from '@/common/fetch';
     import MyRender from './MyRender'
     import _ from 'underscore'
-
     const noop = ()=>{}
     const extendFn = (obj)=>{
-        var o = {},
-            attr = Array.prototype.slice.call(arguments).slice(1);
-
+        var o = {},attr = Array.prototype.slice.call(arguments).slice(1);
         attr.forEach(function(val, index) {
             if (val in obj) { o[val] = obj[val]; }
         });
-
         return o;
-
     }
-
     import {RenderContent} from '@/components/widget/RenderContent';
     import col from "element-ui/packages/col/src/col";
     import {objTranslate} from "../../common/utils";
-
     const valInArr = (val,arr)=>{
         let rt = false
         for(var i in arr){
@@ -141,11 +135,11 @@
 
         }
     })
+
     export default class FunTable extends Vue {
         filterColVal(row,columName){
             return row[columName]
         }
-
         @Prop({
             type:String,
         })
@@ -226,6 +220,9 @@
             default:true
         })
         isSelect //是否多选
+
+        //loading
+        getDataLoding = false
 
         lists = []
         currentPage = 1
@@ -319,23 +316,25 @@
 
         }
 
-        loadData(){
+        async loadData(){
 
             if(this.dataList)return;
             let postData = {},
                 filterData = this.buildFilterFormData()
 
             //pageSize等配置
-            extendFn(postData,this.paginateOpt)
+            Object.assign(postData,this.paginateOpt)
 
             //筛选条件
-            extendFn(postData,filterData)
+            Object.assign(postData,filterData)
             if(!this.act){
                 throw new Error('act参数必传')
                 return
             }
 
-            commonReq(this.act,postData).then(res=>{
+            this.getDataLoding = true
+            await commonReq(this.act,postData).then(res=>{
+
                 //看是否需要过滤
                 if(this.__list_filter_func){
                     this.lists = this.__list_filter_func(res)
@@ -343,15 +342,18 @@
                    this.lists = res.data
                 }
 
-            })
+            }).catch(e=>{})
+
+            this.getDataLoding = false
 
         }
 
 
         created(){
+            if(this.act){
+                this.loadData()
+            }
 
-
-           //this.loadData()
         }
 
 
