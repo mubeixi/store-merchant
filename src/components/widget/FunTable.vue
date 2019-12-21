@@ -129,6 +129,22 @@
               handler(val){
 
               }
+          },
+          _totalCount:{
+              handler(val){
+                  this.totalCount = val
+              }
+          },
+
+          _pageSize:{
+              handler(val){
+                  this.pageSize = val
+              }
+          },
+          _page:{
+              handler(val){
+                  this.currentPage = val
+              }
           }
         },
         filters:{
@@ -157,20 +173,32 @@
         height
 
         @Prop({
-            type:Number,
-            default:10
+            type:Boolean,
+            default:false
         })
-        pageSize
+        is_paginate //是否分页
+        @Prop({
+            type:Number,
+            default:1
+        })
+        _page //分页配置
         @Prop({
             type:Number,
             default:10
         })
-        totalCount
+        _pageSize
+        @Prop({
+            type:Number,
+            default:0
+        })
+        _totalCount
+
         @Prop({
             type:String,
             default:'small'
         })
         formSize
+
         @Prop({
             type:Array,
             required:true,
@@ -182,24 +210,16 @@
         })
         dataList //可能是已经有的数据，如果有该配置。那么就不需要加载数据了
 
-        @Prop({
-            type:Boolean,
-            default:false
-        })
-        is_paginate //是否分页
+
 
         @Prop({
             type:Boolean,
             default:false
         })
         isRow //是否点击某行某行选中
-        @Prop({
-            type:Object,
-            default:() => {
-                return {page:1,pageSize:20}
-            }
-        })
-        paginateOpt //分页配置
+
+
+
         @Prop({
             type:[String,Boolean],
         })
@@ -225,7 +245,10 @@
         getDataLoding = false
 
         lists = []
-        currentPage = 1
+
+        currentPage = 1 //当前页
+        totalCount = 0 //分页数据
+        pageSize = 10 //页面数据
 
 
         toggleSelection() {
@@ -273,12 +296,21 @@
 
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`);
+            this.pageSize = val
+            this.currentPage = 1
             this.$emit('handleSizeChange', val); // 将当前对象传到父组件
+            if(this.act){
+                this.loadData()
+            }
         }
 
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`)
+            this.currentPage = val
             this.$emit('currentChange', val); // 将当前对象传到父组件
+            if(this.act){
+                this.loadData()
+            }
         }
 
         filterFn(){
@@ -316,14 +348,17 @@
 
         }
 
-        async loadData(){
+        async loadData({paramObj={}}={}){
 
             if(this.dataList)return;
             let postData = {},
                 filterData = this.buildFilterFormData()
 
             //pageSize等配置
-            Object.assign(postData,this.paginateOpt)
+            if(this.is_paginate){
+                Object.assign(postData,{page:this.currentPage,pageSize:this.pageSize})
+            }
+
 
             //筛选条件
             Object.assign(postData,filterData)
@@ -333,7 +368,11 @@
             }
 
             this.getDataLoding = true
+
+
+            Object.assign(postData,paramObj)
             await commonReq(this.act,postData).then(res=>{
+                this.totalCount = res.totalCount
 
                 //看是否需要过滤
                 if(this.__list_filter_func){
@@ -342,6 +381,10 @@
                    this.lists = res.data
                 }
 
+                // if(this.currentPage * this.pageSize<this.totalCount){
+                //     this.currentPage++
+                // }
+
             }).catch(e=>{})
 
             this.getDataLoding = false
@@ -349,7 +392,9 @@
         }
 
 
+
         created(){
+
             if(this.act){
                 this.loadData()
             }
