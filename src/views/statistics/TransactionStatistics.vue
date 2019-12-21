@@ -128,7 +128,7 @@
             </div>
         </div>
       </div>
-      <div id="firstChart" style="width: 100%;height: 580px"></div>
+      <div ref="firstChart" style="width: 100%;height: 580px"></div>
     </div>
 
 
@@ -156,7 +156,7 @@
         </div>
       </div>
       <div class="secondChart">
-        <div id="secondChart" style="width: 400px;height: 326px"></div>
+        <div ref="secondChart" style="width: 400px;height: 326px"></div>
         <div class="secondTable">
             <div class="th">
               <div class="td"></div>
@@ -188,17 +188,18 @@
       <div class="firstTitle">
         <div class="titleFont">交易数据</div>
         <div class="titleButton">
-          <el-button type="primary" size="small">导出数据</el-button>
+          <el-button type="primary" size="small" @click="threeMethod('output')">导出数据</el-button>
 
           <div class="buttonRadio">
-            <div class="radioDiv">昨天</div>
-            <div class="radioDiv">最近7天</div>
-            <div class="radioDiv">最近30天</div>
+            <div class="radioDiv" @click="threeDayChange(1)">昨天</div>
+            <div class="radioDiv" @click="threeDayChange(7)">最近7天</div>
+            <div class="radioDiv" @click="threeDayChange(30)">最近30天</div>
           </div>
 
           <el-date-picker
-            v-model="value"
+            v-model="three_time"
             type="daterange"
+            @change="threeMethod"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             value-format="yyyy-MM-dd"
@@ -209,7 +210,7 @@
 
         </div>
       </div>
-      <div id="threeChart" style="width: 100%;height: 520px"></div>
+      <div ref="threeChart" style="width: 100%;height: 520px"></div>
     </div>
 
 
@@ -217,11 +218,11 @@
       <div class="firstTitle">
         <div class="titleFont">订单来源构成</div>
         <div class="titleButton">
-          <el-button type="primary" size="small">导出数据</el-button>
+          <el-button type="primary" size="small" @click="fourMehtod('output')">导出数据</el-button>
 
           <div class="buttonRadio">
-            <div class="radioDiv">本月</div>
-            <div class="radioDiv">上月</div>
+            <div class="radioDiv" @click="momentMonth">本月</div>
+            <div class="radioDiv" @click="prevMonth">上月</div>
           </div>
 
           <el-date-picker
@@ -229,6 +230,7 @@
             v-model="fourTime"
             type="month"
             size="small"
+            
             class="selectDate"
             value-format="yyyy-MM-dd"
             placeholder="选择月">
@@ -247,19 +249,12 @@
                   <div class="td">付款人数</div>
                   <div class="td">较前一月</div>
                 </div>
-                <div class="tr">
-                  <div class="td">APP端</div>
-                  <div class="td">￥56892.49</div>
-                  <div class="td">↑ 3.28%</div>
-                  <div class="td">55</div>
-                  <div class="td">↑ 3.28%</div>
-                </div>
-                <div class="tr">
-                  <div class="td">微信</div>
-                  <div class="td">￥56892.49</div>
-                  <div class="td">↑ 3.28%</div>
-                  <div class="td">55</div>
-                  <div class="td">↑ 3.28%</div>
+                <div class="tr" v-for="(item,index) in fourlist" :key="index">
+                  <div class="td">{{item.env_desc}}</div>
+                  <div class="td">￥{{item.pay_money}}</div>
+                  <div class="td">{{item.pay_money_compare > 0 ? '↑' : '↓'}} {{item.pay_money_compare}}</div>
+                  <div class="td">{{item.pay_count}}</div>
+                  <div class="td">{{item.pay_count_compare > 0 ? '↑' : '↓'}} {{item.pay_count_compare}}</div>
                 </div>
             </div>
       </div>
@@ -279,7 +274,7 @@
         State
     } from 'vuex-class'
     import fa from "element-ui/src/locale/lang/fa";
-    import  {systemOrderFromStatistic} from '@/common/fetch'
+    import  {systemOrderFromStatistic,systemSalesStatistic} from '@/common/fetch'
     @Component({
         mixins:[],
         components: {
@@ -288,9 +283,127 @@
     })
 
     export default class TransactionStatistics extends Vue {
+      
         value=''
+        secondChart = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                series: [
+                    {
+                        name: '访问来源',
+                        type: 'pie',
+                        radius : '55%',
+                        center: ['50%', '60%'],
+                        data:[
+                            {value:335, name:'直接访问'},
+                            {value:310, name:'邮件营销'},
+                            {value:234, name:'联盟广告'},
+                            {value:135, name:'视频广告'},
+                            {value:1548, name:'搜索引擎'}
+                        ],
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+        }
+        secondMethod(){
+          let data = {
 
-
+          }
+        }
+        threeChartOption = {
+                color: ['#3398DB'],
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        axisTick: {
+                            alignWithLabel: true
+                        }
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                series : [
+                    {
+                        name:'直接访问',
+                        type:'bar',
+                        barWidth: '60%',
+                        data:[10, 52, 200, 334, 390, 330, 220]
+                    }
+                ]
+            }
+        three_time = []
+        threeMethod(arg){
+          let that = this;
+          let data = {
+            start_time: this.three_time[0],
+            end_time: this.three_time[1],
+            output: arg == 'output' ? 1 : 0
+          }
+          systemSalesStatistic(data).then(res=>{
+            console.log(res)
+            if(arg == 'output') {
+              res.data.file_path && window.open(res.data.file_path,'_self');
+            }else {
+              let three_chart = that.$echarts.init(that.$refs.threeChart)
+              that.threeChartOption.xAxis[0].data = res.data.money_range
+              that.threeChartOption.series[0].data = res.data.count
+              three_chart.setOption(that.threeChartOption)
+            }
+          })
+        }
+        add0(num){
+          if(num<10) {
+            return '0'+num
+          }else {
+            return num
+          }
+        }
+        // 时间调整
+        threeDayChange(number) {
+          console.log('hhh')
+          let date = new Date();
+          let yestdayTime = date.getTime() - number * 24 * 3600 * 1000
+          let year = new Date(yestdayTime).getFullYear();
+          let month = new Date(yestdayTime).getMonth() + 1;
+          let day = new Date(yestdayTime).getDate();
+          let lastTime = year + '-' + this.add0(month) + '-' + this.add0(day)
+          if(number == 1) {
+            // 昨天，start_time和end_time 传同一个
+            this.three_time[0] = lastTime;
+            this.three_time[1] = lastTime;
+          }else {
+            this.three_time[0] = lastTime;
+            this.three_time[1] = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate();
+          }
+          console.log(this.three_time)
+          this.threeMethod();
+        }
+        
+        fourlist = []
         fourTime=''
         fourOpttion={
             tooltip : {
@@ -321,28 +434,52 @@
                 }
             ]
         }
-        fourMehtod(item){
+        
+        fourMehtod(arg){
             let that=this
             let data={
-                fourTime:that.fourTime
+                search_time:that.fourTime,
+                output: arg == 'output' ? 1 : 0
             }
             systemOrderFromStatistic(data).then(res=>{
-                if(res.errorCode==0){
-                    let fourChart = that.$echarts.init(this.$refs.fourChart)
-                    that.fourOpttion.legend.data=res.data.env
-                    that.fourOpttion.series[0].data=res.data.pay_count
-                    that.fourOpttion.series[1].data=res.data.pay_money
-                    fourChart.setOption(that.fourOpttion);
+                if(arg == 'output') {
+                  res.data.file_path && window.open(res.data.file_path,'_self');
+                }else {
+                  let fourChart = that.$echarts.init(this.$refs.fourChart)
+                  let env_desc = [];
+                  that.fourOpttion.legend.data= res.data.pay_count.forEach(item=>env_desc.push(item.name));
+                  that.fourOpttion.series[0].data=res.data.pay_count
+                  that.fourOpttion.series[1].data=res.data.pay_money
+                  that.fourlist = res.data.list
+                  fourChart.setOption(that.fourOpttion);
                 }
+                
             })
+        }
+        // 本月
+        momentMonth(){
+          let year = new Date().getFullYear();
+          let month = new Date().getMonth()+1;
+          this.fourTime = year + '-' + month;
+          this.fourMehtod();
+        }
+        // 上月
+        prevMonth(){
+          let year = new Date().getFullYear();
+          let month = new Date().getMonth() + 1;
+          if(month == 1) {
+            this.fourTime = year - 1 + '-' + 12
+          }else {
+            this.fourTime = year + '-' + (month - 1);
+          }
+          this.fourMehtod();
         }
 
         show(){
             // 基于准备好的dom，初始化echarts实例
             let firstChart = this.$echarts.init(document.getElementById('firstChart'))
             let secondChart = this.$echarts.init(document.getElementById('secondChart'))
-            let threeChart = this.$echarts.init(document.getElementById('threeChart'))
-            let fourChart = this.$echarts.init(document.getElementById('fourChart'))
+        
             // 绘制图表
             firstChart.setOption({
                 color:['#9AC0F3'],
@@ -406,82 +543,19 @@
             });
 
             secondChart.setOption({
-                tooltip : {
-                    trigger: 'item',
-                    formatter: "{a} <br/>{b} : {c} ({d}%)"
-                },
-                series : [
-                    {
-                        name: '访问来源',
-                        type: 'pie',
-                        radius : '55%',
-                        center: ['50%', '60%'],
-                        data:[
-                            {value:335, name:'直接访问'},
-                            {value:310, name:'邮件营销'},
-                            {value:234, name:'联盟广告'},
-                            {value:135, name:'视频广告'},
-                            {value:1548, name:'搜索引擎'}
-                        ],
-                        itemStyle: {
-                            emphasis: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
-                            }
-                        }
-                    }
-                ]
+                
             })
-
-            threeChart.setOption({
-                color: ['#3398DB'],
-                tooltip : {
-                    trigger: 'axis',
-                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-                    }
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                xAxis : [
-                    {
-                        type : 'category',
-                        data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                        axisTick: {
-                            alignWithLabel: true
-                        }
-                    }
-                ],
-                yAxis : [
-                    {
-                        type : 'value'
-                    }
-                ],
-                series : [
-                    {
-                        name:'直接访问',
-                        type:'bar',
-                        barWidth: '60%',
-                        data:[10, 52, 200, 334, 390, 330, 220]
-                    }
-                ]
-            })
-
-
-
 
         }
         mounted(){
-            this.show()
+             this.fourMehtod();
+            this.threeMethod();
+            this.secondMethod();
+            //this.show();
         }
 
         created(){
-            this.fourMehtod();
+           
         }
 
 
@@ -495,6 +569,7 @@
 <style scoped lang="less">
   .mainVip{
     width: 100%;
+    min-width: 1200px;
     padding: 39px 14% 54px 16%;
     box-sizing: border-box;
   }
@@ -555,6 +630,7 @@
   }
   .marginB{
     margin-bottom: 30px;
+    min-width: 1200px;
   }
   //title
 
