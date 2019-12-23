@@ -44,7 +44,7 @@
         Action,
         State
     } from 'vuex-class'
-  import {getFileList,getDirectoryList} from '../../common/fetch';
+  import {fetch as fetchFn} from '../../common/fetch';
   import {Component, Vue, Prop} from 'vue-property-decorator';
   @Component({
       props:{
@@ -101,18 +101,36 @@
           this.$emit('')
       }
 
-      init_func(){
-          getDirectoryList().then(res=>{
-              this.dirs = res.data
-          })
+      loadDir(){
 
-          getFileList(this.paginate).then(res=>{
-              this.lists = res.data
-          })
+
+      }
+
+      init_func(ppath=''){
+
+          let dir=ppath,order='Name',path=''
+          fetchFn(
+              'nature',
+              {dir,order,path},
+              false,
+              `http://localhost:9100/member/file_manager_json.php?dir=${dir}&order=${order}&path=${path}`,
+              'get'
+          ).then(res=>{
+
+              for(var file of res.data.file_list){
+                  //空目录不放了把
+                  if(file.is_dir){
+                      this.dirs.push(file)
+                  }else if(file.is_photo){
+                      this.lists.push(file)
+                  }
+              }
+
+          }).catch(e=>{console.log(e)})
       }
 
       created(){
-
+          this.init_func()
       }
   }
 </script>

@@ -11,7 +11,7 @@ require('./tool/base64');
 
 window.funLoading = false
 
-const fetch = function (act: String, param: Object = {}, options = false, url: String = '/api/little_program/shopconfig.php', method: String = 'post') {
+export const fetch = function (act: String, param: Object = {}, options = false, url: String = '/api/little_program/shopconfig.php', method: String = 'post') {
 
   // console.log(param)
   if (!act) Vue.$fun.warning('获取信息失败');
@@ -61,7 +61,7 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
   console.log("最终请求地址=====>"+url)
 
   return new Promise(((resolve, reject) => {
-
+console.log(method)
     Vue.http[method](url, data, options).then(res=>{
       if(res.data.errorCode === 0){
         resolve(res.data)
