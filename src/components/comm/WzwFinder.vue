@@ -4,7 +4,7 @@
       :visible.sync="innerVisible"
       :title="label"
       :top="top"
-      width="70%"
+      width="974px"
       @close="cancel"
       :close-on-click-modal="maskClose"
       :close-on-press-escape="maskClose"
@@ -14,6 +14,31 @@
 
 
       <div class="container">
+          <div class="container-left">
+              <div class="container-leftTop">
+                <div class="item" v-for="n in 10">
+                  全部图片（454）
+                </div>
+                <div class="item" v-for="n in 10">
+                  haah1（454）
+                </div>
+              </div>
+              <div class="items">新建分组</div>
+          </div>
+
+          <div class="container-right">
+              <div class="container-right-title">
+                <div class="container-right-titleRight">
+                  大小不超过5M，已开启水印.
+                  <el-button>上传文件</el-button>
+                </div>
+              </div>
+              <div class="container-right-image">
+                  <div class="image" v-for="n in 18">
+                    <img src="https://new401.bafangka.com/uploadfiles/wkbq6nc2kc/image/20191205144638181.jpg">
+                  </div>
+              </div>
+          </div>
 
 <!--        <div class="pagination padding10-r">-->
 <!--          <el-pagination-->
@@ -29,10 +54,14 @@
       </div>
 
       <span slot="footer" class="dialog-footer">
-         已选择{{finderDialogInstance.select}}/{{finderDialogInstance.limit}}
-                <el-button @click="cancel">取 消</el-button>
-                <el-button type="primary" @click="subFn">确 定</el-button>
-            </span>
+          <div>
+             已选择{{finderDialogInstance.select}}/{{finderDialogInstance.limit}}
+          </div>
+          <div style="margin-left: 200px">
+            <el-button type="primary" @click="subFn">确 定</el-button>
+            <el-button style="margin-left: 40px" @click="cancel">取 消</el-button>
+          </div>
+      </span>
     </el-dialog>
 
   </div>
@@ -117,6 +146,85 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="less">
+.container{
+  display: flex;
+  max-height: 450px;
+}
+.container-left{
+  max-height: 450px;
+  position: relative;
+  .container-leftTop{
+    width: 190px;
+    max-height: 350px;
+    overflow-y:auto ;
+    .item{
+      width: 190px;
+      height: 40px;
+      line-height: 40px;
+      padding-left: 20px;
+      cursor: pointer;
+      box-sizing: border-box;
+      &:hover{
+        background-color: #F8F8F8;
+      }
+    }
+  }
+  .items{
+    height: 40px;
+    padding-left: 20px;
+    line-height: 40px;
+    cursor: pointer;
+    color: #409EFF;
+    position: absolute;
+    bottom: 0px;
+  }
+
+
+
+}
+/*滚动条样式*/
+::-webkit-scrollbar {/*滚动条整体样式*/
+  color: transparent;
+  width: 0;
+  height: 0;
+}
+
+.container-right{
+  max-height: 450px;
+  flex: 1;
+  box-sizing: border-box;
+  border-left: 1px solid #999999;
+  .container-right-title {
+    display: flex;
+    margin-bottom: 20px;
+    .container-right-titleRight{
+      margin-left: auto;
+    }
+  }
+  .container-right-image{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    padding-left: 10px;
+    .image{
+      width: 112px;
+      height: 112px;
+      margin-left: 10px;
+      margin-bottom: 20px;
+      img{
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+}
+
+
+.dialog-footer{
+  display: flex;
+  align-items: center;
+}
 
 </style>
