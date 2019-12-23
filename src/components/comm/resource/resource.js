@@ -3,10 +3,10 @@
 // import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview'
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 // import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-
-
-import InsertImageUi from './InsertImageUi';
-import InsertImageEditing from './InsertImageEditing';
+import {RESOURCE} from './resourceUi';
+import ResourceUi from './resourceUi';
+import ResourceEditing from './resourceEditing';
+import CkedittResource from '../ckeditt-resource/CkedittResource';
 /**
  * The InsertImg feature for the editor.
  * 手动上传或者选择素材库中图片，加入到富文本
@@ -16,14 +16,14 @@ export default class InsertImage extends Plugin {
 
   //,
   static get requires() {
-    return [ InsertImageUi,InsertImageEditing ];
+    return [ CkedittResource,ResourceUi,ResourceEditing ];
   }
 
   /**
    * @inheritDoc
    */
   static get pluginName() {
-    return 'insertImage';
+    return RESOURCE;
   }
 
 }

@@ -1,12 +1,16 @@
 <template>
 <!--  <textarea name="content" id="editor"></textarea>-->
   <div class="wrap">
+
 <!--    :value="content"-->
     <ckeditor  @ready="onReady" tag-name="textarea"  :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
     <div class="font12 graytext">您已输入<span id="js-word" style="color: #409EFF">0</span>行,共<span style="color: #409EFF" id="js-characters">0</span>字</div>
   </div>
 </template>
 <script lang="ts">
+
+    import WzwFinder from "./WzwFinder.vue"
+
     import {Component, Vue, Prop} from 'vue-property-decorator';
     import CKEditor from '@ckeditor/ckeditor5-vue';
     //
@@ -74,13 +78,12 @@
     //     }
     // }
 
-    import InsertImage from './insert-image/InsertImage';
+    import resource from './resource/resource';
 
 
     import {myUploadLoader} from './myUploadLoader';
     const myUpload = (e)=>{
-        console.log(e)
-
+        //console.log(e)
         // 使用 CKeditor 提供的 API 修改上传适配器
         e.plugins.get("FileRepository").createUploadAdapter = loader => new myUploadLoader(loader);
     }
@@ -108,7 +111,7 @@
             '|',
             'blockQuote',"indent", "outdent","insertTable",
             '|',
-            'imageUpload','mediaEmbed','InsertImage',
+            'imageUpload','mediaEmbed','resource',
             '|',
             'underline','strikethrough','code','codeBlock','subscript','superscript',
 
@@ -161,7 +164,7 @@
                 EssentialsPlugin, BoldPlugin, ItalicPlugin, LinkPlugin, ParagraphPlugin,Underline,Subscript,Superscript,Code,Strikethrough,Heading,CodeBlock,
                 FontFamily,FontBackgroundColor,FontColor,FontSize,
                 SimpleUploadAdapter,WordCount,
-                Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize,ImageUpload,ImageUploadProgress,MediaEmbed,InsertImage,
+                Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize,ImageUploadProgress,MediaEmbed,resource,
                 BlockQuote,Indent, Table, TableToolbar,PasteFromOffice,HorizontalLine
             ],
             extraPlugins: [
@@ -245,6 +248,7 @@
         }
 
         onReady(editor){
+
 
             this.editorInstance = editor
             // editor.ui.componentFactory.add( 'insertImage', locale => {

@@ -29,6 +29,7 @@
       </div>
 
       <span slot="footer" class="dialog-footer">
+         已选择{{finderDialogInstance.select}}/{{finderDialogInstance.limit}}
                 <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="subFn">确 定</el-button>
             </span>
@@ -39,6 +40,10 @@
 
 <script lang="ts">
 
+    import {
+        Action,
+        State
+    } from 'vuex-class'
   import {getFileList,getDirectoryList} from '../../common/fetch';
   import {Component, Vue, Prop} from 'vue-property-decorator';
   @Component({
@@ -69,7 +74,9 @@
       }
   })
 
-  export default class WzwSource extends Vue{
+  export default class WzwFinder extends Vue{
+
+      @State finderDialogInstance
 
       innerVisible = false
       dirs = []//目录list
@@ -87,7 +94,7 @@
       }
 
       cancel(){
-
+          window.finderDialogInstance.visible = false
       }
 
       subFn(){

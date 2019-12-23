@@ -58,6 +58,7 @@ const fetch = function (act: String, param: Object = {}, options = false, url: S
     window.funLoading = Loading.service(options)
   }
 
+  console.log("最终请求地址=====>"+url)
 
   return new Promise(((resolve, reject) => {
 

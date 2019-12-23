@@ -1,4 +1,4 @@
-export const staticUrl = 'https://new401.bafangka.com';
+export const staticUrl = '';//'https://new401.bafangka.com';
 
 export const front_url = 'https://new401.bafangka.com/fre/';
 
@@ -12,4 +12,4 @@ export const isDev = process.env.NODE_ENV === 'production' ? false : true;
 //   throw new Error('请配置pro_base_apiurl');
 // }
 
-export const baseApiUrl = isDev?'':process.env.VUE_APP_API_BASE_URL;//'http://www.qiyeban.com';
+export const baseApiUrl = isDev?'':'';//用绝对路径/api来实现   //process.env.VUE_APP_API_BASE_URL;//'http://www.qiyeban.com';
