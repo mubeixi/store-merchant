@@ -16,12 +16,12 @@
       <div class="container">
           <div class="container-left">
               <div class="container-leftTop">
-                <div class="item" v-for="n in 10">
-                  全部图片（454）
+                <div class="item" v-for="(dir,idx) in dirs" :key="idx" @click="selectDir(dir)">
+                  {{dir.filename}}
                 </div>
-                <div class="item" v-for="n in 10">
-                  haah1（454）
-                </div>
+<!--                <div class="item" v-for="n in 10">-->
+<!--                  haah1（454）-->
+<!--                </div>-->
               </div>
               <div class="items">新建分组</div>
           </div>
@@ -33,10 +33,16 @@
                   <el-button>上传文件</el-button>
                 </div>
               </div>
-              <div class="container-right-image">
-                  <div class="image" v-for="n in 18">
-                    <img src="https://new401.bafangka.com/uploadfiles/wkbq6nc2kc/image/20191205144638181.jpg">
+              <div class="container-right-image" style="height:396px;">
+                  <div @click="add(file)" class="image" :key="idx2" v-for="(file,idx2) in current_file_list">
+                    <img :src="(current_url+file.filename)|domain">
                   </div>
+              </div>
+              <div class="paginate-box" >
+                <div style="text-align: right;">
+                  <el-button @click="minusPage" size="mini"><</el-button><div style="display: inline-block" class="padding10-c">{{currentPage}}/{{totalPage}}</div><el-button size="mini" @click="plusPage">></el-button>
+                </div>
+                <div style="height: 10px;"></div>
               </div>
           </div>
 
@@ -58,7 +64,7 @@
              已选择{{finderDialogInstance.select}}/{{finderDialogInstance.limit}}
           </div>
           <div style="margin-left: 200px">
-            <el-button type="primary" @click="subFn">确 定</el-button>
+            <el-button type="success" @click="subFn">确 定</el-button>
             <el-button style="margin-left: 40px" @click="cancel">取 消</el-button>
           </div>
       </span>
@@ -75,6 +81,8 @@
     } from 'vuex-class'
   import {fetch as fetchFn} from '../../common/fetch';
   import {Component, Vue, Prop} from 'vue-property-decorator';
+    import {domain} from '../../common/utils';
+
   @Component({
       props:{
           top:{
@@ -93,13 +101,28 @@
               default: false
           },
       },
+      computed:{
+
+      },
+      filters:{
+          // imgFilter(filename){
+          //     return domain(this.+filename)
+          // }
+      },
       watch:{
+          currentPage:{
+              immediate: true,
+              handler(){
+                  this.current_file_list=this.lists[this.currentPage-1]
+              }
+          },
           show: {
               immediate: true,
               handler(val) {
                   this.innerVisible = val;
               }
           },
+
       }
   })
 
@@ -107,11 +130,22 @@
 
       @State finderDialogInstance
 
+      current_file_list = []
+      pageSize = 18
+      currentPage = 1
+      totalPage = 1
+      current_url = ''
       innerVisible = false
       dirs = []//目录list
       lists = []//资源list,也可能是音频、视频、商品
 
-      select_source_list = []
+
+      select_file_list = []
+
+      add(file){
+          let fullPath = domain(this.current_url+file.filename)
+          this.select_file_list.push(fullPath)
+      }
 
       source_type = 'img'
 
@@ -122,17 +156,34 @@
           pageSize: 999
       }
 
+      plusPage(){
+          if(this.currentPage==this.totalPage)return;
+          this.currentPage++
+      }
+
+      minusPage(){
+          if(this.currentPage==1)return;
+          this.currentPage--
+      }
+
       cancel(){
           window.finderDialogInstance.visible = false
       }
 
       subFn(){
-          this.$emit('')
+
+          window.finderDialogInstance.callFn.choose(this.select_file_list)
+          this.cancel()
+          //this.$emit('')
       }
 
       loadDir(){
 
 
+      }
+
+      selectDir(dir){
+          this.init_func(dir.filename)
       }
 
       init_func(ppath=''){
@@ -146,14 +197,35 @@
               'get'
           ).then(res=>{
 
+              let tempDirs = [],tempLists = []
               for(var file of res.data.file_list){
                   //空目录不放了把
                   if(file.is_dir){
-                      this.dirs.push(file)
+                      tempDirs.push(file)
                   }else if(file.is_photo){
-                      this.lists.push(file)
+                      tempLists.push(file)
                   }
               }
+
+
+
+              this.dirs = tempDirs;
+
+              let arr = []
+              while (tempLists.length>this.pageSize){
+                  arr.push(tempLists.splice(0,this.pageSize))
+              }
+              if(tempLists.length>0){
+                  arr.push(tempLists)
+              }
+
+              this.lists = arr;
+              this.current_url = res.data.current_url
+
+              let len = tempLists.length
+              this.totalPage = this.lists.length
+
+              this.currentPage = 1
 
           }).catch(e=>{console.log(e)})
       }
