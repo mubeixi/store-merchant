@@ -4,21 +4,22 @@
       <div class="firstTitle">
         <div class="titleFont">交易数据</div>
         <div class="titleButton">
-          <el-button type="primary" size="small">导出数据</el-button>
+          <el-button type="primary" size="small" @click="firstMethod('output')">导出数据</el-button>
 
           <div class="buttonRadio">
-            <div class="radioDiv">昨天</div>
-            <div class="radioDiv">最近7天</div>
-            <div class="radioDiv">最近30天</div>
+            <div class="radioDiv" @click="firstDayChange(1)">昨天</div>
+            <div class="radioDiv" @click="firstDayChange(7)">最近7天</div>
+            <div class="radioDiv" @click="firstDayChange(30)">最近30天</div>
           </div>
 
           <el-date-picker
-            v-model="value"
+            v-model="first_time"
             type="daterange"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             value-format="yyyy-MM-dd"
             size="small"
+            @change="firstMethod"
             style="width: 280px"
             :default-time="['00:00:00', '23:59:59']">
           </el-date-picker>
@@ -49,22 +50,22 @@
             </div>
             <div class="tr">
               <div class="td">
-                22
+                {{firstData.view_person_count && firstData.view_person_count.value || 0}}
               </div>
               <div class="td">
-                22
+                {{firstData.order_person_count && firstData.order_person_count.value || 0}}
               </div>
               <div class="td">
-                222
+                {{firstData.order_count && firstData.order_count.value || 0}}
               </div>
               <div class="td">
-                22
+                {{firstData.order_pro_count && firstData.order_pro_count.value || 0}}
               </div>
               <div class="td">
-                22
+                {{firstData.order_valid_count && firstData.order_valid_count.value || 0}}
               </div>
               <div class="td">
-                ¥222
+                ￥{{firstData.order_money && firstData.order_money.value || 0}}
               </div>
             </div>
             <div class="th">
@@ -89,32 +90,32 @@
             </div>
             <div class="tr" style="border-bottom: 0px">
               <div class="td">
-                ¥222
+                ¥{{firstData.order_back_money && firstData.order_back_money.value || 0}}
               </div>
               <div class="td">
-                22
+                {{firstData.order_pay_person_count && firstData.order_pay_person_count.value || 0}}
               </div>
               <div class="td">
-                222
+                {{firstData.order_pay_count && firstData.order_pay_count.value || 0}}
               </div>
               <div class="td">
-                22
+                {{firstData.order_pay_pro_count && firstData.order_pay_pro_count.value || 0}}
               </div>
               <div class="td">
-                ¥222
+                ¥{{firstData.order_pay_money && firstData.order_pay_money.value || 0}}
               </div>
               <div class="td">
-                ¥222
+                ¥{{firstData.order_avg_money && firstData.order_avg_money.value || 0}}
               </div>
             </div>
         </div>
         <div class="firstDiv">
             <div class="firstDiv-top">
                 <div>
-                  下单转化率 3.69%
+                  下单转化率 {{firstData.order_rate && firstData.order_rate.value || 0}}%
                 </div>
                 <div>
-                  付款转化率 79.33%
+                  付款转化率 {{firstData.order_pay_rate && firstData.order_pay_rate.value || 0}}%
                 </div>
             </div>
             <div class="firstDiv-center">
@@ -124,11 +125,11 @@
               <span class="firstDiv-spane">付款</span>
             </div>
             <div class="firstDiv-bottom">
-              成交转化率 5.20%
+              成交转化率 {{firstData.order_clinch_rate && firstData.order_clinch_rate.value || 0}}%
             </div>
         </div>
       </div>
-      <div ref="firstChart" style="width: 100%;height: 580px"></div>
+      <div ref="firstChartRef" style="width: 100%;height: 580px"></div>
     </div>
 
 
@@ -136,16 +137,16 @@
       <div class="firstTitle">
         <div class="titleFont">新老客户交易构成</div>
         <div class="titleButton">
-          <el-button type="primary" size="small">导出数据</el-button>
+          <el-button type="primary" size="small" @click="secondMethod('output')">导出数据</el-button>
 
           <div class="buttonRadio">
-            <div class="radioDiv">本月</div>
-            <div class="radioDiv">上月</div>
+            <div class="radioDiv" @click="momentMonth('second')">本月</div>
+            <div class="radioDiv" @click="prevMonth('second')">上月</div>
           </div>
 
           <el-date-picker
-            v-model="value"
-            type="date"
+            v-model="second_time"
+            type="month"
             value-format="yyyy-MM-dd"
             placeholder="选择日期"
             class="selectDate"
@@ -165,19 +166,12 @@
               <div class="td">付款人数</div>
               <div class="td">较前一个月</div>
             </div>
-            <div class="tr">
-              <div class="td">新客户</div>
-              <div class="td" style="width: 160px">￥56892.49</div>
-              <div class="td">↑ 3.28%</div>
-              <div class="td">456</div>
-              <div class="td">↑ 3.28%</div>
-            </div>
-            <div class="tr" style="border-bottom: 0px">
-              <div class="td">老客户</div>
-              <div class="td" style="width: 160px">￥56892.49</div>
-              <div class="td">↑ 3.28%</div>
-              <div class="td">456</div>
-              <div class="td">↑ 3.28%</div>
+            <div class="tr" v-for="(item,index) in secondList" :key="index">
+              <div class="td">{{item.title}}</div>
+              <div class="td" style="width: 160px">￥{{item.pay_money}}</div>
+              <div class="td">{{item.pay_money_compare > 0 ? '↑' : '↓'}} {{item.pay_money_compare}}</div>
+              <div class="td">{{item.pay_count}}</div>
+              <div class="td">{{item.pay_count_compare > 0 ? '↑' : '↓'}} {{item.pay_count_compare}}</div>
             </div>
         </div>
       </div>
@@ -274,7 +268,7 @@
         State
     } from 'vuex-class'
     import fa from "element-ui/src/locale/lang/fa";
-    import  {systemOrderFromStatistic,systemSalesStatistic} from '@/common/fetch'
+    import  {systemOrderFromStatistic,systemSalesStatistic,getNewOldTradeStatistic,getTradeStatistic} from '@/common/fetch'
     @Component({
         mixins:[],
         components: {
@@ -283,40 +277,173 @@
     })
 
     export default class TransactionStatistics extends Vue {
-      
-        value=''
-        secondChart = {
-                tooltip: {
-                    trigger: 'item',
-                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+        first_time = []
+        firstData = {}
+        // 绘制图表
+        firstChart = {
+            color:['#ED84B8','#F1C087','#AB7CED','#89C98C','#787D88','#9AC0F3','#A4ADBD','#A3B1C9','#ED8493','#85E8E8','#6E7788'],
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                x: 'center',
+                y: '540px;',
+                data:['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '15%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: ['周一','周二','周三','周四','周五','周六','周日']
+            },
+            yAxis: [{
+              type: 'value',
+              min: 0,
+              max: 100
+            }, {
+              type: 'value',
+              name: '转化率(%)',
+              min: 0,
+              max: 10000,
+            }],
+            series: [
+                {
+                    name:'邮件营销',
+                    type:'line',
+                    stack: '总量',
+                    data:[120, 132, 101, 134, 90, 230, 210]
                 },
-                series: [
-                    {
-                        name: '访问来源',
-                        type: 'pie',
-                        radius : '55%',
-                        center: ['50%', '60%'],
-                        data:[
-                            {value:335, name:'直接访问'},
-                            {value:310, name:'邮件营销'},
-                            {value:234, name:'联盟广告'},
-                            {value:135, name:'视频广告'},
-                            {value:1548, name:'搜索引擎'}
-                        ],
-                        itemStyle: {
-                            emphasis: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
-                            }
-                        }
-                    }
-                ]
+                {
+                    name:'联盟广告',
+                    type:'line',
+                    stack: '总量',
+                    data:[220, 182, 191, 234, 290, 330, 310]
+                },
+                {
+                    name:'视频广告',
+                    type:'line',
+                    stack: '总量',
+                    data:[150, 232, 201, 154, 190, 330, 410]
+                },
+                {
+                    name:'直接访问',
+                    type:'line',
+                    stack: '总量',
+                    data:[320, 332, 301, 334, 390, 330, 320]
+                },
+                {
+                    name:'搜索引擎',
+                    type:'line',
+                    stack: '总量',
+                    data:[820, 932, 901, 934, 1290, 1330, 1320]
+                }
+            ]
+        };
+        // 时间调整
+        firstDayChange(number) {
+          let date = new Date();
+          let yestdayTime = date.getTime() - number * 24 * 3600 * 1000
+          let year = new Date(yestdayTime).getFullYear();
+          let month = new Date(yestdayTime).getMonth() + 1;
+          let day = new Date(yestdayTime).getDate();
+          let lastTime = year + '-' + this.add0(month) + '-' + this.add0(day)
+          this.first_time[0] = lastTime;
+          this.first_time[1] = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate();
+          this.firstMethod('');
         }
-        secondMethod(){
+        firstMethod(arg){
+          let that = this;
           let data = {
-
+            start_time: this.first_time[0] || '',
+            end_time: this.first_time[1] || '',
+            output: arg == 'output' ? 1 : 0
           }
+          getTradeStatistic(data).then(res=>{
+            if(arg == 'output') {
+              res.data.file_path && window.open(res.data.file_path,'_self');
+            }else {
+              let first_chart = that.$echarts.init(that.$refs.firstChartRef)
+              that.firstChart.legend.data = res.data.titles;
+              that.firstChart.xAxis.data = res.data.time_list;
+              that.firstChart.series = res.data.charts;
+              that.firstData = res.data.data;
+              that.firstChart.yAxis[1].max = res.data.max_rate;
+              that.firstChart.yAxis[1].interval = parseInt(res.data.max_rate ) / 5;
+              that.firstChart.yAxis[0].max = res.data.max_num;
+              that.firstChart.yAxis[0].interval = parseInt(res.data.max_num ) / 5;
+              
+              first_chart.setOption(that.firstChart);
+            } 
+          })
+        }
+        secondChart = {
+          color: ['#9AC0F3','#F1C087'],
+          tooltip: {
+              trigger: 'item',
+              formatter: "{a} <br/>{b} : {c} ({d}%)"
+          },
+          legend: {
+            x: "right",
+            y: "60px",
+            data: [
+              "彩妆",
+              "留学",
+              "派遣",
+              "玉缘轩",
+            ]
+          }, 
+          series: [
+              {
+                  name: '访问来源',
+                  type: 'pie',
+                  radius : '55%',
+                  center: ['50%', '60%'],
+                  data:[
+                      {value:335, name:'直接访问'},
+                      {value:310, name:'邮件营销'},
+                      {value:234, name:'联盟广告'},
+                      {value:135, name:'视频广告'},
+                      {value:1548, name:'搜索引擎'}
+                  ],
+                  itemStyle: {
+                      emphasis: {
+                          shadowBlur: 10,
+                          shadowOffsetX: 0,
+                          shadowColor: 'rgba(0, 0, 0, 0.5)'
+                      }
+                  }
+              }
+          ]
+        }
+        second_time = ''
+        secondList = []
+        secondMethod(arg=""){
+          var that = this;
+          let data = {
+            search_time: this.second_time,
+            output: arg == 'output' ? 1 : 0
+          }
+          getNewOldTradeStatistic(data).then(res=>{
+            if(arg == 'output') {
+              res.data.file_path && window.open(res.data.file_path,'_self');
+            }else {
+              let second_chart = that.$echarts.init(that.$refs.secondChart)
+              this.secondChart.series[0].data = res.data.circles;
+              this.secondList = res.data.lists;
+              this.secondChart.legend.data = res.data.titles;
+              second_chart.setOption(this.secondChart)
+            }
+          })
         }
         threeChartOption = {
                 color: ['#3398DB'],
@@ -406,6 +533,7 @@
         fourlist = []
         fourTime=''
         fourOpttion={
+          color: ['#9AC0F3','#F1C087','#6E7788','#ED84B8','#8894A8','#F9F45B','#ED84B8','#A3B1C9','#ED8493','#85E8E8','#6E7788'],
             tooltip : {
                 trigger: 'item',
                 formatter: "{a} <br/>{b} : {c} ({d}%)"
@@ -457,101 +585,46 @@
             })
         }
         // 本月
-        momentMonth(){
+        momentMonth(arg){
           let year = new Date().getFullYear();
           let month = new Date().getMonth()+1;
-          this.fourTime = year + '-' + month;
-          this.fourMehtod();
+          if(arg == 'second') {
+            this.second_time = year + '-' + month;
+            this.secondMethod();
+          }else {
+            this.fourTime = year + '-' + month;
+            this.fourMehtod();
+          }
         }
         // 上月
-        prevMonth(){
+        prevMonth(arg){
           let year = new Date().getFullYear();
           let month = new Date().getMonth() + 1;
-          if(month == 1) {
-            this.fourTime = year - 1 + '-' + 12
+          if(arg == 'second') {
+            if(month == 1) {
+              this.second_time = year - 1 + '-' + 12
+            }else {
+              this.second_time = year + '-' + (month - 1);
+            }
+            this.secondMethod();
           }else {
-            this.fourTime = year + '-' + (month - 1);
+            if(month == 1) {
+              this.fourTime = year - 1 + '-' + 12
+            }else {
+              this.fourTime = year + '-' + (month - 1);
+            }
+            this.fourMehtod();
           }
-          this.fourMehtod();
         }
 
         show(){
-            // 基于准备好的dom，初始化echarts实例
-            let firstChart = this.$echarts.init(document.getElementById('firstChart'))
-            let secondChart = this.$echarts.init(document.getElementById('secondChart'))
-        
-            // 绘制图表
-            firstChart.setOption({
-                color:['#9AC0F3'],
-                tooltip: {
-                    trigger: 'axis'
-                },
-                legend: {
-                    data:['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
-                },
-                toolbox: {
-                    feature: {
-                        saveAsImage: {}
-                    }
-                },
-                xAxis: {
-                    type: 'category',
-                    boundaryGap: false,
-                    data: ['周一','周二','周三','周四','周五','周六','周日']
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: [
-                    {
-                        name:'邮件营销',
-                        type:'line',
-                        stack: '总量',
-                        data:[120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                        name:'联盟广告',
-                        type:'line',
-                        stack: '总量',
-                        data:[220, 182, 191, 234, 290, 330, 310]
-                    },
-                    {
-                        name:'视频广告',
-                        type:'line',
-                        stack: '总量',
-                        data:[150, 232, 201, 154, 190, 330, 410]
-                    },
-                    {
-                        name:'直接访问',
-                        type:'line',
-                        stack: '总量',
-                        data:[320, 332, 301, 334, 390, 330, 320]
-                    },
-                    {
-                        name:'搜索引擎',
-                        type:'line',
-                        stack: '总量',
-                        data:[820, 932, 901, 934, 1290, 1330, 1320]
-                    }
-                ]
-            });
-
-            secondChart.setOption({
-                
-            })
-
+          
         }
         mounted(){
-             this.fourMehtod();
+            this.fourMehtod();
             this.threeMethod();
             this.secondMethod();
-            //this.show();
+            this.firstMethod();
         }
 
         created(){
@@ -732,6 +805,7 @@
     box-sizing: border-box;
     .secondTable{
       border: 1px solid #E4E4E4;
+      border-bottom: 0;
       box-sizing: border-box;
       font-size: 14px;
       color: #666666;
