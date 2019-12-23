@@ -28,7 +28,7 @@
       <div class="preBox" >
         <el-button @click="saveData(0,1)" size="small">预览</el-button>
         <div class="tooltip" v-show="centerDialogVisible" @click="centerDialogVisible=false">
-          <div class="qrcode"><qrcode-vue :value="preUrl" size="100" level="H"></qrcode-vue></div>
+          <div class="qrcode"><qrcode-vue :value="preUrl" size="200" level="H"></qrcode-vue></div>
           <div class="font12" style="line-height: 20px;height: 20px">扫一扫预览</div>
         </div>
       </div>
@@ -189,7 +189,7 @@
   .tooltip{
     position: absolute;
     bottom: 50px;
-    left: -20px;
+    left: -80px;
     transform: translate(0%,0%);
     background-color: #d5d5d5;
     color: #444;

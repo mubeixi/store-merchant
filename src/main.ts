@@ -30,6 +30,7 @@ Vue.use(Common);
 require('./assets/js/icon');
 
 
+
 Vue.config.productionTip = false;
 
 new Vue({

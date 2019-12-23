@@ -1,7 +1,13 @@
+
+let finderDialogInstance = {visible:false,limit:9,select:0,type:'img',callFn:null}
+
+window.finderDialogInstance = finderDialogInstance
+
 export default {
   activeAttr: {attrData: {}},
   system:{bgcolor:'#f2f2f2',title:'首页'},
   editStatus: false,
+  finderDialogInstance:finderDialogInstance,
   mode:'attr',
   componentTitle:{
     title:'',

@@ -30,6 +30,16 @@ export const doLoginMixin = {
 
 }
 
+export const ckeditorMixin = {
+
+  async created() {
+
+    window.vmobj = this
+
+  }
+
+}
+
 
 export const tmplDiyMixin = {
 
