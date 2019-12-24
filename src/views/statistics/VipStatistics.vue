@@ -205,7 +205,8 @@
                 data: []
             },
             yAxis: {
-                type: 'value'
+                type: 'value',
+                name:'人数'
             },
             series: [{
                 data: [],
@@ -262,7 +263,7 @@
             calculable : true,
             series : [
                 {
-                    name:'面积模式',
+                    name:'会员端口来源',
                     type:'pie',
                     radius : [30, 110],
                     center : ['50%', '50%'],
@@ -330,12 +331,12 @@
             ],
             yAxis : [
                 {
-                    type : 'value'
+                    type : 'value',
+                    name:'人数'
                 }
             ],
             series : [
                 {
-                    name:'直接访问',
                     type:'bar',
                     barWidth: '60%',
                     data:[10, 52, 200, 334, 390, 330, 220]
