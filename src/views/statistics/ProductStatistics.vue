@@ -70,22 +70,22 @@
         <div class="fourTable fiveTable">
               <div class="fourTableAll">
                   <div class="th">
-                    <div class="td">分类名称</div>
-                    <div class="td" @click="moneyToggleHandle">浏览量<span class="arrow">{{moneyToggle?'↓':'↑'}}</span></div>
-                    <div class="td">浏览人数</div>
-                    <div class="td">付款人数</div>
-                    <div class="td">单品转换率</div>
-                    <div class="td">销售数量</div>
-                    <div class="td">销售金额</div>
+                    <div class="td" style="width: 28% !important;">商品名称</div>
+                    <div class="td tq" @click="moneyToggleHandle">浏览量<span class="arrow">{{moneyToggle?'↓':'↑'}}</span></div>
+                    <div class="td tq">浏览人数</div>
+                    <div class="td tq">付款人数</div>
+                    <div class="td tq">单品转换率</div>
+                    <div class="td tq">销售数量</div>
+                    <div class="td tq">销售金额</div>
                   </div>
                   <div class="tr" v-for="(item,index) of proSalesList" :key="index">
-                    <div class="td">{{item.Products_Name}}</div>
-                    <div class="td">{{item.view_count}}</div>
-                    <div class="td">{{item.view_user_count}}</div>
-                    <div class="td">{{item.pay_user_count}}</div>
-                    <div class="td">{{item.conversion_rate}}%</div>
-                    <div class="td">{{item.sales_count}}</div>
-                    <div class="td">￥{{item.sales_money}}</div>
+                    <div class="td tds" @click="goDetail(item.Products_ID)" style="width: 28% !important;">{{item.Products_Name}}</div>
+                    <div class="td tq">{{item.view_count}}</div>
+                    <div class="td tq">{{item.view_user_count}}</div>
+                    <div class="td tq">{{item.pay_user_count}}</div>
+                    <div class="td tq">{{item.conversion_rate}}%</div>
+                    <div class="td tq">{{item.sales_count}}</div>
+                    <div class="td tq">￥{{item.sales_money}}</div>
                   </div>
 
               </div>
@@ -283,6 +283,14 @@ export default class ProductStatistics extends Vue {
       this.protypelist.sort(notSortBy('sales_count'))
     }
   }
+  goDetail(id){
+      this.$router.push({
+          name: 'product',
+          query: {
+              prod_id:id
+          }
+      })
+  }
   moneyToggleHandle(){
     this.moneyToggle = !this.moneyToggle;
     this.page = 1;
@@ -472,7 +480,24 @@ export default class ProductStatistics extends Vue {
   }
 //title
 .selected {
-  background: #409eff;
-  color: #fff;
+  background: #409eff !important;
+  color: #fff !important;
 }
+
+  .tds{
+    box-sizing: border-box !important;
+    line-height: 50px !important;
+    height: 50px !important;
+    overflow: hidden !important;
+    text-align: left !important;
+    display: block !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    cursor: pointer;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+  }
+  .tq{
+    width: 12% !important;
+  }
 </style>

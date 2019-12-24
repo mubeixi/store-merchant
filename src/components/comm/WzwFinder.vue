@@ -42,6 +42,13 @@
 
           <div class="container-right">
               <div class="container-right-title">
+                <div>
+                  <el-tabs>
+                    <el-tab-pane label="图片" name="first"></el-tab-pane>
+                    <el-tab-pane label="视频" name="second"></el-tab-pane>
+                    <el-tab-pane label="商品" name="third"></el-tab-pane>
+                  </el-tabs>
+                </div>
                 <div class="container-right-titleRight">
                   大小不超过5M，已开启水印.
                   <wzw-file-button
@@ -62,17 +69,19 @@
                   </wzw-file-button>
                 </div>
               </div>
-              <div class="container-right-image" style="height:396px;">
+              <div class="container-right-image" style="height:396px;overflow: hidden">
                   <div @click="add(file)" class="image" :key="idx2" v-for="(file,idx2) in current_file_list">
                     <div class="imgUnChecked">
-                      <img v-if="file.checked" src="@/assets/img/imgChecked.png" >
+                      <img class="img" v-if="file.checked" src="@/assets/img/imgChecked.png" >
                     </div>
-                    <img :src="(current_url+file.filename)|domain">
+                    <img class="img" v-lazy="domainFn(current_url+file.filename)"  >
                   </div>
               </div>
               <div class="paginate-box" >
                 <div style="text-align: right;">
                   <el-button @click="minusPage" size="mini"><</el-button><div style="display: inline-block" class="padding10-c">{{currentPage}}/{{totalPage}}</div><el-button size="mini" @click="plusPage">></el-button>
+                  <el-input size="mini" class="pageGo" v-model.number="pageGo" ></el-input>
+                  <span class="spanCur" @click="changeCurrent">跳转</span>
                 </div>
                 <div style="height: 10px;"></div>
               </div>
@@ -93,7 +102,7 @@
 
       <span slot="footer" class="dialog-footer">
           <div>
-             已选择{{finderDialogInstance.select}}/{{finderDialogInstance.limit}}
+             已选择{{select_file_list.length}}/{{finderDialogInstance.limit}}
           </div>
           <div style="margin-left: 200px">
             <el-button type="success" @click="subFn">确 定</el-button>
@@ -115,6 +124,7 @@
   import {Component, Vue, Prop} from 'vue-property-decorator';
   import {domain} from '../../common/utils';
   import WzwFileButton from '@/components/comm/WzwFileButton';
+
 
   @Component({
       props:{
@@ -146,6 +156,7 @@
           currentPage:{
               immediate: true,
               handler(){
+                  this.pageGo=this.currentPage
                   this.current_file_list=this.lists.slice(this.currentPage*18,this.currentPage*18+18)
               }
           },
@@ -178,10 +189,19 @@
       recallVisible=false //新建分组
 
       select_file_list = []
+      pageGo=''
+
+      domainFn(url){
+          return domain(url)
+      }
 
       add(file){
           let fullPath = domain(this.current_url+file.filename)
           if(!file.checked){
+              if(this.finderDialogInstance.limit<=this.select_file_list.length){
+                  this.$message('照片最多可选'+this.finderDialogInstance.limit+'张');
+                  return
+              }
               this.$set(file,'checked',true)
               this.select_file_list.push(fullPath)
           }else{
@@ -205,14 +225,24 @@
           pageSize: 999
       }
 
+      changeCurrent(){
+          if(this.pageGo<this.totalPage){
+              this.currentPage=this.pageGo
+          }else{
+              this.pageGo=this.totalPage
+              this.currentPage=this.totalPage
+          }
+      }
       plusPage(){
           if(this.currentPage==this.totalPage)return;
           this.currentPage++
+          //this.pageGo=this.currentPage
       }
 
       minusPage(){
           if(this.currentPage==1)return;
           this.currentPage--
+          //this.pageGo=this.currentPage
       }
 
       cancel(){
@@ -380,7 +410,7 @@
         left: 5px;
         opacity: 0.8;
       }
-      img{
+      .img{
         width: 100%;
         height: 100%;
       }
@@ -394,5 +424,17 @@
   display: flex;
   align-items: center;
 }
+.pageGo{
+  display: inline-block;max-width: 40px;margin-left: 10px;margin-right: 10px;
+}
+.pageGo /deep/ .el-input__inner{
+  padding-left: 5px;
+  padding-right: 5px;
+  text-align: center;
+}
+  .spanCur{
+    cursor: pointer;
+    color: #67C23A;
+  }
 
 </style>

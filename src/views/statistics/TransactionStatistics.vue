@@ -170,9 +170,9 @@
             <div class="tr" v-for="(item,index) in secondList" :key="index">
               <div class="td">{{item.title}}</div>
               <div class="td" style="width: 160px">￥{{item.pay_money}}</div>
-              <div class="td">{{item.pay_money_compare > 0 ? '↑' : '↓'}} {{item.pay_money_compare}}</div>
+              <div class="td">{{item.pay_money_compare > 0 ? '↑':(item.pay_money_compare ==0?'': '↓')}} {{item.pay_money_compare}}%</div>
               <div class="td">{{item.pay_count}}</div>
-              <div class="td">{{item.pay_count_compare > 0 ? '↑' : '↓'}} {{item.pay_count_compare}}</div>
+              <div class="td">{{item.pay_count_compare > 0 ? '↑': (item.pay_money_compare ==0?'': '↓')}} {{item.pay_count_compare}}%</div>
             </div>
         </div>
       </div>
@@ -476,6 +476,7 @@
                 },
                 xAxis : [
                     {
+                        name:'元',
                         type : 'category',
                         data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                         axisTick: {
@@ -538,9 +539,11 @@
           let lastTime = year + '-' + this.add0(month) + '-' + this.add0(day)
           if(number == 1) {
             // 昨天，start_time和end_time 传同一个
+              this.three_time=[]
             this.three_time[0] = lastTime;
             this.three_time[1] = lastTime;
           }else {
+              this.three_time=[]
             this.three_time[0] = lastTime;
             this.three_time[1] = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate();
           }

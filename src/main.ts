@@ -29,6 +29,12 @@ Vue.use(Common);
 //symbol icon
 require('./assets/js/icon');
 
+//懒加载
+import VueLazyload from 'vue-lazyload'
+Vue.use(VueLazyload, {
+  loading: require('@/assets/img/img-lazy.png'),//加载中图片，一定要有，不然会一直重复加载占位图
+  error: require('@/assets/img/goods-lazy.png')  //加载失败图片
+});
 
 
 Vue.config.productionTip = false;
