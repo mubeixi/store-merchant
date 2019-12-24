@@ -8,15 +8,15 @@
 
             <el-select @change="firstMethod('firstDay')" v-model="firstDay" placeholder="按月统计" size="small" class="selectClass">
               <el-option
-                label="日"
+                label="按日统计"
                 value="day">
               </el-option>
               <el-option
-                label="月"
+                label="按月统计"
                 value="month">
               </el-option>
               <el-option
-                label="年"
+                label="按年统计"
                 value="year">
               </el-option>
             </el-select>
@@ -65,15 +65,15 @@
 
           <el-select @change="secondMethod('secondDay')" v-model="secondDay" placeholder="按月统计" size="small" class="selectClass">
             <el-option
-              label="日"
+              label="按日统计"
               value="day">
             </el-option>
             <el-option
-              label="月"
+              label="按月统计"
               value="month">
             </el-option>
             <el-option
-              label="年"
+              label="按年统计"
               value="year">
             </el-option>
           </el-select>
@@ -122,15 +122,15 @@
 
           <el-select @change="threeMethod('secondDay')" v-model="threeDay" placeholder="按月统计" size="small" class="selectClass">
             <el-option
-              label="日"
+              label="按日统计"
               value="day">
             </el-option>
             <el-option
-              label="月"
+              label="按月统计"
               value="month">
             </el-option>
             <el-option
-              label="年"
+              label="按年统计"
               value="year">
             </el-option>
           </el-select>
@@ -322,6 +322,7 @@
             },
             xAxis : [
                 {
+                    name:'元',
                     type : 'category',
                     data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                     axisTick: {

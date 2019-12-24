@@ -38,6 +38,27 @@
         }
     }
 
+    function fetchProgress(url, opts:any, onProgress){
+        return new Promise((resolve, reject)=>{
+            var xhr = new XMLHttpRequest();
+            xhr.open(opts.method || 'get', url);
+            for(var key in opts.headers || {}){
+                xhr.setRequestHeader(key, opts.headers[key]);
+            }
+
+            xhr.onload = e => resolve(e.target.responseText)
+            xhr.onerror = reject;
+            if (xhr.upload && onProgress){
+                xhr.upload.onprogress = onProgress; //上传
+            }
+            if ('onprogerss' in xhr && onProgress){
+                xhr.onprogress = onProgress; //下载
+            }
+            xhr.send(opts.body)
+        })
+    }
+    //fetchProgress('/upload').then(console.log)
+
     const upFileFn = (file={},name='file')=>{
 
         console.log(file,name)
@@ -46,7 +67,7 @@
             let formdata = new FormData();
             formdata.append(name,file);
 
-            // Vue.$http.post(url,formData,{progress:function(event){
+            // Vue.$http.post(upFIleUrl,formdata,{progress:function(event){
             //     console.log(event);
             //   }
             // }).then((response)=>{}
