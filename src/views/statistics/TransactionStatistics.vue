@@ -461,7 +461,7 @@
           })
         }
         threeChartOption = {
-                color: ['#3398DB'],
+                color: ['#9AC0F3'],
                 tooltip : {
                     trigger: 'axis',
                     axisPointer : {            // 坐标轴指示器，坐标轴触发有效
@@ -493,7 +493,7 @@
                 series : [
                     {
                         type:'bar',
-                        barWidth: '60%',
+                        barWidth: '40',
                         data:[10, 52, 200, 334, 390, 330, 220]
                     }
                 ]
