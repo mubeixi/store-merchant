@@ -23,18 +23,50 @@
 <!--                  haah1（454）-->
 <!--                </div>-->
               </div>
-              <div class="items">新建分组</div>
+              <div class="items">
+                <el-popover
+                  placement="top"
+                  width="160"
+                  trigger="manual"
+                  v-model="recallVisible"
+                >
+                  <el-input size="small" class="line10"></el-input>
+                  <div style="text-align: right; margin: 0">
+                    <el-button size="mini" type="text" @click="recallVisible =false">取消</el-button>
+                    <el-button type="primary" size="mini" >确定</el-button>
+                  </div>
+                  <div  slot="reference"   @click.prevent="recallVisible = true">新建分组</div>
+                </el-popover>
+              </div>
           </div>
 
           <div class="container-right">
               <div class="container-right-title">
                 <div class="container-right-titleRight">
                   大小不超过5M，已开启水印.
-                  <el-button>上传文件</el-button>
+                  <wzw-file-button
+                    :multiple="true"
+                    :limit="9"
+                    @done="upSuccess"
+                  >
+                    <template slot="preview" slot-scope="props">
+
+                      <div class="item" style="display: inline-block;margin-right: 10px;" v-for="(file,idx) in props.previews">
+<!--                        <img :src="file.url" :title="file.name" width="100px" />-->
+                      </div>
+
+                    </template>
+                    <template slot="btn">
+                      <el-button >上传文件</el-button>
+                    </template>
+                  </wzw-file-button>
                 </div>
               </div>
               <div class="container-right-image" style="height:396px;">
                   <div @click="add(file)" class="image" :key="idx2" v-for="(file,idx2) in current_file_list">
+                    <div class="imgUnChecked">
+                      <img v-if="file.checked" src="@/assets/img/imgChecked.png" >
+                    </div>
                     <img :src="(current_url+file.filename)|domain">
                   </div>
               </div>
@@ -81,7 +113,8 @@
     } from 'vuex-class'
   import {fetch as fetchFn} from '../../common/fetch';
   import {Component, Vue, Prop} from 'vue-property-decorator';
-    import {domain} from '../../common/utils';
+  import {domain} from '../../common/utils';
+  import WzwFileButton from '@/components/comm/WzwFileButton';
 
   @Component({
       props:{
@@ -113,7 +146,7 @@
           currentPage:{
               immediate: true,
               handler(){
-                  this.current_file_list=this.lists[this.currentPage-1]
+                  this.current_file_list=this.lists.slice(this.currentPage*18,this.currentPage*18+18)
               }
           },
           show: {
@@ -123,6 +156,9 @@
               }
           },
 
+      },
+      components: {
+          WzwFileButton
       }
   })
 
@@ -139,12 +175,25 @@
       dirs = []//目录list
       lists = []//资源list,也可能是音频、视频、商品
 
+      recallVisible=false //新建分组
 
       select_file_list = []
 
       add(file){
           let fullPath = domain(this.current_url+file.filename)
-          this.select_file_list.push(fullPath)
+          if(!file.checked){
+              this.$set(file,'checked',true)
+              this.select_file_list.push(fullPath)
+          }else{
+              this.$set(file,'checked',false)
+              let index = this.select_file_list.indexOf(fullPath);
+              if (index > -1) {
+                  this.select_file_list.splice(index, 1);
+              }
+          }
+
+
+
       }
 
       source_type = 'img'
@@ -219,15 +268,30 @@
                   arr.push(tempLists)
               }
 
-              this.lists = arr;
+              console.log(arr,"sss")
+              for(let item of arr){
+                  for(let it of item){
+                      this.lists.push(it)
+                  }
+              }
+              //this.lists = arr;
               this.current_url = res.data.current_url
 
               let len = tempLists.length
-              this.totalPage = this.lists.length
+              this.totalPage = Math.ceil(this.lists.length/18)
 
               this.currentPage = 1
+              this.current_file_list=this.lists.slice(this.currentPage*18,this.currentPage*18+18)
 
           }).catch(e=>{console.log(e)})
+      }
+
+
+      uplists = []
+
+      upSuccess(){
+          let file_list = {...arguments}
+          this.uplists = file_list
       }
 
       created(){
@@ -290,6 +354,8 @@
     margin-bottom: 20px;
     .container-right-titleRight{
       margin-left: auto;
+      display: flex;
+      align-items: center;
     }
   }
   .container-right-image{
@@ -302,6 +368,18 @@
       height: 112px;
       margin-left: 10px;
       margin-bottom: 20px;
+      position: relative;
+      .imgUnChecked{
+        width: 25px;
+        height: 25px;
+        box-sizing: border-box;
+        border: 1px solid #ffffff;
+        background-color: #EEEEEE;
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        opacity: 0.8;
+      }
       img{
         width: 100%;
         height: 100%;
