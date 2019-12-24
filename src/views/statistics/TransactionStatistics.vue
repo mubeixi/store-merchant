@@ -7,9 +7,9 @@
           <el-button type="primary" size="small" @click="firstMethod('output')">导出数据</el-button>
 
           <div class="buttonRadio">
-            <div class="radioDiv" @click="firstDayChange(1)">昨天</div>
-            <div class="radioDiv" @click="firstDayChange(7)">最近7天</div>
-            <div class="radioDiv" @click="firstDayChange(30)">最近30天</div>
+            <div class="radioDiv" :class="f_current == 1 ? 'selected' : ''" @click="firstDayChange(1)">昨天</div>
+            <div class="radioDiv" :class="f_current == 2 ? 'selected' : ''" @click="firstDayChange(7)">最近7天</div>
+            <div class="radioDiv" :class="f_current == 3 ? 'selected' : ''" @click="firstDayChange(30)">最近30天</div>
           </div>
 
           <el-date-picker
@@ -19,7 +19,7 @@
             end-placeholder="结束日期"
             value-format="yyyy-MM-dd"
             size="small"
-            @change="firstMethod"
+            @change="firstMethod('time_change')"
             style="width: 280px"
             :default-time="['00:00:00', '23:59:59']">
           </el-date-picker>
@@ -140,8 +140,8 @@
           <el-button type="primary" size="small" @click="secondMethod('output')">导出数据</el-button>
 
           <div class="buttonRadio">
-            <div class="radioDiv" @click="momentMonth('second')">本月</div>
-            <div class="radioDiv" @click="prevMonth('second')">上月</div>
+            <div class="radioDiv" :class="s_current == 1 ? 'selected' : ''" @click="momentMonth('second')">本月</div>
+            <div class="radioDiv" :class="s_current == 2 ? 'selected' : ''" @click="prevMonth('second')">上月</div>
           </div>
 
           <el-date-picker
@@ -277,6 +277,8 @@
     })
 
     export default class TransactionStatistics extends Vue {
+        f_current = 0
+        s_current = 0
         first_time = []
         firstData = {}
         // 绘制图表
@@ -351,12 +353,20 @@
         };
         // 时间调整
         firstDayChange(number) {
+          if(number == 1) {
+            this.f_current = 1;
+          }else if(number == 7) {
+            this.f_current = 2
+          }else {
+            this.f_current = 3
+          }
           let date = new Date();
           let yestdayTime = date.getTime() - number * 24 * 3600 * 1000
           let year = new Date(yestdayTime).getFullYear();
           let month = new Date(yestdayTime).getMonth() + 1;
           let day = new Date(yestdayTime).getDate();
           let lastTime = year + '-' + this.add0(month) + '-' + this.add0(day)
+          this.first_time = [];
           this.first_time[0] = lastTime;
           this.first_time[1] = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate();
           this.firstMethod('');
@@ -367,6 +377,9 @@
             start_time: this.first_time[0] || '',
             end_time: this.first_time[1] || '',
             output: arg == 'output' ? 1 : 0
+          }
+          if(arg == 'time_change') {
+            this.f_current = 0;
           }
           getTradeStatistic(data).then(res=>{
             if(arg == 'output') {
@@ -591,6 +604,7 @@
           if(arg == 'second') {
             this.second_time = year + '-' + month;
             this.secondMethod();
+            
           }else {
             this.fourTime = year + '-' + month;
             this.fourMehtod();
@@ -697,6 +711,10 @@
           border-right: 1px solid #DCDCDC;
           font-size: 12px;
           color: #666666;
+        }
+        .selected {
+          background: #409eff;
+          color: #fff;
         }
       }
     }

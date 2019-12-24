@@ -3,7 +3,7 @@
     <div class="wrap">
       <div class="firstChart marginB">
         <div class="firstTitle">
-          <div class="titleFont">交易数据</div>
+          <div class="titleFont">商品类目销售分析</div>
           <div class="titleButton">
             <el-button type="primary" size="small" @click="proOutput">导出数据</el-button>
 
@@ -46,7 +46,7 @@
       </div>
       <div class="firstChart marginB">
         <div class="firstTitle">
-          <div class="titleFont">交易数据</div>
+          <div class="titleFont">商品销售情况</div>
           <div class="titleButton">
             <el-button type="primary" size="small" @click="outputHandle">导出数据</el-button>
 
