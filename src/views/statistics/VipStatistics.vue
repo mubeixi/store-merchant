@@ -258,9 +258,11 @@
             legend: {
                 x : 'center',
                 y : 'bottom',
-                data:[]
+                data:[{
+                }]
             },
             calculable : true,
+            color:['#9AC0F3','#F1C087','#6E7788','#ED84B8','#8894A8'],
             series : [
                 {
                     name:'会员端口来源',
@@ -307,7 +309,7 @@
         }
 
         threeOpttion={
-            color: ['#3398DB'],
+            color: ['#9AC0F3'],
             tooltip : {
                 trigger: 'axis',
                 axisPointer : {            // 坐标轴指示器，坐标轴触发有效
@@ -339,7 +341,7 @@
             series : [
                 {
                     type:'bar',
-                    barWidth: '60%',
+                    barWidth: '40',
                     data:[10, 52, 200, 334, 390, 330, 220]
                 }
             ]
