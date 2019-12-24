@@ -18,7 +18,11 @@ export default function (request, next) {
     } else {
 
       window.funLoading && window.funLoading.close();
-
+console.log(response)
+      if(!response.hasOwnProperty('body')){
+        response.body = {}
+        response.body.errorCode = 0
+      }
       switch (+response.body.errorCode) {
         case 66001:
           fun.error({msg:response.body.msg})
