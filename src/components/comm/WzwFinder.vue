@@ -43,7 +43,7 @@
           <div class="container-right">
               <div class="container-right-title">
                 <div>
-                  <el-tabs>
+                  <el-tabs >
                     <el-tab-pane label="图片" name="first"></el-tab-pane>
                     <el-tab-pane label="视频" name="second"></el-tab-pane>
                     <el-tab-pane label="商品" name="third"></el-tab-pane>

@@ -20,7 +20,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'https://new401.bafangka.com/api', // 'https://new401.bafangka.com/api',
+        target: 'https://new401t.bafangka.com/api', // 'https://new401.bafangka.com/api',
         changeOrigin: true,
         // http2: true,
         ws: true,

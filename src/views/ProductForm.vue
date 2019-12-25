@@ -251,7 +251,7 @@
       </el-form-item>
       <el-form-item label="运费计算" prop="goods">
         <el-radio-group v-model="ruleForm.goods">
-          <el-radio label="0" style="display: block;margin-bottom: 15px"  :disabled="noEditField.Products_IsShippingFree">
+          <el-radio label="1" style="display: block;margin-bottom: 15px"  :disabled="noEditField.Products_IsShippingFree">
             免运费
               <el-select :disabled="noEditField.Products_IsShippingFree"   v-model="ruleForm.freight" placeholder="请选择类型"  style="width: 160px;margin-left: 37px;">
                 <template v-for="(prod,prodIn) of prodConfig.shipping_company_dropdown">
@@ -259,7 +259,7 @@
                 </template>
               </el-select>
           </el-radio>
-          <el-radio :disabled="noEditField.Products_IsShippingFree"  label="1" style="display: block;margin-bottom: 15px" >物流模板</el-radio>
+          <el-radio :disabled="noEditField.Products_IsShippingFree"  label="0" style="display: block;margin-bottom: 15px" >物流模板</el-radio>
 <!--          <el-radio  label="2" style="display: block;margin-bottom: 15px" >-->
 <!--            固定运费-->
 <!--            <el-input   v-model="ruleForm.freightGu"  class="sortInput" placeholder="运费金额：¥" style="width: 200px;margin-left: 23px;"></el-input>-->
@@ -1402,7 +1402,8 @@
                 if(child_arr.length>0){
                     cate_data[cate.Category_ID] = [...child_arr]
                 }else{
-                    cate_data[cate.Category_ID] = []
+                    //修改分类不对
+                    //cate_data[cate.Category_ID] = []
                 }
 
             }
