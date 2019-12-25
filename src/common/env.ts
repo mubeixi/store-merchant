@@ -1,6 +1,6 @@
-export const staticUrl = process.env.NODE_ENV === 'production'?'':'https://new401.bafangka.com';
+export const staticUrl = process.env.NODE_ENV === 'production'?'':'https://new401t.bafangka.com';
 
-export const front_url = 'https://new401.bafangka.com/fre/';
+export const front_url = 'https://new401t.bafangka.com/fre/';
 
 export const apiKey = '458f_$#@$*!fdjisdJDFHUk4%%653154%^@#(FSD#$@0-T';
 
