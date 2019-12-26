@@ -157,6 +157,7 @@
         text-align: center;
         cursor: pointer;
         .cover {
+          background: #f2f2f2;
           .cover-full-bg(contain, 0, none);
 
           width: 36px;
