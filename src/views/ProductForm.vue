@@ -608,7 +608,8 @@
         objTranslate,
         plainArray,
         getArrayMulite,
-        createTmplArray
+        createTmplArray,
+        findArrayIdx
     } from '@/common/utils';
     import {fun} from '@/common';
 
@@ -1382,6 +1383,7 @@
             let child_arr = [];
             let cate_data = {}
             for(var cate of origin_cate_list){
+                
                 child_arr = [];
 
                 //把所有选中的子级类目加进去
@@ -1398,13 +1400,17 @@
 
                 }
 
-                //如果有子的，那么就把父级也加进去
-                if(child_arr.length>0){
-                    cate_data[cate.Category_ID] = [...child_arr]
-                }else{
-                    //修改分类不对
-                    //cate_data[cate.Category_ID] = []
+                let isHas = findArrayIdx(dataArr,{Category_ID:cate.Category_ID})
+                if(isHas!==false){
+                  //如果有子的，那么就把父级也加进去
+                  if(child_arr.length>0){
+                      cate_data[cate.Category_ID] = [...child_arr]
+                  }else{
+                      //修改分类不对
+                      cate_data[cate.Category_ID] = []
+                  }
                 }
+                
 
             }
 
