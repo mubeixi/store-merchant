@@ -85,7 +85,7 @@ function setAttrData() {
           }
           this.value.list.push( {
             title: '标题',
-            img: 'https://new401.bafangka.com/uploadfiles/wkbq6nc2kc/image/20191226090947200.png',
+            img: '',
             link: '',
             linkType: '',
             tooltip: ''
@@ -193,28 +193,28 @@ class Nav extends Common {
     list: [
       {
         title: '标题',
-        img: 'https://new401.bafangka.com/uploadfiles/wkbq6nc2kc/image/20191226090947200.png',
+        img: '',
         link: '',
         linkType: '',
         tooltip: ''
       },
       {
         title: '标题',
-        img: 'https://new401.bafangka.com/uploadfiles/wkbq6nc2kc/image/20191226090947200.png',
+        img: '',
         link: '',
         linkType: '',
         tooltip: ''
       },
       {
         title: '标题',
-        img: 'https://new401.bafangka.com/uploadfiles/wkbq6nc2kc/image/20191226090947200.png',
+        img: '',
         link: '',
         linkType: '',
         tooltip: ''
       },
       {
         title: '标题',
-        img: 'https://new401.bafangka.com/uploadfiles/wkbq6nc2kc/image/20191226090947200.png',
+        img: '',
         link: '',
         linkType: '',
         tooltip: ''

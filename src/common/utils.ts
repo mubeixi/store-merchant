@@ -1,8 +1,8 @@
 // @ts-nocheck
 import Vue from 'vue';
 import {fun} from "./index";
-// import {staticUrl} from "@/common/env";
-const staticUrl = process.env.VUE_APP_STATIC_URL
+import {staticUrl} from "./env";
+// const staticUrl = process.env.VUE_APP_STATIC_URL
 
 import _ from 'underscore';
 

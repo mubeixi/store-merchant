@@ -4,7 +4,7 @@
       :visible.sync="innerVisible"
       :title="label"
       :top="top"
-      width="974px"
+      width="1010px"
       @close="cancel"
       :close-on-click-modal="maskClose"
       :close-on-press-escape="maskClose"
@@ -14,43 +14,41 @@
 
 
       <div class="container">
-          <div class="container-left">
-              <div class="container-leftTop">
-                <div class="item" v-for="(dir,idx) in dirs" :key="idx" @click="selectDir(dir)">
-                  {{dir.filename}}
-                </div>
-<!--                <div class="item" v-for="n in 10">-->
-<!--                  haah1（454）-->
+<!--          <div class="container-left">-->
+<!--              <div class="container-leftTop">-->
+<!--                <div class="item" v-for="(dir,idx) in dirs" :key="idx" @click="selectDir(dir)">-->
+<!--                  {{dir.filename}}-->
 <!--                </div>-->
-              </div>
-              <div class="items">
-                <el-popover
-                  placement="top"
-                  width="160"
-                  trigger="manual"
-                  v-model="recallVisible"
-                >
-                  <el-input size="small" class="line10"></el-input>
-                  <div style="text-align: right; margin: 0">
-                    <el-button size="mini" type="text" @click="recallVisible =false">取消</el-button>
-                    <el-button type="primary" size="mini" >确定</el-button>
-                  </div>
-                  <div  slot="reference"   @click.prevent="recallVisible = true">新建分组</div>
-                </el-popover>
-              </div>
-          </div>
+<!--              </div>-->
+<!--              <div class="items">-->
+<!--                <el-popover-->
+<!--                  placement="top"-->
+<!--                  width="160"-->
+<!--                  trigger="manual"-->
+<!--                  v-model="recallVisible"-->
+<!--                >-->
+<!--                  <el-input size="small" class="line10"></el-input>-->
+<!--                  <div style="text-align: right; margin: 0">-->
+<!--                    <el-button size="mini" type="text" @click="recallVisible =false">取消</el-button>-->
+<!--                    <el-button type="primary" size="mini" >确定</el-button>-->
+<!--                  </div>-->
+<!--                  <div  slot="reference"   @click.prevent="recallVisible = true">新建分组</div>-->
+<!--                </el-popover>-->
+<!--              </div>-->
+<!--          </div>-->
 
           <div class="container-right">
               <div class="container-right-title">
-                <div>
-                  <el-tabs >
-                    <el-tab-pane label="图片" name="first"></el-tab-pane>
-                    <el-tab-pane label="视频" name="second"></el-tab-pane>
-                    <el-tab-pane label="商品" name="third"></el-tab-pane>
+                <div class="w300">
+                  <el-tabs v-model="source_type"  @tab-click="handleTabClick">
+                    <el-tab-pane label="图片" name="img"></el-tab-pane>
+                    <el-tab-pane label="视频" name="video"></el-tab-pane>
+                    <el-tab-pane label="商品" name="goods"></el-tab-pane>
                   </el-tabs>
                 </div>
+
                 <div class="container-right-titleRight">
-                  大小不超过5M，已开启水印.
+                  <span class="padding10-c">大小不超过5M，已开启水印.</span>
                   <wzw-file-button
                     :multiple="true"
                     :limit="9"
@@ -70,11 +68,22 @@
                 </div>
               </div>
               <div class="container-right-image" style="height:396px;overflow: hidden">
-                  <div @click="add(file)" class="image" :key="idx2" v-for="(file,idx2) in current_file_list">
-                    <div class="imgUnChecked">
-                      <img class="img" v-if="file.checked" src="@/assets/img/imgChecked.png" >
-                    </div>
-                    <img class="img" v-lazy="domainFn(current_url+file.filename)"  >
+                  <div  class="image" :key="idx2" v-for="(file,idx2) in current_file_list" :style="{marginRight:((idx2+1)%8==0?'0px':'')}">
+                    <template v-if="file.is_dir" >
+                      <div class="dir" @click.top="selectDir(file)" >
+                        <div>
+                          <i style="font-size: 36px;" class="el-icon-folder-opened"></i>
+                        </div>
+                        <span class="font12">{{file.filename}}</span>
+                      </div>
+                    </template>
+                    <template v-else>
+                      <div @click="add(file)" class="imgUnChecked">
+                        <img class="img" v-if="file.checked" src="@/assets/img/imgChecked.png" >
+                      </div>
+                      <img @click="add(file)" class="img" v-lazy="domainFn(current_url+file.filename)"  >
+                    </template>
+
                   </div>
               </div>
               <div class="paginate-box" >
@@ -157,7 +166,7 @@
               immediate: true,
               handler(){
                   this.pageGo=this.currentPage
-                  this.current_file_list=this.lists.slice(this.currentPage*18,this.currentPage*18+18)
+                  this.current_file_list=this.lists.slice((this.currentPage-1)*this.pageSize,(this.currentPage-1)*this.pageSize+this.pageSize)
               }
           },
           show: {
@@ -177,8 +186,15 @@
 
       @State finderDialogInstance
 
+
+      handleTabClick(tab, event){
+
+          this.init_func()
+          console.log(tab, event);
+      }
+
       current_file_list = []
-      pageSize = 18
+      pageSize = 24
       currentPage = 1
       totalPage = 1
       current_url = ''
@@ -266,24 +282,27 @@
       }
 
       init_func(ppath=''){
+          console.log('点击目录略')
 
-          let dir=ppath,order='Name',path=''
+          let dir=ppath,order='Name',path='',source_type=this.source_type//控制类型
+          console.log(`source_type is ${source_type}`)
           fetchFn(
               'nature',
-              {dir,order,path},
+              {dir,order,path,source_type},
               false,
-              `http://localhost:9100/member/file_manager_json.php?dir=${dir}&order=${order}&path=${path}`,
+              `http://localhost:9100/member/file_manager_json.php?dir=${dir}&order=${order}&path=${path}&source_type=${source_type}`,
               'get'
           ).then(res=>{
 
               let tempDirs = [],tempLists = []
               for(var file of res.data.file_list){
+                  tempLists.push(file)
                   //空目录不放了把
-                  if(file.is_dir){
-                      tempDirs.push(file)
-                  }else if(file.is_photo){
-                      tempLists.push(file)
-                  }
+                  // if(file.is_dir){
+                  //     tempDirs.push(file)
+                  // }else if(file.is_photo){
+                  //     tempLists.push(file)
+                  // }
               }
 
 
@@ -308,10 +327,10 @@
               this.current_url = res.data.current_url
 
               let len = tempLists.length
-              this.totalPage = Math.ceil(this.lists.length/18)
+              this.totalPage = Math.ceil(this.lists.length/this.pageSize)
 
               this.currentPage = 1
-              this.current_file_list=this.lists.slice(this.currentPage*18,this.currentPage*18+18)
+              this.current_file_list=this.lists.slice((this.currentPage-1)*this.pageSize,(this.currentPage-1)*this.pageSize+this.pageSize)
 
           }).catch(e=>{console.log(e)})
       }
@@ -378,7 +397,7 @@
   max-height: 450px;
   flex: 1;
   box-sizing: border-box;
-  border-left: 1px solid #999999;
+  /*border-left: 1px solid #e7e7e7;*/
   .container-right-title {
     display: flex;
     margin-bottom: 20px;
@@ -392,13 +411,30 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: start;
-    padding-left: 10px;
+    /*padding-left: 10px;*/
+    .dir{
+      width: 112px;
+      height: 112px;
+      padding: 26px 0;
+      border: 1px solid #eee;
+      text-align: center;
+
+      box-sizing: border-box;
+      :hover{
+        color: #155bd4;
+        i{
+
+        }
+      }
+    }
     .image{
       width: 112px;
       height: 112px;
-      margin-left: 10px;
+      margin-right: 10px;
       margin-bottom: 20px;
+      background: #f2f2f2;
       position: relative;
+      cursor: pointer;
       .imgUnChecked{
         width: 25px;
         height: 25px;
@@ -409,10 +445,16 @@
         top: 5px;
         left: 5px;
         opacity: 0.8;
+        z-index: 3;
       }
       .img{
+        z-index: 2;
         width: 100%;
-        height: 100%;
+        height: auto;
+        max-height: 100%;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
       }
     }
   }
