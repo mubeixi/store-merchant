@@ -123,7 +123,6 @@
 
             <div class="row-container flex" v-if="['nav'].indexOf(item.row_type)!==-1">
               <upload-img-components
-
                 :cropperOption="{aspectRatio:1/1}"
                 class="myUploadImg"
                 :onSuccess='item.imgCB'
