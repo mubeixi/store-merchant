@@ -342,7 +342,6 @@
 
     <div class="bottomFixed">
       <el-button size="small" type="primary" :loading="isLoading" @click="submitForm('ruleForm')">提交保存</el-button>
-      <el-button size="small" @click="resetForm('ruleForm')">重置</el-button>
       <el-button size="small" @click="goProduct">返回</el-button>
     </div>
     <bind-cate-components
