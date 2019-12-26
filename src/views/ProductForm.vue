@@ -1383,7 +1383,7 @@
             let child_arr = [];
             let cate_data = {}
             for(var cate of origin_cate_list){
-                
+
                 child_arr = [];
 
                 //把所有选中的子级类目加进去
@@ -1400,17 +1400,20 @@
 
                 }
 
-                let isHas = findArrayIdx(dataArr,{Category_ID:cate.Category_ID})
-                if(isHas!==false){
-                  //如果有子的，那么就把父级也加进去
-                  if(child_arr.length>0){
-                      cate_data[cate.Category_ID] = [...child_arr]
-                  }else{
-                      //修改分类不对
-                      cate_data[cate.Category_ID] = []
-                  }
+
+                console.log(child_arr)
+                //如果有子的，那么就把父级也加进去
+                if(child_arr.length>0){
+                    cate_data[cate.Category_ID] = [...child_arr]
+                }else{
+                    //修改分类不对
+                    let isHas = findArrayIdx(dataArr,{Category_ID:cate.Category_ID})
+                    if(isHas!==false){
+                        cate_data[cate.Category_ID] = []
+                    }
+
                 }
-                
+
 
             }
 
@@ -1772,7 +1775,6 @@
                     let cates = []
                     //铺平数组
                     plainArray(res.data,'child',cates)
-
                     for(var cate of cates){
                         if(select_cate_ids.indexOf(cate.Category_ID+'')!=-1){
                             this.cate_list.push(cate)
@@ -1789,14 +1791,20 @@
                         child_arr = [];
 
                         for(var item of dataArr){
-                            if(item.child)continue;
-                            if(cate.hasOwnProperty('child')){
-                                for(var child of cate.child){
-                                    if(child.Category_ID === item.Category_ID){
-                                        child_arr.push(item.Category_ID)
+                            if(item.child){
+                                if(cate.hasOwnProperty('child')){
+                                    for(var child of cate.child){
+                                        if(child.Category_ID === item.Category_ID){
+                                            child_arr.push(item.Category_ID)
+                                        }
                                     }
                                 }
+                            }else{
+                                    if(cate.Category_ID === item.Category_ID){
+                                        child_arr.push(item.Category_ID)
+                                    }
                             }
+
 
                         }
 
