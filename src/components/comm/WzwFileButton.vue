@@ -80,7 +80,7 @@
         return suffix;
     }
 
-    const upFileFn = async (file={},current_path,name='file')=>{
+    const upFileFn = async ({file={},current_path,name='file'})=>{
 
         let aliyunOssSign = null
         await getAliyunOssSign({full_path:current_path}).then(res=>{
@@ -97,7 +97,6 @@
             // signature: "K4xc2WwaqzgCqO+FjP92opRMpbw="
 
         })
-
 
 
         console.log(file,name)
@@ -242,13 +241,14 @@
             let promiseList = []
             for(var i = 0; i < curFiles.length; i++){
                 let url = ''
+                curFiles.percent = 0 //百分比
                 this.previews.push({
                     size:returnFileSize(curFiles[i].size),
                     name:curFiles[i].name,
                     url:window.URL.createObjectURL(curFiles[i])
                 })
 
-                promiseList.push(upFileFn(curFiles[i],this.current_path))
+                promiseList.push(upFileFn({file:curFiles[i],current_path:this.current_path,}))
             }
 
             this.preview(this.previews)
