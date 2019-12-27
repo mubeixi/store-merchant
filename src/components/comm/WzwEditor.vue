@@ -19,7 +19,6 @@
     import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
     import "@ckeditor/ckeditor5-build-classic/build/translations/zh-cn.js";
 
-
     import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
     import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
     import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
@@ -39,7 +38,7 @@
     import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 
     import Image from '@ckeditor/ckeditor5-image/src/image';
-    import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+    // import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
     import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
     import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
     import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
@@ -60,35 +59,20 @@
     //从office中复制文档
     import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 
-
-    import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
-    import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
-    // const InsertImage = (e)=>{
-    //
-    //     // 使用 CKeditor 提供的 API 修改上传适配器
-    //     e.plugins.get("WordCount").on('update', ( evt, stats ) => {
-    //
-    //     } );
-    //
-    // }
-    // class InsertImage extends Plugin {
-    //     init() {
-    //         console.log( 'InsertImage was initialized' );
-    //     }
-    // }
-
     import resource from './resource/resource';
-
-
     import {myUploadLoader} from './myUploadLoader';
     const myUpload = (e)=>{
         //console.log(e)
         // 使用 CKeditor 提供的 API 修改上传适配器
         e.plugins.get("FileRepository").createUploadAdapter = loader => new myUploadLoader(loader);
     }
-
-
+    import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
+    function RemoveFormatLinks( editor ) {
+        // Extend the editor schema and mark the "linkHref" model attribute as formatting.
+        editor.model.schema.setAttributeProperties( 'linkHref', {
+            isFormatting: true
+        } );
+    }
     const wordCountPlugin = (e)=>{
 
         // 使用 CKeditor 提供的 API 修改上传适配器
@@ -105,7 +89,7 @@
     const toolbar = {
         items: [
             'heading', '|',
-            'bold', 'italic', 'link', 'undo', 'redo','horizontalLine',
+            'bold', 'italic', 'link', 'undo', 'redo','horizontalLine','removeFormat',
             '|',
             'fontFamily','fontSize','fontColor','fontBackgroundColor',
             '|',
@@ -117,16 +101,6 @@
 
         ]
     }
-    // const toolbar = ['heading', '|', 'fontFamily','fontSize','fontColor','fontBackgroundColor','bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote','image',"undo", "redo","indent", "outdent", '|',"imageUpload",
-    //     // "ckfinder",
-    //     "mediaEmbed", "insertTable", "tableColumn", "tableRow", "mergeTableCells"]
-
-
-    // const Source = (e)=>{
-    //     // 使用 CKeditor 提供的 API 修改上传适配器
-    //     e.plugins.get("FileRepository").createUploadAdapter = loader => new myUploadLoader(loader);
-    // }
-
 
     @Component({
         components:{
@@ -149,14 +123,13 @@
             }
         },
     })
-
     export default class WzwEditor extends Vue{
 
         editorInstance = null
         editor = ClassicEditor
         Characters = 0
         Words = 0
-        editorData =  '<p>请输入内容.</p>'
+        editorData =  '请输入内容.'
         editorConfig = {
             language: "zh-cn",
             toolbar:toolbar,
@@ -165,10 +138,12 @@
                 FontFamily,FontBackgroundColor,FontColor,FontSize,
                 SimpleUploadAdapter,WordCount,
                 Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize,ImageUploadProgress,MediaEmbed,resource,
-                BlockQuote,Indent, Table, TableToolbar,PasteFromOffice,HorizontalLine
+                BlockQuote,Indent, Table, TableToolbar,PasteFromOffice,HorizontalLine,
+                RemoveFormat,
+
             ],
             extraPlugins: [
-                myUpload,wordCountPlugin
+                myUpload,wordCountPlugin,RemoveFormatLinks
             ], // 添加自定义图片上传适配插件
             codeBlock: {
                 languages: [

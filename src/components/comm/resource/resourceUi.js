@@ -108,7 +108,7 @@ export default class ResourceUi extends Plugin {
 
       // Execute command when an item from the dropdown is selected.
       this.listenTo( dropdownView, 'execute', evt => {
-        console.log(`触发 command ${evt.source.commandName}参数${evt.source.commandParam}`)
+        console.log(`触发 command ${evt.source.commandName}参数`,evt.source.commandParam)
         editor.execute( evt.source.commandName, { value: evt.source.commandParam } );
         editor.editing.view.focus();
       } );

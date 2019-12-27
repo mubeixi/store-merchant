@@ -32,6 +32,7 @@ export default class CkedittResourceCommand extends Command {
    * @inheritDoc
    */
   constructor( editor ) {
+
     super( editor );
 
     // Remove default document listener to lower its priority.
@@ -46,10 +47,10 @@ export default class CkedittResourceCommand extends Command {
    */
   refresh() {
     const imageCommand = this.editor.commands.get( 'imageInsert' );
-    const linkCommand = this.editor.commands.get( 'link' );
+    //const linkCommand = this.editor.commands.get( 'link' );
 
     // The CKFinder command is enabled when one of image or link command is enabled.
-    this.isEnabled = imageCommand.isEnabled || linkCommand.isEnabled;
+    this.isEnabled = imageCommand.isEnabled ; //|| linkCommand.isEnabled;
   }
 
   /**
@@ -60,76 +61,29 @@ export default class CkedittResourceCommand extends Command {
     console.log(opt)
     const editor = this.editor;
 
+
+    // const model = editor.model;
+    // model.change( writer => {
+    //   const filesToUpload = Array.isArray( options.file ) ? options.file : [ options.file ];
+    //
+    //   for ( const file of filesToUpload ) {
+    //     uploadImage( writer, model, fileRepository, file );
+    //   }
+    // } );
+
     //const openerMethod = 'modal';
 
     const options = Object.assign({limit:10,type:'img'},opt);
 
-    //options.chooseFiles = true;
-
-    // Cache the user-defined onInit method
-    //const originalOnInit = options.onInit;
-
-    // Pass the lang code to the CKFinder if not defined by user.
-    // if ( !options.language ) {
-    //   options.language = editor.locale.uiLanguage;
-    // }
-
-    // The onInit method allows to extend CKFinder's behavior. It is used to attach event listeners to file choosing related events.
-    // options.onInit = finder => {
-    //   // Call original options.onInit if it was defined by user.
-    //   if ( originalOnInit ) {
-    //     originalOnInit( finder );
-    //   }
-    //
-    //   finder.on( 'files:choose', evt => {
-    //     const files = evt.data.files.toArray();
-    //
-    //     // Insert links
-    //     const links = files.filter( file => !file.isImage() );
-    //     const images = files.filter( file => file.isImage() );
-    //
-    //     for ( const linkFile of links ) {
-    //       editor.execute( 'link', linkFile.getUrl() );
-    //     }
-    //
-    //     const imagesUrls = [];
-    //
-    //     for ( const image of images ) {
-    //       const url = image.getUrl();
-    //
-    //       imagesUrls.push( url ? url : finder.request( 'file:getProxyUrl', { file: image } ) );
-    //     }
-    //
-    //     if ( imagesUrls.length ) {
-    //       insertImages( editor, imagesUrls );
-    //     }
-    //   } );
-    //
-    //   finder.on( 'file:choose:resizedImage', evt => {
-    //     const resizedUrl = evt.data.resizedUrl;
-    //
-    //     if ( !resizedUrl ) {
-    //       const notification = editor.plugins.get( 'Notification' );
-    //       const t = editor.locale.t;
-    //
-    //       notification.showWarning( t( 'Could not obtain resized image URL.' ), {
-    //         title: t( 'Selecting resized image failed' ),
-    //         namespace: 'ckfinder'
-    //       } );
-    //
-    //       return;
-    //     }
-    //
-    //     insertImages( editor, [ resizedUrl ] );
-    //   } );
-    // };
 
     const callFn = {
       up:(url)=>{
         insertImages( editor, [url] );
+        editor.editing.view.focus();
       },
       choose:(urls)=>{
         insertImages( editor, urls );
+        editor.editing.view.focus();
       }
     }
 
@@ -138,7 +92,30 @@ export default class CkedittResourceCommand extends Command {
   }
 }
 
+import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
+
+const utilsInsertImageFunc = function( writer, model, attributes = {} ) {
+  const imageElement = writer.createElement( 'image', attributes );
+  const insertAtSelection = findOptimalInsertionPosition( model.document.selection, model );
+  model.insertContent( imageElement,insertAtSelection);
+  // Inserting an image might've failed due to schema regulations.
+  //就是这个，让无法再次插入了
+  if ( imageElement.parent ) {
+    writer.setSelection( imageElement, 'on' );
+  }
+
+
+
+  // // const Paragraph = writer.createElement( 'paragraph', { alignment: 'center' });
+  // model.insertContent( Paragraph);
+  // console.log(Paragraph)
+  //model.insertElement('paragraph');
+
+}
+
+
 function insertImages( editor, urls ) {
+  console.log(urls)
   const imageCommand = editor.commands.get( 'imageInsert' );
 
   // Check if inserting an image is actually possible - it might be possible to only insert a link.
@@ -154,5 +131,38 @@ function insertImages( editor, urls ) {
     return;
   }
 
-  editor.execute( 'imageInsert', { source: urls } );
+
+  //editor.execute( 'imageInsert', { source: urls } );
+
+  const options = { source: urls }
+  //自己实现imageInsert的cocommand
+  const model = editor.model;
+  model.change( writer => {
+    const sources = Array.isArray( options.source ) ? options.source : [ options.source ];
+
+    for ( const src of sources ) {
+      utilsInsertImageFunc( writer, model, { src } );
+    }
+  } );
+
+  model.change( writer => {
+    const Paragraph = writer.createElement( 'paragraph', { alignment: 'center' });
+
+    model.insertContent( Paragraph);
+  } );
+
+
+
+
+  // const docFrag = editor.model.change( writer => {
+  //   const p1 = writer.createElement( 'paragraph' );
+  //
+  //   writer.append( p1, docFrag );
+  //
+  //
+  //   return docFrag;
+  // } );
+  //
+  // editor.model.insertContent( docFrag );
+
 }

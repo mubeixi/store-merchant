@@ -35,8 +35,7 @@ export default class CkedittResource extends Plugin {
     // const schema = editor.model.schema;
     // const conversion = editor.conversion;
     // const fileRepository = editor.plugins.get(FileRepository);
-
-
+    console.log(444444444444)
     editor.commands.add('openResource', new CkedittResourceCommand( editor ) );
   }
 

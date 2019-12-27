@@ -267,8 +267,9 @@
 
       subFn(){
 
-          window.finderDialogInstance.callFn.choose(this.select_file_list)
           this.cancel()
+          window.finderDialogInstance.callFn.choose(this.select_file_list)
+
           //this.$emit('')
       }
 

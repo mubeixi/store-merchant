@@ -6,7 +6,7 @@ export class FUNFinder {
   }
 
   static open({options,editor,callFn}){
-
+    console.log(54543534,finderDialogInstance)
     finderDialogInstance.visible = true
     finderDialogInstance.callFn = callFn
   }
