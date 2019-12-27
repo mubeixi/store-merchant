@@ -14,44 +14,49 @@
 
 
       <div class="container">
-<!--          <div class="container-left">-->
-<!--              <div class="container-leftTop">-->
-<!--                <div class="item" v-for="(dir,idx) in dirs" :key="idx" @click="selectDir(dir)">-->
-<!--                  {{dir.filename}}-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <div class="items">-->
-<!--                <el-popover-->
-<!--                  placement="top"-->
-<!--                  width="160"-->
-<!--                  trigger="manual"-->
-<!--                  v-model="recallVisible"-->
-<!--                >-->
-<!--                  <el-input size="small" class="line10"></el-input>-->
-<!--                  <div style="text-align: right; margin: 0">-->
-<!--                    <el-button size="mini" type="text" @click="recallVisible =false">取消</el-button>-->
-<!--                    <el-button type="primary" size="mini" >确定</el-button>-->
-<!--                  </div>-->
-<!--                  <div  slot="reference"   @click.prevent="recallVisible = true">新建分组</div>-->
-<!--                </el-popover>-->
-<!--              </div>-->
-<!--          </div>-->
+          <div class="container-left">
+              <div class="container-leftTop">
+                <div class="item" :class="{active:idx==current_type_idx}" v-for="(dir,idx) in dirs" :key="idx" @click="selectSourceType(dir,idx)">
+                  {{dir.label}}
+                </div>
+              </div>
+              <div class="items">
+                <el-popover
+                  placement="top"
+                  width="160"
+                  trigger="manual"
+                  v-model="recallVisible"
+                >
+                  <el-input v-model="folder_name" size="small" class="line10"></el-input>
+                  <div style="text-align: right; margin: 0">
+                    <el-button size="mini" type="text" @click="recallVisible =false">取消</el-button>
+                    <el-button @click="createDirFn" type="primary" size="mini" >确定</el-button>
+                  </div>
+                  <div  slot="reference"   @click.prevent="recallVisible = true">新建分组</div>
+                </el-popover>
+              </div>
+          </div>
 
           <div class="container-right">
               <div class="container-right-title">
-                <div class="w300">
-                  <el-tabs v-model="source_type"  @tab-click="handleTabClick">
-                    <el-tab-pane label="图片" name="img"></el-tab-pane>
-                    <el-tab-pane label="视频" name="video"></el-tab-pane>
-                    <el-tab-pane label="商品" name="goods"></el-tab-pane>
-                  </el-tabs>
+                <div class="w300 crumb">
+                  <template v-for="(txt,idx) in current_path_arr">
+                    <span @click="bindCrumb(idx)" class="crumb-txt">{{txt}}</span>
+                    <template v-if="idx+1<current_path_arr.length">
+                      <span class="crumb-space">/</span>
+                    </template>
+
+                  </template>
+
                 </div>
 
                 <div class="container-right-titleRight">
                   <span class="padding10-c">大小不超过5M，已开启水印.</span>
                   <wzw-file-button
                     :multiple="true"
+                    :current_path="current_path"
                     :limit="9"
+                    @preview="previewFn"
                     @done="upSuccess"
                   >
                     <template slot="preview" slot-scope="props">
@@ -81,7 +86,7 @@
                       <div @click="add(file)" class="imgUnChecked">
                         <img class="img" v-if="file.checked" src="@/assets/img/imgChecked.png" >
                       </div>
-                      <img @click="add(file)" class="img" v-lazy="domainFn(current_url+file.filename)"  >
+                      <img @click="add(file)" class="img" v-lazy="domainFn(file.fileurl)"  >
                     </template>
 
                   </div>
@@ -129,10 +134,11 @@
         Action,
         State
     } from 'vuex-class'
-  import {fetch as fetchFn} from '../../common/fetch';
+    import {createDirectory, fetch as fetchFn, getFileList} from '../../common/fetch';
   import {Component, Vue, Prop} from 'vue-property-decorator';
   import {domain} from '../../common/utils';
   import WzwFileButton from '@/components/comm/WzwFileButton';
+    import {fun} from '../../common';
 
 
   @Component({
@@ -154,7 +160,14 @@
           },
       },
       computed:{
-
+          current_path_arr(){
+              let arr = this.current_path.split('/')
+              let rt = []
+              for(var item of arr){
+                  if(item)rt.push(item)
+              }
+              return rt
+          }
       },
       filters:{
           // imgFilter(filename){
@@ -187,22 +200,58 @@
       @State finderDialogInstance
 
 
+      folder_name = ''
+      async createDirFn(){
+          if(!this.folder_name){
+              fun.error({msg:'文件夹名称不能为空'})
+              return;
+          }
+
+          await createDirectory({folder_name:this.folder_name,root_path:this.current_path}).then(res=>{
+
+          })
+
+          this.folder_name = ''
+          this.recallVisible = false
+          this.init_func()
+      }
+
       handleTabClick(tab, event){
 
           this.init_func()
           console.log(tab, event);
       }
 
+
+      //点击面包屑菜单
+      bindCrumb(idx){
+          let current_path_arr = [...this.current_path_arr];
+          let tempArr = current_path_arr.splice(0,idx+1);
+          this.current_path = tempArr.join('/')+'/'
+          this.init_func()
+      }
+
+
+
       current_file_list = []
       pageSize = 24
       currentPage = 1
       totalPage = 1
-      current_url = ''
+      current_type_idx = 0
+      current_path = 'image/'
       innerVisible = false
-      dirs = []//目录list
+      source_type = 'image'
+
+      dirs = [
+          {label:'图片',source_type:'image'},
+          {label:'视频',source_type:'media'},
+          {label:'文件',source_type:'file'},
+          {label:'其他',source_type:'other'},
+      ]
+      //目录list
       lists = []//资源list,也可能是音频、视频、商品
 
-      recallVisible=false //新建分组
+      recallVisible = false //新建分组
 
       select_file_list = []
       pageGo=''
@@ -212,7 +261,7 @@
       }
 
       add(file){
-          let fullPath = domain(this.current_url+file.filename)
+          let fullPath = domain(file.file_url)
           if(!file.checked){
               if(this.finderDialogInstance.limit<=this.select_file_list.length){
                   this.$message('照片最多可选'+this.finderDialogInstance.limit+'张');
@@ -232,7 +281,7 @@
 
       }
 
-      source_type = 'img'
+
 
       //分页
       paginate =  {
@@ -278,70 +327,137 @@
 
       }
 
+      selectSourceType(type,idx){
+          this.current_type_idx = idx
+          this.source_type = type.source_type
+          this.current_path = `${type.source_type}/`
+          this.init_func()
+      }
       selectDir(dir){
-          this.init_func(dir.filename)
+          this.current_path = dir.filepath
+          this.init_func()
       }
 
-      init_func(ppath=''){
-          console.log('点击目录略')
+      init_func(){
 
-          let dir=ppath,order='Name',path='',source_type=this.source_type//控制类型
+
+          let dir=this.current_path,order='Name',path='',source_type=this.source_type//控制类型
           console.log(`source_type is ${source_type}`)
-          fetchFn(
-              'nature',
-              {dir,order,path,source_type},
-              false,
-              `http://localhost:9100/member/file_manager_json.php?dir=${dir}&order=${order}&path=${path}&source_type=${source_type}`,
-              'get'
-          ).then(res=>{
 
-              let tempDirs = [],tempLists = []
-              for(var file of res.data.file_list){
-                  tempLists.push(file)
-                  //空目录不放了把
-                  // if(file.is_dir){
-                  //     tempDirs.push(file)
-                  // }else if(file.is_photo){
-                  //     tempLists.push(file)
-                  // }
-              }
+          getFileList({attach_path:dir,type:source_type}).then(res=>{
+
+              let tempDirs = [],tempLists = [...res.data];
 
 
+              //this.dirs = tempDirs;
+              this.lists  = tempLists;
 
-              this.dirs = tempDirs;
+              // let arr = []
+              // while (tempLists.length>this.pageSize){
+              //     arr.push(tempLists.splice(0,this.pageSize))
+              // }
+              // if(tempLists.length>0){
+              //     arr.push(tempLists)
+              // }
+              //
+              // console.log(arr,"sss")
+              // for(let item of arr){
+              //     for(let it of item){
+              //         this.lists.push(it)
+              //     }
+              // }
 
-              let arr = []
-              while (tempLists.length>this.pageSize){
-                  arr.push(tempLists.splice(0,this.pageSize))
-              }
-              if(tempLists.length>0){
-                  arr.push(tempLists)
-              }
 
-              console.log(arr,"sss")
-              for(let item of arr){
-                  for(let it of item){
-                      this.lists.push(it)
-                  }
-              }
-              //this.lists = arr;
-              this.current_url = res.data.current_url
-
-              let len = tempLists.length
+              //let len = tempLists.length
               this.totalPage = Math.ceil(this.lists.length/this.pageSize)
 
               this.currentPage = 1
               this.current_file_list=this.lists.slice((this.currentPage-1)*this.pageSize,(this.currentPage-1)*this.pageSize+this.pageSize)
 
-          }).catch(e=>{console.log(e)})
+          })
+          console.log('点击目录略')
+
+
+
+
+          // fetchFn(
+          //     'nature',
+          //     {dir,order,path,source_type},
+          //     false,
+          //     `http://localhost:9100/member/file_manager_json.php?dir=${dir}&order=${order}&path=${path}&source_type=${source_type}`,
+          //     'get'
+          // ).then(res=>{
+          //
+          //     let tempDirs = [],tempLists = []
+          //     for(var file of res.data.file_list){
+          //         tempLists.push(file)
+          //         //空目录不放了把
+          //         // if(file.is_dir){
+          //         //     tempDirs.push(file)
+          //         // }else if(file.is_photo){
+          //         //     tempLists.push(file)
+          //         // }
+          //     }
+          //
+          //
+          //
+          //     this.dirs = tempDirs;
+          //
+          //     let arr = []
+          //     while (tempLists.length>this.pageSize){
+          //         arr.push(tempLists.splice(0,this.pageSize))
+          //     }
+          //     if(tempLists.length>0){
+          //         arr.push(tempLists)
+          //     }
+          //
+          //     console.log(arr,"sss")
+          //     for(let item of arr){
+          //         for(let it of item){
+          //             this.lists.push(it)
+          //         }
+          //     }
+          //     //this.lists = arr;
+          //     this.current_path = res.data.current_path
+          //
+          //     let len = tempLists.length
+          //     this.totalPage = Math.ceil(this.lists.length/this.pageSize)
+          //
+          //     this.currentPage = 1
+          //     this.current_file_list=this.lists.slice((this.currentPage-1)*this.pageSize,(this.currentPage-1)*this.pageSize+this.pageSize)
+          //
+          // }).catch(e=>{console.log(e)})
       }
 
 
       uplists = []
+      previews = []
 
+      previewFn(arr){
+
+          // filename:"3333"
+          // filepath:"image/3333/"
+          // fileurl:"http://wupengfei.oss-cn-beijing.aliyuncs.com/image/3333/"
+          // is_dir:1
+
+          let preview_file_list = arr
+          console.log(preview_file_list)
+          let previews = preview_file_list.map(file=>{
+              return {
+                  fileurl:file.url,
+                  filepath:'',
+                  filename:file.name,
+                  is_dir:0
+              }
+          })
+          this.current_file_list = previews.concat(this.current_file_list)
+
+      }
       upSuccess(){
-          let file_list = {...arguments}
-          this.uplists = file_list
+          console.log('done')
+          this.init_func()
+          // let file_list = {...arguments}
+          // this.uplists = file_list
       }
 
       created(){
@@ -351,6 +467,18 @@
 </script>
 
 <style scoped lang="less">
+.crumb{
+  .crumb-txt{
+    cursor: pointer;
+    color: #409EFF;
+    &:last-child{
+      color: #606266;
+    }
+  }
+  .crumb-space{
+    padding: 0 1px;
+  }
+}
 .container{
   display: flex;
   max-height: 450px;
@@ -358,17 +486,21 @@
 .container-left{
   max-height: 450px;
   position: relative;
+  border-right: 1px solid #e7e7e7;
+  margin-right: 10px;
   .container-leftTop{
-    width: 190px;
     max-height: 350px;
     overflow-y:auto ;
     .item{
-      width: 190px;
+      width: 120px;
       height: 40px;
       line-height: 40px;
       padding-left: 20px;
       cursor: pointer;
       box-sizing: border-box;
+      &.active{
+        color: #409EFF;
+      }
       &:hover{
         background-color: #F8F8F8;
       }
@@ -398,7 +530,7 @@
   max-height: 450px;
   flex: 1;
   box-sizing: border-box;
-  /*border-left: 1px solid #e7e7e7;*/
+
   .container-right-title {
     display: flex;
     margin-bottom: 20px;

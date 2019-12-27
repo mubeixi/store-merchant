@@ -22,7 +22,8 @@
 <script lang="ts">
 
     import { Component, Vue,Prop } from 'vue-property-decorator';
-
+    import ossImg from 'aliyun-oss-web'
+    import {getAliyunOssSign} from '../../common/fetch';
 
     const defaultAllowFileType = [ 'jpeg', 'png', 'gif', 'bmp']
 
@@ -38,41 +39,98 @@
         }
     }
 
-    function fetchProgress(url, opts:any, onProgress){
-        return new Promise((resolve, reject)=>{
-            var xhr = new XMLHttpRequest();
-            xhr.open(opts.method || 'get', url);
-            for(var key in opts.headers || {}){
-                xhr.setRequestHeader(key, opts.headers[key]);
-            }
-
-            xhr.onload = e => resolve(e.target.responseText)
-            xhr.onerror = reject;
-            if (xhr.upload && onProgress){
-                xhr.upload.onprogress = onProgress; //上传
-            }
-            if ('onprogerss' in xhr && onProgress){
-                xhr.onprogress = onProgress; //下载
-            }
-            xhr.send(opts.body)
-        })
-    }
+    // function fetchProgress(url, opts:any, onProgress){
+    //     return new Promise((resolve, reject)=>{
+    //         var xhr = new XMLHttpRequest();
+    //         xhr.open(opts.method || 'get', url);
+    //         for(var key in opts.headers || {}){
+    //             xhr.setRequestHeader(key, opts.headers[key]);
+    //         }
+    //
+    //         xhr.onload = e => resolve(e.target.responseText)
+    //         xhr.onerror = reject;
+    //         if (xhr.upload && onProgress){
+    //             xhr.upload.onprogress = onProgress; //上传
+    //         }
+    //         if ('onprogerss' in xhr && onProgress){
+    //             xhr.onprogress = onProgress; //下载
+    //         }
+    //         xhr.send(opts.body)
+    //     })
+    // }
     //fetchProgress('/upload').then(console.log)
 
-    const upFileFn = (file={},name='file')=>{
+    function random_string(len) {
+        len = len || 32;
+        var chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
+        var maxPos = chars.length;
+        var pwd = '';
+        for (var i = 0; i < len; i++) {
+            pwd += chars.charAt(Math.floor(Math.random() * maxPos));
+        }
+        return pwd;
+    }
+
+    function get_suffix(filename) {
+        let pos = filename.lastIndexOf('.')
+        let suffix = ''
+        if (pos != -1) {
+            suffix = filename.substring(pos)
+        }
+        return suffix;
+    }
+
+    const upFileFn = async (file={},current_path,name='file')=>{
+
+        let aliyunOssSign = null
+        await getAliyunOssSign({full_path:current_path}).then(res=>{
+            console.log(res)
+            let {accessid,callback,dir,expire,host,policy,signature} = res.data
+
+            aliyunOssSign = {accessid,callback,dir,expire,host,policy,signature}
+            // accessid: "LTAI4FtENzL44TMGWMjVhxZ2"
+            // callback: ""
+            // dir: ""
+            // expire: 1577432124
+            // host: "http://wupengfei.oss-cn-beijing.aliyuncs.com/"
+            // policy: "eyJleHBpcmF0aW9uIjoiMjAxOS0xMi0yN1QxNTozNToyNFoiLCJjb25kaXRpb25zIjpbWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsMCwxMDQ4NTc2MDAwXSxbInN0YXJ0cy13aXRoIiwiZVAyaDNZN0ZRRUV0eDdlUEM4YkVwWDRCcHNWeDc3IiwiIl1dfQ=="
+            // signature: "K4xc2WwaqzgCqO+FjP92opRMpbw="
+
+        })
+
+
 
         console.log(file,name)
         return new Promise((resolve, reject) => {
 
             let formdata = new FormData();
+
+
+            let get_suffix_val = get_suffix(file.name)
+            let new_multipart_params = {
+                'key' : current_path+random_string(18)+get_suffix_val,
+                'policy': aliyunOssSign.policy,
+                'OSSAccessKeyId': aliyunOssSign.accessid,
+                'success_action_status' : '200', //让服务端返回200,不然，默认会返回204
+                'callback' : aliyunOssSign.callback,
+                'signature': aliyunOssSign.signature,
+            };
+
+            for(var key in new_multipart_params){
+                formdata.append(key, new_multipart_params[key]);
+            }
+            formdata.append('act','up_file_oss');
             formdata.append(name,file);
 
-            // Vue.$http.post(upFIleUrl,formdata,{progress:function(event){
-            //     console.log(event);
-            //   }
-            // }).then((response)=>{}
 
-            // Vue.http.post(url,formdata,{'Content-Type':'Multipart/form-data'}).then(response=>{
+            Vue.http.post(aliyunOssSign.host,formdata,{progress:function(event){
+                console.log(event);
+              }
+            }).then((res)=>{
+                resolve('');
+            }).catch(err=>{reject(false)})
+
+            // Vue.$http.post(upFIleUrl,formdata,{'Content-Type':'Multipart/form-data'}).then(response=>{
             //   // this.cancelAddProject()
             //   // this.allRefresh()
             //   if (response.json().status_code === 200) {
@@ -86,46 +144,22 @@
             // })
 
 
-            fetch(upFIleUrl,{
-                method:'post',
-                body:formdata
-            })
-                .then(res => {
-
-                    // var reader = response.body.getReader();
-                    // var bytesReceived = 0;
-                    //
-                    // // read() returns a promise that resolves when a value has been received
-                    // reader.read().then(function processResult(result) {
-                    //   // Result objects contain two properties:
-                    //   // done  - true if the stream has already given you all its data.
-                    //   // value - some data. Always undefined when done is true.
-                    //   if (result.done) {
-                    //     console.log("Fetch complete");
-                    //     return;
-                    //   }
-                    //
-                    //   // result.value for fetch streams is a Uint8Array
-                    //   bytesReceived += result.value.length;
-                    //   console.log('Received', bytesReceived, 'bytes of data so far');
-                    //
-                    //   // Read some more, and call this function again
-                    //   return reader.read().then(processResult);
-                    // });
-
-                    return res.json()
-
-
-                })
-                .then(response=>{
-                    console.log(response)
-                    // 后端至少返回上传图片的URL
-                    let url = response.data.urls[0]
-                    resolve(url);
-                })
-                .catch(err=>{
-                    reject(err)
-                })
+            // fetch(upFIleUrl,{
+            //     method:'post',
+            //     body:formdata
+            // })
+            // .then(res => {
+            //     return res.json()
+            // })
+            // .then(response=>{
+            //     console.log(response)
+            //     // 后端至少返回上传图片的URL
+            //     let url = response.data.urls[0]
+            //     resolve(url);
+            // })
+            // .catch(err=>{
+            //     reject(err)
+            // })
         })
 
 
@@ -160,6 +194,11 @@
         previews = [] //预览的，加载快Bolb
         file_list = [] //线上地址
 
+        @Prop({
+            type:String,
+            default:''
+        })
+        current_path
         @Prop({
             type:Boolean,
             default:false
@@ -209,8 +248,10 @@
                     url:window.URL.createObjectURL(curFiles[i])
                 })
 
-                promiseList.push(upFileFn(curFiles[i]))
+                promiseList.push(upFileFn(curFiles[i],this.current_path))
             }
+
+            this.preview(this.previews)
 
             Promise.all(promiseList).then(urls=>{
                 this.file_list = urls
@@ -218,6 +259,11 @@
                 this.success()
             })
 
+        }
+
+        preview(arr){
+
+            this.$emit('preview',arr)
         }
 
         success(){

@@ -58,10 +58,9 @@ export const fetch = function (act: String, param: Object = {}, options = false,
     window.funLoading = Loading.service(options)
   }
 
-  console.log("最终请求地址=====>"+url)
 
   return new Promise(((resolve, reject) => {
-console.log(method)
+
     Vue.http[method](url, data, options).then(res=>{
       if(res.data.errorCode === 0){
         resolve(res.data)
@@ -77,9 +76,14 @@ console.log(method)
 
 };
 
-export const getFileList = (act='fun',data:object={},options:any=false)=> fetch(act, data, options,'http://localhost:9100/file')
 
-export const getDirectoryList = (act='fun',data:object={},options:any=false)=> fetch(act, data, options,'http://localhost:9100/directory')
+export const getFileList = (data:object={},options:any=false)=> fetch('getFolderDir', data, options)
+
+export const createDirectory = (data:object={},options:any=false)=> fetch('createFolder', data, options)
+
+export const getAliyunOssSign = (data:object={},options:any=false)=> fetch('getVaildSign', data, options)
+
+//export const getDirectoryList = (act='fun',data:object={},options:any=false)=> fetch(act, data, options,'http://localhost:9100/directory')
 
 export const commonReq = (act,data:object={},options:any=false)=> fetch(act, data, options)
 
