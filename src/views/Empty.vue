@@ -1,6 +1,5 @@
 <template>
   <div class="home-wrap">
-
     <wzw-finder :show="finderDialogInstance.visible"></wzw-finder>
     <div style="margin: 10% 50px">
       <wzw-editor ref="richtext" @on-content-change="onContentChange"></wzw-editor>
@@ -21,6 +20,7 @@
     import WzwFinder from "../components/comm/WzwFinder.vue"
     import {ckeditorMixin} from '../common/mixin';
 
+
     @Component({
         mixins:[ckeditorMixin],
         components: {
@@ -36,6 +36,7 @@
         @State('finderDialogInstance') finderDialogInstance
 
         editorText
+
 
         onContentChange(val) {
             this.editorText = val

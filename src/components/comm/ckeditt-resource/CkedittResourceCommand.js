@@ -84,6 +84,10 @@ export default class CkedittResourceCommand extends Command {
       choose:(urls)=>{
         insertImages( editor, urls );
         editor.editing.view.focus();
+      },
+      chooseMedia:(urls)=>{
+        insertMediaFunc(editor, urls)
+        editor.editing.view.focus();
       }
     }
 
@@ -93,6 +97,7 @@ export default class CkedittResourceCommand extends Command {
 }
 
 import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
+import { fun } from '../../../common';
 
 const utilsInsertImageFunc = function( writer, model, attributes = {} ) {
   const imageElement = writer.createElement( 'image', attributes );
@@ -145,11 +150,10 @@ function insertImages( editor, urls ) {
     }
   } );
 
-  model.change( writer => {
-    const Paragraph = writer.createElement( 'paragraph', { alignment: 'center' });
-
-    model.insertContent( Paragraph);
-  } );
+  // model.change( writer => {
+  //   const Paragraph = writer.createElement( 'paragraph', { alignment: 'center' });
+  //   model.insertContent( Paragraph);
+  // } );
 
 
 
@@ -164,5 +168,30 @@ function insertImages( editor, urls ) {
   // } );
   //
   // editor.model.insertContent( docFrag );
+
+}
+
+function insertMediaFunc(editor, urls){
+
+
+  console.log(urls)
+  const mediaCommand = editor.commands.get( 'mediaEmbed' );
+
+  // Check if inserting an image is actually possible - it might be possible to only insert a link.
+  if ( !mediaCommand.isEnabled ) {
+    const notification = editor.plugins.get( 'Notification' );
+    const t = editor.locale.t;
+
+    notification.showWarning( t( 'Could not insert media at the current position.' ), {
+      title: t( 'Inserting media failed' ),
+      namespace: 'ckfinder'
+    } );
+
+    return;
+  }
+
+  for ( const src of urls ) {
+    editor.execute( 'mediaEmbed', src );
+  }
 
 }

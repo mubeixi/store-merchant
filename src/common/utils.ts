@@ -19,10 +19,10 @@ export const getStyle = function (el, name) {
  * 给相对路径的图片加上前缀
  * @param url
  */
-export const domain = (url) => {
+export const domain = (url,style='') => {
   if (!url) return '';
   if (url.indexOf('http') == -1) return staticUrl + url;
-  return url;
+  return url+style;
 }
 
 export const sortBy = (props) =>{

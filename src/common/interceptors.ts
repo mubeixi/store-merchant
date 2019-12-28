@@ -13,7 +13,7 @@ import {isDev} from "./env";
 export default function (request, next) {
 
   let {body} = request;
-  console.log(request)
+  // console.log(request)
   // if(body.act==='getVaildSign' && new_multipart_params){
   //   for(var key in new_multipart_params)
   //   request.headers.set(key, new_multipart_params[key]);
@@ -28,7 +28,7 @@ export default function (request, next) {
       console.log(response)
       //为了阿里云上传不报错，累死了
       //操碎了心
-      if(!response.hasOwnProperty('body') || response.url.indexOf('aliyuncs')!==-1){
+      if(!response.hasOwnProperty('body') || !response.body){
         response.body = {}
         response.body.errorCode = 0
       }

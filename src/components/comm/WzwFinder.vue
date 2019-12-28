@@ -4,7 +4,7 @@
       :visible.sync="innerVisible"
       :title="label"
       :top="top"
-      width="1010px"
+      width="1080px"
       @close="cancel"
       :close-on-click-modal="maskClose"
       :close-on-press-escape="maskClose"
@@ -36,44 +36,54 @@
                 </el-popover>
               </div>
           </div>
-
           <div class="container-right">
               <div class="container-right-title">
+                <!--面包屑菜单-->
                 <div class="w300 crumb">
                   <template v-for="(txt,idx) in current_path_arr">
                     <span @click="bindCrumb(idx)" class="crumb-txt">{{txt}}</span>
                     <template v-if="idx+1<current_path_arr.length">
                       <span class="crumb-space">/</span>
                     </template>
-
                   </template>
-
                 </div>
-
+                <!--文件上传-->
                 <div class="container-right-titleRight">
                   <span class="padding10-c">大小不超过5M，已开启水印.</span>
                   <wzw-file-button
                     :multiple="true"
+                    :accept="accept"
                     :current_path="current_path"
                     :limit="9"
                     @preview="previewFn"
                     @done="upSuccess"
                   >
-                    <template slot="preview" slot-scope="props">
-
-                      <div class="item" style="display: inline-block;margin-right: 10px;" v-for="(file,idx) in props.previews">
-<!--                        <img :src="file.url" :title="file.name" width="100px" />-->
-                      </div>
-
-                    </template>
                     <template slot="btn">
                       <el-button >上传文件</el-button>
                     </template>
+                    <template slot="preview" slot-scope="props">
+<!--                      <div class="preview-list" v-show="props.previews.length>0">-->
+<!--                        <div class="item" style="display:block;margin-right: 10px;" v-for="(file,idx) in props.previews">-->
+<!--                          <div><span class="font12">{{file.name}}</span><el-progress  :percentage="file.percent"></el-progress></div>-->
+<!--                        </div>-->
+<!--                      </div>-->
+                    </template>
                   </wzw-file-button>
+
                 </div>
               </div>
-              <div class="container-right-image" style="height:396px;overflow: hidden">
-                  <div  class="image" :key="idx2" v-for="(file,idx2) in current_file_list" :style="{marginRight:((idx2+1)%8==0?'0px':'')}">
+              <div class="container-right-image" style="height:390px;overflow: hidden">
+                <!--:style="{marginRight:((idx2+1)%8==0?'0px':'')}"-->
+
+                <div  class="image"  :key="idx2" v-for="(file,idx2) in preview_file_list" >
+                  <img class="img" :src="domainFn(file.url)"  >
+                  <div class="progress">
+                    <el-progress :text-inside="true" :percentage="file.percent"></el-progress>
+                  </div>
+                </div>
+
+                  <div  class="image" :class="{check:file.checked}" :key="idx2" v-for="(file,idx2) in current_file_list" >
+                    <!--文件夹先显示-->
                     <template v-if="file.is_dir" >
                       <div class="dir" @click.top="selectDir(file)" >
                         <div>
@@ -82,13 +92,16 @@
                         <span class="font12">{{file.filename}}</span>
                       </div>
                     </template>
+                    <!--文件显示-->
                     <template v-else>
-                      <div @click="add(file)" class="imgUnChecked">
-                        <img class="img" v-if="file.checked" src="@/assets/img/imgChecked.png" >
+                      <div @click="addFn(file)" style="position: absolute;width: 100%;height: 100%;">
+                        <div  class="imgUnChecked">
+                          <i class="el-icon-check icon " v-if="file.checked"></i>
+                        </div>
+                        <img class="img"  v-lazy="domainFn(file.fileurl)"  >
                       </div>
-                      <img @click="add(file)" class="img" v-lazy="domainFn(file.fileurl)"  >
-                    </template>
 
+                    </template>
                   </div>
               </div>
               <div class="paginate-box" >
@@ -115,10 +128,10 @@
       </div>
 
       <span slot="footer" class="dialog-footer">
-          <div>
+          <div style="float: left">
              已选择{{select_file_list.length}}/{{finderDialogInstance.limit}}
           </div>
-          <div style="margin-left: 200px">
+          <div style="margin: 0 auto">
             <el-button type="success" @click="subFn">确 定</el-button>
             <el-button style="margin-left: 40px" @click="cancel">取 消</el-button>
           </div>
@@ -160,6 +173,9 @@
           },
       },
       computed:{
+          up_progress_list(){
+            return window.UP_PROGRESS_LIST
+          },
           current_path_arr(){
               let arr = this.current_path.split('/')
               let rt = []
@@ -198,6 +214,7 @@
   export default class WzwFinder extends Vue{
 
       @State finderDialogInstance
+      @State up_progress_list
 
 
       folder_name = ''
@@ -215,6 +232,7 @@
           this.recallVisible = false
           this.init_func()
       }
+
 
       handleTabClick(tab, event){
 
@@ -234,7 +252,7 @@
 
 
       current_file_list = []
-      pageSize = 24
+      pageSize = 21
       currentPage = 1
       totalPage = 1
       current_type_idx = 0
@@ -243,10 +261,10 @@
       source_type = 'image'
 
       dirs = [
-          {label:'图片',source_type:'image'},
-          {label:'视频',source_type:'media'},
-          {label:'文件',source_type:'file'},
-          {label:'其他',source_type:'other'},
+          {label:'图片',source_type:'image',accept:'image/gif, image/jpeg,image/png,image/bmp'},
+          {label:'视频',source_type:'media',accept:'audio/mp4, video/mp4,application/ogg, audio/ogg,.wmv'},
+          {label:'文件',source_type:'file',accept:'application/vnd.ms-powerpoint,application/vnd.ms-excel,application/msword,application/pdf'},
+          {label:'其他',source_type:'other',accept:'aplication/zip'},
       ]
       //目录list
       lists = []//资源list,也可能是音频、视频、商品
@@ -257,11 +275,13 @@
       pageGo=''
 
       domainFn(url){
-          return domain(url)
+          return domain(url,'?x-oss-process=image/resize,m_lfit,h_110,w_110')
       }
 
-      add(file){
-          let fullPath = domain(file.file_url)
+      addFn(file){
+          console.log('点击图片')
+          let fullPath = domain(file.fileurl)
+
           if(!file.checked){
               if(this.finderDialogInstance.limit<=this.select_file_list.length){
                   this.$message('照片最多可选'+this.finderDialogInstance.limit+'张');
@@ -317,7 +337,16 @@
       subFn(){
 
           this.cancel()
-          window.finderDialogInstance.callFn.choose(this.select_file_list)
+          switch (this.source_type) {
+              case 'image':
+                  window.finderDialogInstance.callFn.choose && window.finderDialogInstance.callFn.choose(this.select_file_list)
+              break;
+              case 'video':
+                  window.finderDialogInstance.callFn.chooseMedia && window.finderDialogInstance.callFn.chooseMedia(this.select_file_list)
+                  break;
+          }
+
+
 
           //this.$emit('')
       }
@@ -327,7 +356,9 @@
 
       }
 
+      accept = 'image/gif, image/jpeg,image/png,image/bmp'
       selectSourceType(type,idx){
+          this.accept = type.accept
           this.current_type_idx = idx
           this.source_type = type.source_type
           this.current_path = `${type.source_type}/`
@@ -433,6 +464,12 @@
       uplists = []
       previews = []
 
+      progressFn(files){
+
+      }
+
+      preview_file_list = []
+
       previewFn(arr){
 
           // filename:"3333"
@@ -442,15 +479,17 @@
 
           let preview_file_list = arr
           console.log(preview_file_list)
-          let previews = preview_file_list.map(file=>{
-              return {
-                  fileurl:file.url,
-                  filepath:'',
-                  filename:file.name,
-                  is_dir:0
-              }
-          })
-          this.current_file_list = previews.concat(this.current_file_list)
+          this.preview_file_list = preview_file_list
+          // let previews = preview_file_list.map(file=>{
+          //     return {
+          //         fileurl:file.url,
+          //         filepath:'',
+          //         filename:file.name,
+          //         is_dir:0,
+          //         percent:file.percent,
+          //     }
+          // })
+          //this.current_file_list = previews.concat(this.current_file_list)
 
       }
       upSuccess(){
@@ -487,7 +526,7 @@
   max-height: 450px;
   position: relative;
   border-right: 1px solid #e7e7e7;
-  margin-right: 10px;
+  margin-right: 20px;
   .container-leftTop{
     max-height: 350px;
     overflow-y:auto ;
@@ -535,23 +574,41 @@
     display: flex;
     margin-bottom: 20px;
     .container-right-titleRight{
+      position: relative;
+      z-index: 4;
       margin-left: auto;
       display: flex;
       align-items: center;
+      .preview-list{
+        background: white;
+        padding: 10px;
+        position: absolute;
+        border:1px solid #eee;
+        width: 290px;
+        top: 46px;
+        right: 0;
+        z-index: 3;
+        .item{
+
+        }
+
+      }
     }
   }
   .container-right-image{
     display: flex;
     flex-wrap: wrap;
     justify-content: start;
+    width: 890px;
+    margin: 0 auto;
     /*padding-left: 10px;*/
     .dir{
-      width: 112px;
-      height: 112px;
+      width: 110px;
+      height: 110px;
       padding: 26px 0;
+      margin: 0 13px 20px 0;
       border: 1px solid #eee;
       text-align: center;
-
       box-sizing: border-box;
       :hover{
         color: #155bd4;
@@ -561,24 +618,54 @@
       }
     }
     .image{
-      width: 112px;
-      height: 112px;
-      margin-right: 10px;
-      margin-bottom: 20px;
-      background: #f2f2f2;
+      width: 110px;
+      height: 110px;
+      margin: 0 13px 20px 0;
+      box-sizing: border-box;
+      background: #fff;
       position: relative;
       cursor: pointer;
+      .progress{
+        position: absolute;
+        width: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      &.check{
+        border:1px solid #44B549;
+        &:before{
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background: #000;
+          content:"";
+          opacity: 0.1;
+        }
+        .imgUnChecked{
+          background: #44B549;
+        }
+      }
+      &:nth-child(7n) {
+        margin-right: 0;
+      }
       .imgUnChecked{
         width: 25px;
         height: 25px;
         box-sizing: border-box;
         border: 1px solid #ffffff;
-        background-color: #EEEEEE;
         position: absolute;
         top: 5px;
         left: 5px;
-        opacity: 0.8;
+        background-color: rgba(0, 0, 0, 0.2);
         z-index: 3;
+        .icon{
+          font-size: 20px;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%,-50%);
+          color: #fff;
+        }
       }
       .img{
         z-index: 2;
