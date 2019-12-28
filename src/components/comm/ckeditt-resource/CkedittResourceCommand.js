@@ -118,6 +118,18 @@ const utilsInsertImageFunc = function( writer, model, attributes = {} ) {
 
 }
 
+function focusEditor(editor)
+{
+  // // 获取焦点
+  // editor.focus();
+  //
+  // // 将光标移至最末
+  // var range = editor.createRange();
+  // range.moveToElementEditEnd(editor.editable());
+  //
+  // range.select();
+  // range.scrollIntoView();
+}
 
 function insertImages( editor, urls ) {
   console.log(urls)
@@ -150,24 +162,8 @@ function insertImages( editor, urls ) {
     }
   } );
 
-  // model.change( writer => {
-  //   const Paragraph = writer.createElement( 'paragraph', { alignment: 'center' });
-  //   model.insertContent( Paragraph);
-  // } );
+  focusEditor(editor)
 
-
-
-
-  // const docFrag = editor.model.change( writer => {
-  //   const p1 = writer.createElement( 'paragraph' );
-  //
-  //   writer.append( p1, docFrag );
-  //
-  //
-  //   return docFrag;
-  // } );
-  //
-  // editor.model.insertContent( docFrag );
 
 }
 
@@ -193,5 +189,7 @@ function insertMediaFunc(editor, urls){
   for ( const src of urls ) {
     editor.execute( 'mediaEmbed', src );
   }
+
+  focusEditor(editor)
 
 }

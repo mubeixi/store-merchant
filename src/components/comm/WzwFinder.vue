@@ -82,7 +82,7 @@
                   </div>
                 </div>
 
-                  <div  class="image" :class="{check:file.checked}" :key="idx2" v-for="(file,idx2) in current_file_list" >
+                  <div  class="image" :class="{check:file.checked && select_file_list.length>0}" :key="idx2" v-for="(file,idx2) in current_file_list" >
                     <!--文件夹先显示-->
                     <template v-if="file.is_dir" >
                       <div class="dir" @click.top="selectDir(file)" >
@@ -96,9 +96,9 @@
                     <template v-else>
                       <div @click="addFn(file)" style="position: absolute;width: 100%;height: 100%;">
                         <div  class="imgUnChecked">
-                          <i class="el-icon-check icon " v-if="file.checked"></i>
+                          <i class="el-icon-check icon " v-if="file.checked && select_file_list.length>0"></i>
                         </div>
-                        <img class="img"  v-lazy="domainFn(file.fileurl)"  >
+                        <div class="img-cover" v-lazy:background-image="getFileUrl(file.fileurl)"></div>
                       </div>
 
                     </template>
@@ -202,6 +202,11 @@
               immediate: true,
               handler(val) {
                   this.innerVisible = val;
+                  if(val){
+                      this.select_file_list = []
+                      this.init_func()
+                  }
+
               }
           },
 
@@ -216,6 +221,11 @@
       @State finderDialogInstance
       @State up_progress_list
 
+
+      getFileUrl(url){
+          if(this.source_type=='media')return `${url}?x-oss-process=video/snapshot,t_1000,f_jpg,w_200`
+          return url
+      }
 
       folder_name = ''
       async createDirFn(){
@@ -331,24 +341,23 @@
       }
 
       cancel(){
+
           window.finderDialogInstance.visible = false
       }
 
       subFn(){
+
 
           this.cancel()
           switch (this.source_type) {
               case 'image':
                   window.finderDialogInstance.callFn.choose && window.finderDialogInstance.callFn.choose(this.select_file_list)
               break;
-              case 'video':
+              case 'media':
                   window.finderDialogInstance.callFn.chooseMedia && window.finderDialogInstance.callFn.chooseMedia(this.select_file_list)
                   break;
           }
 
-
-
-          //this.$emit('')
       }
 
       loadDir(){
@@ -371,35 +380,16 @@
 
       init_func(){
 
-
           let dir=this.current_path,order='Name',path='',source_type=this.source_type//控制类型
           console.log(`source_type is ${source_type}`)
+
 
           getFileList({attach_path:dir,type:source_type}).then(res=>{
 
               let tempDirs = [],tempLists = [...res.data];
 
-
-              //this.dirs = tempDirs;
               this.lists  = tempLists;
 
-              // let arr = []
-              // while (tempLists.length>this.pageSize){
-              //     arr.push(tempLists.splice(0,this.pageSize))
-              // }
-              // if(tempLists.length>0){
-              //     arr.push(tempLists)
-              // }
-              //
-              // console.log(arr,"sss")
-              // for(let item of arr){
-              //     for(let it of item){
-              //         this.lists.push(it)
-              //     }
-              // }
-
-
-              //let len = tempLists.length
               this.totalPage = Math.ceil(this.lists.length/this.pageSize)
 
               this.currentPage = 1
@@ -409,55 +399,6 @@
           console.log('点击目录略')
 
 
-
-
-          // fetchFn(
-          //     'nature',
-          //     {dir,order,path,source_type},
-          //     false,
-          //     `http://localhost:9100/member/file_manager_json.php?dir=${dir}&order=${order}&path=${path}&source_type=${source_type}`,
-          //     'get'
-          // ).then(res=>{
-          //
-          //     let tempDirs = [],tempLists = []
-          //     for(var file of res.data.file_list){
-          //         tempLists.push(file)
-          //         //空目录不放了把
-          //         // if(file.is_dir){
-          //         //     tempDirs.push(file)
-          //         // }else if(file.is_photo){
-          //         //     tempLists.push(file)
-          //         // }
-          //     }
-          //
-          //
-          //
-          //     this.dirs = tempDirs;
-          //
-          //     let arr = []
-          //     while (tempLists.length>this.pageSize){
-          //         arr.push(tempLists.splice(0,this.pageSize))
-          //     }
-          //     if(tempLists.length>0){
-          //         arr.push(tempLists)
-          //     }
-          //
-          //     console.log(arr,"sss")
-          //     for(let item of arr){
-          //         for(let it of item){
-          //             this.lists.push(it)
-          //         }
-          //     }
-          //     //this.lists = arr;
-          //     this.current_path = res.data.current_path
-          //
-          //     let len = tempLists.length
-          //     this.totalPage = Math.ceil(this.lists.length/this.pageSize)
-          //
-          //     this.currentPage = 1
-          //     this.current_file_list=this.lists.slice((this.currentPage-1)*this.pageSize,(this.currentPage-1)*this.pageSize+this.pageSize)
-          //
-          // }).catch(e=>{console.log(e)})
       }
 
 
@@ -500,7 +441,7 @@
       }
 
       created(){
-          this.init_func()
+          //this.init_func()
       }
   }
 </script>
@@ -675,6 +616,18 @@
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
+      }
+      .img-cover{
+        z-index: 2;
+        width: 100%;
+        height: auto;
+        height: 100%;
+        position: absolute;
+
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+
       }
     }
   }
