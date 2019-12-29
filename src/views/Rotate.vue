@@ -19,6 +19,7 @@
             end-placeholder="结束日期"
             :default-time="['12:00:00']">
           </el-date-picker>
+          <span style="color: red;margin-left: 10px">(先选择时间区间，再选取时间点)</span>
         </el-form-item>
       </div>
 

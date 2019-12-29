@@ -2157,6 +2157,7 @@ table{
   }
   .marginBootom{
     margin-bottom: 0px;
+    text-align: left;
   }
   .textTitle /deep/ .el-form-item__label{
     color: red;
