@@ -8,7 +8,6 @@
       @close="cancel"
       :close-on-click-modal="maskClose"
       :close-on-press-escape="maskClose"
-      append-to-body
       class="innerDislog"
     >
 
@@ -32,7 +31,7 @@
                     <el-button size="mini" type="text" @click="recallVisible =false">取消</el-button>
                     <el-button @click="createDirFn" type="primary" size="mini" >确定</el-button>
                   </div>
-                  <div  slot="reference"   @click.prevent="recallVisible = true">新建分组</div>
+                  <div  slot="reference"   @click.prevent="recallVisible = true">新建目录</div>
                 </el-popover>
               </div>
           </div>
@@ -150,7 +149,7 @@
     import {createDirectory, fetch as fetchFn, getFileList} from '../../common/fetch';
   import {Component, Vue, Prop} from 'vue-property-decorator';
   import {domain} from '../../common/utils';
-  import WzwFileButton from '@/components/comm/WzwFileButton';
+  import WzwFileButton from './WzwFileButton.vue';
     import {fun} from '../../common';
 
 

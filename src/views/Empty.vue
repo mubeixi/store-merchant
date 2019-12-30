@@ -16,8 +16,8 @@
         State
     } from 'vuex-class'
 
-    import WzwEditor from "../components/comm/WzwEditor.vue"
-    import WzwFinder from "../components/comm/WzwFinder.vue"
+    import WzwEditor from "../components/editor/WzwEditor.vue"
+    import WzwFinder from "../components/editor/WzwFinder.vue"
     import {ckeditorMixin} from '../common/mixin';
 
 
