@@ -17,7 +17,7 @@
          {{props.row.statistics_start}}-{{props.row.statistics_end}}
         </div>
       </template>
-      
+
       <template slot="status-column" slot-scope="props">
         <span :class="getStyleFn(props.row.status)">{{props.row.status|statusFilter}}</span>
       </template>
@@ -37,7 +37,7 @@
 <!--        status=1 操作列显示 编辑-->
 <!--        status=2 操作列显示 查看详情 编辑-->
         <template v-if="inArray(props.row.status,[0,1,2])" ><el-button @click="editFn(props.row)" size="mini" type="primary">编辑</el-button><span class="padding4-c"></span></template>
-        <template v-if="inArray(props.row.status,[2])"><el-button @click="toDetail(props.row)" size="mini" type="warning">查看详情</el-button></template>
+        <template ><el-button @click="toDetail(props.row)" size="mini" type="warning">查看详情</el-button></template>
         <template v-if="inArray(props.row.status,[0])"><el-button v-loading="handleRowId==props.row.id" @click="startFn(props.row)" size="mini" type="green">开始统计</el-button></template>
 
 <!--        <span style="cursor: pointer" class="color-red js-del">删除</span>-->
