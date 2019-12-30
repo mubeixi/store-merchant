@@ -311,11 +311,12 @@
             }
 
             this.dialogInstance.loading = true
+            let that=this
             await sendDistributorContributeMoney(postData).then(res=>{
                 setTimeout(()=>{
                     fun.success({msg:'发放成功'})
                 },500)
-
+                that.loadFnc()
             }).catch(e=>{
                 setTimeout(()=>{
 
