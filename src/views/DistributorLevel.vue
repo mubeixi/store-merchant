@@ -726,7 +726,7 @@
                     buy_times:{...this.buy_times},
                     team_sales:{...this.team_sales},
                     direct_sons:{...this.direct_sons},
-                    team_sons:{...this.direct_sons}
+                    team_sons:{...this.team_sons}
                 }
                 if(info.level_rules.buy_prod.value.type==1){
                     info.level_rules.buy_prod.value.prod=0
