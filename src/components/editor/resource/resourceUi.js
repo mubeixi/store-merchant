@@ -6,22 +6,16 @@
 /**
  * @module code-block/codeblockui
  */
-
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 import { createDropdown, addListToDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg'
 import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { createImageTypeRegExp } from '@ckeditor/ckeditor5-image/src/imageupload/utils';
-// import imageIcon from './chuan.svg'
-import ImageUploadCommand from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadcommand';
 import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
-import ImageUploadUI from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadui';
 import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress';
 
+import resourceIcon from './resource.svg';
 export const PLUGIN_NAME = 'resource'
 /**
  * The code block UI plugin.
@@ -48,7 +42,6 @@ export default class ResourceUi extends Plugin {
 
     componentFactory.add( PLUGIN_NAME, locale => {
 
-
       const dropdownView = createDropdown( locale );
       const imageTypes = editor.config.get( 'image.upload.types' );
       const command = editor.commands.get( PLUGIN_NAME );
@@ -56,8 +49,8 @@ export default class ResourceUi extends Plugin {
       const  options = [{model:{type:'img',limit:9},title:'素材库选择',command:'openResource'}]
       addListToDropdown( dropdownView, _prepareListOptions( options, command ) );
 
-      const imageTypesRegExp = createImageTypeRegExp( imageTypes );
 
+      const imageTypesRegExp = createImageTypeRegExp( imageTypes );
       const view = new FileDialogButtonView( locale );
       view.set( {
         acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
@@ -65,7 +58,7 @@ export default class ResourceUi extends Plugin {
       } );
 
       view.buttonView.set( {
-        label: t( '上传图片' ),
+        label: t( '直接上传图片' ),
         withText: true,
         //icon: imageIcon,
         tooltip: true
@@ -73,7 +66,6 @@ export default class ResourceUi extends Plugin {
 
       view.on( 'done', ( evt, files ) => {
         const imagesToUpload = Array.from( files ).filter( file => imageTypesRegExp.test( file.type ) );
-
         if ( imagesToUpload.length ) {
           editor.execute( 'imageUpload', { file: imagesToUpload } );
         }
@@ -81,19 +73,14 @@ export default class ResourceUi extends Plugin {
 
       let buttons = []
       buttons.push( view );
-      // buttons.push( view2 );
       addToolbarToDropdown( dropdownView, buttons );
-      // addToolbarToDropdown( dropdownView, view2 );
-
 
       // Create dropdown model.
       dropdownView.buttonView.set( {
-        label: '插入图片',
-        icon: imageIcon,
+        label: '插入素材',
+        icon: resourceIcon,
         tooltip: true
       } );
-
-
 
 
       dropdownView.extendTemplate( {
@@ -114,31 +101,6 @@ export default class ResourceUi extends Plugin {
       } );
 
       return dropdownView;
-
-      // const view = new ButtonView( locale );
-      //
-      // view.set( {
-      //   label: 'Insert image',
-      //   icon: imageIcon,
-      //   tooltip: true
-      // } );
-      //
-      // // Callback executed once the image is clicked.
-      // view.on( 'execute', () => {
-      //
-      //   // const imageUrl = prompt( 'Image URL' );
-      //   //
-      //   // editor.model.change( writer => {
-      //   //   const imageElement = writer.createElement( 'image', {
-      //   //     src: imageUrl
-      //   //   } );
-      //   //
-      //   //   // Insert the image in the current selection location.
-      //   //   editor.model.insertContent( imageElement, editor.model.document.selection );
-      //   // } );
-      // } );
-      //
-      // return view;
     } );
 
   }

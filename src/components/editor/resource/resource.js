@@ -3,7 +3,7 @@
 // import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview'
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 // import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import {RESOURCE} from './resourceUi';
+import {PLUGIN_NAME} from './resourceUi';
 import ResourceUi from './resourceUi';
 import ResourceEditing from './resourceEditing';
 import CkedittResource from '../ckeditt-resource/CkedittResource';
@@ -13,8 +13,6 @@ import CkedittResource from '../ckeditt-resource/CkedittResource';
  */
 export default class InsertImage extends Plugin {
 
-
-  //,
   static get requires() {
     return [ CkedittResource,ResourceUi,ResourceEditing ];
   }
@@ -23,7 +21,7 @@ export default class InsertImage extends Plugin {
    * @inheritDoc
    */
   static get pluginName() {
-    return RESOURCE;
+    return PLUGIN_NAME;
   }
 
 }

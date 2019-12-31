@@ -25,7 +25,7 @@ export default function (request, next) {
     } else {
 
       window.funLoading && window.funLoading.close();
-      console.log(response)
+
       //为了阿里云上传不报错，累死了
       //操碎了心
       if(!response.hasOwnProperty('body') || !response.body){

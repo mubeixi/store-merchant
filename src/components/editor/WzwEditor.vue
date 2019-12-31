@@ -2,21 +2,17 @@
 <!--  <textarea name="content" id="editor"></textarea>-->
   <div class="wrap">
 
-<!--    :value="content"-->
     <ckeditor  @ready="onReady" tag-name="textarea"  :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
     <div class="font12 graytext">您已输入<span id="js-word" style="color: #409EFF">0</span>行,共<span style="color: #409EFF" id="js-characters">0</span>字</div>
   </div>
 </template>
 <script lang="ts">
 
-    import WzwFinder from "./WzwFinder.vue"
-
     import {Component, Vue, Prop} from 'vue-property-decorator';
     import CKEditor from '@ckeditor/ckeditor5-vue';
-    //
-    // import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
     import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-    import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
     import "@ckeditor/ckeditor5-build-classic/build/translations/zh-cn.js";
 
     import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
@@ -66,6 +62,7 @@
         // 使用 CKeditor 提供的 API 修改上传适配器
         e.plugins.get("FileRepository").createUploadAdapter = loader => new myUploadLoader(loader);
     }
+
     import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
     function RemoveFormatLinks( editor ) {
         // Extend the editor schema and mark the "linkHref" model attribute as formatting.
