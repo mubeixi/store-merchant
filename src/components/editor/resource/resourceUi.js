@@ -6,23 +6,16 @@
 /**
  * @module code-block/codeblockui
  */
-
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 import { createDropdown, addListToDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg'
-import resourceIcon from './resource.svg';
 import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { createImageTypeRegExp } from '@ckeditor/ckeditor5-image/src/imageupload/utils';
-
-import ImageUploadCommand from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadcommand';
 import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting';
-import ImageUploadUI from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadui';
 import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress';
 
+import resourceIcon from './resource.svg';
 export const PLUGIN_NAME = 'resource'
 /**
  * The code block UI plugin.
@@ -85,7 +78,7 @@ export default class ResourceUi extends Plugin {
       // Create dropdown model.
       dropdownView.buttonView.set( {
         label: '插入素材',
-        icon: imageIcon,
+        icon: resourceIcon,
         tooltip: true
       } );
 
