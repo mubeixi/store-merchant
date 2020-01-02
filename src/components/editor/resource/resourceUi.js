@@ -81,12 +81,13 @@ export default class ResourceUi extends Plugin {
         icon: resourceIcon,
         tooltip: true
       } );
+      dropdownView.isToggleable = true;
 
 
       dropdownView.extendTemplate( {
         attributes: {
           class: [
-            'ck-font-size-dropdown'
+            'ck-fun-finder-dropdown'
           ]
         }
       } );

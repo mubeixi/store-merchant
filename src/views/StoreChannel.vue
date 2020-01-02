@@ -9,36 +9,7 @@
             </template>
           </el-select>
         </el-form-item>
-<!--        <el-form-item label="" v-show="formData.channel!=2">-->
-<!--          <div class="filter flex">-->
-<!--            <el-select clearable v-model="province"  placeholder="省份">-->
-<!--              <el-option-->
-<!--                v-for="item in province_list"-->
-<!--                :key="item"-->
-<!--                :label="item"-->
-<!--                :value="item">-->
-<!--              </el-option>-->
-<!--            </el-select>-->
-<!--            <div class="space"></div>-->
-<!--            <el-select clearable v-model="city"  placeholder="城市">-->
-<!--              <el-option-->
-<!--                v-for="item in city_list"-->
-<!--                :key="item"-->
-<!--                :label="item"-->
-<!--                :value="item">-->
-<!--              </el-option>-->
-<!--            </el-select>-->
-<!--            <div class="space"></div>-->
-<!--            <el-select clearable v-model="area" placeholder="区/县">-->
-<!--              <el-option-->
-<!--                v-for="item in area_list"-->
-<!--                :key="item"-->
-<!--                :label="item"-->
-<!--                :value="item">-->
-<!--              </el-option>-->
-<!--            </el-select>-->
-<!--          </div>-->
-<!--        </el-form-item>-->
+
         <el-form-item label=" " prop="store_no" v-show="formData.channel==1">
           <div class="flex">
             <el-input  v-model="formData.store_no" placeholder="请输入门店编码" ></el-input>

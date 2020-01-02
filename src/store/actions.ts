@@ -20,6 +20,11 @@ export const setTemplateEditIndex = ({commit}, data) => {
   commit('templateEditIndex', data);
 };
 
+export const setInitData = ({commit}, data) => {
+  commit('SET_INIT_DATA', data);
+};
+
+
 
 export const setTmplData = ({commit}, data) => {
   commit('tmplData', data);

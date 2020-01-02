@@ -26,8 +26,7 @@
         Action,
         State
     } from 'vuex-class'
-    import ossImg from 'aliyun-oss-web'
-    import {getAliyunOssSign} from '../../common/fetch';
+    import {getAliyunOssSign,uploadImgByBase64,uploadFileFn} from '../../common/fetch';
     import {objTranslate} from '../../common/utils';
     import _ from 'underscore'
     const defaultAllowFileType = [ 'jpeg', 'png', 'gif', 'bmp']
@@ -44,26 +43,6 @@
         }
     }
 
-    // function fetchProgress(url, opts:any, onProgress){
-    //     return new Promise((resolve, reject)=>{
-    //         var xhr = new XMLHttpRequest();
-    //         xhr.open(opts.method || 'get', url);
-    //         for(var key in opts.headers || {}){
-    //             xhr.setRequestHeader(key, opts.headers[key]);
-    //         }
-    //
-    //         xhr.onload = e => resolve(e.target.responseText)
-    //         xhr.onerror = reject;
-    //         if (xhr.upload && onProgress){
-    //             xhr.upload.onprogress = onProgress; //上传
-    //         }
-    //         if ('onprogerss' in xhr && onProgress){
-    //             xhr.onprogress = onProgress; //下载
-    //         }
-    //         xhr.send(opts.body)
-    //     })
-    // }
-    //fetchProgress('/upload').then(console.log)
 
     function random_string(len) {
         len = len || 32;
@@ -86,23 +65,21 @@
     }
 
     import {ls} from '../../common/tool/ls';
+    import {fun} from '../../common';
+    import {get_Users_ID,GET_ACCESS_TOKEN,createToken} from '../../common/fetch';
 
-    const upFileFn = async ({file={},current_path,name='file',idx,list=[],progress})=>{
+    //阿里云直传
+    const upFileFnByAliyunOss = async ({file={},current_path,name='file',idx,list=[],progress})=>{
 
         let aliyunOssSign = null
+
+        const users_id = get_Users_ID()
+        const appendStr = ''//`/uploadfiles/${users_id}/`
+
         await getAliyunOssSign({full_path:current_path}).then(res=>{
             console.log(res)
             let {accessid,callback,dir,expire,host,policy,signature} = res.data
-
             aliyunOssSign = {accessid,callback,dir,expire,host,policy,signature}
-            // accessid: "LTAI4FtENzL44TMGWMjVhxZ2"
-            // callback: ""
-            // dir: ""
-            // expire: 1577432124
-            // host: "http://wupengfei.oss-cn-beijing.aliyuncs.com/"
-            // policy: "eyJleHBpcmF0aW9uIjoiMjAxOS0xMi0yN1QxNTozNToyNFoiLCJjb25kaXRpb25zIjpbWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsMCwxMDQ4NTc2MDAwXSxbInN0YXJ0cy13aXRoIiwiZVAyaDNZN0ZRRUV0eDdlUEM4YkVwWDRCcHNWeDc3IiwiIl1dfQ=="
-            // signature: "K4xc2WwaqzgCqO+FjP92opRMpbw="
-
         })
 
 
@@ -110,10 +87,10 @@
 
         let formdata = new FormData();
 
-
         let get_suffix_val = get_suffix(file.name)
+
         let new_multipart_params = {
-            'key' : current_path+random_string(18)+get_suffix_val,
+            'key' : aliyunOssSign.dir+random_string(18)+get_suffix_val,
             'policy': aliyunOssSign.policy,
             'OSSAccessKeyId': aliyunOssSign.accessid,
             'success_action_status' : '200', //让服务端返回200,不然，默认会返回204
@@ -141,10 +118,7 @@
                     list[idx].percent = percentComplete
                     progress && progress()
                 }else{
-                    setTimeout(()=>{
-                        list.splice(idx,1);//去掉
-                        progress && progress()
-                    },500)
+                    progress && progress()
                 }
             });
 
@@ -156,56 +130,74 @@
             };
             xhr.send(formdata);
 
-            // await Vue.http.post(aliyunOssSign.host,formdata,{progress:function(event){
-            //         //console.log(event);
-            //         let percent = parseInt(event.loaded/event.total*100)
-            //         file.percent = percent
-            //         window.up_progress_list[idx] = percent
-            //         ls.set('up_progress_list',window.up_progress_list)
-            //
-            //     }
-            // }).then((res)=>{
-            //     rt = true
-            // }).catch(err=>{})
-
-
-
-
-            // Vue.$http.post(upFIleUrl,formdata,{'Content-Type':'Multipart/form-data'}).then(response=>{
-            //   // this.cancelAddProject()
-            //   // this.allRefresh()
-            //   if (response.json().status_code === 200) {
-            //     this.$broadcast('addOriginal', response.json().data)
-            //   }
-            //
-            // }).catch(res=>{
-            //   // todo:AJAXError
-            //   // this.processing = false
-            //
-            // })
-
-
-            // fetch(upFIleUrl,{
-            //     method:'post',
-            //     body:formdata
-            // })
-            // .then(res => {
-            //     return res.json()
-            // })
-            // .then(response=>{
-            //     console.log(response)
-            //     // 后端至少返回上传图片的URL
-            //     let url = response.data.urls[0]
-            //     resolve(url);
-            // })
-            // .catch(err=>{
-            //     reject(err)
-            // })
         })
 
 
     }
 
+    //上传到服务器
+    const upFileFnByLocal = async ({file={},current_path,name='image',idx,list=[],progress,extParam={}})=>{
+
+
+        return new Promise((resolve, reject) => {
+
+
+            let formdata = new FormData();
+
+            let act = 'uploadFile';//this.type==='video'?'upload_video':'upload_image'
+            let param = {
+                Users_ID: get_Users_ID(),
+                act: act,
+                env : 'wx_mp',
+                access_token:GET_ACCESS_TOKEN(),
+                'full_path':current_path,
+                ...extParam
+            };
+            let ajaxData = createToken(param);
+
+
+            let new_multipart_params = {
+                ...ajaxData
+            };
+
+            for(var key in new_multipart_params){
+                formdata.append(key, new_multipart_params[key]);
+            }
+
+            formdata.append(name,file);
+
+            let reader = new FileReader();
+            reader.addEventListener("load", ()=>{
+
+                //上传到服务器上
+                Vue.http.post('/api/little_program/shopconfig.php',formdata,{
+                    progress:function(event) {
+
+                        let percent = parseInt(event.loaded / event.total * 100)
+                        console.log(`upload task upload :${idx}==>${percent}`);
+                        if(percent<100){
+                            list[idx].percent = percent
+                            progress && progress()
+                        }else{
+                            list[idx].percent = percent
+                            // list.splice(idx,1);//去掉
+                            progress && progress()
+                        }
+
+                    }
+                }).then(res=>{
+
+                    resolve(true)
+                }).catch(e=>{})
+
+
+            },false)
+            reader.readAsDataURL(file)
+
+        })
+
+
+    }
 
     function dataURLtoBlob(dataurl) {
         var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
@@ -266,10 +258,28 @@
         elIdName
 
         @Prop({
-            type:Array | String,
+            type:[Array,String],
             default:()=>defaultAllowFileType
         })
         accept //默认上传图片
+
+        @Prop({
+            type:String,
+            default:'local'
+        })
+        storage_type //储存模式，可以是aliyun || local 不要用oss，万一后面有其他的呢
+
+        @Prop({
+            type:Number,
+            default:1024*8 //默认8m
+        })
+        maxSize //上传文件限制，只有local模式才有
+
+        @Prop({
+            type:Object,
+            default:()=>{}
+        })
+        extParam //额外参数，无脑直接和放在服务器上传模式下，参数拼接
 
         validFileType = (file,fileTypes)=>fileTypes.includes(file)
 
@@ -278,6 +288,7 @@
         }
 
         fileFn(e){
+            console.log('native upload event',e)
             let _self = this
             while(this.previews.length>0) {
                 this.previews = []
@@ -289,11 +300,25 @@
                 return;
             }
 
+            if(curFiles.length>this.limit){
+                fun.error({msg:`限制一次性最多上传${this.limit}个`})
+                return;
+            }
+
             let promiseList = []
 
-            for(var i = 0; i < curFiles.length; i++){
-                let url = ''
 
+
+            const storage_type = this.storage_type
+            const maxSize = this.maxSize
+
+
+            for(var i = 0; i < curFiles.length; i++){
+                let curFileSize = curFiles[i].size/1024
+                if(storage_type=='local' && curFileSize>maxSize){
+                    fun.error({msg:`文件${curFiles[i].name}大小${curFileSize}kb超出上传限制${maxSize}kb`})
+                    continue;
+                }
                 this.previews.push({
                     size:returnFileSize(curFiles[i].size),
                     name:curFiles[i].name,
@@ -301,27 +326,56 @@
                     percent:0
                 })
 
-                promiseList.push(upFileFn({file:curFiles[i],current_path:this.current_path,idx:i,list:this.previews,progress:()=>{this.preview(this.previews)}}))
+                if(storage_type=='aliyun'){
+                    promiseList.push(upFileFnByAliyunOss({
+                        file:curFiles[i],
+                        current_path:this.current_path,
+                        idx:i,
+                        list:this.previews,
+                        progress:()=>{
+                            this.progress(this.previews)
+                        }
+                    }))
+                }else{
+                    promiseList.push(upFileFnByLocal({
+                        file:curFiles[i],
+                        current_path:this.current_path,
+                        name:'image',
+                        idx:i,
+                        list:this.previews,
+                        extParam:this.extParam,
+                        progress:()=>{
+                          this.progress(this.previews)
+                        }
+                    }
+                    ))
+
+                }
+
             }
 
+            //input无法点击多次
+            document.getElementById(this.elIdName).value = null
             //this.progress(curFiles)
 
             this.preview(this.previews)
 
             Promise.all(promiseList).then(urls=>{
-                this.file_list = urls
-
+                // this.file_list = urls
+                //
                 this.previews = []
                 this.preview([])
-
                 this.success()
             })
 
         }
 
+
+
         progress(files){
             this.$emit('progress',files)
         }
+
         preview(arr){
 
             this.$emit('preview',arr)

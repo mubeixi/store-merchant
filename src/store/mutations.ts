@@ -13,6 +13,12 @@ export const attrData = function (state: any, value: any) {
   state.activeAttr.attrData = value;
 };
 
+export const SET_INIT_DATA = function (state: any, value: any) {
+  state.initData = value;
+};
+
+
+
 export const editStatus = function (state: { editStatus: any; }, value: any) {
   state.editStatus = value;
 };

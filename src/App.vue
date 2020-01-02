@@ -3,18 +3,28 @@
     <router-view/>
   </div>
 </template>
-<script>
+<script lang="ts">
+import {getCommonConfig } from './common/fetch';
+import {
+    Component,
+    Vue
+} from 'vue-property-decorator'
+import {
+    Action,
+    State
+} from 'vuex-class'
+@Component
 
-export default {
-  data(){
-    return {
-
+export default class App extends Vue {
+    @Action setInitData
+    @State initData
+    created() {
+        getCommonConfig().then(res=>{
+            this.setInitData(res.data)
+        })
     }
-  },
-  created() {
-
-  }
 }
+
 </script>
 <style lang="stylus">
   @import "assets/css/app.styl";
@@ -160,5 +170,11 @@ input[type="number"]{
 /*    display: none;*/
 /*  }*/
 /*}*/
+
+.sourcePage{
+  .el-dialog__body{
+    padding: 15px 15px 0 15px;
+  }
+}
 
 </style>

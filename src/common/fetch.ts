@@ -76,6 +76,7 @@ export const fetch = function (act: String, param: Object = {}, options = false,
 
 };
 
+export const getCommonConfig = (data:object={},options:any=false)=> fetch('shopconfig', data, options)
 
 export const getFileList = (data:object={},options:any=false)=> fetch('getFolderDir', data, options)
 
@@ -377,7 +378,7 @@ export const createToken = function (object) {
   var timestamp = parseInt(new Date().getTime() / 1000).toString();
   var key = '458f_$#@$*!fdjisdJDFHUk4%%653154%^@#(FSD#$@0-T';
   var dataStr = signString + key + timestamp;
-
+  // console.log(dataStr)
   var sign = hexMD5(window.Base64.toBase64(dataStr)).toUpperCase();
   object['timestamp'] = timestamp;
   object['sign'] = sign;

@@ -461,3 +461,16 @@ export const emptyObject = (obj, strice) => {
   }
   return obj;
 };
+
+/**
+ * 判断某个值是否为非
+ * @param val
+ */
+export const emptyValue = (val) => {
+
+  if (val === '' || val === undefined || val === null || val === 'null' || val === 'undefined') {
+    return true;
+  }
+
+  return false;
+};

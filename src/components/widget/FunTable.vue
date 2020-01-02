@@ -232,7 +232,7 @@
 
         @Prop({
             type:Object,
-            default:{}
+            default:()=>{}
         })
         extParam
 

@@ -1,7 +1,6 @@
 <template>
 <!--  <textarea name="content" id="editor"></textarea>-->
   <div class="wrap">
-
     <ckeditor  @ready="onReady" tag-name="textarea"  :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
     <div class="font12 graytext">您已输入<span id="js-word" style="color: #409EFF">0</span>行,共<span style="color: #409EFF" id="js-characters">0</span>字</div>
   </div>
@@ -64,6 +63,7 @@
     }
 
     import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
+    import {State} from 'vuex-class';
     function RemoveFormatLinks( editor ) {
         // Extend the editor schema and mark the "linkHref" model attribute as formatting.
         editor.model.schema.setAttributeProperties( 'linkHref', {
@@ -75,7 +75,6 @@
         // 使用 CKeditor 提供的 API 修改上传适配器
         e.plugins.get("WordCount").on( 'update', ( evt, stats ) => {
             console.log(stats)
-            // Prints the current content statistics.
             document.getElementById('js-word').innerHTML = stats.words
             document.getElementById('js-characters').innerHTML = stats.characters
             console.log( `Characters: ${ stats.characters }\nWords:      ${ stats.words }` );
@@ -88,11 +87,12 @@
             'heading', '|',
             'bold', 'italic', 'link', 'undo', 'redo','horizontalLine','removeFormat',
             '|',
+            'imageUpload','mediaEmbed','resource',
+            '|',
             'fontFamily','fontSize','fontColor','fontBackgroundColor',
+
             '|',
             'blockQuote',"indent", "outdent","insertTable",
-            '|',
-            'imageUpload','mediaEmbed','resource',
             '|',
             'underline','strikethrough','code','codeBlock','subscript','superscript',
 
@@ -105,10 +105,10 @@
             ckeditor: CKEditor.component
         },
         props:{
-            content:{
-                type:String,
-                default:''
-            }
+            // content:{
+            //     type:String,
+            //     default:''
+            // }
         },
         watch:{
             editorData:{
@@ -122,10 +122,17 @@
     })
     export default class WzwEditor extends Vue{
 
+        @Prop({
+            type:String,
+            default:''
+        })
+        content
+
+        @State initData
         editorInstance = null
         editor = ClassicEditor
-        Characters = 0
-        Words = 0
+        // Characters = 0
+        // Words = 0
         editorData =  '请输入内容.'
         editorConfig = {
             language: "zh-cn",
@@ -220,34 +227,14 @@
         }
 
         onReady(editor){
-
-
             this.editorInstance = editor
-            // editor.ui.componentFactory.add( 'insertImage', locale => {
-            //     const view = new ButtonView( locale );
-            //
-            //     view.set( {
-            //         label: 'Insert image',
-            //         icon: imageIcon,
-            //         tooltip: true
-            //     } );
-            //
-            //     // Callback executed once the image is clicked.
-            //     view.on( 'execute', () => {
-            //         const imageUrl = prompt( 'Image URL' );
-            //
-            //         editor.model.change( writer => {
-            //             const imageElement = writer.createElement( 'image', {
-            //                 src: imageUrl
-            //             } );
-            //
-            //             // Insert the image in the current selection location.
-            //             editor.model.insertContent( imageElement, editor.model.document.selection );
-            //         } );
-            //     } );
-            //
-            //     return view;
-            // } );
+        }
+
+        created(){
+            // if(this.content){
+            //     this.editorData = this.content
+            // }
+
         }
 
         mounted() {
