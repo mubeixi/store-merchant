@@ -181,10 +181,10 @@
                 </el-select>
               </div>
               <div class="td">
-                <el-input class="widthmbx" v-model="item.name"></el-input>
+                <el-input class="widthmbx" v-model="item.name" maxlength="10"></el-input>
               </div>
               <div class="td">
-                <el-input class="widthmbx" v-model="item.place" :disabled="item.type=='address'"></el-input>
+                <el-input class="widthmbx" v-model="item.place" maxlength="10" placeholder="多个值以|分隔" :disabled="item.type=='address'"></el-input>
               </div>
               <div class="td" style="width: 125px">
                 <img src="@/assets/img/mydel.png" style="cursor:pointer;" @click="delManual(index)">
@@ -726,7 +726,7 @@
                     buy_times:{...this.buy_times},
                     team_sales:{...this.team_sales},
                     direct_sons:{...this.direct_sons},
-                    team_sons:{...this.direct_sons}
+                    team_sons:{...this.team_sons}
                 }
                 if(info.level_rules.buy_prod.value.type==1){
                     info.level_rules.buy_prod.value.prod=0
