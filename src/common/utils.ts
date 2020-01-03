@@ -351,25 +351,6 @@ export const createTmplArray = (item,len)=>{
 }
 
 
-export class Fun{
-
-  static fn = (str)=>new Promise((resolve, reject) => {
-    setTimeout(function () {
-      resolve(str);
-    },100)
-  })
-  static fn2 = (str)=>new Promise((resolve, reject) => {
-    setTimeout(function () {
-      resolve(str);
-    },100)
-  })
-  static fn3 = (str)=>new Promise((resolve, reject) => {
-    setTimeout(function () {
-      resolve(str);
-    },100)
-  })
-
-}
 
 /**
  * 从指定的数组(对象组成的数组)，根据键值和值找到下标

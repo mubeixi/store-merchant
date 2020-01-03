@@ -51,7 +51,8 @@
                 </div>
                 <!--文件上传-->
                 <div class="container-right-titleRight">
-                  <span class="padding10-c">限传{{limit}}个文件,单个文件大小不超过{{parseInt(maxSize/1024)}}M</span>
+                  <span class="padding10-c font12 graytext" v-if="!initData.storage_type && source_type=='image'">限传{{limit}}个文件,单张图片大小限制为{{parseInt(maxSize/1024)}}M.如需上传更大图片，请联系客服</span>
+                  <span class="padding10-c font12 graytext" v-if="!initData.storage_type && source_type=='media'">限传{{limit}}个文件,单个视频限制长度为{{seconds}}秒.如需上传更长时间视频，请联系客服</span>
                   <wzw-file-button
                     :multiple="true"
                     :accept="accept"
@@ -83,7 +84,7 @@
                 <!--:style="{marginRight:((idx2+1)%8==0?'0px':'')}"-->
 
                 <div  class="image"   v-for="(file,idx3) in preview_file_list" >
-                  <img class="img" :src="getFileUrl(file.url)"  >
+                  <img class="img" :src="file.url"  >
                   <div class="progress">
                     <el-progress :text-inside="true" :show-text="false" :percentage="file.percent"></el-progress>
                   </div>
@@ -106,7 +107,8 @@
                           <i class="el-icon-check icon " v-if="file.checked && select_file_list.length>0"></i>
                         </div>
                         <template v-if="source_type=='media'">
-                          <video @click="addFn(file)" class="img-cover" :src="file.fileurl"></video>
+                          <!--<video @click="addFn(file)" class="img-cover" :src="file.fileurl"></video>-->
+                          <img @click="addFn(file)" class="img-cover" :src="getFileUrl(file.fileurl)" />
                         </template>
                         <template v-else>
                           <div @click="addFn(file)" class="img-cover" v-lazy:background-image="getFileUrl(file.fileurl)"></div>
@@ -267,6 +269,7 @@
                   console.log(upload_rule)
                   this.accept = upload_rule['image'].exts
                   this.maxSize = upload_rule['image'].size
+                  this.seconds = upload_rule['media'].seconds
 
               }
           }
@@ -291,7 +294,13 @@
 
       getFileUrl(url){
           //oss才支持
-          if(this.initData.storage_type && this.source_type=='media')return `${url}?x-oss-process=video/snapshot,t_1000,f_jpg,w_200`
+          //后端牛逼，服务器也支持了this.initData.storage_type &&
+          if(isDev){
+              url = domain(url);
+          }
+
+          if(this.source_type=='media')return `${url}?x-oss-process=video/snapshot,t_1000,f_jpg,w_200`
+          if(this.source_type=='image')return `${url}-r200`
           //if(isDev) return domain(url)
           return url
       }
@@ -343,7 +352,7 @@
 
       dirs = [
           {label:'图片',source_type:'image',accept:'image/gif, image/jpeg,image/png,image/bmp'},
-          {label:'视频',source_type:'media',accept:'audio/mp4, video/mp4,application/ogg, audio/ogg,.wmv'},
+          {label:'视频',source_type:'media',accept:'audio/mp4, video/mp4'},//,application/ogg, audio/ogg,.wmv
           {label:'文件',source_type:'file',accept:'application/vnd.ms-powerpoint,application/vnd.ms-excel,application/msword,application/pdf'},
           {label:'其他',source_type:'other',accept:'application/zip,application/x-zip,application/x-zip-compressed,application/x-rar-compressed'},
       ]
@@ -437,11 +446,13 @@
 
       accept = 'image/gif, image/jpeg,image/png,image/bmp'
       maxSize = 0
+      seconds = 15
 
       selectSourceType(type,idx){
           if(this.reqLoading)return //如果还在请求就不动
           const upload_rule = this.initData.upload_rule
 
+          // this.accept = upload_rule[type.source_type].exts
           this.accept = type.accept //upload_rule[type.source_type].exts
           this.maxSize = upload_rule[type.source_type].size
 

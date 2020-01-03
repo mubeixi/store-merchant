@@ -133,7 +133,7 @@
         editor = ClassicEditor
         // Characters = 0
         // Words = 0
-        editorData =  '请输入内容.'
+        editorData =  ''
         editorConfig = {
             language: "zh-cn",
             toolbar:toolbar,

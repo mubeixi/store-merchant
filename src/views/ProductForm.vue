@@ -1215,7 +1215,14 @@
 
         upVideoSuccessCall(url_list){
             console.log(url_list)
-            this.video = url_list[0]
+            let video_url = url_list[0]
+            this.video = video_url
+
+
+
+            let video_img = `${video_url}?x-oss-process=video/snapshot,t_1000,f_jpg,w_200`
+
+            this.imgs = video_img
             // if(!file || !file[0] || !file[0].video_url)return;
             // let {video_url,video_img} = file[0]
             // if(!video_url){

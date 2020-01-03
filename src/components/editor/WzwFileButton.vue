@@ -68,6 +68,23 @@
     import {fun} from '../../common';
     import {get_Users_ID,GET_ACCESS_TOKEN,createToken} from '../../common/fetch';
 
+    const formatNumber = n => {
+        n = n.toString()
+        return n[1] ? n : '0' + n
+    }
+
+    const formatTime = () => {
+        const date = new Date()
+        const year = date.getFullYear()
+        const month = date.getMonth() + 1
+        const day = date.getDate()
+        const hour = date.getHours()
+        const minute = date.getMinutes()
+        const second = date.getSeconds()
+
+        return [year, month, day].map(formatNumber).join('') + [hour, minute, second].map(formatNumber).join('')
+    }
+
     //阿里云直传
     const upFileFnByAliyunOss = async ({file={},current_path,name='file',idx,list=[],progress})=>{
 
@@ -90,7 +107,7 @@
         let get_suffix_val = get_suffix(file.name)
 
         let new_multipart_params = {
-            'key' : aliyunOssSign.dir+random_string(18)+get_suffix_val,
+            'key' : aliyunOssSign.dir+formatTime()+random_string(4)+get_suffix_val,
             'policy': aliyunOssSign.policy,
             'OSSAccessKeyId': aliyunOssSign.accessid,
             'success_action_status' : '200', //让服务端返回200,不然，默认会返回204
@@ -314,8 +331,10 @@
 
 
             for(var i = 0; i < curFiles.length; i++){
-                let curFileSize = curFiles[i].size/1024
-                if(storage_type=='local' && curFileSize>maxSize){
+                let curFileSize = parseInt(curFiles[i].size/1024*100)/100
+
+                //1.服务器模式 2.不是视频类型 才限制大小
+                if(storage_type=='local' && this.acceptStr.indexOf('mp4')===-1 && curFileSize>maxSize){
                     fun.error({msg:`文件${curFiles[i].name}大小${curFileSize}kb超出上传限制${maxSize}kb`})
                     continue;
                 }
