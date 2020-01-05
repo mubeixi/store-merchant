@@ -160,7 +160,7 @@
 
       <el-form-item label="商品简介">
         <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_BriefDescription">
-          <el-input  type="textarea"  :disabled="noEditField.Products_BriefDescription"   v-model="ruleForm.Products_BriefDescription" style="width: 600px;" :rows="4"></el-input>
+          <el-input  maxlength="250" type="textarea"  :disabled="noEditField.Products_BriefDescription"   v-model="ruleForm.Products_BriefDescription" style="width: 600px;" :rows="4"></el-input>
         </el-tooltip>
       </el-form-item>
 
