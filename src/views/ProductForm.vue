@@ -665,7 +665,10 @@
         getArrayMulite,
         createTmplArray,
         findArrayIdx,
-        domain, emptyObject, emptyValue
+        domain,
+        emptyObject,
+        emptyValue,
+        formatRichTextByKindEditor
     } from '@/common/utils';
     import {fun} from '@/common';
 
@@ -1785,7 +1788,9 @@
                     this.editorText=productInfo.Products_Description;//富文本类型
 
                     this.$nextTick().then(()=>{
-                        this.$refs.richtext.setData(productInfo.Products_Description)
+                      //做一下富文本的格式化，兼容原来浏览器的视频标签
+                      let richTxt = formatRichTextByKindEditor(productInfo.Products_Description)
+                      this.$refs.richtext.setData(richTxt)
                     })
 
 

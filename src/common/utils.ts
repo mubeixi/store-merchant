@@ -455,3 +455,22 @@ export const emptyValue = (val) => {
 
   return false;
 };
+
+/**
+ * 兼容原来的kindeditor文档
+ */
+export const formatRichTextByKindEditor = (html)=>{
+
+  if(!html) return;
+
+  let newContent= html.replace(/<embed[^>]*>/gi,function(match,capture){
+    match = match.replace(/embed/gi, 'oembed')
+    match = match.replace(/src/gi, 'url')
+
+    //闭合标签
+    match = match.replace(/\/>/gi, '></oembed>')
+    return match;
+  });
+
+  return newContent
+}

@@ -18,6 +18,7 @@
     import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
     import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
     import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
+    import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 
     import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
     import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
@@ -85,12 +86,12 @@
     const toolbar = {
         items: [
             'heading', '|',
+            'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify','|',
             'bold', 'italic', 'link', 'undo', 'redo','horizontalLine','removeFormat',
             '|',
             'imageUpload','mediaEmbed','resource',
             '|',
             'fontFamily','fontSize','fontColor','fontBackgroundColor',
-
             '|',
             'blockQuote',"indent", "outdent","insertTable",
             '|',
@@ -138,7 +139,7 @@
             language: "zh-cn",
             toolbar:toolbar,
             plugins:[
-                EssentialsPlugin, BoldPlugin, ItalicPlugin, LinkPlugin, ParagraphPlugin,Underline,Subscript,Superscript,Code,Strikethrough,Heading,CodeBlock,
+                EssentialsPlugin, Alignment,BoldPlugin, ItalicPlugin, LinkPlugin, ParagraphPlugin,Underline,Subscript,Superscript,Code,Strikethrough,Heading,CodeBlock,
                 FontFamily,FontBackgroundColor,FontColor,FontSize,
                 SimpleUploadAdapter,WordCount,
                 Image, ImageToolbar, ImageCaption, ImageStyle, ImageResize,ImageUploadProgress,MediaEmbed,resource,
@@ -149,6 +150,9 @@
             extraPlugins: [
                 myUpload,wordCountPlugin,RemoveFormatLinks
             ], // 添加自定义图片上传适配插件
+            alignment: {
+                options: [ 'left', 'right','justify','center' ]
+            },
             codeBlock: {
                 languages: [
                     // Do not render the CSS class for the plain text code blocks.
