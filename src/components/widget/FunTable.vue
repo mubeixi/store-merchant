@@ -32,6 +32,7 @@
                 :prop="column.prop"
                 :width="column.width"
                 :align="column.align"
+                :sortable="column.sortable?true:false"
               >
               <slot :name="getSlotNameFn(column)" :scope="scope" :idx="scope.$index" :row="scope.row" slot-scope="scope">
                 <render-content :option="{render: column.render,scope: scope,column: column}"></render-content>
