@@ -102,6 +102,7 @@
             label:'价格',
             prop:'Products_PriceX',
             width:100,
+            sortable:true,
             search:false
           }
         ],
@@ -134,6 +135,9 @@
 
             this.loadGoodsInfo((arr) => {
               //this.finish = true;
+                arr.filter(column =>
+                    column.Products_PriceX = parseFloat(column.Products_PriceX)
+                )
               this.list = arr;
             });
 
