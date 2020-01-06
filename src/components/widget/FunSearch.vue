@@ -27,6 +27,19 @@
                   end-placeholder="结束日期"
                   align="right"/>
               </template>
+              <template v-if="col.search.type === 'between'">
+                <el-input
+                  :size="size"
+                  style="width: 100px"
+                  placeholder="最低价"
+                  v-model="col.value[0]" />
+                  <span style="margin-left: 5px;margin-right: 5px">一</span>
+                <el-input
+                  :size="size"
+                  placeholder="最高价"
+                  style="width: 100px"
+                  v-model="col.value[1]" />
+              </template>
 
           </div>
         </template>
@@ -98,12 +111,12 @@
                     // if (!v.search.operate) {
                     //     this.$set(v.search, 'operate', '=')
                     // }
-                    // v.search.operate = v.search.operate.toUpperCase();
+                    v.search.operate = v.search.operate.toUpperCase();
                     if (!v.search.type) {
                         this.$set(v.search, 'type', 'input')
                     }
-                    // let value = v.search.operate === 'BETWEEN' ? [] : '';
-                    // this.$set(v, 'value', value);
+                    let value = v.search.operate === 'BETWEEN' ? [] : '';
+                    this.$set(v, 'value', value);
                     // if (v.search.type === 'date') {
                     //     v.search.operate = 'RANGE';
                     //     this.$set(v, 'opened', false);
@@ -125,24 +138,24 @@
         submit() {
             let filter = {};
             let op = {};
-            // for (let item of this.columnsData) {
-            //     let val = item.value;
-            //     if (typeof val === 'object') {
-            //         let n = false;
-            //         for (let inp of val) {
-            //             if (inp) {
-            //                 n = true;
-            //                 break;
-            //             }
-            //         }
-            //         val = n ? val.join(',') : '';
-            //     }
-            //     if (!val) {
-            //         continue;
-            //     }
-            //     filter[item.name] = val;
-            //     op[item.name] = item.search.operate;
-            // }
+            for (let item of this.columnsData) {
+                let val = item.value;
+                if (typeof val === 'object') {
+                    let n = false;
+                    for (let inp of val) {
+                        if (inp) {
+                            n = true;
+                            break;
+                        }
+                    }
+                    val = n ? val.join(',') : '';
+                }
+                if (!val) {
+                    continue;
+                }
+                filter[item.name] = val;
+                op[item.name] = item.search.operate;
+            }
             this.$emit('submit', {filter: filter, op: op});
         }
 
@@ -172,7 +185,7 @@
       .label {
         white-space: nowrap;
         padding-right: 6px;
-        width: 100px;
+        width: 60px;
         overflow: hidden;
         text-overflow: ellipsis;
         text-align: right;
