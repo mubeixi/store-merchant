@@ -1925,37 +1925,86 @@
                     //模拟选择菜单后的
                     let dataArr = this.cate_list
 
+                    // let child_arr = [];
+                    // let cate_data = {}
+                    //
+                    // for(var cate of origin_cate_list){
+                    //     child_arr = [];
+                    //
+                    //     for(var item of dataArr){
+                    //         if(item.child){
+                    //             if(cate.hasOwnProperty('child')){
+                    //                 for(var child of cate.child){
+                    //                     if(child.Category_ID === item.Category_ID){
+                    //                         child_arr.push(item.Category_ID)
+                    //                     }
+                    //                 }
+                    //             }
+                    //         }else{
+                    //                 if(cate.Category_ID === item.Category_ID){
+                    //                     child_arr.push(item.Category_ID)
+                    //                 }
+                    //         }
+                    //
+                    //
+                    //     }
+                    //
+                    //     if(child_arr.length>0){
+                    //         cate_data[cate.Category_ID] = [...child_arr]
+                    //     }
+                    //
+                    // }
+                    //
+                    // this.cate_ids = JSON.stringify(cate_data)//ids.store('|')
+
+
+                    console.log('原始数据',origin_cate_list)
+                    console.log('初始化的参数',dataArr)
                     let child_arr = [];
                     let cate_data = {}
-
                     for(var cate of origin_cate_list){
+
                         child_arr = [];
 
+                        //把所有选中的子级类目加进去
                         for(var item of dataArr){
-                            if(item.child){
-                                if(cate.hasOwnProperty('child')){
-                                    for(var child of cate.child){
-                                        if(child.Category_ID === item.Category_ID){
-                                            child_arr.push(item.Category_ID)
-                                        }
-                                    }
-                                }
-                            }else{
-                                    if(cate.Category_ID === item.Category_ID){
+                            //如果不是子一级目录就不要
+                            if(item.child)continue
+                            if(cate.hasOwnProperty('child') && _.isArray(cate.child)){
+                                for(var child of cate.child){
+                                    if(child.Category_ID === item.Category_ID){
                                         child_arr.push(item.Category_ID)
                                     }
+                                }
                             }
 
-
                         }
 
+
+                        console.log(child_arr)
+                        //如果有子的，那么就把父级也加进去
                         if(child_arr.length>0){
                             cate_data[cate.Category_ID] = [...child_arr]
+                        }else{
+                            //修改分类不对
+                            let isHas = findArrayIdx(dataArr,{Category_ID:cate.Category_ID})
+                            if(isHas!==false){
+                                cate_data[cate.Category_ID] = []
+                            }
+
                         }
+
 
                     }
 
+                    console.log(cate_data)
+
+                    this.cate_list = dataArr.map(cate=>{
+                        return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
+                    })
+
                     this.cate_ids = JSON.stringify(cate_data)//ids.store('|')
+
 
                 })
                 //初始化店铺列表
