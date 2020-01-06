@@ -514,7 +514,7 @@
         //获取选中数据
         selectVal(val,vals){
             console.log(val,vals,"sssss")
-            //this.selectValue=[]
+            this.selectValue=[]
             this.productData=[]
 
             for(let item of val){
@@ -741,6 +741,8 @@
                 for(let my in info.level_rules){
                     info.level_rules[my].checked=info.level_rules[my].checked?'1':'0'
                 }
+                // console.log(info.level_rules,"sss")
+                // return
                 info.level_rules=JSON.stringify(info.level_rules)
             }
             if(this.arrive_limit=='2'){
@@ -748,6 +750,8 @@
             }
 
             let  that=this
+
+
             if(this.LevelID){
                 info.level_id=this.LevelID
 

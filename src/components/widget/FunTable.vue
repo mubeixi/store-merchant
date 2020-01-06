@@ -331,8 +331,11 @@
             }
         }
 
-        filterFn(){
-            this.$emit('submit');
+        filterFn(params){
+            /**
+             * 需要完善
+             */
+            this.$emit('submit',params);
         }
         reset(){
             this.$emit('reset');
