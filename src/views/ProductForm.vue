@@ -1809,13 +1809,12 @@
                     //         }
                     //     }
                     // }
-                    // for(let mb in this.prodConfig.Shop_Commision_Reward_Json.Distribute){
-                    //     for(let it in productInfo.Products_Distributes){
-                    //           if(mb!=it){
-                    //               productInfo.Products_Distributes[mb]=this.prodConfig.Shop_Commision_Reward_Json.Distribute[mb]
-                    //           }
-                    //     }
-                    // }
+                    for(let mb in this.prodConfig.Shop_Commision_Reward_Json.Distribute){
+                        if(!productInfo.Products_Distributes[mb]){
+                            productInfo.Products_Distributes[mb]=this.prodConfig.Shop_Commision_Reward_Json.Distribute[mb]
+                        }
+
+                    }
                     for(let it in productInfo.Products_Distributes){
                         if(Array.isArray(productInfo.Products_Distributes[it])){
                             let obj={

@@ -79,6 +79,15 @@
                 </el-radio-group>
               </el-tab-pane>
 
+              <el-tab-pane label="文章" name="6" :disabled="!config.page.article.show">
+                <el-radio-group v-model="innerDialog.article.checked" class="systemPage">
+                  <el-radio style="padding-bottom: 4px;" class="pageBlock" :label="item.path"
+                            v-for="(item, index) in innerDialog.article.data"
+                            :key="index" @change="saveArticlePage(item)">{{ item.text }}
+                  </el-radio>
+                </el-radio-group>
+              </el-tab-pane>
+
 
             </el-tabs>
           </el-tab-pane>
@@ -95,7 +104,7 @@
 </template>
 
 <script>
-  import { getProductCategory, getProductList,getDiyPageList,getSystemUrl,getDiyUrl } from '@/common/fetch';
+  import { getProductCategory, getProductList,getDiyPageList,getSystemUrl,getDiyUrl,systemArticleUrl } from '@/common/fetch';
   import { deepCopy } from '@/common/utils';
   import {fun} from '../common';
 
@@ -321,6 +330,21 @@
             });
 
         }
+          if (val === '6' && !this.innerDialog.article.isHasData) {
+              systemArticleUrl({ pageSize: 999 })
+                  .then(res => {
+                      this.innerDialog.article.isHasData = true;
+                      let data = res.data.map(v => {
+                          v.text = `[文章] ${v.Article_Title}`;
+                          v.path = `/pages/common/article?Article_ID=${v.Article_ID}`;
+                          v.type = 'article';
+                          return v;
+                      });
+                      this.innerDialog.article.data.push(...data);
+                  });
+
+          }
+
 
 
 
@@ -365,6 +389,12 @@
             isHasData: false,
             checkedObj: {}
           },
+          article: {
+              data: [],
+              checked: '',
+              isHasData: false,
+              checkedObj: {}
+          },
           classify: {
             data: [],
             index: 0,
@@ -399,7 +429,11 @@
             },
             diy:{
               show:true
+            },
+            article:{
+              show:true
             }
+
           }
         }
 
@@ -456,6 +490,9 @@
       },
       saveDiyPage(item) {
         this.innerDialog.diy.checkedObj = item;
+      },
+      saveArticlePage(item){
+          this.innerDialog.article.checkedObj = item;
       },
       nodeClick(data, checked, node) {
         this.$refs.treeForm.setCheckedNodes([data]);
@@ -541,6 +578,14 @@
               tooltip = `自定义页面：${this.innerDialog.diy.checkedObj.Home_Name}`;
               dataItem = this.innerDialog.diy.checkedObj;
               type = 'diypage';
+              break;
+
+              case '6':
+                  path = this.innerDialog.article.checked;
+                  if (path === '') return this.$message('请先选择文章');
+                  tooltip = `文章：${this.innerDialog.article.checkedObj.Article_Title}`;
+                  dataItem = this.innerDialog.article.checkedObj;
+                  type = 'article';
               break;
           }
         }
