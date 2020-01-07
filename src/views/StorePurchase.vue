@@ -926,6 +926,8 @@
             if(this.$route.query.channel == 1 && this.$route.query.store_no){
                 getProductListFn = getPifaProductList
                 postData.purchase_store_sn = this.$route.query.store_no
+                //参数居然是小写，用一个吴经理祭天
+                postData.cate_id = postData.Cate_ID
             }
             getProductListFn(postData).then(res=>{
                 this.loading = false
