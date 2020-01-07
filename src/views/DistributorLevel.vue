@@ -181,10 +181,10 @@
                 </el-select>
               </div>
               <div class="td">
-                <el-input class="widthmbx" v-model="item.name"></el-input>
+                <el-input class="widthmbx" v-model="item.name" maxlength="10"></el-input>
               </div>
               <div class="td">
-                <el-input class="widthmbx" v-model="item.place" :disabled="item.type=='address'"></el-input>
+                <el-input class="widthmbx" v-model="item.place" maxlength="10" placeholder="多个值以|分隔" :disabled="item.type=='address'"></el-input>
               </div>
               <div class="td" style="width: 125px">
                 <img src="@/assets/img/mydel.png" style="cursor:pointer;" @click="delManual(index)">
@@ -514,7 +514,7 @@
         //获取选中数据
         selectVal(val,vals){
             console.log(val,vals,"sssss")
-            //this.selectValue=[]
+            this.selectValue=[]
             this.productData=[]
 
             for(let item of val){
@@ -726,7 +726,7 @@
                     buy_times:{...this.buy_times},
                     team_sales:{...this.team_sales},
                     direct_sons:{...this.direct_sons},
-                    team_sons:{...this.direct_sons}
+                    team_sons:{...this.team_sons}
                 }
                 if(info.level_rules.buy_prod.value.type==1){
                     info.level_rules.buy_prod.value.prod=0
@@ -741,6 +741,8 @@
                 for(let my in info.level_rules){
                     info.level_rules[my].checked=info.level_rules[my].checked?'1':'0'
                 }
+                // console.log(info.level_rules,"sss")
+                // return
                 info.level_rules=JSON.stringify(info.level_rules)
             }
             if(this.arrive_limit=='2'){
@@ -748,6 +750,8 @@
             }
 
             let  that=this
+
+
             if(this.LevelID){
                 info.level_id=this.LevelID
 

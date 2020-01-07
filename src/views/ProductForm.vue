@@ -80,37 +80,78 @@
         <span class="sortMsg">注：佣金将从商品利润中取出一部分发放</span>
       </el-form-item>
 
+      <el-dialog  title="预览素材" :visible.sync="preDialogInstance.show">
+        <video width="100%" style="max-height: 500px" controls autoplay :src="domainFn(preDialogInstance.url)" v-if="preDialogInstance.type==='video'"></video>
+        <img width="100%"  style="max-height: 500px" :src="domainFn(preDialogInstance.url)"  v-if="preDialogInstance.type==='image'" alt="">
+      </el-dialog>
+
       <el-form-item label="商品主图"  class="relative">
-        <upload-components
-          size="mini"
-          ref="thumb"
-          :limit="5"
-          tip="上传商品主图"
-          :onSuccess="upThumbSuccessCall"
-        />
+        <div class="preview-thumb-box preview-box">
+          <div class="preview-thumb-item preview-item" v-for="(img,idx) in thumb" :key="idx">
+            <img class="img" :src="img" />
+            <div class="actions">
+              <span class="__item-preview" @click="onPreviewFn(img)"><i class="el-icon-zoom-in"></i></span>
+              <span class="__item-delete" @click="doRemoveThumb(idx)"><i class="el-icon-delete"></i></span>
+            </div>
+          </div>
+        </div>
+        <div class="js-finder-label" v-if="thumb.length<5" @click="openFinderByThumb">
+          <i class="el-icon-plus" ></i>
+        </div>
+<!--        <upload-components-->
+<!--          size="mini"-->
+<!--          ref="thumb"-->
+<!--          :limit="5"-->
+<!--          tip="上传商品主图"-->
+<!--          :onSuccess="upThumbSuccessCall"-->
+<!--        />-->
       </el-form-item>
 
       <el-form-item label="主图视频及封面" v-if="prodConfig.is_upload_video==1">
         <div class="flex">
           <div class="relative">
-            <upload-components
-              type="video"
-              ref="video"
-              elName="video"
-              accept="video/*"
-              size="mini"
-              tip="上传主图视频"
-              :onSuccess="upVideoSuccessCall"
-            />
+            <div class="preview-thumb-box preview-box" v-if="video">
+              <div class="preview-thumb-item preview-item" >
+                <video class="img" :src="video" ></video>
+                <div class="actions">
+                  <span class="__item-preview" @click="onPreviewFn(video,'video')"><i class="el-icon-zoom-in"></i></span>
+                  <span class="__item-delete" @click="video=''"><i class="el-icon-delete"></i></span>
+                </div>
+              </div>
+            </div>
+            <div class="js-finder-label" v-if="!video" @click="openFinderByVideo">
+              <i class="el-icon-plus" ></i>
+            </div>
+<!--            <upload-components-->
+<!--              type="video"-->
+<!--              ref="video"-->
+<!--              elName="video"-->
+<!--              accept="video/*"-->
+<!--              size="mini"-->
+<!--              tip="上传主图视频"-->
+<!--              :onSuccess="upVideoSuccessCall"-->
+<!--            />-->
           </div>
           <div class="margin15-c relative">
-            <upload-components
-              ref="video_cover"
-              :limit="1"
-              size="mini"
-              tip="上传视频封面"
-              :onSuccess="upImgsSuccessCall"
-            />
+            <div class="preview-thumb-box preview-box" v-if="imgs">
+              <div class="preview-thumb-item preview-item" >
+                <img class="img" :src="imgs" />
+                <div class="actions">
+                  <span class="__item-preview" @click="onPreviewFn(imgs)"><i class="el-icon-zoom-in"></i></span>
+                  <span class="__item-delete" @click="imgs=''"><i class="el-icon-delete"></i></span>
+                </div>
+              </div>
+            </div>
+            <div class="js-finder-label" v-if="!imgs" @click="openFinderByVideoCover">
+              <i class="el-icon-plus" ></i>
+            </div>
+<!--            <upload-components-->
+<!--              ref="video_cover"-->
+<!--              :limit="1"-->
+<!--              size="mini"-->
+<!--              tip="上传视频封面"-->
+<!--              :onSuccess="upImgsSuccessCall"-->
+<!--            />-->
           </div>
         </div>
 
@@ -119,7 +160,7 @@
 
       <el-form-item label="商品简介">
         <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_BriefDescription">
-          <el-input  type="textarea"  :disabled="noEditField.Products_BriefDescription"   v-model="ruleForm.Products_BriefDescription" style="width: 600px;" :rows="4"></el-input>
+          <el-input  maxlength="250" type="textarea"  :disabled="noEditField.Products_BriefDescription"   v-model="ruleForm.Products_BriefDescription" style="width: 600px;" :rows="4"></el-input>
         </el-tooltip>
       </el-form-item>
 
@@ -154,16 +195,31 @@
                   </div>
                 </div>
                 <!--ref用来初始化-->
-                <upload-components
-                  v-if="idx_row==0&&skuImg"
-                  class="uploadThumb"
-                  :disabled="noEditField.Products_Type"
-                  :key="idx_val"
-                  ref="specPic"
-                  size="mini"
-                  @click.native="saveCurrentSpecItem(idx_val)"
-                  :onSuccess="upSpecPicSuccessCall"
-                />
+<!--                <upload-components-->
+<!--                  v-if="idx_row==0&&skuImg"-->
+<!--                  class="uploadThumb"-->
+<!--                  :disabled="noEditField.Products_Type"-->
+<!--                  :key="idx_val"-->
+<!--                  ref="specPic"-->
+<!--                  size="mini"-->
+<!--                  @click.native="saveCurrentSpecItem(idx_val)"-->
+<!--                  :onSuccess="upSpecPicSuccessCall"-->
+<!--                />-->
+                <template v-if="idx_row==0&&skuImg">
+                  <div class="preview-spec-box preview-box" style="display: block;margin: 10px auto;" v-if="specs[0].imgs[idx_val]">
+                    <div class="preview-thumb-item preview-item" style="display: block;margin: 10px auto;">
+                      <img class="img" :src="specs[0].imgs[idx_val]" />
+                      <div class="actions">
+                        <span class="__item-preview" @click="onPreviewFn(specs[0].imgs[idx_val])"><i class="el-icon-zoom-in"></i></span>
+                        <span class="__item-delete" @click="removeSpecPic(idx_val)"><i class="el-icon-delete"></i></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div  style="display: block;margin: 10px auto;" class="js-finder-label" v-if="!specs[0].imgs[idx_val]" @click="openFinderBySpec(idx_val)">
+                    <i class="el-icon-plus" ></i>
+                  </div>
+                </template>
+
               </div>
 
               <span class="margin15-c" style="cursor: pointer;color: #428CF7" @click="skuAdd(idx_row)">添加规格值</span><el-checkbox style="margin-left: 5px" v-if="idx_row==0" v-model="skuImg"  name="sku">添加规格图片</el-checkbox>
@@ -251,7 +307,7 @@
       </el-form-item>
       <el-form-item label="运费计算" prop="goods">
         <el-radio-group v-model="ruleForm.goods">
-          <el-radio label="0" style="display: block;margin-bottom: 15px"  :disabled="noEditField.Products_IsShippingFree">
+          <el-radio label="1" style="display: block;margin-bottom: 15px"  :disabled="noEditField.Products_IsShippingFree">
             免运费
               <el-select :disabled="noEditField.Products_IsShippingFree"   v-model="ruleForm.freight" placeholder="请选择类型"  style="width: 160px;margin-left: 37px;">
                 <template v-for="(prod,prodIn) of prodConfig.shipping_company_dropdown">
@@ -259,7 +315,7 @@
                 </template>
               </el-select>
           </el-radio>
-          <el-radio :disabled="noEditField.Products_IsShippingFree"  label="1" style="display: block;margin-bottom: 15px" >物流模板</el-radio>
+          <el-radio :disabled="noEditField.Products_IsShippingFree"  label="0" style="display: block;margin-bottom: 15px" >物流模板</el-radio>
 <!--          <el-radio  label="2" style="display: block;margin-bottom: 15px" >-->
 <!--            固定运费-->
 <!--            <el-input   v-model="ruleForm.freightGu"  class="sortInput" placeholder="运费金额：¥" style="width: 200px;margin-left: 23px;"></el-input>-->
@@ -327,22 +383,18 @@
       </el-form-item>
       <el-form-item label="商品详情">
         <div style="padding-right: 200px">
-<!--      :content.sync="editorText"    -->
-<!--          <wzw-editor ref="richtext"   :afterChange="afterChange()" @on-content-change="onContentChange"></wzw-editor>-->
-          <kind-editor id="container" height="400px" width="800px" :content.sync="editorText"
-                      :afterChange="afterChange()"
-                      :loadStyleMode="false"
-                      @on-content-change="onContentChange" />
+          <wzw-editor ref="richtext" :content.sync="editorText"    @on-content-change="onContentChange"></wzw-editor>
+<!--          <kind-editor id="container" height="400px" width="800px" :content.sync="editorText"-->
+<!--                      :afterChange="afterChange()"-->
+<!--                      :loadStyleMode="false"-->
+<!--                      @on-content-change="onContentChange" />-->
         </div>
       </el-form-item>
       <div style="height: 80px;width: 100%;background-color: #ffffff"></div>
     </el-form>
 
-
-
     <div class="bottomFixed">
       <el-button size="small" type="primary" :loading="isLoading" @click="submitForm('ruleForm')">提交保存</el-button>
-      <el-button size="small" @click="resetForm('ruleForm')">重置</el-button>
       <el-button size="small" @click="goProduct">返回</el-button>
     </div>
     <bind-cate-components
@@ -510,8 +562,6 @@
            </div>
         </div>
 
-
-
       </el-form>
       <div class="sure">
         <span class="spans" @click="settingSuccessCall">确认</span>
@@ -573,6 +623,8 @@
       佣金设置
     </div>
 
+    <wzw-finder :show="finderDialogInstance.visible"></wzw-finder>
+
   </div>
 </template>
 
@@ -590,8 +642,12 @@
     import BindCateComponents from '@/components/BindCateComponents.vue';
     import BindStoreComponent from "@/components/comm/BindStoreComponent.vue";
     import SettingComponent from "@/components/comm/SettingComponent.vue";
-    import KindEditor from "@/components/comm/kindeditor.vue"
-    // import WzwEditor from "../components/comm/WzwEditor.vue";
+    // import KindEditor from "@/components/comm/kindeditor.vue"
+    import WzwEditor from "../components/editor/WzwEditor.vue";
+    import WzwFinder from "../components/editor/WzwFinder.vue";
+    import {
+        FUNFinder
+    } from '../components/editor/ckeditt-resource/FUNFinder';
 
     import {
         getProductCategory,
@@ -608,27 +664,50 @@
         objTranslate,
         plainArray,
         getArrayMulite,
-        createTmplArray
+        createTmplArray,
+        findArrayIdx,
+        domain,
+        emptyObject,
+        emptyValue,
+        formatRichTextByKindEditor
     } from '@/common/utils';
     import {fun} from '@/common';
-
-
 
     @Component({
         mixins:[],
         components: {
             BindStoreComponent,
             SettingComponent,
-            // WzwEditor,
-            KindEditor,
+            WzwEditor,
+            WzwFinder,
+            // KindEditor,
             UploadComponents,BindCateComponents
+        },
+        watch:{
+            skuImg:{
+                handler(val){
+                    if(val){
+                        //创建数组组
+                        if(emptyValue(this.specs[0].imgs)){
+                            this.$set(this.specs[0],'imgs',[])
+                        }
+                    }
+                }
+            }
         }
     })
     export default class AddProduct extends Vue {
+
+        @State('finderDialogInstance') finderDialogInstance
+
         goProduct(){
             this.$router.push({
                 name:'ProductList'
             })
+        }
+
+        domainFn(url){
+            return domain(url)
         }
 
 
@@ -661,6 +740,80 @@
         isShow=false
         skuImg=false
         isLoading=false
+
+
+        imgs = '';//展示图
+        openFinderByVideoCover(){
+            FUNFinder.open({options:{limit:1,allow:['image']},callFn:{choose:this.upImgsSuccessCall}});
+        }
+
+        video = ''//视频
+        openFinderByVideo(){
+            FUNFinder.open({options:{limit:1,allow:['media']},callFn:{chooseMedia:this.upVideoSuccessCall}});
+        }
+
+        thumb = []//主图
+        openFinderByThumb(){
+            if(this.thumb.length>=5){
+                fun.error({msg:'最多上传五张缩略图'})
+                return
+            }
+            FUNFinder.open({options:{limit:5-this.thumb.length,allow:['image']},callFn:{choose:this.upThumbSuccessCall}});
+        }
+        onPreviewFn(url,type='image'){
+            this.preDialogInstance.url = url
+            this.preDialogInstance.type = type
+            this.preDialogInstance.show = true
+        }
+
+
+        doRemoveThumb(idx){
+            this.thumb.splice(idx,1)
+        }
+
+        preDialogInstance = {
+            show:false,
+            url:'',
+            type:'image'
+        }
+
+
+        cate_list = []
+        cate_ids = ''
+        fenxiaoshang=[]
+        platForm_Income_Reward=''
+        nobi_ratio=""
+        area_Proxy_Reward=""
+        sha_Reward=""
+        commission_ratio=""
+        store_list = []
+        store_id_list = []
+        multipleSelection=[]
+        currentSpecItemIdx = null //当前激活的规格可选值索引，从0开始
+        noEditField=[];//不可编辑
+        textTitle='';
+
+        spec_val_list = []
+        specs = []
+        removeSpecPic(idx){
+            console.log(idx)
+            this.$set(this.specs[0].imgs,idx,'')
+            // [idx] = ''
+        }
+
+        skus = []
+        skuList = []
+        skusData=[]
+        //商品承诺
+        Products_Promise=['']
+        committedIndex=''
+        CardTypeSelect=''
+        CardIdSelect=''
+        queryArr=[]
+        allPrice=true
+        allType=''
+        allValue=''
+
         validateFn = {
             // classification:(rule, value, callback) => {
             //     console.log(this.cate_ids,value,"ss")
@@ -721,34 +874,16 @@
 
             },
             freightIs:(rule, value, callback) => {
-               if(value=='mian'){
-                   if(!this.ruleForm.freight)callback(new Error('请选择运费类型'))
-               }
+                if(value=='mian'){
+                    if(!this.ruleForm.freight)callback(new Error('请选择运费类型'))
+                }
                 if(value=='gu'){
                     if(!this.ruleForm.freightGu)callback(new Error('请输入运费'))
                 }
                 callback();
             }
         }
-        spec_val_list = []
-        specs = [
-            // {title:'颜色',vals:['黑色','白色','红色']},
-            // {title:'尺码',vals:['X','M','L']},
-            // {title:'面料',vals:['羊毛','牛毛','鹅毛']},
-            // {title:'产地',vals:['美国','台湾','大陆','泰国']},
-        ]
-        skus = []
-        skuList = []
-        skusData=[]
-        //商品承诺
-        Products_Promise=['']
-        committedIndex=''
-        CardTypeSelect=''
-        CardIdSelect=''
-        queryArr=[]
-        allPrice=true
-        allType=''
-        allValue=''
+
         ruleForm =  {
             Products_Index: '',//商品排序
             Products_Name:'',//商品名称
@@ -823,37 +958,24 @@
             //     { validator:this.validateFn.classification, trigger: 'change' }
             // ]
         }
-        imgs = '';//展示图
-        video = ''//视频
-        thumb = []//主图
-        cate_list = []
-        cate_ids = ''
-        fenxiaoshang=[]
-        platForm_Income_Reward=''
-        nobi_ratio=""
-        area_Proxy_Reward=""
-        sha_Reward=""
-        commission_ratio=""
-        store_list = []
-        store_id_list = []
-        multipleSelection=[]
-        currentSpecItemIdx = null //当前激活的规格可选值索引，从0开始
-        noEditField=[];//不可编辑
-        textTitle='';
 
+        openFinderBySpec(idx){
+            if(this.noEditField.Products_Type){
+                fun.error({msg:'该类别不允许修改图片'})
+                return;
+            }
+            this.currentSpecItemIdx = idx
+            FUNFinder.open({options:{limit:1,allow:['image']},callFn:{choose:this.upSpecPicSuccessCall}});
+        }
         saveCurrentSpecItem(idx){
             this.currentSpecItemIdx = idx
         }
         upSpecPicSuccessCall(url_list){
-            if(url_list[0] && url_list[0].url){
-                //创建数组组
-                if(!this.specs[0].imgs){
-                    this.$set(this.specs[0],'imgs',[])
-                }
-                let url = url_list[0].url
-                this.specs[0].imgs[this.currentSpecItemIdx] = url
-            }
-            // console.log(url_list,this.currentSpecItemIdx)
+            let url = url_list[0]
+
+
+            this.specs[0].imgs[this.currentSpecItemIdx] = url
+
         }
         onContentChange2 (val) {
             // console.log(val)
@@ -861,7 +983,7 @@
         }
         onContentChange(val) {
             // console.log(val)
-            this.ruleForm.content = val
+            this.editorText = val
         }
         afterChange () {
         }
@@ -1087,38 +1209,44 @@
         }
         upThumbSuccessCall(url_list){
             console.log(url_list)
-            if(_.isArray(url_list)){
-                this.thumb = url_list.map(item=>{
-                    return item.url
-                })
-            }
+            this.thumb = this.thumb.concat(url_list)
 
         }
-        upImgsSuccessCall(file){
-            this.imgs=file.path;
+
+        upImgsSuccessCall(url_list){
+            this.imgs= url_list[0]
         }
-        upVideoSuccessCall(file){
 
-            if(!file || !file[0] || !file[0].video_url)return;
-            let {video_url,video_img} = file[0]
-            if(!video_url){
-                fun.error({msg:'视频地址错误'})
-            }
-            if(!video_img){
-                fun.error({msg:'视频封面错误'})
-            }
+        upVideoSuccessCall(url_list){
+            console.log(url_list)
+            let video_url = url_list[0]
+            this.video = video_url
 
-            if(video_url){
-                this.video = video_url
-                //@ts-ignore
-                this.$refs.video.handleInitHas([this.video])
-            }
 
-            if(video_img){
-                this.imgs = video_img
-                //@ts-ignore
-                this.$refs.video_cover.handleInitHas([this.imgs])
-            }
+
+            let video_img = `${video_url}?x-oss-process=video/snapshot,t_1000,f_jpg,w_200`
+
+            this.imgs = video_img
+            // if(!file || !file[0] || !file[0].video_url)return;
+            // let {video_url,video_img} = file[0]
+            // if(!video_url){
+            //     fun.error({msg:'视频地址错误'})
+            // }
+            // if(!video_img){
+            //     fun.error({msg:'视频封面错误'})
+            // }
+            //
+            // if(video_url){
+            //     this.video = video_url
+            //     //@ts-ignore
+            //     //this.$refs.video.handleInitHas([this.video])
+            // }
+            //
+            // if(video_img){
+            //     //this.imgs = video_img
+            //     //@ts-ignore
+            //     //this.$refs.video_cover.handleInitHas([this.imgs])
+            // }
 
         }
         submitForm(formName) {
@@ -1285,14 +1413,19 @@
                                 idx=0
                             }
                             //利用对应的规格获取在第一个规格可选值的vals的索引
-                              let specItemIdx = this.specs[0].vals.indexOf(this.skus[idx][0])
-                            if(this.specs[0].imgs){
-                                if(specItemIdx!=-1 && this.specs[0].imgs[specItemIdx]){
-                                    mbx.Attr_Image = this.specs[0].imgs[specItemIdx]
-                                }else{
-                                    mbx.Attr_Image = ''
+                            if(this.skuImg){
+                                let specItemIdx = this.specs[0].vals.indexOf(this.skus[idx][0])
+                                if(this.specs[0].imgs){
+                                    if(specItemIdx!=-1 && this.specs[0].imgs[specItemIdx]){
+                                        mbx.Attr_Image = this.specs[0].imgs[specItemIdx]
+                                    }else{
+                                        mbx.Attr_Image = ''
+                                    }
                                 }
+                            }else{
+
                             }
+
 
 
                         }
@@ -1382,6 +1515,7 @@
             let child_arr = [];
             let cate_data = {}
             for(var cate of origin_cate_list){
+
                 child_arr = [];
 
                 //把所有选中的子级类目加进去
@@ -1398,12 +1532,20 @@
 
                 }
 
+
+                console.log(child_arr)
                 //如果有子的，那么就把父级也加进去
                 if(child_arr.length>0){
                     cate_data[cate.Category_ID] = [...child_arr]
                 }else{
-                    cate_data[cate.Category_ID] = []
+                    //修改分类不对
+                    let isHas = findArrayIdx(dataArr,{Category_ID:cate.Category_ID})
+                    if(isHas!==false){
+                        cate_data[cate.Category_ID] = []
+                    }
+
                 }
+
 
             }
 
@@ -1439,13 +1581,17 @@
                for(var idx in imgs){
 
                    if(!imgs[idx])continue
+
+                   //让显示出来
+                   this.skuImg = true;//表示有参数
                    //初始化一下
 
-                   var _self = this;
-
-                   if(_self.$refs.specPic && _self.$refs.specPic[idx]){
-                       _self.$refs.specPic[idx].handleInitHas([imgs[idx]])
-                   }
+                   // var _self = this;
+                   //
+                   // if(_self.$refs.specPic && _self.$refs.specPic[idx]){
+                   //
+                   //     //_self.$refs.specPic[idx].handleInitHas([imgs[idx]])
+                   // }
 
                }
             }
@@ -1647,9 +1793,11 @@
 
                     this.editorText=productInfo.Products_Description;//富文本类型
 
-                    // this.$nextTick().then(()=>{
-                    //     this.$refs.richtext.setData(productInfo.Products_Description)
-                    // })
+                    this.$nextTick().then(()=>{
+                      //做一下富文本的格式化，兼容原来浏览器的视频标签
+                      let richTxt = formatRichTextByKindEditor(productInfo.Products_Description)
+                      this.$refs.richtext.setData(richTxt)
+                    })
 
 
                     this.ruleForm.refund=productInfo.Product_backup;//退货id
@@ -1667,11 +1815,10 @@
                     //     }
                     // }
                     for(let mb in this.prodConfig.Shop_Commision_Reward_Json.Distribute){
-                        for(let it in productInfo.Products_Distributes){
-                              if(mb!=it){
-                                  productInfo.Products_Distributes[mb]=this.prodConfig.Shop_Commision_Reward_Json.Distribute[mb]
-                              }
+                        if(!productInfo.Products_Distributes[mb]){
+                            productInfo.Products_Distributes[mb]=this.prodConfig.Shop_Commision_Reward_Json.Distribute[mb]
                         }
+
                     }
                     for(let it in productInfo.Products_Distributes){
                         if(Array.isArray(productInfo.Products_Distributes[it])){
@@ -1735,25 +1882,34 @@
 
                     //缩略图
                     //@ts-ignore
-                    this.thumb = productInfo.Products_JSON.ImgPath
+                    if(productInfo.Products_JSON.ImgPath){
+                        this.thumb = productInfo.Products_JSON.ImgPath
+                    }
+
 
                     //@ts-ignore
-                    this.video = productInfo.video_url;
+                    if(!emptyValue(productInfo.video_url)){
+                        this.video = productInfo.video_url;
+                    }
+
                     //@ts-ignore
-                    this.imgs =  productInfo.cover_url;
+                    if(!emptyValue(productInfo.cover_url)){
+                        this.imgs =  productInfo.cover_url;
+                    }
+
 
                     //组件里面初始化
                     //@ts-ignore
-                    this.$refs.thumb.handleInitHas(this.thumb)
+                    //this.$refs.thumb.handleInitHas(this.thumb)
 
                     if(this.video){
                         //@ts-ignore
-                        this.$refs.video.handleInitHas([this.video],'video')
+                        //this.$refs.video.handleInitHas([this.video],'video')
                     }
 
                     if(this.imgs){
                         //@ts-ignore
-                        this.$refs.video_cover.handleInitHas([this.imgs])
+                        //this.$refs.video_cover.handleInitHas([this.imgs])
                     }
 
                     Products_Stores = res.data.Products_Stores
@@ -1765,7 +1921,6 @@
                     let cates = []
                     //铺平数组
                     plainArray(res.data,'child',cates)
-
                     for(var cate of cates){
                         if(select_cate_ids.indexOf(cate.Category_ID+'')!=-1){
                             this.cate_list.push(cate)
@@ -1775,15 +1930,52 @@
                     //模拟选择菜单后的
                     let dataArr = this.cate_list
 
+                    // let child_arr = [];
+                    // let cate_data = {}
+                    //
+                    // for(var cate of origin_cate_list){
+                    //     child_arr = [];
+                    //
+                    //     for(var item of dataArr){
+                    //         if(item.child){
+                    //             if(cate.hasOwnProperty('child')){
+                    //                 for(var child of cate.child){
+                    //                     if(child.Category_ID === item.Category_ID){
+                    //                         child_arr.push(item.Category_ID)
+                    //                     }
+                    //                 }
+                    //             }
+                    //         }else{
+                    //                 if(cate.Category_ID === item.Category_ID){
+                    //                     child_arr.push(item.Category_ID)
+                    //                 }
+                    //         }
+                    //
+                    //
+                    //     }
+                    //
+                    //     if(child_arr.length>0){
+                    //         cate_data[cate.Category_ID] = [...child_arr]
+                    //     }
+                    //
+                    // }
+                    //
+                    // this.cate_ids = JSON.stringify(cate_data)//ids.store('|')
+
+
+                    console.log('原始数据',origin_cate_list)
+                    console.log('初始化的参数',dataArr)
                     let child_arr = [];
                     let cate_data = {}
-
                     for(var cate of origin_cate_list){
+
                         child_arr = [];
 
+                        //把所有选中的子级类目加进去
                         for(var item of dataArr){
-                            if(item.child)continue;
-                            if(cate.hasOwnProperty('child')){
+                            //如果不是子一级目录就不要
+                            if(item.child)continue
+                            if(cate.hasOwnProperty('child') && _.isArray(cate.child)){
                                 for(var child of cate.child){
                                     if(child.Category_ID === item.Category_ID){
                                         child_arr.push(item.Category_ID)
@@ -1793,13 +1985,31 @@
 
                         }
 
+
+                        console.log(child_arr)
+                        //如果有子的，那么就把父级也加进去
                         if(child_arr.length>0){
                             cate_data[cate.Category_ID] = [...child_arr]
+                        }else{
+                            //修改分类不对
+                            let isHas = findArrayIdx(dataArr,{Category_ID:cate.Category_ID})
+                            if(isHas!==false){
+                                cate_data[cate.Category_ID] = []
+                            }
+
                         }
+
 
                     }
 
+                    console.log(cate_data)
+
+                    this.cate_list = dataArr.map(cate=>{
+                        return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
+                    })
+
                     this.cate_ids = JSON.stringify(cate_data)//ids.store('|')
+
 
                 })
                 //初始化店铺列表
@@ -1830,6 +2040,87 @@
 </script>
 
 <style scoped lang="less">
+.preview-spec-box{
+  display: block;
+}
+.preview-box{
+  display: inline-block;
+  .preview-item{
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    box-sizing: border-box;
+    position: relative;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    background-color: #fff;
+    border: 1px solid #c0ccda;
+    overflow: hidden;
+    .img{
+      width: 100%;
+      max-height: 100%;
+    }
+    .actions{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      cursor: default;
+      text-align: center;
+      color: #fff;
+      opacity: 0;
+      font-size: 20px;
+      background-color: rgba(0,0,0,.5);
+      -webkit-transition: opacity .3s;
+      transition: opacity .3s;
+      &::after{
+        display: inline-block;
+        content: "";
+        height: 100%;
+        vertical-align: middle;
+      }
+      span+span{margin-left:15px}
+      &:hover{
+        opacity:1;
+        span{
+          display: inline-block;
+        }
+      }
+      .__item-preview{
+        cursor: pointer;
+      }
+      .__item-delete{
+        cursor: pointer;
+        position: static;
+        font-size: inherit;
+        color: inherit;
+      }
+    }
+
+
+  }
+
+}
+.js-finder-label{
+  display: inline-block;
+  background-color: #fbfdff;
+  border: 1px dashed #c0ccda;
+  border-radius: 6px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+  vertical-align: top;
+  text-align: center;
+  cursor: pointer;
+  .el-icon-plus{
+    font-size: 28px;
+    color: #8c939d;
+  }
+}
 .addProduct{
   padding-top:0px;
   margin:0px auto 0;
@@ -2143,6 +2434,7 @@ table{
   }
   .marginBootom{
     margin-bottom: 0px;
+    text-align: left;
   }
   .textTitle /deep/ .el-form-item__label{
     color: red;

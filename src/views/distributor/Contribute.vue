@@ -1,6 +1,6 @@
 <template>
-  <div class="">
-    <div class="padding10">
+  <div class="padding15">
+    <div class="padding10-r">
       <el-button  size="small" class="" type="primary" @click="addDialogOpen">新建奖项</el-button>
 
     </div>
@@ -17,8 +17,12 @@
          {{props.row.statistics_start}}-{{props.row.statistics_end}}
         </div>
       </template>
+
       <template slot="status-column" slot-scope="props">
         <span :class="getStyleFn(props.row.status)">{{props.row.status|statusFilter}}</span>
+      </template>
+      <template slot="sha_statistics_level-column" slot-scope="props">
+        <span>{{props.row.sha_statistics_level|levelFilter}}</span>
       </template>
       <template slot="reward_rules-column"  slot-scope="props">
         <template v-for="(item,index) of props.row.reward_rules" >
@@ -33,7 +37,7 @@
 <!--        status=1 操作列显示 编辑-->
 <!--        status=2 操作列显示 查看详情 编辑-->
         <template v-if="inArray(props.row.status,[0,1,2])" ><el-button @click="editFn(props.row)" size="mini" type="primary">编辑</el-button><span class="padding4-c"></span></template>
-        <template v-if="inArray(props.row.status,[2])"><el-button @click="toDetail(props.row)" size="mini" type="warning">查看详情</el-button></template>
+        <template ><el-button @click="toDetail(props.row)" size="mini" type="warning">查看详情</el-button></template>
         <template v-if="inArray(props.row.status,[0])"><el-button v-loading="handleRowId==props.row.id" @click="startFn(props.row)" size="mini" type="green">开始统计</el-button></template>
 
 <!--        <span style="cursor: pointer" class="color-red js-del">删除</span>-->
@@ -118,6 +122,10 @@
             }
         },
         filters:{
+            levelFilter(val){
+                if(val==0)return '无限级';
+                return val
+            },
             statusFilter(val){
                 //0为待统计，1为统计中，2为待发放，3为已发放 <number>
                 let arr = ['待统计','统计中','待发放','已发放']

@@ -24,6 +24,7 @@ function setAttrData() {
       {
         type: 'input',
         text: '视频地址',
+        is_video:true,
         inputType: 'text',
         patternFunc(val) {
           const reg = /(http|https):\/\/([\w.]+\/?)\S*/;

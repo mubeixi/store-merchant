@@ -1,8 +1,8 @@
 // @ts-nocheck
 import Vue from 'vue';
 import {fun} from "./index";
-// import {staticUrl} from "@/common/env";
-const staticUrl = process.env.VUE_APP_STATIC_URL
+import {staticUrl} from "./env";
+// const staticUrl = process.env.VUE_APP_STATIC_URL
 
 import _ from 'underscore';
 
@@ -19,10 +19,10 @@ export const getStyle = function (el, name) {
  * 给相对路径的图片加上前缀
  * @param url
  */
-export const domain = (url) => {
+export const domain = (url,style='') => {
   if (!url) return '';
   if (url.indexOf('http') == -1) return staticUrl + url;
-  return url;
+  return url+style;
 }
 
 export const sortBy = (props) =>{
@@ -351,25 +351,6 @@ export const createTmplArray = (item,len)=>{
 }
 
 
-export class Fun{
-
-  static fn = (str)=>new Promise((resolve, reject) => {
-    setTimeout(function () {
-      resolve(str);
-    },100)
-  })
-  static fn2 = (str)=>new Promise((resolve, reject) => {
-    setTimeout(function () {
-      resolve(str);
-    },100)
-  })
-  static fn3 = (str)=>new Promise((resolve, reject) => {
-    setTimeout(function () {
-      resolve(str);
-    },100)
-  })
-
-}
 
 /**
  * 从指定的数组(对象组成的数组)，根据键值和值找到下标
@@ -461,3 +442,35 @@ export const emptyObject = (obj, strice) => {
   }
   return obj;
 };
+
+/**
+ * 判断某个值是否为非
+ * @param val
+ */
+export const emptyValue = (val) => {
+
+  if (val === '' || val === undefined || val === null || val === 'null' || val === 'undefined') {
+    return true;
+  }
+
+  return false;
+};
+
+/**
+ * 兼容原来的kindeditor文档
+ */
+export const formatRichTextByKindEditor = (html)=>{
+
+  if(!html) return;
+
+  let newContent= html.replace(/<embed[^>]*>/gi,function(match,capture){
+    match = match.replace(/embed/gi, 'oembed')
+    match = match.replace(/src/gi, 'url')
+
+    //闭合标签
+    match = match.replace(/\/>/gi, '></oembed>')
+    return match;
+  });
+
+  return newContent
+}

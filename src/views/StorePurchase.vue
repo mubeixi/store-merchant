@@ -412,10 +412,13 @@
                 this.s2 = {}
                 this.active_cate_idx2 = null
 
+                this.searchFn()
+
             }
             if(idx==2){
                 this.s2 = {}
                 this.active_cate_idx2 = null
+                this.searchFn()
             }
         }
 
@@ -923,6 +926,8 @@
             if(this.$route.query.channel == 1 && this.$route.query.store_no){
                 getProductListFn = getPifaProductList
                 postData.purchase_store_sn = this.$route.query.store_no
+                //参数居然是小写，用一个吴经理祭天
+                postData.cate_id = postData.Cate_ID
             }
             getProductListFn(postData).then(res=>{
                 this.loading = false
@@ -933,7 +938,8 @@
                 // },500)
 
                 //长度为0停止了
-                if(res.data.length===0){
+                //不要把第一页干掉了。。如果是新换了条件，查询为空，那么就被误杀了
+                if(res.data.length===0 && this.paginate.page!=1){
                     this.paginate.finish = true
                     return;
                 }

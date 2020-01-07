@@ -1,8 +1,5 @@
 export const activeAttr = function (state: { activeAttr: any; }, value: any) {
-  // window.ActiveAttrObj = value;
-  // console.log(22222222,'storesotre')
   state.activeAttr = value;
-  // if(!window.ActiveAttrObj)window.ActiveAttrObj = state.activeAttr;//绑定下
 };
 
 export const templateEditIndex = function (state: any, value: any) {
@@ -12,6 +9,11 @@ export const templateEditIndex = function (state: any, value: any) {
 export const attrData = function (state: any, value: any) {
   state.activeAttr.attrData = value;
 };
+
+export const SET_INIT_DATA = function (state: any, value: any) {
+  state.initData = value;
+};
+
 
 export const editStatus = function (state: { editStatus: any; }, value: any) {
   state.editStatus = value;

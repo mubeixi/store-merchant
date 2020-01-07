@@ -8,15 +8,15 @@
 
             <el-select @change="firstMethod('firstDay')" v-model="firstDay" placeholder="按月统计" size="small" class="selectClass">
               <el-option
-                label="日"
+                label="按日统计"
                 value="day">
               </el-option>
               <el-option
-                label="月"
+                label="按月统计"
                 value="month">
               </el-option>
               <el-option
-                label="年"
+                label="按年统计"
                 value="year">
               </el-option>
             </el-select>
@@ -65,15 +65,15 @@
 
           <el-select @change="secondMethod('secondDay')" v-model="secondDay" placeholder="按月统计" size="small" class="selectClass">
             <el-option
-              label="日"
+              label="按日统计"
               value="day">
             </el-option>
             <el-option
-              label="月"
+              label="按月统计"
               value="month">
             </el-option>
             <el-option
-              label="年"
+              label="按年统计"
               value="year">
             </el-option>
           </el-select>
@@ -122,15 +122,15 @@
 
           <el-select @change="threeMethod('secondDay')" v-model="threeDay" placeholder="按月统计" size="small" class="selectClass">
             <el-option
-              label="日"
+              label="按日统计"
               value="day">
             </el-option>
             <el-option
-              label="月"
+              label="按月统计"
               value="month">
             </el-option>
             <el-option
-              label="年"
+              label="按年统计"
               value="year">
             </el-option>
           </el-select>
@@ -205,7 +205,8 @@
                 data: []
             },
             yAxis: {
-                type: 'value'
+                type: 'value',
+                name:'人数'
             },
             series: [{
                 data: [],
@@ -257,12 +258,14 @@
             legend: {
                 x : 'center',
                 y : 'bottom',
-                data:[]
+                data:[{
+                }]
             },
             calculable : true,
+            color:['#9AC0F3','#F1C087','#6E7788','#ED84B8','#8894A8'],
             series : [
                 {
-                    name:'面积模式',
+                    name:'会员端口来源',
                     type:'pie',
                     radius : [30, 110],
                     center : ['50%', '50%'],
@@ -306,7 +309,7 @@
         }
 
         threeOpttion={
-            color: ['#3398DB'],
+            color: ['#9AC0F3'],
             tooltip : {
                 trigger: 'axis',
                 axisPointer : {            // 坐标轴指示器，坐标轴触发有效
@@ -321,6 +324,7 @@
             },
             xAxis : [
                 {
+                    name:'元',
                     type : 'category',
                     data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                     axisTick: {
@@ -330,14 +334,14 @@
             ],
             yAxis : [
                 {
-                    type : 'value'
+                    type : 'value',
+                    name:'人数'
                 }
             ],
             series : [
                 {
-                    name:'直接访问',
                     type:'bar',
-                    barWidth: '60%',
+                    barWidth: '40',
                     data:[10, 52, 200, 334, 390, 330, 220]
                 }
             ]

@@ -210,7 +210,7 @@
         background-size contain
         background-repeat no-repeat
         background-position center
-        background-color #f2f2f2
+        background-color #f8f8f8
       }
     }
   }

@@ -11,15 +11,24 @@ import {fun} from "./index";
 import Cookies from 'js-cookie';
 import {isDev} from "./env";
 export default function (request, next) {
-  next((response) => {
 
+  let {body} = request;
+  // console.log(request)
+  // if(body.act==='getVaildSign' && new_multipart_params){
+  //   for(var key in new_multipart_params)
+  //   request.headers.set(key, new_multipart_params[key]);
+  // }
+  //request.headers.set('token', token); //setting request.headers
+  next((response) => {
     if (response.status !== 200) {
       // vant.showMsg('服务器出去旅行了');
     } else {
 
       window.funLoading && window.funLoading.close();
-console.log(response)
-      if(!response.hasOwnProperty('body')){
+
+      //为了阿里云上传不报错，累死了
+      //操碎了心
+      if(!response.hasOwnProperty('body') || !response.body){
         response.body = {}
         response.body.errorCode = 0
       }

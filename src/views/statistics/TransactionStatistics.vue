@@ -147,6 +147,7 @@
           <el-date-picker
             v-model="second_time"
             type="month"
+            @change="s_current=3"
             value-format="yyyy-MM-dd"
             placeholder="选择日期"
             class="selectDate"
@@ -169,9 +170,9 @@
             <div class="tr" v-for="(item,index) in secondList" :key="index">
               <div class="td">{{item.title}}</div>
               <div class="td" style="width: 160px">￥{{item.pay_money}}</div>
-              <div class="td">{{item.pay_money_compare > 0 ? '↑' : '↓'}} {{item.pay_money_compare}}</div>
+              <div class="td">{{item.pay_money_compare > 0 ? '↑':(item.pay_money_compare ==0?'': '↓')}} {{item.pay_money_compare}}%</div>
               <div class="td">{{item.pay_count}}</div>
-              <div class="td">{{item.pay_count_compare > 0 ? '↑' : '↓'}} {{item.pay_count_compare}}</div>
+              <div class="td">{{item.pay_count_compare > 0 ? '↑': (item.pay_money_compare ==0?'': '↓')}} {{item.pay_count_compare}}%</div>
             </div>
         </div>
       </div>
@@ -185,15 +186,15 @@
           <el-button type="primary" size="small" @click="threeMethod('output')">导出数据</el-button>
 
           <div class="buttonRadio">
-            <div class="radioDiv" @click="threeDayChange(1)">昨天</div>
-            <div class="radioDiv" @click="threeDayChange(7)">最近7天</div>
-            <div class="radioDiv" @click="threeDayChange(30)">最近30天</div>
+            <div class="radioDiv" :class="q_current == 1 ? 'selected' : ''" @click="threeDayChange(1)">昨天</div>
+            <div class="radioDiv" :class="q_current == 2 ? 'selected' : ''" @click="threeDayChange(7)">最近7天</div>
+            <div class="radioDiv" :class="q_current == 3 ? 'selected' : ''" @click="threeDayChange(30)">最近30天</div>
           </div>
 
           <el-date-picker
             v-model="three_time"
             type="daterange"
-            @change="threeMethod"
+            @change="threeMethod('time')"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             value-format="yyyy-MM-dd"
@@ -215,16 +216,15 @@
           <el-button type="primary" size="small" @click="fourMehtod('output')">导出数据</el-button>
 
           <div class="buttonRadio">
-            <div class="radioDiv" @click="momentMonth">本月</div>
-            <div class="radioDiv" @click="prevMonth">上月</div>
+            <div class="radioDiv" :class="w_current == 1 ? 'selected' : ''"  @click="momentMonth">本月</div>
+            <div class="radioDiv" :class="w_current == 2 ? 'selected' : ''"  @click="prevMonth">上月</div>
           </div>
 
           <el-date-picker
-            @change="fourMehtod"
+            @change="fourMehtod('time')"
             v-model="fourTime"
             type="month"
             size="small"
-            
             class="selectDate"
             value-format="yyyy-MM-dd"
             placeholder="选择月">
@@ -246,9 +246,9 @@
                 <div class="tr" v-for="(item,index) in fourlist" :key="index">
                   <div class="td">{{item.env_desc}}</div>
                   <div class="td">￥{{item.pay_money}}</div>
-                  <div class="td">{{item.pay_money_compare > 0 ? '↑' : '↓'}} {{item.pay_money_compare}}</div>
+                  <div class="td">{{item.pay_money_compare > 0 ? '↑' : '↓'}} {{item.pay_money_compare}}%</div>
                   <div class="td">{{item.pay_count}}</div>
-                  <div class="td">{{item.pay_count_compare > 0 ? '↑' : '↓'}} {{item.pay_count_compare}}</div>
+                  <div class="td">{{item.pay_count_compare > 0 ? '↑' : '↓'}} {{item.pay_count_compare}}%</div>
                 </div>
             </div>
       </div>
@@ -278,7 +278,9 @@
 
     export default class TransactionStatistics extends Vue {
         f_current = 0
-        s_current = 0
+        s_current = 1
+        q_current=0
+        w_current=1
         first_time = []
         firstData = {}
         // 绘制图表
@@ -394,9 +396,9 @@
               that.firstChart.yAxis[1].interval = parseInt(res.data.max_rate ) / 5;
               that.firstChart.yAxis[0].max = res.data.max_num;
               that.firstChart.yAxis[0].interval = parseInt(res.data.max_num ) / 5;
-              
+
               first_chart.setOption(that.firstChart);
-            } 
+            }
           })
         }
         secondChart = {
@@ -414,7 +416,7 @@
               "派遣",
               "玉缘轩",
             ]
-          }, 
+          },
           series: [
               {
                   name: '访问来源',
@@ -459,7 +461,7 @@
           })
         }
         threeChartOption = {
-                color: ['#3398DB'],
+                color: ['#9AC0F3'],
                 tooltip : {
                     trigger: 'axis',
                     axisPointer : {            // 坐标轴指示器，坐标轴触发有效
@@ -474,6 +476,7 @@
                 },
                 xAxis : [
                     {
+                        name:'元',
                         type : 'category',
                         data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                         axisTick: {
@@ -483,20 +486,21 @@
                 ],
                 yAxis : [
                     {
-                        type : 'value'
+                        type : 'value',
+                        name:'人数'
                     }
                 ],
                 series : [
                     {
-                        name:'直接访问',
                         type:'bar',
-                        barWidth: '60%',
+                        barWidth: '40',
                         data:[10, 52, 200, 334, 390, 330, 220]
                     }
                 ]
             }
         three_time = []
         threeMethod(arg){
+            if(arg=='time') this.q_current=0
           let that = this;
           let data = {
             start_time: this.three_time[0],
@@ -524,7 +528,9 @@
         }
         // 时间调整
         threeDayChange(number) {
-          console.log('hhh')
+            if(number==1) this.q_current=1
+            if(number==7) this.q_current=2
+            if(number==30) this.q_current=3
           let date = new Date();
           let yestdayTime = date.getTime() - number * 24 * 3600 * 1000
           let year = new Date(yestdayTime).getFullYear();
@@ -533,16 +539,18 @@
           let lastTime = year + '-' + this.add0(month) + '-' + this.add0(day)
           if(number == 1) {
             // 昨天，start_time和end_time 传同一个
+              this.three_time=[]
             this.three_time[0] = lastTime;
             this.three_time[1] = lastTime;
           }else {
+              this.three_time=[]
             this.three_time[0] = lastTime;
             this.three_time[1] = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate();
           }
           console.log(this.three_time)
           this.threeMethod();
         }
-        
+
         fourlist = []
         fourTime=''
         fourOpttion={
@@ -575,8 +583,11 @@
                 }
             ]
         }
-        
+
         fourMehtod(arg){
+            if(arg=='time'){
+                this.w_current=3
+            }
             let that=this
             let data={
                 search_time:that.fourTime,
@@ -594,27 +605,31 @@
                   that.fourlist = res.data.list
                   fourChart.setOption(that.fourOpttion);
                 }
-                
+
             })
         }
         // 本月
         momentMonth(arg){
+
           let year = new Date().getFullYear();
           let month = new Date().getMonth()+1;
           if(arg == 'second') {
             this.second_time = year + '-' + month;
             this.secondMethod();
-            
+              this.s_current=1
           }else {
+              this.w_current=1
             this.fourTime = year + '-' + month;
             this.fourMehtod();
           }
         }
         // 上月
         prevMonth(arg){
+
           let year = new Date().getFullYear();
           let month = new Date().getMonth() + 1;
           if(arg == 'second') {
+              this.s_current=2
             if(month == 1) {
               this.second_time = year - 1 + '-' + 12
             }else {
@@ -622,6 +637,7 @@
             }
             this.secondMethod();
           }else {
+              this.w_current=2
             if(month == 1) {
               this.fourTime = year - 1 + '-' + 12
             }else {
@@ -632,7 +648,7 @@
         }
 
         show(){
-          
+
         }
         mounted(){
             this.fourMehtod();
@@ -642,7 +658,7 @@
         }
 
         created(){
-           
+
         }
 
 

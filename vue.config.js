@@ -20,7 +20,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'https://new401.bafangka.com/api', // 'https://new401.bafangka.com/api',
+        target: 'https://new401t.bafangka.com/api', // 'https://new401t.bafangka.com/api',
         changeOrigin: true,
         // http2: true,
         ws: true,
@@ -45,7 +45,7 @@ module.exports = {
       // CKEditor needs its own plugin to be built using webpack.
       new CKEditorWebpackPlugin( {
         // See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
-        language: 'en'
+        language: 'zh-cn'
       } )
     ]
   },
@@ -61,23 +61,25 @@ module.exports = {
     //
     // * clear all loaders for existing 'svg' rule:
     //
-    //		svgRule.uses.clear();
+    		svgRule.uses.clear();
     //
     // * or exclude ckeditor directory from node_modules:
-    svgRule.exclude.add( path.join( __dirname, 'node_modules', '@ckeditor' ) );
+    // svgRule.exclude.add( path.join( __dirname, 'node_modules', '@ckeditor' ) );
+    //加上不让webpack瞎搞svg
+    // svgRule.exclude.add( path.join( __dirname, 'src', 'components','ckeditor' ) );
 
     // Add an entry for *.svg files belonging to CKEditor. You can either:
     //
     // * modify the existing 'svg' rule:
     //
-    //		svgRule.use( 'raw-loader' ).loader( 'raw-loader' );
+    		svgRule.use( 'raw-loader' ).loader( 'raw-loader' );
     //
     // * or add a new one:
-    config.module
-      .rule( 'cke-svg' )
-      .test( /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/ )
-      .use( 'raw-loader' )
-      .loader( 'raw-loader' );
+    // config.module
+    //   .rule( 'cke-svg' )
+    //   .test( /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/ )
+    //   .use( 'raw-loader' )
+    //   .loader( 'raw-loader' );
 
     // (2.) Transpile the .css files imported by the editor using PostCSS.
     // Make sure only the CSS belonging to ckeditor5-* packages is processed this way.

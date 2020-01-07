@@ -31,14 +31,14 @@ let ftpDeploy = new FtpDeploy();
 let config = {
   ...options,
   localRoot: __dirname + '/dist',
-  remoteRoot: '/',
+  remoteRoot: '/member/shop/setting/diy/',
   include: ['*', '**/*'], // this would upload everything except dot files
   // include: ["*.php", "dist/*", ".*"],
   // e.g. exclude sourcemaps, and ALL files in node_modules (including dot files)
   // exclude: ["dist/**/*.map", "node_modules/**", "node_modules/**/.*", ".git/**"],
-  exclude: ['static/kindeditor/**'],
+  // exclude: ['static/kindeditor/**'],
   // delete ALL existing files at destination before uploading, if true
-  deleteRemote: false,
+  deleteRemote: true,
   // Passive mode is forced (EPSV command is not sent)
   forcePasv: false,
 };
@@ -60,9 +60,8 @@ ftpDeploy.deploy(config, (err, res) => {
   if (err) {
     console.log(err);
   } else {
-
     console.log('finished:', res);
-    process.exit()
+    process.exit();
   }
 });
 

@@ -79,6 +79,15 @@
                 </el-radio-group>
               </el-tab-pane>
 
+              <el-tab-pane label="文章" name="6" :disabled="!config.page.article.show">
+                <el-radio-group v-model="innerDialog.article.checked" class="systemPage">
+                  <el-radio style="padding-bottom: 4px;" class="pageBlock" :label="item.path"
+                            v-for="(item, index) in innerDialog.article.data"
+                            :key="index" @change="saveArticlePage(item)">{{ item.text }}
+                  </el-radio>
+                </el-radio-group>
+              </el-tab-pane>
+
 
             </el-tabs>
           </el-tab-pane>
@@ -95,7 +104,7 @@
 </template>
 
 <script>
-  import { getProductCategory, getProductList,getDiyPageList,getSystemUrl,getDiyUrl } from '@/common/fetch';
+  import { getProductCategory, getProductList,getDiyPageList,getSystemUrl,getDiyUrl,systemArticleUrl } from '@/common/fetch';
   import { deepCopy } from '@/common/utils';
   import {fun} from '../common';
 
@@ -241,6 +250,14 @@
         }
 
       },
+      'innerDialog.index':{
+          immediate: true,
+          handler(val) {
+              if(val=='page'){
+                  this.innerDialog.customizeIndex='1'
+              }
+          }
+      },
       show: {
         immediate: true,
         handler(val) {
@@ -250,80 +267,98 @@
 
         }
       },
-      'innerDialog.customizeIndex'(val) {
+      'innerDialog.customizeIndex':{
+          immediate:true,
+          handler(val) {
 
-        if (!this.innerVisible) return;
+              if (!this.innerVisible) return;
 
-        if (val === '1' && !this.innerDialog.system.isHasData) {
-          getSystemUrl()
-            .then(res => {
-              this.innerDialog.system.isHasData = true;
-              let data = res.data.map((v,idx) => {
-                v.id = idx;
-                v.text = `[系统页面] ${v.name}`;
-                v.path = v.url;
-                v.type = 'default';
-                return v;
-              });
-              this.innerDialog.system.data.push(...data);
-            });
-        }
+              if (val === '1' && !this.innerDialog.system.isHasData) {
+                  getSystemUrl()
+                      .then(res => {
+                          this.innerDialog.system.isHasData = true;
+                          let data = res.data.map((v,idx) => {
+                              v.id = idx;
+                              v.text = `[系统页面] ${v.name}`;
+                              v.path = v.url;
+                              v.type = 'default';
+                              return v;
+                          });
+                          this.innerDialog.system.data.push(...data);
+                      });
+              }
 
-        if (val === '2' && !this.innerDialog.classify.isHasData) {
-          getProductCategory()
-            .then(res => {
-              this.innerDialog.classify.isHasData = true;
-              let data = refreshCateData(res.data);
-              this.innerDialog.classify.data.push(...data);
-            });
-        }
-        if (val === '3' && !this.innerDialog.product.isHasData) {
-          getProductList({ pageSize: 999 })
-            .then(res => {
-              this.innerDialog.product.isHasData = true;
-              let data = res.data.map(v => {
-                v.text = `[商品] ${v.Products_Name}`;
-                v.path = `/pages/detail/detail?Products_ID=${v.Products_ID}`;
-                v.type = 'default';
-                return v;
-              });
-              this.innerDialog.product.data.push(...data);
-            });
+              if (val === '2' && !this.innerDialog.classify.isHasData) {
+                  getProductCategory()
+                      .then(res => {
+                          this.innerDialog.classify.isHasData = true;
+                          let data = refreshCateData(res.data);
+                          this.innerDialog.classify.data.push(...data);
+                      });
+              }
+              if (val === '3' && !this.innerDialog.product.isHasData) {
+                  getProductList({ pageSize: 999 })
+                      .then(res => {
+                          this.innerDialog.product.isHasData = true;
+                          let data = res.data.map(v => {
+                              v.text = `[商品] ${v.Products_Name}`;
+                              v.path = `/pages/detail/detail?Products_ID=${v.Products_ID}`;
+                              v.type = 'default';
+                              return v;
+                          });
+                          this.innerDialog.product.data.push(...data);
+                      });
 
-        }
+              }
 
-        if (val === '4' && !this.innerDialog.customer.isHasData) {
-          getDiyUrl({ pageSize: 999 })
-            .then(res => {
-              this.innerDialog.customer.isHasData = true;
-              let data = res.data.map(v => {
-                v.text = `[自定义URL] ${v.Url_Name}`;
-                v.path = v.Url_Value;
-                v.type = 'default';
-                return v;
-              });
-              this.innerDialog.customer.data.push(...data);
-            });
+              if (val === '4' && !this.innerDialog.customer.isHasData) {
+                  getDiyUrl({ pageSize: 999 })
+                      .then(res => {
+                          this.innerDialog.customer.isHasData = true;
+                          let data = res.data.map(v => {
+                              v.text = `[自定义URL] ${v.Url_Name}`;
+                              v.path = v.Url_Value;
+                              v.type = 'default';
+                              return v;
+                          });
+                          this.innerDialog.customer.data.push(...data);
+                      });
 
-        }
+              }
 
-        if (val === '5' && !this.innerDialog.diy.isHasData) {
-          getDiyPageList({ pageSize: 999 })
-            .then(res => {
-              this.innerDialog.diy.isHasData = true;
-              let data = res.data.map(v => {
-                v.text = `[自定义页面] ${v.Home_Name}`;
-                v.path = `/pages/page/page?Home_ID=${v.Home_ID}`;
-                v.type = 'default';
-                return v;
-              });
-              this.innerDialog.diy.data.push(...data);
-            });
+              if (val === '5' && !this.innerDialog.diy.isHasData) {
+                  getDiyPageList({ pageSize: 999 })
+                      .then(res => {
+                          this.innerDialog.diy.isHasData = true;
+                          let data = res.data.map(v => {
+                              v.text = `[自定义页面] ${v.Home_Name}`;
+                              v.path = `/pages/page/page?Home_ID=${v.Home_ID}`;
+                              v.type = 'default';
+                              return v;
+                          });
+                          this.innerDialog.diy.data.push(...data);
+                      });
 
-        }
+              }
+              if (val === '6' && !this.innerDialog.article.isHasData) {
+                  systemArticleUrl({ pageSize: 999 })
+                      .then(res => {
+                          this.innerDialog.article.isHasData = true;
+                          let data = res.data.map(v => {
+                              v.text = `[文章] ${v.Article_Title}`;
+                              v.path = `/pages/common/article?Article_ID=${v.Article_ID}`;
+                              v.type = 'article';
+                              return v;
+                          });
+                          this.innerDialog.article.data.push(...data);
+                      });
+
+              }
 
 
 
+
+          }
       }
     },
     data() {
@@ -340,7 +375,7 @@
           index: 'customize',
           customizeLink: '',
           customizeStart: 'http://',
-          customizeIndex: '1',
+          customizeIndex: '0',
           system: {
             data:[],
             isHasData: false,
@@ -364,6 +399,12 @@
             checked: '',
             isHasData: false,
             checkedObj: {}
+          },
+          article: {
+              data: [],
+              checked: '',
+              isHasData: false,
+              checkedObj: {}
           },
           classify: {
             data: [],
@@ -399,7 +440,11 @@
             },
             diy:{
               show:true
+            },
+            article:{
+              show:true
             }
+
           }
         }
 
@@ -456,6 +501,9 @@
       },
       saveDiyPage(item) {
         this.innerDialog.diy.checkedObj = item;
+      },
+      saveArticlePage(item){
+          this.innerDialog.article.checkedObj = item;
       },
       nodeClick(data, checked, node) {
         this.$refs.treeForm.setCheckedNodes([data]);
@@ -541,6 +589,14 @@
               tooltip = `自定义页面：${this.innerDialog.diy.checkedObj.Home_Name}`;
               dataItem = this.innerDialog.diy.checkedObj;
               type = 'diypage';
+              break;
+
+              case '6':
+                  path = this.innerDialog.article.checked;
+                  if (path === '') return this.$message('请先选择文章');
+                  tooltip = `文章：${this.innerDialog.article.checkedObj.Article_Title}`;
+                  dataItem = this.innerDialog.article.checkedObj;
+                  type = 'article';
               break;
           }
         }

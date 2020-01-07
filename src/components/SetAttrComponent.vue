@@ -28,11 +28,26 @@
                      :min="item.min"></el-slider>
         </div>
 
+       <template v-if="item.type === 'input'">
+        <template v-if="item.is_video">
+          <el-input size="small" @blur="inputBlurEvent(item)"  autosize
+                    v-model="item.model" class="input"
+                    @input='change(item)'
+                    :type='item.inputType'>
+            <el-button slot="append" icon="el-icon-upload" @click="addVideo(item)"></el-button>
+          </el-input>
+        </template>
+        <template v-else>
+          <el-input size="small" @blur="inputBlurEvent(item)"  autosize
+                    v-model="item.model" class="input"
+                    @input='change(item)'
+                    :type='item.inputType'></el-input>
+        </template>
 
-        <el-input size="small" @blur="inputBlurEvent(item)" v-if="item.type === 'input'" autosize
-                  v-model="item.model" class="input"
-                  @input='change(item)'
-                  :type='item.inputType'></el-input>
+       </template>
+
+
+
 
 
         <!--        activeItem[item.index].tooltip | pageTooltip-->
@@ -123,7 +138,6 @@
 
             <div class="row-container flex" v-if="['nav'].indexOf(item.row_type)!==-1">
               <upload-img-components
-
                 :cropperOption="{aspectRatio:1/1}"
                 class="myUploadImg"
                 :onSuccess='item.imgCB'
@@ -376,6 +390,7 @@
                              :ids="coupon_ids" :show.sync="couponDialogShow"/>
 
 
+    <wzw-finder :show="finderDialogInstance.visible"></wzw-finder>
   </div>
 </template>
 
@@ -392,6 +407,14 @@
     import SelectSpikeListComponent from '@/components/SelectSpikeListComponent';
     import {fun} from '@/common';
 
+    import {
+        Action,
+        State
+    } from 'vuex-class'
+    import {FUNFinder} from '../components/editor/ckeditt-resource/FUNFinder';
+    import WzwFinder from "../components/editor/WzwFinder.vue";
+
+
     // 没有继承，是依靠vuex的数据。也不碍事啊
     @Component({
         components: {
@@ -401,7 +424,7 @@
             BindCateComponents,
             SelectGoodsComponent,
             MagicCubeComponent,
-            SelectSpikeListComponent
+            SelectSpikeListComponent,WzwFinder
         },
         props: {
             // eTitle:{type:String, default:'属性设置'}
@@ -440,7 +463,7 @@
                 color1: null,
                 pageEl: null,
                 couponDialogShow: false,//优惠券
-                coupon_ids: '',//已经选择的优惠券
+                coupon_ids: ''//已经选择的优惠券
             };
         },
         filters: {
@@ -481,13 +504,25 @@
                     // this.setActiveAttr(navl)
                 },
             },
-            ...mapState(['tmplData','tabIndex']),
+            ...mapState(['tmplData','tabIndex','finderDialogInstance']),
         },
         created() {
             this.pageEl = this
         },
 
         methods: {
+            async addVideo(item){
+                this.currentData = item
+                await FUNFinder.open({options:{limit:1,allow:['media']},callFn:{chooseMedia:this.upVideoSuccessCall}});
+            },
+            upVideoSuccessCall(url_list){
+                console.log(url_list)
+                let video_url = url_list[0]
+                let item = this.currentData
+                item.model= video_url
+                this.change(item)
+
+            },
             openColorPicker(){
                 this.isLockMouser = true;
             },
@@ -693,6 +728,7 @@
 
 
     export default class SetAttrComponent extends Vue {
+
         form = {
 
             name: '',

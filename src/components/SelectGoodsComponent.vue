@@ -17,12 +17,15 @@
           :dataList.sync="list"
           :columns="columns"
           @selectVal="selectVal"
+
+          @submit="submit"
+          @reset="reset"
         >
           <template slot="Products_Name-column" slot-scope="props">
             <div style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{props.row.Products_Name}}</div>
           </template>
-          <template slot="ImgPath-column" slot-scope="props">
-            <img height="40px" :src="props.row.ImgPath" />
+          <template slot="img_url-column" slot-scope="props">
+            <img height="40px" :src="props.row.img_url" />
           </template>
           <template slot="Products_PriceX-column" slot-scope="props">
             <span class="" style="color: #F43131"><span class="font14">￥</span>{{props.row.Products_PriceX}}</span>
@@ -41,7 +44,8 @@
 </template>
 
 <script>
-  import { getProductList,getFlashSaleList } from '../common/fetch';
+  import { getProductList,getFlashSaleList,getProducts } from '../common/fetch';
+  import {findArrayIdx} from '../common/utils';
   import { domain } from '@/common/utils';
 
 
@@ -89,11 +93,15 @@
           {
             label:'名称',
             prop:'Products_Name',
-            search:false
+              name:'name_area',
+              search: {
+                  type: 'input',
+                  operate: 'like',
+              }
           },
           {
             label:'缩略图',
-            prop:'ImgPath',
+            prop:'img_url',
             width:140,
             align:'center',
             search:false
@@ -102,14 +110,35 @@
             label:'价格',
             prop:'Products_PriceX',
             width:100,
-            search:false
-          }
+            sortable:true,
+            name:'price_area',
+            search:{
+                type:'between',
+                operate:'BETWEEN',
+                value:[null,null]
+            }
+          }, {
+                prop: "attr",
+                label: "特殊属性",
+                align:'center',
+                name:'attr_area',
+                width:150,
+                value:'',
+                showIf:(row)=>false,
+                search: {
+                    option:'',
+                    type: 'select',
+                    operate: 'like',
+                }
+            },
         ],
         loading: true,
         finish:false,
         innerVisible: false,
         multipleSelection: [],
         list: [],
+        //搜索
+          search:null,
         //分页
         paginate: {
           page: 1,
@@ -134,6 +163,9 @@
 
             this.loadGoodsInfo((arr) => {
               //this.finish = true;
+                arr.filter(column =>
+                    column.Products_PriceX = parseFloat(column.Products_PriceX)
+                )
               this.list = arr;
             });
 
@@ -158,6 +190,32 @@
 
     },
     methods: {
+        submit(params){
+            this.search = {...params}
+            this.paginate.page=1
+            this.loadGoodsInfo((arr) => {
+                //this.finish = true;
+                arr.filter(column =>
+                    column.Products_PriceX = parseFloat(column.Products_PriceX)
+                )
+                this.list = arr;
+            })
+        },
+        reset(){
+            for(let it in this.columns){
+                if(this.columns[it].search){
+                    if(this.columns[it].search.type=='between'){
+                        this.columns[it].search.value=[null,null]
+                        this.columns[it].value=[null,null]
+                    }else{
+                        this.columns[it].search.value=''
+                        this.columns[it].value=''
+                    }
+                }
+
+            }
+            this.submit()
+        },
       //获取选中数据
       selectVal(val){
         console.log('选中数据',val)
@@ -188,8 +246,34 @@
         let _self = this;
         //构造请求
         let postData = JSON.parse(JSON.stringify(this.paginate));
+        postData.status=1
+          postData.store_id=''
+        //搜索
+        if(this.search&&this.search.filter){
+            console.log(this.search,"sss")
+            if(this.search.filter.name_area){
+                postData.pro_name=this.search.filter.name_area
+            }
+            if(this.search.filter.price_area){
+                let arr=this.search.filter.price_area.split(',')
+                console.log(arr,"sss")
+                arr[0]?postData.min_price=arr[0]:''
+                arr[1]?postData.max_price=arr[1]:''
+            }
+            if(this.search.filter.attr_area){
+                postData.sel_oattr=this.search.filter.attr_area
+            }
 
-        let getProductListFn = getProductList;
+
+        }
+
+
+
+
+
+
+
+        let getProductListFn = getProducts;
         //秒杀
         if(this.kill_flag){
           getProductListFn = getFlashSaleList;
@@ -206,6 +290,8 @@
             }, 600);
             this.paginate.total = res.totalCount;
             this.paginate.page++;
+              let oattrIdx = findArrayIdx(this.columns,{prop:'attr'})
+              this.columns[oattrIdx].search.option=res.oattrs
             call && call(res.data);
           });
       },

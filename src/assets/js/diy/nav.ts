@@ -85,7 +85,7 @@ function setAttrData() {
           }
           this.value.list.push( {
             title: '标题',
-            img: 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20191007114805119.png',
+            img: '',
             link: '',
             linkType: '',
             tooltip: ''
@@ -193,28 +193,28 @@ class Nav extends Common {
     list: [
       {
         title: '标题',
-        img: 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20191007114805119.png',
+        img: '',
         link: '',
         linkType: '',
         tooltip: ''
       },
       {
         title: '标题',
-        img: 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20191007114805119.png',
+        img: '',
         link: '',
         linkType: '',
         tooltip: ''
       },
       {
         title: '标题',
-        img: 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20191007114805119.png',
+        img: '',
         link: '',
         linkType: '',
         tooltip: ''
       },
       {
         title: '标题',
-        img: 'http://www.qiyeban.com/uploadfiles/wkbq6nc2kc/image/20191007114805119.png',
+        img: '',
         link: '',
         linkType: '',
         tooltip: ''

@@ -19,6 +19,7 @@
             end-placeholder="结束日期"
             :default-time="['12:00:00']">
           </el-date-picker>
+          <span style="color: red;margin-left: 10px">(先选择时间区间，再选取时间点)</span>
         </el-form-item>
       </div>
 
@@ -241,7 +242,9 @@
         total_count=''
         day_count=''
         dateValue=[]
-        describe=''//活动描述
+        describe='1、抽中积分，将直接赠送到您的积分账户，可在个人中心>积分中查看。\n' +
+            '2、抽中赠品，请点击个人中心>赠品中心进行领取\n' +
+            '3、抽中优惠券，将直接赠送到您的优惠券账户，可在个人中心>优惠券查看，也可直接购买商品抵扣'//活动描述
 
         rotateList=[{
             type:'score',

@@ -58,10 +58,9 @@ export const fetch = function (act: String, param: Object = {}, options = false,
     window.funLoading = Loading.service(options)
   }
 
-  console.log("最终请求地址=====>"+url)
 
   return new Promise(((resolve, reject) => {
-console.log(method)
+
     Vue.http[method](url, data, options).then(res=>{
       if(res.data.errorCode === 0){
         resolve(res.data)
@@ -77,9 +76,15 @@ console.log(method)
 
 };
 
-export const getFileList = (act='fun',data:object={},options:any=false)=> fetch(act, data, options,'http://localhost:9100/file')
+export const getCommonConfig = (data:object={},options:any=false)=> fetch('shopconfig', data, options)
 
-export const getDirectoryList = (act='fun',data:object={},options:any=false)=> fetch(act, data, options,'http://localhost:9100/directory')
+export const getFileList = (data:object={},options:any=false)=> fetch('getFolderDir', data, options)
+
+export const createDirectory = (data:object={},options:any=false)=> fetch('createFolder', data, options)
+
+export const getAliyunOssSign = (data:object={},options:any=false)=> fetch('getVaildSign', data, options)
+
+//export const getDirectoryList = (act='fun',data:object={},options:any=false)=> fetch(act, data, options,'http://localhost:9100/directory')
 
 export const commonReq = (act,data:object={},options:any=false)=> fetch(act, data, options)
 
@@ -300,6 +305,8 @@ export const getDistributorContributeDetail = (data:object={},options:any=false)
 
 export const sendDistributorContributeMoney = (data:object={},options:any=false) => fetch('sendContributeMoney', data, options);
 
+//获取文章列表url
+export const systemArticleUrl = (data:object={},options:any=false) => fetch('system_article_url', data, options);
 
 //获取门店商品列表
 export const getProducts = (data:object={},options:any=false) => fetch('get_products', data, options);
@@ -373,7 +380,7 @@ export const createToken = function (object) {
   var timestamp = parseInt(new Date().getTime() / 1000).toString();
   var key = '458f_$#@$*!fdjisdJDFHUk4%%653154%^@#(FSD#$@0-T';
   var dataStr = signString + key + timestamp;
-
+  // console.log(dataStr)
   var sign = hexMD5(window.Base64.toBase64(dataStr)).toUpperCase();
   object['timestamp'] = timestamp;
   object['sign'] = sign;
