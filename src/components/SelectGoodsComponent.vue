@@ -90,6 +90,11 @@
             label:'名称',
             prop:'Products_Name',
             search:false
+            // required: true,
+            // search: {
+            //     type: 'input',
+            //     operate: 'like',
+            // }
           },
           {
             label:'缩略图',

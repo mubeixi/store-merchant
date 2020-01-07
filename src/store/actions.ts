@@ -1,14 +1,3 @@
-// import {globalInitData, initData} from '../assets/js/fetch/index'
-//
-//
-// export const setGlobalInitData = ({commit}) => {
-//   globalInitData().then(res => {
-//     commit('setGlobalInitData', res)
-//   }).catch(e => {
-//   })
-// };
-
-// @ts-ignore
 
 export const setActiveAttr = ({commit}, data) => {
   // 这里除了修改之外，还需要去修改templDate的对应数据
@@ -46,5 +35,8 @@ export const setMode = ({commit}, data) => {
 export const setSystem = ({commit}, data) => {
   commit('system', data);
 };
+
+
+
 
 
