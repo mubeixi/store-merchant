@@ -305,6 +305,8 @@ export const getDistributorContributeDetail = (data:object={},options:any=false)
 
 export const sendDistributorContributeMoney = (data:object={},options:any=false) => fetch('sendContributeMoney', data, options);
 
+//获取文章列表url
+export const systemArticleUrl = (data:object={},options:any=false) => fetch('system_article_url', data, options);
 
 //获取门店商品列表
 export const getProducts = (data:object={},options:any=false) => fetch('get_products', data, options);
