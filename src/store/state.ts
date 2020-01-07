@@ -1,6 +1,5 @@
 
 let finderDialogInstance = {visible:false,limit:9,select:0,callFn:null,allow:[]}
-
 window.finderDialogInstance = finderDialogInstance
 let initData = {}
 window.initData = initData

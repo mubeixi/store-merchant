@@ -1,5 +1,5 @@
-
-let finderDialogInstance = window.finderDialogInstance
+import store from "../../../store";
+let finderDialogInstance = store.state.finderDialogInstance
 const noop = ()=>{}
 export class FUNFinder {
 
@@ -14,6 +14,7 @@ export class FUNFinder {
    * @param callFn
    */
   static open({options={},editor=null,callFn=noop}){
+
 
     finderDialogInstance.callFn = callFn
 
