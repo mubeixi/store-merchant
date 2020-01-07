@@ -250,6 +250,14 @@
         }
 
       },
+      'innerDialog.index':{
+          immediate: true,
+          handler(val) {
+              if(val=='page'){
+                  this.innerDialog.customizeIndex='1'
+              }
+          }
+      },
       show: {
         immediate: true,
         handler(val) {
@@ -259,95 +267,98 @@
 
         }
       },
-      'innerDialog.customizeIndex'(val) {
+      'innerDialog.customizeIndex':{
+          immediate:true,
+          handler(val) {
 
-        if (!this.innerVisible) return;
+              if (!this.innerVisible) return;
 
-        if (val === '1' && !this.innerDialog.system.isHasData) {
-          getSystemUrl()
-            .then(res => {
-              this.innerDialog.system.isHasData = true;
-              let data = res.data.map((v,idx) => {
-                v.id = idx;
-                v.text = `[系统页面] ${v.name}`;
-                v.path = v.url;
-                v.type = 'default';
-                return v;
-              });
-              this.innerDialog.system.data.push(...data);
-            });
-        }
-
-        if (val === '2' && !this.innerDialog.classify.isHasData) {
-          getProductCategory()
-            .then(res => {
-              this.innerDialog.classify.isHasData = true;
-              let data = refreshCateData(res.data);
-              this.innerDialog.classify.data.push(...data);
-            });
-        }
-        if (val === '3' && !this.innerDialog.product.isHasData) {
-          getProductList({ pageSize: 999 })
-            .then(res => {
-              this.innerDialog.product.isHasData = true;
-              let data = res.data.map(v => {
-                v.text = `[商品] ${v.Products_Name}`;
-                v.path = `/pages/detail/detail?Products_ID=${v.Products_ID}`;
-                v.type = 'default';
-                return v;
-              });
-              this.innerDialog.product.data.push(...data);
-            });
-
-        }
-
-        if (val === '4' && !this.innerDialog.customer.isHasData) {
-          getDiyUrl({ pageSize: 999 })
-            .then(res => {
-              this.innerDialog.customer.isHasData = true;
-              let data = res.data.map(v => {
-                v.text = `[自定义URL] ${v.Url_Name}`;
-                v.path = v.Url_Value;
-                v.type = 'default';
-                return v;
-              });
-              this.innerDialog.customer.data.push(...data);
-            });
-
-        }
-
-        if (val === '5' && !this.innerDialog.diy.isHasData) {
-          getDiyPageList({ pageSize: 999 })
-            .then(res => {
-              this.innerDialog.diy.isHasData = true;
-              let data = res.data.map(v => {
-                v.text = `[自定义页面] ${v.Home_Name}`;
-                v.path = `/pages/page/page?Home_ID=${v.Home_ID}`;
-                v.type = 'default';
-                return v;
-              });
-              this.innerDialog.diy.data.push(...data);
-            });
-
-        }
-          if (val === '6' && !this.innerDialog.article.isHasData) {
-              systemArticleUrl({ pageSize: 999 })
-                  .then(res => {
-                      this.innerDialog.article.isHasData = true;
-                      let data = res.data.map(v => {
-                          v.text = `[文章] ${v.Article_Title}`;
-                          v.path = `/pages/common/article?Article_ID=${v.Article_ID}`;
-                          v.type = 'article';
-                          return v;
+              if (val === '1' && !this.innerDialog.system.isHasData) {
+                  getSystemUrl()
+                      .then(res => {
+                          this.innerDialog.system.isHasData = true;
+                          let data = res.data.map((v,idx) => {
+                              v.id = idx;
+                              v.text = `[系统页面] ${v.name}`;
+                              v.path = v.url;
+                              v.type = 'default';
+                              return v;
+                          });
+                          this.innerDialog.system.data.push(...data);
                       });
-                      this.innerDialog.article.data.push(...data);
-                  });
+              }
+
+              if (val === '2' && !this.innerDialog.classify.isHasData) {
+                  getProductCategory()
+                      .then(res => {
+                          this.innerDialog.classify.isHasData = true;
+                          let data = refreshCateData(res.data);
+                          this.innerDialog.classify.data.push(...data);
+                      });
+              }
+              if (val === '3' && !this.innerDialog.product.isHasData) {
+                  getProductList({ pageSize: 999 })
+                      .then(res => {
+                          this.innerDialog.product.isHasData = true;
+                          let data = res.data.map(v => {
+                              v.text = `[商品] ${v.Products_Name}`;
+                              v.path = `/pages/detail/detail?Products_ID=${v.Products_ID}`;
+                              v.type = 'default';
+                              return v;
+                          });
+                          this.innerDialog.product.data.push(...data);
+                      });
+
+              }
+
+              if (val === '4' && !this.innerDialog.customer.isHasData) {
+                  getDiyUrl({ pageSize: 999 })
+                      .then(res => {
+                          this.innerDialog.customer.isHasData = true;
+                          let data = res.data.map(v => {
+                              v.text = `[自定义URL] ${v.Url_Name}`;
+                              v.path = v.Url_Value;
+                              v.type = 'default';
+                              return v;
+                          });
+                          this.innerDialog.customer.data.push(...data);
+                      });
+
+              }
+
+              if (val === '5' && !this.innerDialog.diy.isHasData) {
+                  getDiyPageList({ pageSize: 999 })
+                      .then(res => {
+                          this.innerDialog.diy.isHasData = true;
+                          let data = res.data.map(v => {
+                              v.text = `[自定义页面] ${v.Home_Name}`;
+                              v.path = `/pages/page/page?Home_ID=${v.Home_ID}`;
+                              v.type = 'default';
+                              return v;
+                          });
+                          this.innerDialog.diy.data.push(...data);
+                      });
+
+              }
+              if (val === '6' && !this.innerDialog.article.isHasData) {
+                  systemArticleUrl({ pageSize: 999 })
+                      .then(res => {
+                          this.innerDialog.article.isHasData = true;
+                          let data = res.data.map(v => {
+                              v.text = `[文章] ${v.Article_Title}`;
+                              v.path = `/pages/common/article?Article_ID=${v.Article_ID}`;
+                              v.type = 'article';
+                              return v;
+                          });
+                          this.innerDialog.article.data.push(...data);
+                      });
+
+              }
+
+
+
 
           }
-
-
-
-
       }
     },
     data() {
@@ -364,7 +375,7 @@
           index: 'customize',
           customizeLink: '',
           customizeStart: 'http://',
-          customizeIndex: '1',
+          customizeIndex: '0',
           system: {
             data:[],
             isHasData: false,
