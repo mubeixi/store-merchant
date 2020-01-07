@@ -644,9 +644,10 @@
     import SettingComponent from "@/components/comm/SettingComponent.vue";
     // import KindEditor from "@/components/comm/kindeditor.vue"
     import WzwEditor from "../components/editor/WzwEditor.vue";
-    import {ckeditorMixin} from '../common/mixin';
     import WzwFinder from "../components/editor/WzwFinder.vue";
-    import {FUNFinder} from '../components/editor/ckeditt-resource/FUNFinder';
+    import {
+        FUNFinder
+    } from '../components/editor/ckeditt-resource/FUNFinder';
 
     import {
         getProductCategory,
@@ -673,7 +674,7 @@
     import {fun} from '@/common';
 
     @Component({
-        mixins:[ckeditorMixin],
+        mixins:[],
         components: {
             BindStoreComponent,
             SettingComponent,
