@@ -1,8 +1,6 @@
 import Vue from 'vue';
 import interceptorsConfig from './interceptors';
-import './filter2';
-
-
+import './filter';
 
 // const i18n = require('i18n');
 import {
