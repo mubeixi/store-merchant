@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import interceptorsConfig from './interceptors';
-import filter from './filter.js';
+import './filter2';
 
 
 
@@ -138,8 +138,8 @@ export default {
     Vue.prototype.$confirm = MessageBox.confirm;
     Vue.prototype.$fun = fun;
     Vue.http.interceptors.push(interceptorsConfig);
-    filter.map((value) => {
-      Vue.filter(value.name, value.methods);
-    });
+    // filter.map((value) => {
+    //   Vue.filter(value.name, value.methods);
+    // });
   },
 };
