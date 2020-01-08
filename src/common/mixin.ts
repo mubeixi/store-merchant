@@ -34,7 +34,7 @@ export const doLoginMixin = {
 
     if(!Cookies.get('Users_ID')){
       this.$fun.error({msg:'需要登录'});
-      setTimeout(function () {
+      setTimeout(()=>{
         location.href = '/member/login.php';
       },1000)
     }
