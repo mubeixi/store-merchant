@@ -13,10 +13,23 @@ export const doLoginMixin = {
   async created() {
 
     if (isDev) {
-      Cookies.set('Users_ID', 'wkbq6nc2kc')
-      Cookies.set('Stores_Bind_User_ID', '48')//为了区分其他的user_id，所以弄了这个代表店铺的user_id
-      Cookies.set('Stores_ID', '10')
-      Cookies.set('access_token', 'E9PzbErYLRnswePWcHzg1VrBqdktxDkn')
+
+      await login({Account: 'admin', Password: '123456'}).then((res:any) => {
+        // ls.set('Users_ID', res.data.Users_ID);
+        // // ls.set('Users_Account', res.data.Users_Account)
+        //
+        // ls.set('Shop_Info', {
+        //   ShopName: res.data.ShopName,
+        //   ShopLogo: res.data.ShopLogo,
+        //   description: res.data.description
+        // })
+        Cookies.set('Users_ID', 'wkbq6nc2kc')
+        Cookies.set('Stores_Bind_User_ID', '48')//为了区分其他的user_id，所以弄了这个代表店铺的user_id
+        Cookies.set('Stores_ID', '10')
+        Cookies.set('access_token', res.data.access_token)//手动写hack
+      }).catch()
+
+
     }
 
     if(!Cookies.get('Users_ID')){
