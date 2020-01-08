@@ -10,11 +10,11 @@ import {isDev} from "./env";
  */
 export const doLoginMixin = {
 
-  async created() {
+  created() {
 
     if (isDev) {
 
-      await login({Account: 'admin', Password: '123456'}).then((res:any) => {
+      login({Account: 'admin', Password: '123456'}).then((res:any) => {
         // ls.set('Users_ID', res.data.Users_ID);
         // // ls.set('Users_Account', res.data.Users_Account)
         //
