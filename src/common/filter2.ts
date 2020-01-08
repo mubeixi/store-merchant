@@ -2,7 +2,7 @@ import { PLUGINSLIST } from './data';
 import Vue from 'vue';
 import { staticUrl } from './env';
 
-Vue.filter('getTitleByTag',(url) => {
+Vue.filter('getTitleByTag',(tag) => {
 
   for (const group of PLUGINSLIST) {
     for(const plugin of group.list){
@@ -20,7 +20,7 @@ Vue.filter('domain',(url) => {
   return url;
 })
 
-Vue.filter('cutstr',(val) => (str,len,tip) => {
+Vue.filter('cutstr',(str,len,tip) => {
   if(!str)return '';
   console.log(str,len,tip)
   if(str.length<len)return str;
