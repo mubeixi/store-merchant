@@ -12,7 +12,7 @@ export const doLoginMixin = {
 
   created() {
 
-    if (isDev) {
+    if (isDev && !Cookies.get('access_token')) {
 
       login({Account: 'admin', Password: '123456'}).then((res:any) => {
         // ls.set('Users_ID', res.data.Users_ID);
