@@ -1,5 +1,7 @@
 <template>
   <div id="app">
+    <!--全局的资源管理器-->
+    <wzw-finder :show="finderDialogInstance.visible"></wzw-finder>
     <router-view/>
   </div>
 </template>
@@ -13,9 +15,17 @@ import {
     Action,
     State
 } from 'vuex-class'
-@Component
+import WzwFinder from './components/editor/WzwFinder';
 
+@Component({
+    components:{
+        WzwFinder
+    }
+})
 export default class App extends Vue {
+
+    @State('finderDialogInstance') finderDialogInstance
+
     @Action setInitData
     @State initData
     created() {

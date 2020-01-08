@@ -390,7 +390,7 @@
                              :ids="coupon_ids" :show.sync="couponDialogShow"/>
 
 
-    <wzw-finder :show="finderDialogInstance.visible"></wzw-finder>
+
   </div>
 </template>
 
@@ -412,7 +412,7 @@
         State
     } from 'vuex-class'
     import {FUNFinder} from '../components/editor/ckeditt-resource/FUNFinder';
-    import WzwFinder from "../components/editor/WzwFinder.vue";
+
 
 
     // 没有继承，是依靠vuex的数据。也不碍事啊
@@ -424,7 +424,7 @@
             BindCateComponents,
             SelectGoodsComponent,
             MagicCubeComponent,
-            SelectSpikeListComponent,WzwFinder
+            SelectSpikeListComponent
         },
         props: {
             // eTitle:{type:String, default:'属性设置'}

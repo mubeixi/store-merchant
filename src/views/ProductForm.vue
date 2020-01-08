@@ -623,7 +623,7 @@
       佣金设置
     </div>
 
-    <wzw-finder :show="finderDialogInstance.visible"></wzw-finder>
+
 
   </div>
 </template>
@@ -644,7 +644,7 @@
     import SettingComponent from "@/components/comm/SettingComponent.vue";
     // import KindEditor from "@/components/comm/kindeditor.vue"
     import WzwEditor from "../components/editor/WzwEditor.vue";
-    import WzwFinder from "../components/editor/WzwFinder.vue";
+
     import {
         FUNFinder
     } from '../components/editor/ckeditt-resource/FUNFinder';
@@ -679,7 +679,7 @@
             BindStoreComponent,
             SettingComponent,
             WzwEditor,
-            WzwFinder,
+
             // KindEditor,
             UploadComponents,BindCateComponents
         },
@@ -698,7 +698,7 @@
     })
     export default class AddProduct extends Vue {
 
-        @State('finderDialogInstance') finderDialogInstance
+
 
         goProduct(){
             this.$router.push({
