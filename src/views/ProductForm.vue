@@ -1514,6 +1514,15 @@
             console.log('返回的数据',dataArr)
             let child_arr = [];
             let cate_data = {}
+            let str=''
+            if(dataArr.length>0){
+                for(let item of dataArr){
+                    str+=item.Category_ID+','
+                }
+                str=str.substr(0,str.length-1)
+            }
+            this.cate_ids=str
+
             for(var cate of origin_cate_list){
 
                 child_arr = [];
@@ -1532,16 +1541,15 @@
 
                 }
 
-
                 console.log(child_arr)
                 //如果有子的，那么就把父级也加进去
                 if(child_arr.length>0){
-                    cate_data[cate.Category_ID] = [...child_arr]
+                    //cate_data[cate.Category_ID] = [...child_arr]
                 }else{
                     //修改分类不对
                     let isHas = findArrayIdx(dataArr,{Category_ID:cate.Category_ID})
                     if(isHas!==false){
-                        cate_data[cate.Category_ID] = []
+                        //cate_data[cate.Category_ID] = []
                     }
 
                 }
@@ -1549,13 +1557,11 @@
 
             }
 
-            console.log(cate_data)
-
             this.cate_list = dataArr.map(cate=>{
                 return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
             })
 
-            this.cate_ids = JSON.stringify(cate_data)//ids.store('|')
+            // this.cate_ids = JSON.stringify(cate_data)//ids.store('|')
             this.bindCateDialogShow = false
         }
         bindStoreCancel(){
@@ -1930,37 +1936,14 @@
                     //模拟选择菜单后的
                     let dataArr = this.cate_list
 
-                    // let child_arr = [];
-                    // let cate_data = {}
-                    //
-                    // for(var cate of origin_cate_list){
-                    //     child_arr = [];
-                    //
-                    //     for(var item of dataArr){
-                    //         if(item.child){
-                    //             if(cate.hasOwnProperty('child')){
-                    //                 for(var child of cate.child){
-                    //                     if(child.Category_ID === item.Category_ID){
-                    //                         child_arr.push(item.Category_ID)
-                    //                     }
-                    //                 }
-                    //             }
-                    //         }else{
-                    //                 if(cate.Category_ID === item.Category_ID){
-                    //                     child_arr.push(item.Category_ID)
-                    //                 }
-                    //         }
-                    //
-                    //
-                    //     }
-                    //
-                    //     if(child_arr.length>0){
-                    //         cate_data[cate.Category_ID] = [...child_arr]
-                    //     }
-                    //
-                    // }
-                    //
-                    // this.cate_ids = JSON.stringify(cate_data)//ids.store('|')
+                    let str=''
+                    if(dataArr.length>0){
+                        for(let item of dataArr){
+                            str+=item.Category_ID+','
+                        }
+                        str=str.substr(0,str.length-1)
+                    }
+                    this.cate_ids=str
 
 
                     console.log('原始数据',origin_cate_list)
@@ -2002,13 +1985,11 @@
 
                     }
 
-                    console.log(cate_data)
-
                     this.cate_list = dataArr.map(cate=>{
                         return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
                     })
 
-                    this.cate_ids = JSON.stringify(cate_data)//ids.store('|')
+                    //this.cate_ids = JSON.stringify(cate_data)//ids.store('|')
 
 
                 })
