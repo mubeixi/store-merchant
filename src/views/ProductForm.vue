@@ -1001,9 +1001,8 @@
         }
         upSpecPicSuccessCall(url_list){
             let url = url_list[0]
-
-
-            this.specs[0].imgs[this.currentSpecItemIdx] = url
+            this.$set(this.specs[0].imgs,this.currentSpecItemIdx,url)
+            //this.specs[0].imgs[this.currentSpecItemIdx] = url
 
         }
         onContentChange2 (val) {
