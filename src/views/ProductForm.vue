@@ -26,7 +26,7 @@
           <span class="classificationSpan" @click="bindCateDialogShow=true">选择分类</span>
       </el-form-item>
       <div class="group cate_list" style="margin-left: 120px;margin-bottom: 22px;" v-if="cate_list.length>0">
-        <span class="cate_item" v-for="(cate,idx) in cate_list">{{cate.Category_Name}}</span>
+        <span class="cate_item" v-for="(cate,idx) in show_cate_list">{{cate.Category_Name}}</span>
       </div>
       <el-form-item label="销量" >
           <el-input v-model.number="ruleForm.Products_Sales" :disabled="noEditField.Products_Sales"  class="sortInput"></el-input>
@@ -806,7 +806,7 @@
             type:'image'
         }
 
-
+        show_cate_list = []
         cate_list = []
         cate_ids = ''
         fenxiaoshang=[]
@@ -1536,59 +1536,75 @@
         bindCateCancel(){
             this.bindCateDialogShow = false
         }
+
+        /**
+         * 从某个一维数组中（利用pid来区分上下级，且最高级的pid为0)获取所有父级的id
+         * @param arr
+         * @param item
+         * @param key
+         */
+        getAllPid({arr,self,key,pkey,root_pkey_val=0,rt=[]}){
+            //console.log(...arguments)
+            for(let item of arr){
+                if(item[key] == self[pkey]){
+                    rt.push(item[key])
+                    //如果存在
+                    if(item[pkey]!=root_pkey_val){
+                        this.getAllPid({arr,'self':item,'key':key,'pkey':pkey,root_pkey_val,rt});
+                    }
+                    break;
+                }
+            }
+        }
         bindCateSuccessCall(dataType, type, path, tooltip, dataArr, pageEl, idx2,ext){
 
             let origin_cate_list = ext//获取所有的菜单数据，方便后面拼接。
+
+            //把数组铺平城一维数组
+            let plain_cate_list = []
+            plainArray(origin_cate_list,'children',plain_cate_list)
+            console.log(plain_cate_list)
+
             console.log('原始数据',origin_cate_list)
             console.log('返回的数据',dataArr)
+
             let child_arr = [];
             let cate_data = {}
             let str=''
+            let all_cate_list = []
             if(dataArr.length>0){
                 for(let item of dataArr){
                     str+=item.Category_ID+','
+                    all_cate_list.push(item.Category_ID)
+                    this.getAllPid({arr:plain_cate_list,self:item,key:'Category_ID',pkey:'Category_ParentID',rt:all_cate_list})
                 }
                 str=str.substr(0,str.length-1)
             }
-            this.cate_ids=str
 
-            for(var cate of origin_cate_list){
+            console.log('all_cate_list is ',all_cate_list)
 
-                child_arr = [];
+            let resultarr = [...new Set(all_cate_list)];
+            console.log('all_cate_list end is ',resultarr)
 
-                //把所有选中的子级类目加进去
-                for(var item of dataArr){
-                    //如果不是子一级目录就不要
-                    if(item.child)continue
-                    if(cate.hasOwnProperty('child') && _.isArray(cate.child)){
-                        for(var child of cate.child){
-                            if(child.Category_ID === item.Category_ID){
-                                child_arr.push(item.Category_ID)
-                            }
-                        }
-                    }
+            this.cate_ids= str;//resultarr.join(',')
 
+
+            let cates_end_list = []
+            for(let row of plain_cate_list){
+                if(resultarr.includes(row.Category_ID)){
+                    cates_end_list.push(row)
                 }
-
-                console.log(child_arr)
-                //如果有子的，那么就把父级也加进去
-                if(child_arr.length>0){
-                    //cate_data[cate.Category_ID] = [...child_arr]
-                }else{
-                    //修改分类不对
-                    let isHas = findArrayIdx(dataArr,{Category_ID:cate.Category_ID})
-                    if(isHas!==false){
-                        //cate_data[cate.Category_ID] = []
-                    }
-
-                }
-
-
             }
+
+            this.show_cate_list = cates_end_list.map(cate=>{
+                return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
+            })
 
             this.cate_list = dataArr.map(cate=>{
                 return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
             })
+
+
 
             // this.cate_ids = JSON.stringify(cate_data)//ids.store('|')
             this.bindCateDialogShow = false
@@ -1953,17 +1969,30 @@
                 await getProductCategory({}).then(res=>{
 
                     let origin_cate_list = res.data
+
+                    console.log('原始数据',origin_cate_list)
+
                     let cates = []
+
+                    let dataArr =[]
+
+                    let  all_cate_list = []
                     //铺平数组
-                    plainArray(res.data,'child',cates)
+                    plainArray(origin_cate_list,'child',cates)
+                    console.log(cates,select_cate_ids)
                     for(var cate of cates){
                         if(select_cate_ids.indexOf(cate.Category_ID+'')!=-1){
-                            this.cate_list.push(cate)
+                            console.log(cate)
+                            dataArr.push(cate)
+
+                            all_cate_list.push(cate.Category_ID)
+                            this.getAllPid({arr:cates,self:cate,key:'Category_ID',pkey:'Category_ParentID',rt:all_cate_list})
                         }
                     }
 
+
                     //模拟选择菜单后的
-                    let dataArr = this.cate_list
+                    //let dataArr = this.cate_list
 
                     let str=''
                     if(dataArr.length>0){
@@ -1972,51 +2001,34 @@
                         }
                         str=str.substr(0,str.length-1)
                     }
+                    console.log(dataArr)
                     this.cate_ids=str
 
 
-                    console.log('原始数据',origin_cate_list)
+
                     console.log('初始化的参数',dataArr)
-                    let child_arr = [];
-                    let cate_data = {}
-                    for(var cate of origin_cate_list){
 
-                        child_arr = [];
+                    console.log('all_cate_list is ',all_cate_list)
 
-                        //把所有选中的子级类目加进去
-                        for(var item of dataArr){
-                            //如果不是子一级目录就不要
-                            if(item.child)continue
-                            if(cate.hasOwnProperty('child') && _.isArray(cate.child)){
-                                for(var child of cate.child){
-                                    if(child.Category_ID === item.Category_ID){
-                                        child_arr.push(item.Category_ID)
-                                    }
-                                }
-                            }
+                    let resultarr = [...new Set(all_cate_list)];
+                    console.log('all_cate_list end is ',resultarr)
 
+
+                    let cates_end_list = []
+                    for(let row of cates){
+                        if(resultarr.includes(row.Category_ID)){
+                            cates_end_list.push(row)
                         }
-
-
-                        console.log(child_arr)
-                        //如果有子的，那么就把父级也加进去
-                        if(child_arr.length>0){
-                            cate_data[cate.Category_ID] = [...child_arr]
-                        }else{
-                            //修改分类不对
-                            let isHas = findArrayIdx(dataArr,{Category_ID:cate.Category_ID})
-                            if(isHas!==false){
-                                cate_data[cate.Category_ID] = []
-                            }
-
-                        }
-
-
                     }
+
+                    this.show_cate_list = cates_end_list.map(cate=>{
+                        return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
+                    })
 
                     this.cate_list = dataArr.map(cate=>{
                         return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
                     })
+
 
                     //this.cate_ids = JSON.stringify(cate_data)//ids.store('|')
 

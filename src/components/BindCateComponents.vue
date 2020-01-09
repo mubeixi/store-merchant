@@ -44,14 +44,6 @@
                 ></el-tree>
               </el-tab-pane>
 
-              <!--              <el-tab-pane label="产品" name="3" :disabled="!config.page.product.show">-->
-              <!--                <el-radio-group v-model="innerDialog.product.checked" class="systemPage">-->
-              <!--                  <el-radio class="pageBlock" :label="item.path"-->
-              <!--                            v-for="(item, index) in innerDialog.product.data"-->
-              <!--                            :key="index" @change="saveProduct(item)">{{ item.text }}-->
-              <!--                  </el-radio>-->
-              <!--                </el-radio-group>-->
-              <!--              </el-tab-pane>-->
             </el-tabs>
           </el-tab-pane>
         </el-tabs>
