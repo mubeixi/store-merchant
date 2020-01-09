@@ -825,7 +825,7 @@
         spec_val_list = []
         specs = []
         removeSpecPic(idx){
-            console.log(idx)
+            //console.log(idx)
             this.$set(this.specs[0].imgs,idx,'')
             // [idx] = ''
         }
@@ -1236,7 +1236,7 @@
             this.allPrice=true;
         }
         upThumbSuccessCall(url_list){
-            console.log(url_list)
+            //console.log(url_list)
             this.thumb = this.thumb.concat(url_list)
 
         }
@@ -1246,7 +1246,7 @@
         }
 
         upVideoSuccessCall(url_list){
-            console.log(url_list)
+            //console.log(url_list)
             let video_url = url_list[0]
             this.video = video_url
 
@@ -1562,10 +1562,10 @@
             //把数组铺平城一维数组
             let plain_cate_list = []
             plainArray(origin_cate_list,'children',plain_cate_list)
-            console.log(plain_cate_list)
+            //console.log(plain_cate_list)
 
-            console.log('原始数据',origin_cate_list)
-            console.log('返回的数据',dataArr)
+            //console.log('原始数据',origin_cate_list)
+            //console.log('返回的数据',dataArr)
 
             let child_arr = [];
             let cate_data = {}
@@ -1580,10 +1580,10 @@
                 str=str.substr(0,str.length-1)
             }
 
-            console.log('all_cate_list is ',all_cate_list)
+            //console.log('all_cate_list is ',all_cate_list)
 
             let resultarr = [...new Set(all_cate_list)];
-            console.log('all_cate_list end is ',resultarr)
+            //console.log('all_cate_list end is ',resultarr)
 
             this.cate_ids= str;//resultarr.join(',')
 
@@ -1969,7 +1969,7 @@
 
                     let origin_cate_list = res.data
 
-                    console.log('原始数据',origin_cate_list)
+                    //console.log('原始数据',origin_cate_list)
 
                     let cates = []
 
@@ -1978,10 +1978,10 @@
                     let  all_cate_list = []
                     //铺平数组
                     plainArray(origin_cate_list,'child',cates)
-                    console.log(cates,select_cate_ids)
+                    //console.log(cates,select_cate_ids)
                     for(var cate of cates){
                         if(select_cate_ids.indexOf(cate.Category_ID+'')!=-1){
-                            console.log(cate)
+                            //console.log(cate)
                             dataArr.push(cate)
 
                             all_cate_list.push(cate.Category_ID)
@@ -2000,17 +2000,17 @@
                         }
                         str=str.substr(0,str.length-1)
                     }
-                    console.log(dataArr)
+                    //console.log(dataArr)
                     this.cate_ids=str
 
 
 
-                    console.log('初始化的参数',dataArr)
+                    //console.log('初始化的参数',dataArr)
 
-                    console.log('all_cate_list is ',all_cate_list)
+                    //console.log('all_cate_list is ',all_cate_list)
 
                     let resultarr = [...new Set(all_cate_list)];
-                    console.log('all_cate_list end is ',resultarr)
+                    //console.log('all_cate_list end is ',resultarr)
 
 
                     let cates_end_list = []
