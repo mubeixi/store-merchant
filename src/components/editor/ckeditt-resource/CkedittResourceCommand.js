@@ -106,29 +106,16 @@ const utilsInsertImageFunc = function( writer, model, attributes = {} ) {
   // Inserting an image might've failed due to schema regulations.
   //就是这个，让无法再次插入了
   if ( imageElement.parent ) {
-    writer.setSelection( imageElement, 'on' );
+    console.log(attributes.src)
+    //writer.setSelection( imageElement, 'on' );
   }
-
-
-
-  // // const Paragraph = writer.createElement( 'paragraph', { alignment: 'center' });
-  // model.insertContent( Paragraph);
-  // console.log(Paragraph)
-  //model.insertElement('paragraph');
 
 }
 
 function focusEditor(editor)
 {
-  // // 获取焦点
-  // editor.focus();
-  //
-  // // 将光标移至最末
-  // var range = editor.createRange();
-  // range.moveToElementEditEnd(editor.editable());
-  //
-  // range.select();
-  // range.scrollIntoView();
+
+
 }
 
 function insertImages( editor, urls ) {
@@ -154,15 +141,63 @@ function insertImages( editor, urls ) {
   const options = { source: urls }
   //自己实现imageInsert的cocommand
   const model = editor.model;
-  model.change( writer => {
+  const changeRt = model.change( writer => {
     const sources = Array.isArray( options.source ) ? options.source : [ options.source ];
 
-    for ( const src of sources ) {
-      utilsInsertImageFunc( writer, model, { src } );
+    let endPostion = null
+    for ( let i in sources ) {
+      let src = sources[i]
+      console.log(src,i)
+      endPostion = utilsInsertImageFunc( writer, model, { src } );
     }
+
+    //model.insertContent( imageElement,insertAtSelection);
+
+    console.log(333333333)
+    const textElement = writer.createElement( 'paragraph');
+    const insertAtSelection = findOptimalInsertionPosition( model.document.selection, model );
+    model.insertContent( textElement,insertAtSelection);
+
+
+
+    //writer.insertText( 'foo', editor.model.document.selection.getLastPosition() );
+
+    //writer.insertElement( 'paragraph', { alignment: 'center' },editor.model.document.selection.getLastPosition() );
+
+    //writer.setSelection( p1, 'end' );
+    // const modelRoot = model.document.getRoot();
+    // if ( modelRoot.childCount < 2 ) {
+    //   let _bodyPlaceholder = writer.createElement( 'paragraph' );
+    //   writer.insert( _bodyPlaceholder, modelRoot, 1 );
+    // }
+
+
+    //
+    // //
+    // // const imageElement = writer.createElement( 'image', {src:'http://localhost:9100/img/ca816783ea2b8bb0db13a291ee224dbc.jpg'} );
+    // //
+    // const insertAtSelection = findOptimalInsertionPosition( model.document.selection, model );
+    // console.log(insertAtSelection)
+    // model.insertContent( p1,insertAtSelection);
+    //
+    // if ( p1.parent ) {
+    //   writer.setSelection( p1, 'on' );
+    // }
+
+
+
+    // writer.setSelectionFocus(position)
+
+
+    return 32322;
+
   } );
 
+  console.log(changeRt)
+
   focusEditor(editor)
+
+
 
 
 }

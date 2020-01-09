@@ -89,9 +89,16 @@
         <div class="preview-thumb-box preview-box">
           <div class="preview-thumb-item preview-item" v-for="(img,idx) in thumb" :key="idx">
             <img class="img" :src="img" />
-            <div class="actions">
-              <span class="__item-preview" @click="onPreviewFn(img)"><i class="el-icon-zoom-in"></i></span>
-              <span class="__item-delete" @click="doRemoveThumb(idx)"><i class="el-icon-delete"></i></span>
+            <div class="actions thumb-actions">
+
+              <div class="row">
+                <span title="查看图片" class="icon __item-preview" @click="onPreviewFn(img)"><i class="el-icon-zoom-in"></i></span>
+                <span title="删除图片" class="icon __item-delete" @click="doRemoveThumb(idx)"><i class="el-icon-delete"></i></span>
+              </div>
+              <div class="row">
+                <span title="向右移动图片" class="icon __item-pre" v-if="idx!=0" @click="prevFn(img,idx)"><i class="el-icon-back"></i></span>
+                <span title="向左移动图片" class="icon __item-next" v-if="idx!=(thumb.length-1)" @click="nextFn(img,idx)"><i class="el-icon-right"></i></span>
+              </div>
             </div>
           </div>
         </div>
@@ -759,6 +766,28 @@
                 return
             }
             FUNFinder.open({options:{limit:5-this.thumb.length,allow:['image']},callFn:{choose:this.upThumbSuccessCall}});
+        }
+
+        /**
+         * 往前移动一个位置
+         * @param url
+         * @param idx
+         */
+        prevFn(url,idx){
+            let tempUlr = this.thumb[idx-1]
+            this.$set(this.thumb,idx-1,url)
+            this.$set(this.thumb,idx,tempUlr)
+        }
+
+        /**
+         * 往后移动一个位置
+         * @param url
+         * @param idx
+         */
+        nextFn(url,idx){
+            let tempUlr = this.thumb[idx+1]
+            this.$set(this.thumb,idx+1,url)
+            this.$set(this.thumb,idx,tempUlr)
         }
         onPreviewFn(url,type='image'){
             this.preDialogInstance.url = url
@@ -2075,6 +2104,24 @@
       background-color: rgba(0,0,0,.5);
       -webkit-transition: opacity .3s;
       transition: opacity .3s;
+      &.thumb-actions{
+        padding: 10px;
+        box-sizing: border-box;
+
+        .row{
+          height: 30px;
+          align-items: center;
+          display: flex;
+          justify-content: center;
+          .icon{
+            cursor: pointer;
+            /*margin-left: 0 !important;*/
+            line-height: 1;
+          }
+        }
+        /*align-items: center;*/
+
+      }
       &::after{
         display: inline-block;
         content: "";

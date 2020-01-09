@@ -39,7 +39,7 @@ import { insertImage, isImageAllowed } from '@ckeditor/ckeditor5-image/src/image
  *
  * @extends module:core/command~Command
  */
-export default class ImageUploadCommand extends Command {
+export default class resourceCommand extends Command {
   /**
    * @inheritDoc
    */
