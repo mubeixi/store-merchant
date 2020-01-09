@@ -32,6 +32,21 @@
           </div>
         </el-form-item>
 
+        <el-form-item label="级别背景："  class="marginLR labelCenter" style="margin-left: 57px">
+          <div class="divFlex">
+            <upload-components
+              size="mini"
+              ref="thumbs"
+              :limit="1"
+              tip="上传级别背景图片"
+              :onSuccess="upThumbSuccess"
+            />
+            <div class="labelDiv">
+              图片建议尺寸：665x325像素
+            </div>
+          </div>
+        </el-form-item>
+
         <el-form-item  label="佣金人数限制：" class="marginLRS divFlex">
           <div class="divFlex">
             <div class="marginRight" v-if="level>=1">
@@ -586,6 +601,7 @@
         Level_Name=''//级别名称
         Level_Description=''//等级描述
         Level_Icon=''//级别标识
+        Level_BackImg=''//背景图
         level=3 //级别等级
         //佣金人数限制
         Level_PeopleLimit=['','','']
@@ -683,7 +699,19 @@
         }
 
         upThumbSuccessCall(url_list){
-           this.Level_Icon=url_list[0].url
+            if(url_list.length>0){
+                this.Level_Icon=url_list[0].url
+                return
+            }
+            this.Level_Icon=''
+        }
+        upThumbSuccess(url_list){
+            if(url_list.length>0){
+                this.Level_BackImg=url_list[0].url
+                return
+            }
+            this.Level_BackImg=''
+
         }
         loadingSubmit=false
         saveData(){
@@ -701,6 +729,7 @@
             let info={
                 Level_Name:this.Level_Name,
                 Level_Icon:this.Level_Icon,
+                Level_BackImg:this.Level_BackImg,
                 arrive_limit:this.arrive_limit,
                 Level_Description:this.Level_Description
             }
@@ -809,6 +838,17 @@
                             //@ts-ignore
                             this.$refs.thumb.handleInitHas([this.Level_Icon])
                         }
+
+                        //缩略图
+                        //@ts-ignore
+                        this.Level_BackImg = dataList.Level_BackImg
+                        //组件里面初始化
+                        if(this.Level_BackImg){
+                            //@ts-ignore
+                            this.$refs.thumbs.handleInitHas([this.Level_BackImg])
+                        }
+
+
                         this.Level_PeopleLimit=[]
                         this.commi_rules=[]
                         for(let it in dataList.Level_PeopleLimit){
