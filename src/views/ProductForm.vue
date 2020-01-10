@@ -1309,7 +1309,7 @@
                         this.isLoading=false;
                         return
                     }
-                    let productInfo={
+                    let productInfo:object = {
                         Products_Index:this.ruleForm.Products_Index,//商品排序
                         Products_Name:this.ruleForm.Products_Name,//商品名称
                         Products_Category:this.cate_ids,//商品分类
@@ -1359,10 +1359,11 @@
                     }else {
                         productInfo.Products_JSON=JSON.stringify({"ImgPath":this.thumb})
                     }
-                    if(this.video){
-                        productInfo.video_url=this.video;
-                        productInfo.cover_url=this.imgs;
-                    }
+
+                    
+                    productInfo.video_url=this.video?this.video:'';
+                    productInfo.cover_url=this.imgs?this.imgs:'';
+
                     if(this.store_list.length>0){
                         let arr=[];
                         for(let item of this.store_list){
@@ -1379,14 +1380,17 @@
                         if(item=='热卖')productInfo.Products_IsHot=1;
                         if(item=='推荐')productInfo.Products_IsRecommend=1;
                     }
+
                     if(this.ruleForm.goods==0){
                         //如果是免运费的话
                         productInfo.Shipping_Free_Company=this.ruleForm.freight;
                     }
+
                     if(this.prodConfig.Payment_RmainderEnabled){
                         //如果可以设置余额支付
                         productInfo.Products_IsPaysBalance=this.ruleForm.Products_IsPaysBalance?'1':'0';
                     }
+
                     if(this.ruleForm.pintuan_flag){
                         //是拼团商品
                         //转化时间
@@ -1396,6 +1400,7 @@
                         productInfo.pintuan_pricex=this.ruleForm.pintuan_pricex;
                         productInfo.pintuan_end_time=date;
                     }
+
                     //商品规格
                     if(this.specs.length>0){
                         let attrs={};
@@ -1436,20 +1441,26 @@
 
                             }
 
+
                             //批量新增图片
-                            if(this.specs.length===1){
-                                idx=0
-                            }
                             //利用对应的规格获取在第一个规格可选值的vals的索引
                             if(this.skuImg){
-                                let specItemIdx = this.specs[0].vals.indexOf(this.skus[idx][0])
-                                if(this.specs[0].imgs){
-                                    if(specItemIdx!=-1 && this.specs[0].imgs[specItemIdx]){
-                                        mbx.Attr_Image = this.specs[0].imgs[specItemIdx]
-                                    }else{
-                                        mbx.Attr_Image = ''
-                                    }
-                                }
+
+                              let specItemIdx = -1
+                              //当只有一个规格的时候，特殊情况
+                              if(this.specs.length===1){
+                                specItemIdx = this.specs[0].vals.indexOf(this.skus[0][idx])
+                              }else{
+                                specItemIdx = this.specs[0].vals.indexOf(this.skus[idx][0])
+                              }
+
+                              if(this.specs[0].imgs){
+                                  if(specItemIdx!=-1 && this.specs[0].imgs[specItemIdx]){
+                                      mbx.Attr_Image = this.specs[0].imgs[specItemIdx]
+                                  }else{
+                                      mbx.Attr_Image = ''
+                                  }
+                              }
                             }else{
 
                             }

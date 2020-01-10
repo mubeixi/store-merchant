@@ -7,7 +7,6 @@ import * as mutations from './store/mutations';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-
   state,
   mutations,
   actions,

@@ -46,6 +46,9 @@ export const fetch = function (act: String, param: Object = {}, options = false,
   // 数据加密
   let data = createToken(param);
 
+  //保持签名通过，同时支持传空字符串
+  Object.assign(data,param)
+
   // console.log(data)
 
   // console.log(process.env.VUE_APP_API_BASE_URL)
