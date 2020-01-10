@@ -525,7 +525,7 @@
 
 
                 if(!this.system.title){
-                    this.$fun.warning("名称必填");
+                    this.$fun.warning({msg:"名称必填"});
                     return;
                 }
 

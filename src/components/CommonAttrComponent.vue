@@ -48,6 +48,7 @@
         computed: {
             form:{
               get(){
+                console.log(this.$store.state)
                   return Object.assign({},this.$store.state.system)
               },
                 set(nval) {

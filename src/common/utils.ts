@@ -6,6 +6,8 @@ import {staticUrl} from "./env";
 
 import _ from 'underscore';
 
+
+
 /**
  * 获取指定的样式值
  * @param el
