@@ -19,6 +19,11 @@ Vue.component('fun-table',FunTable);
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 
+import vuescroll from 'vuescroll/dist/vuescroll-native';
+import 'vuescroll/dist/vuescroll.css';
+Vue.use(vuescroll);
+
+
 // @ts-ignore
 Vue.http.options.emulateJSON = true;
 // @ts-ignore
