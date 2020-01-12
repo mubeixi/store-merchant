@@ -269,18 +269,16 @@
 
 
 
-
-
-
-
         let getProductListFn = getProducts;
         //秒杀
         if(this.kill_flag){
           getProductListFn = getFlashSaleList;
           //postData.flashsale_flag = this.flashsale_flag;
         }
+
         //拼团
         if(this.pintuan_flag){
+          getProductListFn = getProductList;//拼团需要
           postData.pintuan_flag = this.pintuan_flag;
         }
         getProductListFn(postData)
