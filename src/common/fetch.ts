@@ -110,6 +110,10 @@ export const getShopSkinList = (data:object={},options:any=false) => fetch('get_
 
 export const chooseShopSkin = (data:object={},options:any=false) => fetch('choose_shopskin', data, options)
 
+export const addPoster = (data:object={},options:any=false) => fetch('addPoster', data, options)
+
+export const convertImageByBase64 =  (data:object={},options:any=false) => fetch('convertImageBase64', data, options)
+
 //获取商城的配置
 //get_shophome
 export const getSkinConfig = (data:object={},options:any=false) => fetch('get_skin_data', data, options)

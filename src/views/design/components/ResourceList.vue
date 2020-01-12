@@ -4,6 +4,14 @@
       <div class="component-title__header"><span class="component-title__tip"></span><span class="component-title__name">显示元素</span></div>
 <!--      <div class="component-title__msg">选择合适的模板直接使用</div>-->
     </div>
+    <div class="actions line15 padding10-c">
+
+      <el-checkbox @change="headimgHandle" v-model="headimg" label="头像"></el-checkbox>
+      <el-checkbox @change="nicknameHandle" v-model="nickname" label="昵称"></el-checkbox>
+      <el-checkbox @change="qrcodeHandle" v-model="qrcode" label="二维码"></el-checkbox>
+      <el-checkbox @change="timeHandle" v-model="time" label="时间"></el-checkbox>
+
+    </div>
     <div class="action line15 text-center" @click="createdText">
       <el-button plain type="primary" size="small">+添加文本</el-button>
     </div>
@@ -34,13 +42,49 @@
   @Component
   export default class ResourceList extends Vue{
 
+    headimg = false
+    headimgHandle(val){
+      console.log('headimg value is = ',val)
+      if(val){
+        this.$parent.$refs.console.createArea('headimg')
+      }else{
+        this.$parent.$refs.console.deletedArea('headimg')
+      }
+
+    }
+    nickname = false
+    nicknameHandle(val){
+      if(val){
+        this.$parent.$refs.console.createArea('nickname')
+      }else{
+        this.$parent.$refs.console.deletedArea('nickname')
+      }
+
+    }
+    qrcode = false
+    qrcodeHandle(val){
+      if(val){
+        this.$parent.$refs.console.createArea('qrcode')
+      }else{
+        this.$parent.$refs.console.deletedArea('qrcode')
+      }
+    }
+    time = false
+    timeHandle(val){
+      if(val){
+        this.$parent.$refs.console.createArea('time')
+      }else{
+        this.$parent.$refs.console.deletedArea('time')
+      }
+    }
+
     sourceDrag(e:any){
       const url = e.target.getAttribute('src');
       e.dataTransfer.setData('file-url', url);
     }
 
     createdText(){
-      this.$parent.$refs.console.createdText('文字')
+      this.$parent.$refs.console.createText('文字')
     }
 
     openFinder(){
@@ -94,13 +138,13 @@
   }
 
   .resource-list{
-    height: calc(100vh - 140px);
-
+    height: calc(100vh - 250px);
     .resource-item{
       width: 100px;
       margin: 0 auto;
       .img{
         width: 100%;
+        cursor: pointer;
       }
     }
   }
