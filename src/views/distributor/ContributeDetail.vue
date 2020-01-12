@@ -11,7 +11,7 @@
         <span class="label">统计时间:</span><span class="val">{{info.time}}</span>
       </div>
       <div class="info-item">
-        <span class="label">区间销售额:</span><span class="danger-color">￥{{info.total_sales}}</span>
+        <span class="label">区间业绩:</span><span class="danger-color">￥{{info.total_sales}}</span>
       </div>
       <div class="info-item flex1 text-right padding-right-10">
         <el-button @click="openDialog" size="small" type="success">发放奖励</el-button>
@@ -215,7 +215,7 @@
                 },
                 {
                     prop: "total_sales",
-                    label: "团队销售额",
+                    label: "团队业绩",
                     search: false
                 },
                 {

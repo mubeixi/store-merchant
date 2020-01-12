@@ -55,9 +55,9 @@
       @drop="dropEv"
       @dragover.prevent
       v-loading="loadingImageInstance"
-      element-loading-text="加载图片中"
+      element-loading-text="加载资源"
       element-loading-spinner="el-icon-loading"
-      element-loading-background="rgba(0, 0, 0, 0.8)"
+      element-loading-background="rgba(0, 0, 0, 0.5)"
     >
 
       <canvas id="canvas" width="404px" height="718px"  ></canvas>
@@ -78,7 +78,7 @@
 
     <div class="handle">
       <el-button @click="saveData"  type="primary" size="small">保存</el-button>
-      <el-button  size="small">重置</el-button>
+      <el-button @click="clearCanvas"  size="small">重置</el-button>
       <!--      <div class="preBox" >-->
       <!--        <el-button @click="saveData(0,1)" size="small">预览</el-button>-->
       <!--        <div class="tooltip" v-show="centerDialogVisible" @click="centerDialogVisible=false">-->
@@ -105,6 +105,8 @@
   } from "../../../common/utils";
   import {
     addPoster,
+    getPosterList,
+    getPosterDetail,
     commonReq,
     convertImageByBase64,
     uploadImgByBase64
@@ -181,6 +183,11 @@
 
     //基础配置
     conf = {}
+
+    clearCanvas(){
+
+      this.canvasInstance.clear();
+    }
 
     colorEvByBg(val){
       console.log(`背景色${val}`)
@@ -275,7 +282,7 @@
       canvas.discardActiveObject().renderAll();
 
       let canvasData = canvas.toDatalessJSON()
-
+      console.log('保存数据',canvasData)
       const loadingInstance = this.$loading({
         text:'保存模板'
       })
@@ -298,11 +305,40 @@
         console.log(saveRt)
         loadingInstance.close()
 
+
+        //清空画布
+        this.clearCanvas()
+
+        //重新获取列表
+        this.$parent.$refs.tmpl.getTmplList()
+
       }catch (e) {
         loadingInstance.close()
         fun.error({msg:'保存失败：'+e.message})
       }
 
+
+    }
+
+
+    //根据选中模板加载
+    initByTmpl(json){
+
+      const canvas = this.canvasInstance
+      canvas.clear()
+
+      let parseObject = JSON.parse(json)
+      console.log(parseObject)
+
+      canvas.loadFromJSON(json,canvas.renderAll.bind(canvas));
+
+      let objects = canvas.getObjects()
+      console.log(objects)
+      for(let obj of objects){
+        this.setCommonAttr(obj)
+      }
+
+      canvas.renderAll()
 
     }
 
@@ -549,11 +585,11 @@
 
       this.loadingImageInstance = true
 
-      // fetch(`http://localhost:9100/blob?path=${url}`)
-      //   .then(function(response) {
-      //     return response.json();
-      //   })
-      convertImageByBase64({img_url:url})
+      fetch(`http://localhost:9100/blob?path=${url}`)
+        .then(function(response) {
+          return response.json();
+        })
+      //convertImageByBase64({img_url:url})
         .then((res:any)=>{
 
           let imgBolbUrl = res.data
@@ -587,6 +623,8 @@
 
     created(){
       //Design.init({conf:this.conf,nodes:this.nodeList})
+
+
     }
 
     mounted(){
@@ -599,6 +637,9 @@
           // width: '600',
           // height: '600'
         });
+        // canvas.rotationCursor = 'pointer'; //默认光标改成十字
+        // canvas.hoverCursor = 'pointer'; //悬浮光标改成手型
+
         canvas.preserveObjectStacking = true;
         this.canvasInstance = canvas;
         window.canvasInstance = canvas;

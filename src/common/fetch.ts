@@ -112,6 +112,10 @@ export const chooseShopSkin = (data:object={},options:any=false) => fetch('choos
 
 export const addPoster = (data:object={},options:any=false) => fetch('addPoster', data, options)
 
+export const getPosterList = (data:object={},options:any=false) => fetch('getPosterList', data, options)
+
+export const getPosterDetail = (data:object={},options:any=false) => fetch('getPosterDetail', data, options)
+
 export const convertImageByBase64 =  (data:object={},options:any=false) => fetch('convertImageBase64', data, options)
 
 //获取商城的配置

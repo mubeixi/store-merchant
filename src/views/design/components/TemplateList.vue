@@ -4,10 +4,10 @@
       <div class="component-title__header"><span class="component-title__tip"></span><span class="component-title__name">素材模板</span></div>
 <!--      <div class="component-title__msg">选择合适的模板直接使用</div>-->
     </div>
-    <div class="tmpl-list">
+    <div class="tmpl-list" v-loading="loadingTmpl">
       <vue-scroll :ops="ops">
-        <div class="tmpl-item" v-for="(tmpl,idx) in tmpls" :key="idx" :style="{marginRight:(idx+1)%2==0?'0':''}">
-          <div class="tmpl-item-cover" :style="{backgroundImage:'url('+tmpl.thumb+')'}"></div>
+        <div @click="selectTmpl(tmpl.id)" class="tmpl-item" v-for="(tmpl,idx) in tmpls" :key="idx" :style="{marginRight:(idx+1)%2==0?'0':''}">
+          <div class="tmpl-item-cover" :style="{backgroundImage:'url('+tmpl.img+')'}"></div>
         </div>
       </vue-scroll>
 
@@ -20,7 +20,10 @@
     Vue,
     Component
   } from 'vue-property-decorator'
-  import {getFileList} from "../../../common/fetch";
+  import {
+    getFileList, getPosterDetail,
+    getPosterList
+  } from "../../../common/fetch";
 
   @Component
   export default class TemplateList extends Vue{
@@ -38,20 +41,47 @@
     }
     tmpls = []
 
-    created(){
-      getFileList({attach_path:'image/design/',type:'image'}).then(res=>{
 
+    loadingTmpl = false
 
-        for(let img of res.data){
-          if(!img.is_dir){
-            this.tmpls.push({
-              thumb:img.fileurl,
-              title:img.filename
-            })
-          }
-        }
+    async getTmplList(){
 
+      this.loadingTmpl = true
+
+      let ret = await getPosterList({pageSize:999})
+      this.tmpls = ret.data
+
+      this.loadingTmpl = false
+
+    }
+
+    selectTmpl(id){
+      this.$parent.$refs.console.loadingImageInstance = true
+      getPosterDetail({id}).then(res=>{
+        this.$parent.$refs.console.initByTmpl(res.data.data)
+        this.$parent.$refs.console.loadingImageInstance = false
       })
+
+    }
+    created(){
+
+
+      this.getTmplList()
+
+
+      // getFileList({attach_path:'image/design/',type:'image'}).then(res=>{
+      //
+      //
+      //   for(let img of res.data){
+      //     if(!img.is_dir){
+      //       this.tmpls.push({
+      //         thumb:img.fileurl,
+      //         title:img.filename
+      //       })
+      //     }
+      //   }
+      //
+      // })
     }
 
   }
