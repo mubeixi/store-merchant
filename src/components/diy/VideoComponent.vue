@@ -7,6 +7,7 @@
         您的浏览器不支持 video 标签。
       </video>
     </div>
+    <span class="fun-plugin-tag">视频</span>
   </div>
 </template>
 

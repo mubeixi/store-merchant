@@ -1,6 +1,7 @@
 <template>
   <div @click.stop="setData({}, 0)"
        :style="{height:style.height+'px',background:style.bgColor}" class="space">
+    <span class="fun-plugin-tag">间隔</span>
   </div>
 </template>
 

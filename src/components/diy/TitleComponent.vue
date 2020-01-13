@@ -11,6 +11,7 @@
     </div>
 
     <span class="more">{{moreData.title}}</span>
+    <span class="fun-plugin-tag">标题</span>
   </div>
 </template>
 

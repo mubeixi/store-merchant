@@ -62,6 +62,8 @@
       </ul>
     </div>
 
+    <span class="fun-plugin-tag">秒杀</span>
+
   </div>
 </template>
 

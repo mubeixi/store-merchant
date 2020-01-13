@@ -62,6 +62,8 @@
       </ul>
     </div>
 
+    <span class="fun-plugin-tag">团购</span>
+
   </div>
 </template>
 

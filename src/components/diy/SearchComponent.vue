@@ -5,6 +5,7 @@
       <i class="el-icon-search icon"></i>
       <input class="input" readonly :style="{height:style.height+'px',backgroundColor:style.inputBgColor,color:style.color}" />
     </div>
+    <span class="fun-plugin-tag">搜索框</span>
   </div>
 </template>
 

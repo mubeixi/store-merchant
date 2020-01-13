@@ -14,6 +14,7 @@
             <div v-else class="cover-full" style="background-size: cover" :style="{backgroundImage:'url('+domainFunc(item.img_src)+')'}"></div>
         </el-carousel-item>
         </el-carousel>
+    <span class="fun-plugin-tag">图片Banner</span>
 
   </div>
 </template>

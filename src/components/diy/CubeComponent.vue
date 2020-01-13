@@ -12,6 +12,7 @@
 
 
     </div>
+    <span class="fun-plugin-tag">图文混排</span>
 
 
   </div>

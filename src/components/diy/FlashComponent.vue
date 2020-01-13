@@ -62,6 +62,8 @@
       </ul>
     </div>
 
+    <span class="fun-plugin-tag">限时抢购</span>
+
   </div>
 </template>
 

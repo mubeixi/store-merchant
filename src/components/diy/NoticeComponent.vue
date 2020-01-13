@@ -13,6 +13,7 @@
       </div>
 
     </div>
+    <span class="fun-plugin-tag">公告</span>
   </div>
 </template>
 

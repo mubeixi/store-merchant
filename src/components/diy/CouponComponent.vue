@@ -37,7 +37,7 @@
       </div>
     </div>
     <div v-if="couponList.length<1" class="text-center graytext font12 padding10-r">请先添加优惠券</div>
-
+    <span class="fun-plugin-tag">优惠券</span>
   </div>
 </template>
 

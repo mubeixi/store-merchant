@@ -4,6 +4,7 @@
          :style="{fontSize:text.style.fontSize+'px',color:text.style.color,background:text.style.bgColor,textAlign:text.style.textAlign}"
          class="text">{{text.value.content}}
     </div>
+    <span class="fun-plugin-tag">文字组件</span>
   </div>
 </template>
 

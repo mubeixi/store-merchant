@@ -4,6 +4,7 @@
     <div
       :style="{borderBottomWidth:style.height+'px',borderBottomColor:style.color,borderBottomStyle:hr.config.type}"
       class="hr"></div>
+    <span class="fun-plugin-tag">分割线</span>
   </div>
 </template>
 
