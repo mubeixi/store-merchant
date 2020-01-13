@@ -52,6 +52,14 @@
       }
 
     }
+
+    refresh(){
+      this.headimg = false
+      this.nickname = false
+      this.time = false
+      this.qrcode = false
+    }
+
     nickname = false
     nicknameHandle(val){
       if(val){

@@ -142,20 +142,21 @@
     console.log(canvas.getActiveObject())
     if (style == 'forWard') {
       canvas.bringForward(canvas.getActiveObject());
-      return
+      
     }
     if (style == 'backWard') {
       canvas.sendBackwards(canvas.getActiveObject());
-      return
+      
     }
     if (style == 'toFront') {
       canvas.bringToFront(canvas.getActiveObject());
-      return
+     
     }
     if (style == 'toBack') {
       canvas.sendToBack(canvas.getActiveObject());
-      return
+      
     }
+    canvas.renderAll()
   }
 
   import {
@@ -233,7 +234,15 @@
       obj.toObject = (function (toObject) {
         return function () {
           return fabric.util.object.extend(toObject.call(this), {
-            fun_is_area:is_area
+            fun_is_area:is_area,
+            transparentCorners: false,
+            cornerColor: '#999',
+            cornerStrokeColor: 'white',
+            borderColor: '#e7e7e7',
+            cornerSize: 12,
+            padding: 6,
+            cornerStyle: 'circle',
+            borderDashArray: [3, 3]
           });
         };
       })(obj.toObject);
@@ -280,21 +289,29 @@
 
       let canvas = this.canvasInstance
       canvas.discardActiveObject().renderAll();
-
+      console.log(canvas.getObjects())
       let canvasData = canvas.toDatalessJSON()
       console.log('保存数据',canvasData)
+      //return;
       const loadingInstance = this.$loading({
         text:'保存模板'
       })
 
       try{
 
-        //获取base64图片
-        let base64Url = await this.canvasToImage()
-        //上传base64获取背景图
-        let bgImgPath = await this.saveBgImg(base64Url)
+        // //获取base64图片
+        // let base64Url = await this.canvasToImage()
+        // //上传base64获取背景图
+        // let bgImgPath = await this.saveBgImg(base64Url)
+        let bgImgPath = ' ';
+
+        const wrap = JSON.stringify({
+            width:404,
+            height:718
+          })
 
         let postData = {
+          wrap,
           img:bgImgPath,
           name:"分享海报模板_" + new Date().getTime(),
           data:JSON.stringify(canvasData)
@@ -311,6 +328,7 @@
 
         //重新获取列表
         this.$parent.$refs.tmpl.getTmplList()
+        this.$parent.$refs.resource.refresh()
 
       }catch (e) {
         loadingInstance.close()
@@ -473,6 +491,7 @@
             });
             this.setCommonAttr(oImg,'headimg')
             this.canvasInstance.add(oImg);
+            console.log(oImg)
           })
 
           break;
@@ -498,6 +517,7 @@
               top: 20,
             });
             this.canvasInstance.add(oImg);
+            console.log(oImg)
           })
           break;
         case 'time':
@@ -583,32 +603,48 @@
       //this.nodeList.push(imgNode)
       //console.log(url)
 
-      this.loadingImageInstance = true
-
-      fetch(`http://localhost:9100/blob?path=${url}`)
-        .then(function(response) {
-          return response.json();
+      
+      fabric.Image.fromURL(url,(oImg)=>{
+        this.setCommonAttr(oImg)
+        oImg.scale(0.6);
+        oImg.set({
+          left: 20,
+          top: 20,
         })
-      //convertImageByBase64({img_url:url})
-        .then((res:any)=>{
+        this.canvasInstance.add(oImg);
+      })
 
-          let imgBolbUrl = res.data
-          fabric.Image.fromURL(imgBolbUrl,(oImg)=>{
-            this.setCommonAttr(oImg)
-            oImg.scale(0.6);
-            oImg.set({
-              left: 20,
-              top: 20,
-            })
-            this.canvasInstance.add(oImg);
-          })
+          // setTimeout(()=>{
+          //   this.loadingImageInstance = false
+          // },500)
 
-          setTimeout(()=>{
-            this.loadingImageInstance = false
-          },500)
+      //this.loadingImageInstance = true
+      
+      //
+      // fetch(`http://localhost:9100/blob?path=${url}`)
+      //   .then(function(response) {
+      //     return response.json();
+      //   })
+      // convertImageByBase64({img_url:url})
+      //   .then((res:any)=>{
+
+      //     let imgBolbUrl = res.data
+      //     fabric.Image.fromURL(imgBolbUrl,(oImg)=>{
+      //       this.setCommonAttr(oImg)
+      //       oImg.scale(0.6);
+      //       oImg.set({
+      //         left: 20,
+      //         top: 20,
+      //       })
+      //       this.canvasInstance.add(oImg);
+      //     })
+
+      //     setTimeout(()=>{
+      //       this.loadingImageInstance = false
+      //     },500)
 
 
-      }).catch(e=>{})
+      // }).catch(e=>{})
 
     }
 
