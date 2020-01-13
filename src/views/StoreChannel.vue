@@ -69,6 +69,9 @@
         if(store_info && store_info.hasOwnProperty('stores_sn')){
             this.formData.store_no = store_info.stores_sn
             this.dialogStoreShow = false
+
+            //直接跳转了
+            this.subSearch()
         }else{
             fun.error({msg:'店铺选择错误'})
         }
@@ -104,7 +107,8 @@
         if(this.formData.channel===1){
 
             if(!this.formData.store_no){
-                fun.error({msg:'门店编码必填'});
+                this.dialogStoreShow = true
+                //fun.error({msg:'门店编码必填'});
                 return;
             }
 
