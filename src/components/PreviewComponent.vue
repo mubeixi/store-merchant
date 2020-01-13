@@ -1,5 +1,5 @@
 <template>
-  <div class="preview-body">
+  <div class="preview-body" id="previewWrap">
     <div class="preview-head"><div class="preview-header-title">{{system.title||'新页面'}}</div></div>
     <div class="canvasBox" @drop="dropEv" @dragover.prevent >
 <!--      @mouseover="selectStyle"-->
@@ -205,6 +205,7 @@
 <!--    <div class="handle text-center">-->
 <!--      <el-button @click="uploadConfig" type="primary">保存</el-button>-->
 <!--    </div>-->
+    <div class="bottom-place" id="js-bottom-place"></div>
   </div>
 </template>
 
@@ -685,13 +686,24 @@
                 const sectionEl = document.querySelectorAll('.canvas > section')[idx];
                 if (!sectionEl) return;
                 sectionEl.click();
-                const templateName = sectionEl.getAttribute('data-tag');
 
+                //没文化真可怕
+                document.getElementById('section'+idx).scrollIntoView({
+                  behavior:  "smooth",
+                  block: "center",
+                  inline: "center"
+                });
+
+                const templateName = sectionEl.getAttribute('data-tag');
                 const dragEl = sectionEl.getElementsByClassName(`${templateName}`)[0];
-                //console.log(templateName, dragEl);
+
                 if (!dragEl) return;
                 // 模拟点击
                 dragEl.click();
+
+
+
+
             },
             setDataEv(data) {
                 // this.$emit('setData', data)
@@ -1166,6 +1178,9 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
+  /*#previewWrap*/
+  /*  position relative*/
+  /*  width 100%*/
   .canvasBox
     /*height 667px*/
     /*width 1549px*/
@@ -1183,7 +1198,7 @@
     margin 0 auto
     padding 0
     position relative
-    overflow hidden
+    //overflow hidden
 
   .handle
     margin-top 80px
@@ -1321,8 +1336,11 @@
   .preview-body{
     /*position: absolute;*/
     padding-top: 70px;
-    padding-bottom: 100px;
+    /*padding-bottom: 100px;*/
     top: 0;
     bottom: 0;
+  }
+  .bottom-place{
+    height: 100px;
   }
 </style>
