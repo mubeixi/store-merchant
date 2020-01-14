@@ -105,18 +105,22 @@
               </el-radio-group>
               <span class="selects" @click="showSetting"  v-if="buy_prod.value.type=='2'&&buy_prod.checked">选择商品</span>
             </el-checkbox-group>
-            <div class="first second" v-if="buy_prod.value.type=='2'&&buy_prod.checked&&productData.length>0">
-              <div class="listLine" v-for="(item,index) of productData">
-                <img :src="item.img_url||item.ImgPath" class="lineImg">
-                <div class="lineDiv">{{item.Products_Name}}</div>
-              </div>
+            <div class="first second" v-if="buy_prod.checked">
+             <block v-if="buy_prod.value.type=='2'">
+               <div class="listLine" v-for="(item,index) of productData">
+                 <img :src="item.img_url||item.ImgPath" class="lineImg">
+                 <div class="lineDiv">{{item.Products_Name}}</div>
+               </div>
+             </block>
+              <el-form-item  label="生效状态：" class="divFlex" style="margin-top: 10px;margin-bottom: 0px;">
+                <el-radio-group v-model="buy_prod.value.arrive_status" :disabled="!buy_prod.checked||direct_buy.checked">
+                  <el-radio label="2" >订单付款后计入</el-radio>
+                  <el-radio label="4" >订单确认收货后计入</el-radio>
+                </el-radio-group>
+              </el-form-item>
             </div>
-            <el-form-item  label="生效状态：" class="divFlex" style="margin-left: 16px">
-              <el-radio-group v-model="buy_prod.value.arrive_status" :disabled="!buy_prod.checked||direct_buy.checked">
-                <el-radio label="2" >订单付款后计入</el-radio>
-                <el-radio label="4" >订单确认收货后计入</el-radio>
-              </el-radio-group>
-            </el-form-item>
+
+
             <!--    购买商品次数      -->
             <el-checkbox-group v-model="buy_times.checked" class="marginBo"  :disabled="direct_buy.checked">
               <el-checkbox label="lastTime" name="lastTime">购买商品次数</el-checkbox>
