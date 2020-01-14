@@ -101,7 +101,7 @@
   import {fabric} from 'fabric';
 
   import {
-    formatTime
+    formatTime, domain, findArrayIdx
   } from "../../../common/utils";
   import {
     addPoster,
@@ -165,6 +165,7 @@
   } from "./img";
   import {arrayFindIndex} from "element-ui/src/utils/util";
   import {fun} from "../../../common";
+
 
   @Component({
     components:{
@@ -604,7 +605,8 @@
       //console.log(url)
 
       
-      fabric.Image.fromURL(url,(oImg)=>{
+      //地址都用domain处理一下
+      fabric.Image.fromURL(domain(url),(oImg)=>{
         this.setCommonAttr(oImg)
         oImg.scale(0.6);
         oImg.set({
