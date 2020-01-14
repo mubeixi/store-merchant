@@ -111,6 +111,12 @@
                 <div class="lineDiv">{{item.Products_Name}}</div>
               </div>
             </div>
+            <el-form-item  label="生效状态：" class="divFlex" style="margin-left: 12px">
+              <el-radio-group v-model="buy_prod.value.arrive_status" :disabled="!buy_prod.checked||direct_buy.checked">
+                <el-radio label="2" >订单付款后计入</el-radio>
+                <el-radio label="4" >订单确认收货后计入</el-radio>
+              </el-radio-group>
+            </el-form-item>
             <!--    购买商品次数      -->
             <el-checkbox-group v-model="buy_times.checked" class="marginBo"  :disabled="direct_buy.checked">
               <el-checkbox label="lastTime" name="lastTime">购买商品次数</el-checkbox>
@@ -633,7 +639,8 @@
             checked:false,
             value:{
                 type:'1',
-                prod:''
+                prod:'',
+                arrive_status:'2'
             }
         }
         //购买商品次数
