@@ -11,6 +11,7 @@
         </li>
       </ul>
     </div>
+    <span class="fun-plugin-tag">图文导航</span>
   </div>
 </template>
 

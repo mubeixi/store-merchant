@@ -266,7 +266,7 @@
               deep: true,
               handler(val){
                   const upload_rule = val.upload_rule
-                  console.log(upload_rule)
+                  //console.log(upload_rule)
                   this.accept = upload_rule['image'].exts
                   this.maxSize = upload_rule['image'].size
                   this.seconds = upload_rule['media'].seconds

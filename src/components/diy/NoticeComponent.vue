@@ -9,10 +9,11 @@
 
       <div class="flex1 title"  :style="{color:notice.style.color}">
 
-        <span :style="{marginLeft: '-' + marginLeft + 'px'}">{{notice.value.content}}</span>
+        <span :style="{marginLeft: marginLeft + 'px'}">{{notice.value.content}}</span>
       </div>
 
     </div>
+    <span class="fun-plugin-tag">公告</span>
   </div>
 </template>
 
@@ -39,6 +40,7 @@
                 marginLeft:0,
                 an:null,
                 notice: {},
+                fullWidth:0
             };
         },
         computed: {
@@ -79,39 +81,42 @@
         components: {},
         methods: {
             startAn: function(){ // 开始
-                let _self = this;
-                let width = document.getElementById('canvas').offsetWidth;
-                _self.an = setInterval( function() {
-                    if (_self.marginLeft > width) {
-                        _self.marginLeft = 0;
+                let _self:any = this;
+                let width = document.getElementById('canvas').offsetWidth-30;
+
+                _self.fullWidth = width
+
+                _self.an = setInterval( ()=>{
+                    if (_self.marginLeft*(-1) > width) {
+                        _self.marginLeft = _self.fullWidth;
                     }
-                    _self.marginLeft += 2;
+                    _self.marginLeft -= 2;
                 } , _self.time);
             },
             stopAn: function(){ // 停止
                 this.prevLeft = this.marginLeft;
-                this.marginLeft = 0;
+                this.marginLeft = this.fullWidth;
                 clearInterval(this.an);
-                this.$emit('on-stop-An');
+
             },
             pauseAn: function(){ // 暂停动画
                 clearInterval(this.an);
             },
             itemClick: function( item, e ) {
-                this.$emit('on-item-click',item );
+
             },
 
-            startMove() {
-                let _self = this;
-                setTimeout(function () {
-                    if (_self.number === _self.notice.value.list.length - 1) {
-                        _self.number = 0;
-                    } else {
-                        _self.number += 1;
-                    }
-                    _self.startMove();
-                }, 2000)
-            },
+            // startMove() {
+            //     let _self = this;
+            //     setTimeout(function () {
+            //         if (_self.number === _self.notice.value.list.length - 1) {
+            //             _self.number = 0;
+            //         } else {
+            //             _self.number += 1;
+            //         }
+            //         _self.startMove();
+            //     }, 2000)
+            // },
             setData(item, index) {
                 // console.log('hehe',this.hr)
                 // @ts-ignore
@@ -125,9 +130,9 @@
             // ...mapActions(),
         },
         mounted() {
-            this.$nextTick().then(res => {
-                this.startMove()
-            })
+            // this.$nextTick().then(res => {
+            //     this.startMove()
+            // })
         }
 
     })

@@ -224,4 +224,28 @@ p{
   //overflow-y scroll
 
 
+.fun-plugin-tag
+  background #ff4444
+  color #FFFFFF
+  font-size 12px
+  padding 2px 4px
+  position absolute
+  right 0
+  top 0
+  transform translateX(100%)
+  visibility hidden
 
+.section
+  &:hover
+    .fun-plugin-tag
+      visibility visible
+
+
+.fun-load-img{
+  position: fixed;
+  z-index: -999;
+  left: 100%;
+  top: 100%;
+  width: 1px;
+  height: 1px;
+}

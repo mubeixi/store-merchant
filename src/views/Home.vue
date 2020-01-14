@@ -113,9 +113,10 @@
 
             if(str)str = '?'+str;
 
-            console.log('更新preurl',this.preUrl);
+            
 
             this.preUrl = front_url+'pages/index/pre'+str;
+            console.log('更新preurl',this.preUrl);
 
         }
         setAct(idx,mode,title,desc){

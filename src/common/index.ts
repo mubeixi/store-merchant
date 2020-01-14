@@ -48,9 +48,15 @@ import {
   Row,
   Tag,
   Image,
-  Popover
+  Popover,
+  DropdownMenu,
+  DropdownItem,
+  Dropdown
 } from 'element-ui';
 
+Vue.use(Dropdown)
+Vue.use(DropdownMenu)
+Vue.use(DropdownItem)
 Vue.use(Popover)
 Vue.use(Tag)
 Vue.use(Row)

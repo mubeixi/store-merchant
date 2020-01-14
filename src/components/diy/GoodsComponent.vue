@@ -61,6 +61,7 @@
 <!--        </li>-->
       </ul>
     </div>
+    <span class="fun-plugin-tag">商品列表</span>
 
   </div>
 </template>

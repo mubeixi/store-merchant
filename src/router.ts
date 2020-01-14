@@ -39,6 +39,7 @@ import TransactionStatistics from '@/views/statistics/TransactionStatistics.vue'
 import Contribute from '@/views/distributor/Contribute.vue';
 import ContributeDetail from '@/views/distributor/ContributeDetail.vue';
 
+import DesignPanel from '@/views/design/DesignPanel';
 
 const routerInstance = new Router({
   routes: [
@@ -190,6 +191,14 @@ const routerInstance = new Router({
       component: GiftsGift,
       meta:{
         title:'赠送赠品'
+      }
+    },
+    {
+      path: '/design',
+      name: 'DesignPanel',
+      component: DesignPanel,
+      meta:{
+        title:'海报编辑'
       }
     },
     {

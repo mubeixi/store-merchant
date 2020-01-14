@@ -26,6 +26,7 @@
 <!--        浏览器不支持 Canvas-->
 <!--      </canvas>-->
     </div>
+    <span class="fun-plugin-tag">基础信息</span>
 
   </div>
 </template>
@@ -108,6 +109,8 @@
 
     })
     export default class BaseComponent extends Vue {
+
+
         created() {
             //用这个来搞事啊
             //funvm也是vue实例，而且不是根实例，是这个组件的实例，可以快捷的调用组件中的对象或者方法以及$ref

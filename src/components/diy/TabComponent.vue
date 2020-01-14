@@ -68,6 +68,7 @@
 
       </div>
     </div>
+    <span class="fun-plugin-tag">分类商品</span>
 
 
   </div>
