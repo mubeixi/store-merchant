@@ -413,13 +413,13 @@
       :onSuccess="bindCateSuccessCall"
       :pageEl="pageEl"
       :show="bindCateDialogShow"/>
-    <bind-store-component
-      @cancel="bindStoreCancel"
-      @success="bindStoreSuccessCall"
-      :pageEl="pageEl"
-      :has="store_list"
-      :show="dialogStoreShow"
-    />
+<!--    <bind-store-component-->
+<!--      @cancel="bindStoreCancel"-->
+<!--      @success="bindStoreSuccessCall"-->
+<!--      :pageEl="pageEl"-->
+<!--      :has="store_list"-->
+<!--      :show="dialogStoreShow"-->
+<!--    />-->
     <el-dialog
       title="佣金设置"
       width="90%"
@@ -1360,19 +1360,19 @@
                         productInfo.Products_JSON=JSON.stringify({"ImgPath":this.thumb})
                     }
 
-                    
+
                     productInfo.video_url=this.video?this.video:'';
                     productInfo.cover_url=this.imgs?this.imgs:'';
 
-                    if(this.store_list.length>0){
-                        let arr=[];
-                        for(let item of this.store_list){
-                            arr.push(item.Stores_ID);
-                        }
-                        if(arr.length>0){
-                            productInfo.Products_Stores=JSON.stringify(arr);
-                        }
-                    }
+                    // if(this.store_list.length>0){
+                    //     let arr=[];
+                    //     for(let item of this.store_list){
+                    //         arr.push(item.Stores_ID);
+                    //     }
+                    //     if(arr.length>0){
+                    //         productInfo.Products_Stores=JSON.stringify(arr);
+                    //     }
+                    // }
 
                     for(let item of  this.ruleForm.otherAttributes){
                         if(item=='下架') productInfo.Products_SoldOut=1;
@@ -2045,14 +2045,14 @@
 
                 })
                 //初始化店铺列表
-                await getStoreList().then(res=>{
-                    let stores = res.data
-                    for(var item of stores){
-                        if(Products_Stores.indexOf(item.Stores_ID)!=-1){
-                            this.store_list.push(item)
-                        }
-                    }
-                })
+                // await getStoreList().then(res=>{
+                //     let stores = res.data
+                //     for(var item of stores){
+                //         if(Products_Stores.indexOf(item.Stores_ID)!=-1){
+                //             this.store_list.push(item)
+                //         }
+                //     }
+                // })
             }
 
             this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
