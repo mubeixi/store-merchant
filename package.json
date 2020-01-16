@@ -78,6 +78,8 @@
     "ftp-deploy": "^2.3.6",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
+    "shelljs": "^0.8.3",
+    "silly-datetime": "^0.1.2",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
     "typescript": "^3.4.3",

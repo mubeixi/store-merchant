@@ -6,7 +6,6 @@
       </div>
       <div class="console" >
         <design-console ref="console" @setData="setDataEv"></design-console>
-
       </div>
       <div class="resource">
         <resource-list ref="resource"></resource-list>

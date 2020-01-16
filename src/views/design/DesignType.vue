@@ -1,5 +1,7 @@
 <template>
-
+  <div>
+    这是自定义模板列表选择页面（可以选择尺寸模板)
+  </div>
 </template>
 
 <script  lang="ts">

@@ -704,7 +704,7 @@
 
         document.getElementById('mobile').style.marginTop = (document.body.offsetHeight-587-44-70)/2+44+'px'
         var canvas = new fabric.Canvas('canvas',{
-          backgroundColor : "#fff",
+          backgroundColor : colorRgb("#FFFFFF"),
           // width: '600',
           // height: '600'
         });
