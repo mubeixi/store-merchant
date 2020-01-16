@@ -456,10 +456,24 @@
             }
         }
         closeSendDialog(){
-            this.sendDialogInstance.innerVisible = false
-            this.sendDialogInstance.loading = false
-            this.sendDialogInstance.apply = null
-            this.sendDialogInstance.idx = null
+            // this.sendDialogInstance.innerVisible = false
+            // this.sendDialogInstance.loading = false
+            // this.sendDialogInstance.apply = null
+            // this.sendDialogInstance.idx = null
+
+            this.sendDialogInstance = {
+              is_need_shipping:0,
+              innerVisible:false,
+              apply:null,
+              idx:null,
+              send:false,
+              loading:false,
+              express_list:[],
+              shipping_no:'',
+              express:''//顺丰
+            }
+
+
         }
 
         applys = []

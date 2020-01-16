@@ -4,7 +4,7 @@
       <div class="plugins">
         <plugins-component></plugins-component>
       </div>
-      <div class="preview" >
+      <div class="preview" id="preview">
         <div class="preview-page">
           <div @click="setAct(0,'system','全局设置','针对页面的整体配置')" :class="{active:mode==='system'}" class="item preview-page-options"><i class="preview-page-options-icon"></i>全局设置</div>
           <div @click="setAct(1,'plugin','组件管理','可以便捷拖动、删除组件')" :class="{active:mode==='plugin'}" class="item preview-page-coms"><i class="preview-page-coms-icon"></i>组件管理</div>

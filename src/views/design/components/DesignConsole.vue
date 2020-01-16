@@ -9,7 +9,6 @@
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>
               <el-color-picker
-                show-alpha
                 class="inputcolor fun-color-pick"
                 @change="colorEvByBg"
               />
@@ -38,7 +37,6 @@
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>
               <el-color-picker
-                show-alpha
                 class="inputcolor fun-color-pick"
                 @change="colorEv"
               />
@@ -60,7 +58,7 @@
       element-loading-background="rgba(0, 0, 0, 0.5)"
     >
 
-      <canvas id="canvas" width="404px" height="718px"  ></canvas>
+      <canvas id="canvas" width="404px" height="587px"  ></canvas>
 
       <div class="removeModal" ref="removeModal" v-show="removePosition.show">
         <h4>您确定要删除这个组件吗？</h4>
@@ -101,7 +99,7 @@
   import {fabric} from 'fabric';
 
   import {
-    formatTime
+    formatTime, domain, findArrayIdx
   } from "../../../common/utils";
   import {
     addPoster,
@@ -114,6 +112,37 @@
   import {Loading} from "element-ui";
 
   window.canvasInstance = {}
+  function colorRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+
+    let r= parseInt(result[1], 16),
+      g =  parseInt(result[2], 16),
+      b = parseInt(result[3], 16);
+    return result ? `rgb(${r},${g},${b})`: null;
+
+  }
+  // function colorRgb(str){
+  //   var sColor = str.toLowerCase();
+  //   //十六进制颜色值的正则表达式
+  //   var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+  //   // 如果是16进制颜色
+  //   if (sColor && reg.test(sColor)) {
+  //     if (sColor.length === 4) {
+  //       var sColorNew = "#";
+  //       for (var i=1; i<4; i+=1) {
+  //         sColorNew += sColor.slice(i, i+1).concat(sColor.slice(i, i+1));
+  //       }
+  //       sColor = sColorNew;
+  //     }
+  //     //处理六位的颜色值
+  //     var sColorChange = [];
+  //     for (var i=1; i<7; i+=2) {
+  //       sColorChange.push(parseInt("0x"+sColor.slice(i, i+2)));
+  //     }
+  //     return "[" + sColorChange.join(",") + ",0.6]";
+  //   }
+  //   return sColor;
+  // }
 
   function createImgElement(url) {
     return new Promise((resolve, reject) => {
@@ -142,19 +171,19 @@
     console.log(canvas.getActiveObject())
     if (style == 'forWard') {
       canvas.bringForward(canvas.getActiveObject());
-      
+
     }
     if (style == 'backWard') {
       canvas.sendBackwards(canvas.getActiveObject());
-      
+
     }
     if (style == 'toFront') {
       canvas.bringToFront(canvas.getActiveObject());
-     
+
     }
     if (style == 'toBack') {
       canvas.sendToBack(canvas.getActiveObject());
-      
+
     }
     canvas.renderAll()
   }
@@ -165,6 +194,7 @@
   } from "./img";
   import {arrayFindIndex} from "element-ui/src/utils/util";
   import {fun} from "../../../common";
+
 
   @Component({
     components:{
@@ -191,6 +221,9 @@
     }
 
     colorEvByBg(val){
+
+
+      val = colorRgb(val)
       console.log(`背景色${val}`)
       this.canvasInstance.setBackgroundColor(val,this.canvasInstance.renderAll.bind(this.canvasInstance))
     }
@@ -207,6 +240,7 @@
     }
 
     colorEv(val) {
+      val = colorRgb(val)
       const canvas = this.canvasInstance
       let selectEl = canvas.getActiveObject()
       console.log(selectEl)
@@ -307,7 +341,7 @@
 
         const wrap = JSON.stringify({
             width:404,
-            height:718
+            height:587
           })
 
         let postData = {
@@ -603,8 +637,9 @@
       //this.nodeList.push(imgNode)
       //console.log(url)
 
-      
-      fabric.Image.fromURL(url,(oImg)=>{
+
+      //地址都用domain处理一下
+      fabric.Image.fromURL(domain(url),(oImg)=>{
         this.setCommonAttr(oImg)
         oImg.scale(0.6);
         oImg.set({
@@ -619,7 +654,7 @@
           // },500)
 
       //this.loadingImageInstance = true
-      
+
       //
       // fetch(`http://localhost:9100/blob?path=${url}`)
       //   .then(function(response) {
@@ -667,7 +702,7 @@
 
       this.$nextTick().then(()=>{
 
-        document.getElementById('mobile').style.marginTop = (document.body.offsetHeight-718-44-70)/2+44+'px'
+        document.getElementById('mobile').style.marginTop = (document.body.offsetHeight-587-44-70)/2+44+'px'
         var canvas = new fabric.Canvas('canvas',{
           backgroundColor : "#fff",
           // width: '600',
@@ -758,7 +793,7 @@
   margin: 0 auto;
   margin-top: 10%;
   width: 404px;
-  height: 718px;
+  height: 587px;
   overflow: hidden;
   box-sizing: border-box;
   box-shadow: 1px 1px 4px 4px rgba(0, 0, 0, 0.1);

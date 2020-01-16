@@ -12,9 +12,19 @@ export const doLoginMixin = {
 
   created() {
 
+    if(!isDev){
+      if(!Cookies.get('Users_ID')){
+        this.$fun.error({msg:'需要登录'});
+        setTimeout(()=>{
+          location.href = '/member/login.php';
+        },1000)
+      }
+    }
+    //Cookies.set('access_token','2b8IlcWQWxB5P173rnhelFS6Wd6MkVMC')
     if (isDev && !Cookies.get('access_token')) {
-
-      login({Account: 'admin', Password: '123456'}).then((res:any) => {
+      let mockLoginAccount = {Account: 'admin', Password: '123456'}
+      //mockLoginAccount = {Account: 'test门店', Password: '123456'}
+      login(mockLoginAccount).then((res:any) => {
         // ls.set('Users_ID', res.data.Users_ID);
         // // ls.set('Users_Account', res.data.Users_Account)
         //
@@ -28,16 +38,9 @@ export const doLoginMixin = {
         Cookies.set('Stores_ID', '10')
         Cookies.set('access_token', res.data.access_token)//手动写hack
       }).catch()
-
-
     }
 
-    if(!Cookies.get('Users_ID')){
-      this.$fun.error({msg:'需要登录'});
-      setTimeout(()=>{
-        location.href = '/member/login.php';
-      },1000)
-    }
+
 
   }
 
