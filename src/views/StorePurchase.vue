@@ -376,7 +376,10 @@
             this.s1 = item
             this.active_cate_idx = idx
 
-            if(_.isEmpty(this.s2))return
+            if(_.isEmpty(this.s2)){
+              this.searchFn()
+              return
+            }
             this.s2 = {}
             this.active_cate_idx2 = null
 
