@@ -46,6 +46,7 @@
         </el-dropdown>
       </div>
     </div>
+
 <!--    @keyup.delete="delCanvasElFn"-->
     <div
       class="mobile"
@@ -203,6 +204,7 @@
   })
   export default class DesignConsole extends Vue{
 
+    imgBase = headimgBase64
     //nodeList
     canvasInstance = null
 
@@ -258,7 +260,7 @@
         cornerStrokeColor: 'white',
         borderColor: '#e7e7e7',
         cornerSize: 12,
-        padding: 6,
+        padding: 0,
         cornerStyle: 'circle',
         borderDashArray: [3, 3],
         // strokeDashArray:[5,5]
@@ -555,7 +557,7 @@
           })
           break;
         case 'time':
-          areaInstance = new fabric.Text(formatTime(), {//绘制文本
+          areaInstance = new fabric.Text(formatTime(null,'ymd'), {//绘制文本
             fontSize: 16,
             left: 20,
             top: 20,

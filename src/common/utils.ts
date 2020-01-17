@@ -489,7 +489,8 @@ export function randLenStr(len=30) {
 }
 
 
-export const formatTime = date => {
+
+export const formatTime = (date,tmpl) => {
   if(!date){
     date = new Date();
   }
@@ -499,7 +500,9 @@ export const formatTime = date => {
   const hour = date.getHours()
   const minute = date.getMinutes()
   const second = date.getSeconds()
-
+  if(tmpl=='ymd'){
+    return [year, month, day].map(formatNumber).join('-')
+  }
   return [year, month, day].map(formatNumber).join('-') + ' ' + [hour, minute, second].map(formatNumber).join(':')
 }
 
