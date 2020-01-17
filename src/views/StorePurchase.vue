@@ -163,8 +163,9 @@
         <div class="row">
           <span class="label">数量:</span>
           <div class="specs">
-            <el-input-number controls-position="right" :min="1" :max="dialogInstance.stock" size="small" v-model="dialogInstance.num" :step="1"></el-input-number>
-            <span class="font12 graytext2 padding10-c">最多可以选择{{dialogInstance.stock}}件</span>
+            //:max="dialogInstance.stock"去掉库存限制
+            <el-input-number controls-position="right" :min="1"  size="small" v-model="dialogInstance.num" :step="1"></el-input-number>
+            <span class="font12 graytext2 padding10-c">库存{{dialogInstance.stock}}件</span>
           </div>
         </div>
       </div>
@@ -764,47 +765,84 @@
 
         }
 
-        async openDialog(goods,idx){
+      async openDialog(goods,idx){
 
-            this.dialogInstance.innerVisible = true
-            this.dialogInstance.item = goods
-            this.dialogInstance.idx = idx
+        this.dialogInstance.innerVisible = true
+        this.dialogInstance.item = goods
+        this.dialogInstance.idx = idx
 
-            let product = {}
-            this.dialogInstance.loading = true
-            await getProductDetail({prod_id:goods.Products_ID}).then(res=>{
+        let product = goods
+        this.dialogInstance.loading = true
+        // let res = await getProductDetail({prod_id:goods.Products_ID})
+        //
+        // let product = res.data;
+        if(goods.skujosn) {
+          let skujosn = goods.skujosn;
+          let skujosn_new = [];
+          for (let i in goods.skujosn) {
+            skujosn_new.push({
+              sku: i,
+              val: skujosn[i]
+            });
+          }
 
-                product = res.data;
-                if(res.data.skujosn) {
-                    let skujosn = res.data.skujosn;
-                    let skujosn_new = [];
-                    for (let i in res.data.skujosn) {
-                        skujosn_new.push({
-                            sku: i,
-                            val: skujosn[i]
-                        });
-                    }
-
-                    product.skujosn_new = skujosn_new;
-                    product.skuvaljosn = res.data.skuvaljosn;
-                }else{
-                    product.skujosn_new = []
-                    product.skuvaljosn = ''
-                }
-
-
-            }).catch(e=>{
-                console.log(e)
-            })
-
-            //库存
-            this.dialogInstance.stock = product.Products_Count
-            this.dialogInstance.product = product
-            this.dialogInstance.innerVisible = true
-
-            this.dialogInstance.loading = false
-
+          product.skujosn_new = skujosn_new;
+          product.skuvaljosn = goods.skuvaljosn;
+        }else{
+          product.skujosn_new = []
+          product.skuvaljosn = ''
         }
+
+        //库存
+        this.dialogInstance.stock = product.Products_Count
+        this.dialogInstance.product = product
+        this.dialogInstance.innerVisible = true
+
+        this.dialogInstance.loading = false
+
+      }
+
+        // async openDialog(goods,idx){
+        //
+        //     this.dialogInstance.innerVisible = true
+        //     this.dialogInstance.item = goods
+        //     this.dialogInstance.idx = idx
+        //
+        //     let product = {}
+        //     this.dialogInstance.loading = true
+        //     await getProductDetail({prod_id:goods.Products_ID}).then(res=>{
+        //
+        //         product = res.data;
+        //         if(res.data.skujosn) {
+        //             let skujosn = res.data.skujosn;
+        //             let skujosn_new = [];
+        //             for (let i in res.data.skujosn) {
+        //                 skujosn_new.push({
+        //                     sku: i,
+        //                     val: skujosn[i]
+        //                 });
+        //             }
+        //
+        //             product.skujosn_new = skujosn_new;
+        //             product.skuvaljosn = res.data.skuvaljosn;
+        //         }else{
+        //             product.skujosn_new = []
+        //             product.skuvaljosn = ''
+        //         }
+        //
+        //
+        //     }).catch(e=>{
+        //         console.log(e)
+        //     })
+        //
+        //     //库存
+        //     this.dialogInstance.stock = product.Products_Count
+        //     this.dialogInstance.product = product
+        //     this.dialogInstance.innerVisible = true
+        //
+        //     this.dialogInstance.loading = false
+        //
+        // }
 
         subLoading = false
 
