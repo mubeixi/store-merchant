@@ -42,6 +42,8 @@
   @Component
   export default class ResourceList extends Vue{
 
+
+
     headimg = false
     headimgHandle(val){
       console.log('headimg value is = ',val)
@@ -53,11 +55,17 @@
 
     }
 
-    refresh(){
-      this.headimg = false
-      this.nickname = false
-      this.time = false
-      this.qrcode = false
+    /**
+     * 根据配置初始化右侧选择情况  毕竟可能是从服务器上拿到的数据，带初始化的。
+     * @param rightCheck
+     */
+    refresh(rightCheck=[]){
+
+      this.headimg = rightCheck.includes('headimg')
+      this.nickname = rightCheck.includes('nickname')
+      this.time = rightCheck.includes('time')
+      this.qrcode = rightCheck.includes('qrcode')
+
     }
 
     nickname = false

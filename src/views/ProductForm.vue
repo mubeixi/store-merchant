@@ -1818,232 +1818,228 @@
             if(id){
                 this.addText="提交保存";
                 //编辑模式，需要加载商品信息
-                await systemProdDetail({prod_id:id}).then(res=>{
+                const productRT = await systemProdDetail({prod_id:id})
+              let productInfo = productRT.data
+              console.log(productInfo)
+              this.parent_commi=String(productInfo.commi_type.parent_commi)
+              this.self_commi=String(productInfo.commi_type.self_commi)
+              this.manage_commi=String(productInfo.commi_type.manage_commi)
+              this.textTitle=productInfo.active_desc;
+              this.initialPro=productInfo;
+              this.noEditField=productInfo.no_edit_field;
+              let objNoEdit={};
+              if(this.noEditField.length>0){
+                for(let item of  this.noEditField){
+                  objNoEdit[item]=true;
+                }
+              }
+              this.noEditField=objNoEdit;
 
-                    productInfo=res.data;
-                    this.parent_commi=String(res.data.commi_type.parent_commi)
-                    this.self_commi=String(res.data.commi_type.self_commi)
-                    this.manage_commi=String(res.data.commi_type.manage_commi)
-                    this.textTitle=res.data.active_desc;
-                    this.initialPro=res.data;
-                    this.noEditField=res.data.no_edit_field;
-                    let objNoEdit={};
-                    if(this.noEditField.length>0){
-                        for(let item of  this.noEditField){
-                            objNoEdit[item]=true;
-                        }
-                    }
-                    this.noEditField=objNoEdit;
+              this.ruleForm.Products_Index=productInfo.Products_Index;//商品排序
+              this.ruleForm.Products_Name=productInfo.Products_Name;//商品名称
 
-                    this.ruleForm.Products_Index=productInfo.Products_Index;//商品排序
-                    this.ruleForm.Products_Name=productInfo.Products_Name;//商品名称
+              select_cate_ids = productInfo.Products_Category;//商品分类
+              this.ruleForm.Products_Sales=productInfo.Products_Sales;//虚拟销量
+              this.ruleForm.Products_PriceY=productInfo.Products_PriceY;//原价
+              this.ruleForm.Products_PriceX=productInfo.Products_PriceX;//现价
+              this.ruleForm.pintuan_flag=productInfo.pintuan_flag?true:false;//是否拼团
+              this.ruleForm.Products_Profit=productInfo.Products_Profit;//产品利润
+              this.ruleForm.Products_BriefDescription=productInfo.Products_BriefDescription;//产品简介
+              this.ruleForm.Products_Count=productInfo.Products_Count;//库存
+              this.ruleForm.Products_Type=productInfo.Products_Type;//商品类型id
+              this.ruleForm.Products_Weight=productInfo.Products_Weight;//商品重量
+              this.ruleForm.goods=String(productInfo.Products_IsShippingFree);//运费选择
+              this.ruleForm.freight=String(productInfo.Shipping_Free_Company);
+              this.ruleForm.orderType=String(productInfo.prod_order_type);//订单类型
 
-                    select_cate_ids = productInfo.Products_Category;//商品分类
-                    this.ruleForm.Products_Sales=productInfo.Products_Sales;//虚拟销量
-                    this.ruleForm.Products_PriceY=productInfo.Products_PriceY;//原价
-                    this.ruleForm.Products_PriceX=productInfo.Products_PriceX;//现价
-                    this.ruleForm.pintuan_flag=productInfo.pintuan_flag?true:false;//是否拼团
-                    this.ruleForm.Products_Profit=productInfo.Products_Profit;//产品利润
-                    this.ruleForm.Products_BriefDescription=productInfo.Products_BriefDescription;//产品简介
-                    this.ruleForm.Products_Count=productInfo.Products_Count;//库存
-                    this.ruleForm.Products_Type=productInfo.Products_Type;//商品类型id
-                    this.ruleForm.Products_Weight=productInfo.Products_Weight;//商品重量
-                    this.ruleForm.goods=String(productInfo.Products_IsShippingFree);//运费选择
-                    this.ruleForm.freight=String(productInfo.Shipping_Free_Company);
-                    this.ruleForm.orderType=String(productInfo.prod_order_type);//订单类型
+              this.editorText=productInfo.Products_Description;//富文本类型
 
-                    this.editorText=productInfo.Products_Description;//富文本类型
-
-                    this.$nextTick().then(()=>{
-                      //做一下富文本的格式化，兼容原来浏览器的视频标签
-                      let richTxt = formatRichTextByKindEditor(productInfo.Products_Description)
-                      this.$refs.richtext.setData(richTxt)
-                    })
-
-
-                    this.ruleForm.refund=productInfo.Product_backup;//退货id
-                    this.ruleForm.Products_IsPaysBalance=productInfo.Products_IsPaysBalance?true:false;//是否使用余额
+              this.$nextTick().then(()=>{
+                //做一下富文本的格式化，兼容原来浏览器的视频标签
+                let richTxt = formatRichTextByKindEditor(productInfo.Products_Description)
+                this.$refs.richtext.setData(richTxt)
+              })
 
 
-                    this.distriboutor_config=[];
-                    //木贝西
-                    //当商品之后又新增分销商
-                    // for(let mb in this.prodConfig.Shop_Commision_Reward_Json.Distribute){
-                    //     for(let it of this.prodConfig.Shop_Commision_Reward_Json.dis_level_list){
-                    //         if(mb!=it.Level_ID){
-                    //            this.prodConfig.Shop_Commision_Reward_Json.Distribute[it.Level_ID]={}
-                    //         }
-                    //     }
-                    // }
-                    for(let mb in this.prodConfig.Shop_Commision_Reward_Json.Distribute){
-                        if(!productInfo.Products_Distributes[mb]){
-                            productInfo.Products_Distributes[mb]=this.prodConfig.Shop_Commision_Reward_Json.Distribute[mb]
-                        }
-
-                    }
-                    for(let it in productInfo.Products_Distributes){
-                        if(Array.isArray(productInfo.Products_Distributes[it])){
-                            let obj={
-                            }
-
-                            for(let inde=0;inde<=this.prodConfig.Dis_Level;inde++){
-                                obj[inde]=productInfo.Products_Distributes[it][inde]
-                            }
-                            obj['110']=''
-                            this.distriboutor_config.push(obj)
-                        }else{
-                            this.distriboutor_config.push(productInfo.Products_Distributes[it])
-                        }
-
-                    }
+              this.ruleForm.refund=productInfo.Product_backup;//退货id
+              this.ruleForm.Products_IsPaysBalance=productInfo.Products_IsPaysBalance?true:false;//是否使用余额
 
 
+              this.distriboutor_config=[];
+              //木贝西
+              //当商品之后又新增分销商
+              // for(let mb in this.prodConfig.Shop_Commision_Reward_Json.Distribute){
+              //     for(let it of this.prodConfig.Shop_Commision_Reward_Json.dis_level_list){
+              //         if(mb!=it.Level_ID){
+              //            this.prodConfig.Shop_Commision_Reward_Json.Distribute[it.Level_ID]={}
+              //         }
+              //     }
+              // }
+              for(let mb in this.prodConfig.Shop_Commision_Reward_Json.Distribute){
+                if(!productInfo.Products_Distributes[mb]){
+                  productInfo.Products_Distributes[mb]=this.prodConfig.Shop_Commision_Reward_Json.Distribute[mb]
+                }
+
+              }
+              for(let it in productInfo.Products_Distributes){
+                if(Array.isArray(productInfo.Products_Distributes[it])){
+                  let obj={
+                  }
+
+                  for(let inde=0;inde<=this.prodConfig.Dis_Level;inde++){
+                    obj[inde]=productInfo.Products_Distributes[it][inde]
+                  }
+                  obj['110']=''
+                  this.distriboutor_config.push(obj)
+                }else{
+                  this.distriboutor_config.push(productInfo.Products_Distributes[it])
+                }
+
+              }
 
 
-                    //限购
-                    if(productInfo.prod_limit!=''){
-                        this.ruleForm.prod_limit=productInfo.prod_limit.switch==1?true:false
-                        this.vipType=productInfo.prod_limit.limit.type
-                        this.vipNum=productInfo.prod_limit.limit.num
-                    }
 
 
-                    //佣金设置
-                    this.platForm_Income_Reward=productInfo.platForm_Income_Reward;
-                    this.nobi_ratio=productInfo.nobi_ratio;
-                    this.area_Proxy_Reward=productInfo.area_Proxy_Reward;
-                    this.sha_Reward=productInfo.sha_Reward;
-                    this.commission_ratio=productInfo.commission_ratio;
-                    this.manage_Reward=productInfo.manage_Reward
-
-                    this.Products_Promise=[];
-                    if(productInfo.Products_SoldOut){
-                        this.ruleForm.otherAttributes.push('下架')
-                    }
-                    if(productInfo.Products_IsNew){
-                        this.ruleForm.otherAttributes.push('新品')
-                    }
-                    if(productInfo.Products_IsHot){
-                        this.ruleForm.otherAttributes.push('热卖')
-                    }
-                    if(productInfo.Products_IsRecommend){
-                        this.ruleForm.otherAttributes.push('推荐')
-                    }
-                    for(let item of productInfo.Products_Promise){
-                        this.Products_Promise.push(item.name);
-                    }
+              //限购
+              if(productInfo.prod_limit!=''){
+                this.ruleForm.prod_limit=productInfo.prod_limit.switch==1?true:false
+                this.vipType=productInfo.prod_limit.limit.type
+                this.vipNum=productInfo.prod_limit.limit.num
+              }
 
 
-                    if(this.ruleForm.pintuan_flag){
-                        this.ruleForm.pintuan_people=productInfo.pintuan_people;
-                        this.ruleForm.pintuan_pricex=productInfo.pintuan_pricex;
-                        this.ruleForm.pintuan_end_time = new Date(productInfo.pintuan_end_time*1000);
-                    }
+              //佣金设置
+              this.platForm_Income_Reward=productInfo.platForm_Income_Reward;
+              this.nobi_ratio=productInfo.nobi_ratio;
+              this.area_Proxy_Reward=productInfo.area_Proxy_Reward;
+              this.sha_Reward=productInfo.sha_Reward;
+              this.commission_ratio=productInfo.commission_ratio;
+              this.manage_Reward=productInfo.manage_Reward
+
+              this.Products_Promise=[];
+              if(productInfo.Products_SoldOut){
+                this.ruleForm.otherAttributes.push('下架')
+              }
+              if(productInfo.Products_IsNew){
+                this.ruleForm.otherAttributes.push('新品')
+              }
+              if(productInfo.Products_IsHot){
+                this.ruleForm.otherAttributes.push('热卖')
+              }
+              if(productInfo.Products_IsRecommend){
+                this.ruleForm.otherAttributes.push('推荐')
+              }
+              for(let item of productInfo.Products_Promise){
+                this.Products_Promise.push(item.name);
+              }
 
 
-                    //缩略图
-                    //@ts-ignore
-                    if(productInfo.Products_JSON.ImgPath){
-                        this.thumb = productInfo.Products_JSON.ImgPath
-                    }
+              if(this.ruleForm.pintuan_flag){
+                this.ruleForm.pintuan_people=productInfo.pintuan_people;
+                this.ruleForm.pintuan_pricex=productInfo.pintuan_pricex;
+                this.ruleForm.pintuan_end_time = new Date(productInfo.pintuan_end_time*1000);
+              }
 
 
-                    //@ts-ignore
-                    if(!emptyValue(productInfo.video_url)){
-                        this.video = productInfo.video_url;
-                    }
-
-                    //@ts-ignore
-                    if(!emptyValue(productInfo.cover_url)){
-                        this.imgs =  productInfo.cover_url;
-                    }
+              //缩略图
+              //@ts-ignore
+              if(productInfo.Products_JSON.ImgPath){
+                this.thumb = productInfo.Products_JSON.ImgPath
+              }
 
 
-                    //组件里面初始化
-                    //@ts-ignore
-                    //this.$refs.thumb.handleInitHas(this.thumb)
+              //@ts-ignore
+              if(!emptyValue(productInfo.video_url)){
+                this.video = productInfo.video_url;
+              }
 
-                    if(this.video){
-                        //@ts-ignore
-                        //this.$refs.video.handleInitHas([this.video],'video')
-                    }
+              //@ts-ignore
+              if(!emptyValue(productInfo.cover_url)){
+                this.imgs =  productInfo.cover_url;
+              }
 
-                    if(this.imgs){
-                        //@ts-ignore
-                        //this.$refs.video_cover.handleInitHas([this.imgs])
-                    }
 
-                    Products_Stores = res.data.Products_Stores
-                })
+              //组件里面初始化
+              //@ts-ignore
+              //this.$refs.thumb.handleInitHas(this.thumb)
+
+              if(this.video){
+                //@ts-ignore
+                //this.$refs.video.handleInitHas([this.video],'video')
+              }
+
+              if(this.imgs){
+                //@ts-ignore
+                //this.$refs.video_cover.handleInitHas([this.imgs])
+              }
+
+              Products_Stores = productInfo.Products_Stores
+
+
                 //初始化商品分类
-                await getProductCategory({}).then(res=>{
+                let getCateData = await getProductCategory({})
+              let origin_cate_list = getCateData.data
 
-                    let origin_cate_list = res.data
+              let cates = []
 
-                    //console.log('原始数据',origin_cate_list)
+              let dataArr =[]
 
-                    let cates = []
+              let  all_cate_list = []
+              //铺平数组
+              plainArray(origin_cate_list,'child',cates)
+              //console.log(cates,select_cate_ids)
+              for(var cate of cates){
+                if(select_cate_ids.indexOf(cate.Category_ID+'')!=-1){
+                  //console.log(cate)
+                  dataArr.push(cate)
 
-                    let dataArr =[]
-
-                    let  all_cate_list = []
-                    //铺平数组
-                    plainArray(origin_cate_list,'child',cates)
-                    //console.log(cates,select_cate_ids)
-                    for(var cate of cates){
-                        if(select_cate_ids.indexOf(cate.Category_ID+'')!=-1){
-                            //console.log(cate)
-                            dataArr.push(cate)
-
-                            all_cate_list.push(cate.Category_ID)
-                            this.getAllPid({arr:cates,self:cate,key:'Category_ID',pkey:'Category_ParentID',rt:all_cate_list})
-                        }
-                    }
+                  all_cate_list.push(cate.Category_ID)
+                  this.getAllPid({arr:cates,self:cate,key:'Category_ID',pkey:'Category_ParentID',rt:all_cate_list})
+                }
+              }
 
 
-                    //模拟选择菜单后的
-                    //let dataArr = this.cate_list
+              //模拟选择菜单后的
+              //let dataArr = this.cate_list
 
-                    let str=''
-                    if(dataArr.length>0){
-                        for(let item of dataArr){
-                            str+=item.Category_ID+','
-                        }
-                        str=str.substr(0,str.length-1)
-                    }
-                    //console.log(dataArr)
-                    this.cate_ids=str
+              let str=''
+              if(dataArr.length>0){
+                for(let item of dataArr){
+                  str+=item.Category_ID+','
+                }
+                str=str.substr(0,str.length-1)
+              }
+              //console.log(dataArr)
+              this.cate_ids=str
 
 
 
-                    //console.log('初始化的参数',dataArr)
+              //console.log('初始化的参数',dataArr)
 
-                    //console.log('all_cate_list is ',all_cate_list)
+              //console.log('all_cate_list is ',all_cate_list)
 
-                    let resultarr = [...new Set(all_cate_list)];
-                    //console.log('all_cate_list end is ',resultarr)
-
-
-                    let cates_end_list = []
-                    for(let row of cates){
-                        if(resultarr.includes(row.Category_ID)){
-                            cates_end_list.push(row)
-                        }
-                    }
-
-                    this.show_cate_list = cates_end_list.map(cate=>{
-                        return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
-                    })
-
-                    this.cate_list = dataArr.map(cate=>{
-                        return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
-                    })
+              let resultarr = [...new Set(all_cate_list)];
+              //console.log('all_cate_list end is ',resultarr)
 
 
-                    //this.cate_ids = JSON.stringify(cate_data)//ids.store('|')
+              let cates_end_list = []
+              for(let row of cates){
+                if(resultarr.includes(row.Category_ID)){
+                  cates_end_list.push(row)
+                }
+              }
+
+              this.show_cate_list = cates_end_list.map(cate=>{
+                return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
+              })
+
+              this.cate_list = dataArr.map(cate=>{
+                return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
+              })
 
 
-                })
+              loadingObj.close()
+
                 //初始化店铺列表
                 // await getStoreList().then(res=>{
                 //     let stores = res.data
@@ -2055,9 +2051,7 @@
                 // })
             }
 
-            this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
-                loadingObj.close()
-            });
+
 
         }
 

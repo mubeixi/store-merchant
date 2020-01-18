@@ -20,25 +20,31 @@ export const doLoginMixin = {
         },1000)
       }
     }
-    //Cookies.set('access_token','2b8IlcWQWxB5P173rnhelFS6Wd6MkVMC')
-    if (isDev && !Cookies.get('access_token')) {
-      let mockLoginAccount = {Account: 'admin', Password: '123456'}
-      //mockLoginAccount = {Account: 'test门店', Password: '123456'}
-      login(mockLoginAccount).then((res:any) => {
-        // ls.set('Users_ID', res.data.Users_ID);
-        // // ls.set('Users_Account', res.data.Users_Account)
-        //
-        // ls.set('Shop_Info', {
-        //   ShopName: res.data.ShopName,
-        //   ShopLogo: res.data.ShopLogo,
-        //   description: res.data.description
-        // })
-        Cookies.set('Users_ID', 'wkbq6nc2kc')
-        Cookies.set('Stores_Bind_User_ID', '48')//为了区分其他的user_id，所以弄了这个代表店铺的user_id
-        Cookies.set('Stores_ID', '10')
-        Cookies.set('access_token', res.data.access_token)//手动写hack
-      }).catch()
+
+    if(isDev){
+      Cookies.set('Users_ID', 'wkbq6nc2kc')
+      Cookies.set('Stores_Bind_User_ID', '297')//为了区分其他的user_id，所以弄了这个代表店铺的user_id
+      Cookies.set('Stores_ID', '36')
+      Cookies.set('access_token', 'qJuitQuJ40oPZwiIKRnVn8pRHZI42QwB')//手动写hack
     }
+    // if (isDev && !Cookies.get('access_token')) {
+    //   let mockLoginAccount = {Account: 'admin', Password: '123456'}
+    //   mockLoginAccount = {Account: '韩梅梅的店', Password: '123456'}
+    //   login(mockLoginAccount).then((res:any) => {
+    //     // ls.set('Users_ID', res.data.Users_ID);
+    //     // // ls.set('Users_Account', res.data.Users_Account)
+    //     //
+    //     // ls.set('Shop_Info', {
+    //     //   ShopName: res.data.ShopName,
+    //     //   ShopLogo: res.data.ShopLogo,
+    //     //   description: res.data.description
+    //     // })
+    //     Cookies.set('Users_ID', 'wkbq6nc2kc')
+    //     Cookies.set('Stores_Bind_User_ID', '48')//为了区分其他的user_id，所以弄了这个代表店铺的user_id
+    //     Cookies.set('Stores_ID', '10')
+    //     Cookies.set('access_token', res.data.access_token)//手动写hack
+    //   }).catch()
+    // }
 
 
 
