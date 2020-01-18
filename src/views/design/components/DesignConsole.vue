@@ -22,6 +22,13 @@
       </div>
       <div class="right">
 
+        <el-dropdown class="item" @command="setFontFn">
+          <div class="el-dropdown-link">字体<i class="el-icon-arrow-down el-icon--right"></i></div>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item :command="font.fontFamily" v-for="(font,idx) in fontList">{{font.text}}</el-dropdown-item>
+
+          </el-dropdown-menu>
+        </el-dropdown>
         <el-dropdown class="item" @command="fabricForwardFn">
           <div class="el-dropdown-link">
             图层<i class="el-icon-arrow-down el-icon--right"></i>
@@ -102,6 +109,7 @@
   // import SingleDom from './SingleDom'
   import {Design} from "./Design";
   import {fabric} from 'fabric';
+  import FontFaceObserver from 'fontfaceobserver'
 
   import {
     formatTime, domain, findArrayIdx
@@ -201,6 +209,7 @@
   import {arrayFindIndex} from "element-ui/src/utils/util";
   import {fun} from "../../../common";
 
+  import {fontList} from "./fabric_action";
 
   @Component({
     components:{
@@ -209,6 +218,7 @@
   })
   export default class DesignConsole extends Vue{
 
+    fontList = fontList
     is_dev = isDev
 
     imgBase = headimgBase64
@@ -227,6 +237,23 @@
     clearCanvas(){
 
       this.canvasInstance.clear();
+    }
+
+    setFontFn(font){
+
+      const canvas = this.canvasInstance
+      //canvas.getActiveObject().set("fontFamily","方正小篆体");
+      var myfont = new FontFaceObserver(font);
+      myfont.load().then(()=>{
+          // when font is loaded, use it.
+
+          let selectEl = canvas.getActiveObject()
+          selectEl && selectEl.set('fontFamily',font);
+          canvas.renderAll();
+
+        }).catch(function(e) {
+        console.log(e);
+      });
     }
 
     colorEvByBg(val){
@@ -807,6 +834,54 @@
 </script>
 
 <style lang="less" scoped>
+  @font-face {
+    font-family:'宋体';
+    src:url('/static/fonts/simsun.tts') format("truetype");
+  }
+  @font-face {
+    font-family:'arial';
+    src:url('/static/fonts/arial.ttf') format("truetype");
+  }
+  @font-face {
+    font-family:'consola';
+    src:url('/static/fonts/consola.ttf') format("truetype");
+  }
+  @font-face {
+    font-family:'DENG';
+    src:url('/static/fonts/DENG.TTF') format("truetype");
+  }
+  @font-face {
+    font-family:'DENGB';
+    src:url('/static/fonts/DENGB.TTF') format("truetype");
+  }
+  @font-face {
+    font-family:'DENGL';
+    src:url('/static/fonts/DENGL.TTF') format("truetype");
+  }
+  @font-face {
+    font-family:'msyh';
+    src:url('/static/fonts/msyh.ttf') format("truetype");
+  }
+  @font-face {
+    font-family:'msyhbd';
+    src:url('/static/fonts/msyhbd.ttf') format("truetype");
+  }
+  @font-face {
+    font-family:'simkai';
+    src:url('/static/fonts/simkai.ttf') format("truetype");
+  }
+  @font-face {
+    font-family:'simsun';
+    src:url('/static/fonts/simsun.ttf') format("truetype");
+  }
+  @font-face {
+    font-family:'SIMYOU';
+    src:url('/static/fonts/SIMYOU.TTF') format("truetype");
+  }
+  @font-face {
+    font-family:'STXIHEI';
+    src:url('/static/fonts/STXIHEI.ttf') format("truetype");
+  }
 
 .attr-bar{
   position: absolute;

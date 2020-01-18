@@ -309,6 +309,37 @@ const redo = function (_this) {
   }
 }
 
+export const fontList = [
+  {fontFamily:'arial',text:'Arial'},
+  {fontFamily: 'consola',text:'consola'},
+  {fontFamily: 'DENG',text: '等线'},
+  {fontFamily: 'DENGB',text:'等线粗体'},
+  {fontFamily: 'DENGL',text:'等线细体'},
+  {fontFamily: 'msyh',text:'微软雅黑'},
+  {fontFamily: 'msyhbd',text:'微软雅黑粗体'},
+  {fontFamily: 'simkai',text:'楷体'},
+  {fontFamily: 'simsun',text:'宋体'},
+  {fontFamily: 'SIMYOU',text:'幼圆'},
+  {fontFamily: 'STXIHEI',text:'华文细黑'}
+]
 
 
-export default { bindSeletUnSelectEvent, createCanvas, Copy, Paste, startCrop, crop, lockOption, fabricObjGroup, fabricObjUnGroup, fabricForward, clip, hide, display, canvasDataChange, undo, redo }
+
+export default {
+  bindSeletUnSelectEvent,
+  createCanvas,
+  Copy,
+  Paste,
+  startCrop,
+  crop,
+  lockOption,
+  fabricObjGroup,
+  fabricObjUnGroup,
+  fabricForward,
+  clip,
+  hide,
+  display,
+  canvasDataChange,
+  undo,
+  redo
+}
