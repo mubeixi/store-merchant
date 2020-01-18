@@ -114,6 +114,8 @@ export const addPoster = (data:object={},options:any=false) => fetch('addPoster'
 
 export const getPosterList = (data:object={},options:any=false) => fetch('getPosterList', data, options)
 
+export const delPoster = (data:object={},options:any=false) => fetch('delPoster', data, options)
+
 export const getPosterDetail = (data:object={},options:any=false) => fetch('getPosterDetail', data, options)
 
 export const convertImageByBase64 =  (data:object={},options:any=false) => fetch('convertImageBase64', data, options)

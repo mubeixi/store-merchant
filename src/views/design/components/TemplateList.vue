@@ -8,6 +8,7 @@
       <vue-scroll :ops="ops">
         <div @click="selectTmpl(tmpl.id)" class="tmpl-item" v-for="(tmpl,idx) in tmpls" :key="idx" :style="{marginRight:(idx+1)%2==0?'0':''}">
           <div class="tmpl-item-cover" :style="{backgroundImage:'url('+tmpl.img+')'}"></div>
+          <div class="del-btn" @click.stop="delTmplFn(tmpl.id)">删除模板</div>
         </div>
       </vue-scroll>
 
@@ -21,6 +22,7 @@
     Component
   } from 'vue-property-decorator'
   import {
+    delPoster,
     getFileList, getPosterDetail,
     getPosterList
   } from "../../../common/fetch";
@@ -54,6 +56,21 @@
       this.loadingTmpl = false
 
     }
+
+    delTmplFn(id){
+      this.$confirm('是否删除模板?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        delPoster({id}).then(res=>{
+          this.getTmplList()
+        })
+      }).catch(() => {
+
+      });
+    }
+
 
     selectTmpl(id){
       this.$parent.$refs.console.loadingImageInstance = true
@@ -131,6 +148,26 @@
         .tmpl-item-cover{
           background-size: 110% 110%;
         }
+        .del-btn{
+          visibility: visible;
+        }
+      }
+      .del-btn{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        padding: 0 20px;
+        color: #444;
+        border:1px solid #fff;
+        background: #fff;
+        line-height: 32px;
+        height: 32px;
+        white-space: nowrap;
+        text-align: center;
+        font-size: 14px;
+
+        visibility: hidden;
       }
       .tmpl-item-cover{
         /*position: absolute;*/
