@@ -23,10 +23,21 @@
       <div class="right">
 
         <el-dropdown class="item" @command="setFontFn">
-          <div class="el-dropdown-link">字体<i class="el-icon-arrow-down el-icon--right"></i></div>
+          <div class="el-dropdown-link">切换字体<i class="el-icon-arrow-down el-icon--right"></i></div>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item :command="font.fontFamily" v-for="(font,idx) in fontList">{{font.text}}</el-dropdown-item>
 
+          </el-dropdown-menu>
+        </el-dropdown>
+        <el-dropdown class="item" @command="setFontSizeFn">
+          <div class="el-dropdown-link">文字大小<i class="el-icon-arrow-down el-icon--right"></i></div>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item :command="size" v-for="(size,idx) in fontSize">{{size}}</el-dropdown-item>
+            <div class="padding10-c flex">
+              <el-input style="width: 60px;" size="mini" type="text" v-model="fontSizeVal" />
+              <div class="padding4-c"></div>
+              <el-button size="mini" type="primary" @click="setFontSizeVal">确认</el-button>
+            </div>
           </el-dropdown-menu>
         </el-dropdown>
         <el-dropdown class="item" @command="fabricForwardFn">
@@ -219,6 +230,7 @@
   export default class DesignConsole extends Vue{
 
     fontList = fontList
+    fontSize = [12,16,20,24,26,30]
     is_dev = isDev
 
     imgBase = headimgBase64
@@ -254,6 +266,19 @@
         }).catch(function(e) {
         console.log(e);
       });
+    }
+
+    fontSizeVal = ''
+    setFontSizeVal(){
+      this.setFontSizeFn(this.fontSizeVal)
+      this.fontSizeVal = ''
+    }
+
+    setFontSizeFn(size){
+      const canvas = this.canvasInstance
+      let selectEl = canvas.getActiveObject()
+      selectEl && selectEl.set('fontSize',size);
+      canvas.renderAll();
     }
 
     colorEvByBg(val){
