@@ -1,5 +1,8 @@
 <template>
-  <div class="wrap" @contextmenu.prevent="contextmenuFn($event)">
+  <div
+    class="wrap"
+    @contextmenu.prevent="contextmenuFn($event)"
+  >
     <div class="attr-bar">
       <div class="left">
         <el-dropdown class="item">
@@ -78,6 +81,7 @@
     <div class="handle">
       <el-button @click="saveData"  type="primary" size="small">保存</el-button>
       <el-button @click="clearCanvas"  size="small">重置</el-button>
+      <el-button v-if="is_dev" @click="preData"  size="small">查看数据</el-button>
       <!--      <div class="preBox" >-->
       <!--        <el-button @click="saveData(0,1)" size="small">预览</el-button>-->
       <!--        <div class="tooltip" v-show="centerDialogVisible" @click="centerDialogVisible=false">-->
@@ -95,7 +99,7 @@
     Component
   } from 'vue-property-decorator'
 
-  import SingleDom from './SingleDom'
+  // import SingleDom from './SingleDom'
   import {Design} from "./Design";
   import {fabric} from 'fabric';
 
@@ -111,6 +115,7 @@
     uploadImgByBase64
   } from "../../../common/fetch";
   import {Loading} from "element-ui";
+  import {isDev} from "../../../common/env";
 
   window.canvasInstance = {}
   function colorRgb(hex) {
@@ -199,10 +204,12 @@
 
   @Component({
     components:{
-      SingleDom
+      // SingleDom
     }
   })
   export default class DesignConsole extends Vue{
+
+    is_dev = isDev
 
     imgBase = headimgBase64
     //nodeList
@@ -321,6 +328,15 @@
 
 
     }
+
+    preData(){
+      let canvas = this.canvasInstance
+      canvas.discardActiveObject().renderAll();
+
+      let canvasData = canvas.toDatalessJSON()
+      console.log('查看数据',canvasData)
+    }
+
     async saveData(){
 
       let canvas = this.canvasInstance
@@ -364,7 +380,7 @@
 
         //重新获取列表
         this.$parent.$refs.tmpl.getTmplList()
-        this.$parent.$refs.resource.refresh()
+        this.restRight()
 
       }catch (e) {
         loadingInstance.close()
@@ -384,16 +400,60 @@
       let parseObject = JSON.parse(json)
       console.log(parseObject)
 
-      canvas.loadFromJSON(json,canvas.renderAll.bind(canvas));
+      canvas.loadFromJSON(json,()=>{
 
-      let objects = canvas.getObjects()
-      console.log(objects)
-      for(let obj of objects){
-        this.setCommonAttr(obj)
+        //this.refreshWrap()
+        let objects = canvas.getObjects()
+        console.log(objects)
+        let rightCheck = []
+        for(let obj of objects){
+          console.log(obj.fun_is_area)
+          if(obj.hasOwnProperty('fun_is_area')){
+            rightCheck.push(obj.fun_is_area)
+          }
+          this.setCommonAttr(obj,obj.hasOwnProperty('fun_is_area')?obj.fun_is_area:false)
+        }
+
+        //this.refreshWrap()
+
+        this.restRight(rightCheck)
+
+      });
+
+
+    }
+
+
+    refreshWrap(){
+      this.canvasInstance.renderAll();
+    }
+
+    restRight(rightCheck){
+      this.$parent.$refs.resource.refresh(rightCheck)
+    }
+
+    transformFn(direction){
+      var el = this.canvasInstance.getActiveObject()
+      if(!el)return
+
+      let transform = {}
+      switch(direction){
+        case 'up':
+          transform = {top:--el.top}
+          break;
+        case 'left':
+          transform = {lfet:--el.left}
+          break;
+        case 'right':
+          transform = {left:++el.left}
+          break
+        case 'down':
+          transform = {top:++el.top}
+          break;
       }
 
-      canvas.renderAll()
-
+      el.set(transform)
+      this.refreshWrap()
     }
 
 
@@ -716,6 +776,26 @@
         canvas.preserveObjectStacking = true;
         this.canvasInstance = canvas;
         window.canvasInstance = canvas;
+
+
+        document.onkeydown = (e) => {
+          let key = window.event.keyCode;
+          switch (key) {
+            case 38:
+              this.transformFn('up')
+              break;
+            case 40:
+              this.transformFn('down')
+              break;
+            case 37:
+              this.transformFn('left')
+              break;
+            case 39:
+              this.transformFn('right')
+              break;
+
+          }
+        };
 
       })
 

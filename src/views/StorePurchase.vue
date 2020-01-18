@@ -163,9 +163,9 @@
         <div class="row">
           <span class="label">数量:</span>
           <div class="specs">
-            //:max="dialogInstance.stock"去掉库存限制
+<!--            :max="dialogInstance.stock"去掉库存限制-->
             <el-input-number controls-position="right" :min="1"  size="small" v-model="dialogInstance.num" :step="1"></el-input-number>
-            <span class="font12 graytext2 padding10-c">库存{{dialogInstance.stock}}件</span>
+            <span class="font12 graytext2 padding10-c">库存{{dialogInstance.stock||'-'}}件</span>
           </div>
         </div>
       </div>

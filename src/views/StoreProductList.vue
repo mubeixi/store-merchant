@@ -5,7 +5,7 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="出售中" name="1"></el-tab-pane>
         <el-tab-pane label="已售完" name="2"></el-tab-pane>
-        <el-tab-pane label="已下架" name="3"></el-tab-pane>
+<!--        <el-tab-pane label="已下架" name="3"></el-tab-pane>-->
       </el-tabs>
       <div class="padding10">
         <el-button  size="mini" class="" :type="cartsDialogInstance.backText=='退货'?'primary':'default'" @click="openBackFn">{{cartsDialogInstance.backText}}</el-button>
@@ -15,6 +15,7 @@
         :dataList="dataTableOpt.dataList"
         :_totalCount="dataTableOpt.totalCount"
         :_pageSize="dataTableOpt.pageSize"
+        :isSelect="false"
         :is_paginate="dataTableOpt.is_paginate"
         :formSize="'small'"
         :isRow="true"
@@ -151,7 +152,7 @@
           <el-form-item label="退货渠道:" prop="channel">
             <el-select  v-model="channelDialogInstance.channel" placeholder="请选择类型" style="width: 100%" >
               <template v-for="(item,idx) of channelDialogInstance.channels">
-                <el-option :label="item.name" :value="item.val" ></el-option>
+                <el-option :label="item.name" :value="item.val" :key="item.val" ></el-option>
               </template>
             </el-select>
           </el-form-item>
@@ -313,7 +314,7 @@
         channelDialogInstance = {
             apply:null,
             store_no:null,
-            channel:null,
+            channel:1,
             channels:[{id:1,name:'门店',val:'store'}, {id:2,name:'平台',val:'shop'}],
             innerVisible:false,
             store_sn:''

@@ -11,6 +11,7 @@ export const setTemplateEditIndex = ({commit}, data) => {
 
 export const setInitData = ({commit}, data) => {
   commit('SET_INIT_DATA', data);
+  window.initData = data
 };
 
 

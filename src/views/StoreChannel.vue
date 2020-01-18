@@ -5,7 +5,7 @@
         <el-form-item label="进货渠道:" prop="channel">
           <el-select  v-model="formData.channel" placeholder="请选择类型" style="width: 100%" >
             <template v-for="(item,idx) of channels">
-              <el-option :label="item.name" :value="item.id" ></el-option>
+              <el-option  :label="item.name" :value="item.id" ></el-option>
             </template>
           </el-select>
         </el-form-item>
