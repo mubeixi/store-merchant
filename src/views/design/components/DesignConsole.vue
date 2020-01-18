@@ -836,51 +836,51 @@
 <style lang="less" scoped>
   @font-face {
     font-family:'宋体';
-    src:url('/static/fonts/simsun.tts') format("truetype");
+    src:url('/static/fonts/simsun.tts'),url('/member/shop/setting/diy/static/fonts/simsun.tts');
   }
   @font-face {
     font-family:'arial';
-    src:url('/static/fonts/arial.ttf') format("truetype");
+    src:url('/static/fonts/arial.ttf'),url('/member/shop/setting/diy/static/fonts/arial.ttf');
   }
   @font-face {
     font-family:'consola';
-    src:url('/static/fonts/consola.ttf') format("truetype");
+    src:url('/static/fonts/consola.ttf'),url('/member/shop/setting/diy/static/fonts/consola.ttf');
   }
   @font-face {
     font-family:'DENG';
-    src:url('/static/fonts/DENG.TTF') format("truetype");
+    src:url('/static/fonts/DENG.TTF'),url('/member/shop/setting/diy/static/fonts/DENG.TTF');
   }
   @font-face {
     font-family:'DENGB';
-    src:url('/static/fonts/DENGB.TTF') format("truetype");
+    src:url('/static/fonts/DENGB.TTF'),url('/member/shop/setting/diy/static/fonts/DENGB.TTF');
   }
   @font-face {
     font-family:'DENGL';
-    src:url('/static/fonts/DENGL.TTF') format("truetype");
+    src:url('/static/fonts/DENGL.TTF'),url('/member/shop/setting/diy/static/fonts/DENGL.TTF');
   }
   @font-face {
     font-family:'msyh';
-    src:url('/static/fonts/msyh.ttf') format("truetype");
+    src:url('/static/fonts/msyh.ttf'),url('/member/shop/setting/diy/static/fonts/msyh.ttf');
   }
   @font-face {
     font-family:'msyhbd';
-    src:url('/static/fonts/msyhbd.ttf') format("truetype");
+    src:url('/static/fonts/msyhbd.ttf'),url('/member/shop/setting/diy/static/fonts/msyhbd.ttf');
   }
   @font-face {
     font-family:'simkai';
-    src:url('/static/fonts/simkai.ttf') format("truetype");
+    src:url('/static/fonts/simkai.ttf'),url('/member/shop/setting/diy/static/fonts/simkai.ttf');
   }
   @font-face {
     font-family:'simsun';
-    src:url('/static/fonts/simsun.ttf') format("truetype");
+    src:url('/static/fonts/simsun.ttf'),url('/member/shop/setting/diy/static/fonts/simsun.ttf');
   }
   @font-face {
     font-family:'SIMYOU';
-    src:url('/static/fonts/SIMYOU.TTF') format("truetype");
+    src:url('/static/fonts/SIMYOU.TTF'),url('/member/shop/setting/diy/static/fonts/SIMYOU.TTF');
   }
   @font-face {
     font-family:'STXIHEI';
-    src:url('/static/fonts/STXIHEI.ttf') format("truetype");
+    src:url('/static/fonts/STXIHEI.ttf'),url('/member/shop/setting/diy/static/fonts/STXIHEI.ttf');
   }
 
 .attr-bar{
