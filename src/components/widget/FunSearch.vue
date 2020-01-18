@@ -185,7 +185,7 @@
       .label {
         white-space: nowrap;
         padding-right: 6px;
-        width: 60px;
+        width: 90px;
         overflow: hidden;
         text-overflow: ellipsis;
         text-align: right;
