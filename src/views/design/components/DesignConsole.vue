@@ -22,13 +22,13 @@
       </div>
       <div class="right">
 
-        <el-dropdown class="item" @command="setFontFn">
-          <div class="el-dropdown-link">切换字体<i class="el-icon-arrow-down el-icon--right"></i></div>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item :command="font.fontFamily" v-for="(font,idx) in fontList">{{font.text}}</el-dropdown-item>
+<!--        <el-dropdown class="item" @command="setFontFn">-->
+<!--          <div class="el-dropdown-link">切换字体<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i></div>-->
+<!--          <el-dropdown-menu slot="dropdown">-->
+<!--            <el-dropdown-item :command="font.fontFamily" v-for="(font,idx) in fontList">{{font.text}}</el-dropdown-item>-->
 
-          </el-dropdown-menu>
-        </el-dropdown>
+<!--          </el-dropdown-menu>-->
+<!--        </el-dropdown>-->
         <el-dropdown class="item" @command="setFontSizeFn">
           <div class="el-dropdown-link">文字大小<i class="el-icon-arrow-down el-icon--right"></i></div>
           <el-dropdown-menu slot="dropdown">
@@ -220,7 +220,9 @@
   import {arrayFindIndex} from "element-ui/src/utils/util";
   import {fun} from "../../../common";
 
-  import {fontList} from "./fabric_action";
+  // import {
+  //   fontList
+  // } from "./fabric_action";
 
   @Component({
     components:{
@@ -229,7 +231,7 @@
   })
   export default class DesignConsole extends Vue{
 
-    fontList = fontList
+    // fontList = fontList
     fontSize = [12,16,20,24,26,30]
     is_dev = isDev
 
@@ -859,54 +861,54 @@
 </script>
 
 <style lang="less" scoped>
-  @font-face {
-    font-family:'宋体';
-    src:url('/static/fonts/simsun.tts'),url('/member/shop/setting/diy/static/fonts/simsun.tts');
-  }
-  @font-face {
-    font-family:'arial';
-    src:url('/static/fonts/arial.ttf'),url('/member/shop/setting/diy/static/fonts/arial.ttf');
-  }
-  @font-face {
-    font-family:'consola';
-    src:url('/static/fonts/consola.ttf'),url('/member/shop/setting/diy/static/fonts/consola.ttf');
-  }
-  @font-face {
-    font-family:'DENG';
-    src:url('/static/fonts/DENG.TTF'),url('/member/shop/setting/diy/static/fonts/DENG.TTF');
-  }
-  @font-face {
-    font-family:'DENGB';
-    src:url('/static/fonts/DENGB.TTF'),url('/member/shop/setting/diy/static/fonts/DENGB.TTF');
-  }
-  @font-face {
-    font-family:'DENGL';
-    src:url('/static/fonts/DENGL.TTF'),url('/member/shop/setting/diy/static/fonts/DENGL.TTF');
-  }
-  @font-face {
-    font-family:'msyh';
-    src:url('/static/fonts/msyh.ttf'),url('/member/shop/setting/diy/static/fonts/msyh.ttf');
-  }
-  @font-face {
-    font-family:'msyhbd';
-    src:url('/static/fonts/msyhbd.ttf'),url('/member/shop/setting/diy/static/fonts/msyhbd.ttf');
-  }
-  @font-face {
-    font-family:'simkai';
-    src:url('/static/fonts/simkai.ttf'),url('/member/shop/setting/diy/static/fonts/simkai.ttf');
-  }
-  @font-face {
-    font-family:'simsun';
-    src:url('/static/fonts/simsun.ttf'),url('/member/shop/setting/diy/static/fonts/simsun.ttf');
-  }
-  @font-face {
-    font-family:'SIMYOU';
-    src:url('/static/fonts/SIMYOU.TTF'),url('/member/shop/setting/diy/static/fonts/SIMYOU.TTF');
-  }
-  @font-face {
-    font-family:'STXIHEI';
-    src:url('/static/fonts/STXIHEI.ttf'),url('/member/shop/setting/diy/static/fonts/STXIHEI.ttf');
-  }
+  /*@font-face {*/
+  /*  font-family:'宋体';*/
+  /*  src:url('/static/fonts/simsun.tts'),url('/member/shop/setting/diy/static/fonts/simsun.tts');*/
+  /*}*/
+  /*@font-face {*/
+  /*  font-family:'arial';*/
+  /*  src:url('/static/fonts/arial.ttf'),url('/member/shop/setting/diy/static/fonts/arial.ttf');*/
+  /*}*/
+  /*@font-face {*/
+  /*  font-family:'consola';*/
+  /*  src:url('/static/fonts/consola.ttf'),url('/member/shop/setting/diy/static/fonts/consola.ttf');*/
+  /*}*/
+  /*@font-face {*/
+  /*  font-family:'DENG';*/
+  /*  src:url('/static/fonts/DENG.TTF'),url('/member/shop/setting/diy/static/fonts/DENG.TTF');*/
+  /*}*/
+  /*@font-face {*/
+  /*  font-family:'DENGB';*/
+  /*  src:url('/static/fonts/DENGB.TTF'),url('/member/shop/setting/diy/static/fonts/DENGB.TTF');*/
+  /*}*/
+  /*@font-face {*/
+  /*  font-family:'DENGL';*/
+  /*  src:url('/static/fonts/DENGL.TTF'),url('/member/shop/setting/diy/static/fonts/DENGL.TTF');*/
+  /*}*/
+  /*@font-face {*/
+  /*  font-family:'msyh';*/
+  /*  src:url('/static/fonts/msyh.ttf'),url('/member/shop/setting/diy/static/fonts/msyh.ttf');*/
+  /*}*/
+  /*@font-face {*/
+  /*  font-family:'msyhbd';*/
+  /*  src:url('/static/fonts/msyhbd.ttf'),url('/member/shop/setting/diy/static/fonts/msyhbd.ttf');*/
+  /*}*/
+  /*@font-face {*/
+  /*  font-family:'simkai';*/
+  /*  src:url('/static/fonts/simkai.ttf'),url('/member/shop/setting/diy/static/fonts/simkai.ttf');*/
+  /*}*/
+  /*@font-face {*/
+  /*  font-family:'simsun';*/
+  /*  src:url('/static/fonts/simsun.ttf'),url('/member/shop/setting/diy/static/fonts/simsun.ttf');*/
+  /*}*/
+  /*@font-face {*/
+  /*  font-family:'SIMYOU';*/
+  /*  src:url('/static/fonts/SIMYOU.TTF'),url('/member/shop/setting/diy/static/fonts/SIMYOU.TTF');*/
+  /*}*/
+  /*@font-face {*/
+  /*  font-family:'STXIHEI';*/
+  /*  src:url('/static/fonts/STXIHEI.ttf'),url('/member/shop/setting/diy/static/fonts/STXIHEI.ttf');*/
+  /*}*/
 
 .attr-bar{
   position: absolute;
