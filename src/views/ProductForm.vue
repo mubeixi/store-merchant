@@ -2049,6 +2049,8 @@
                 //         }
                 //     }
                 // })
+            }else{
+              loadingObj.close()
             }
 
 
