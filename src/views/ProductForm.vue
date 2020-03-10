@@ -1814,7 +1814,7 @@
             let productInfo = {}
             let Products_Stores = []
             let select_cate_ids = []
-
+            loadingObj.close()
             if(id){
                 this.addText="提交保存";
                 //编辑模式，需要加载商品信息
