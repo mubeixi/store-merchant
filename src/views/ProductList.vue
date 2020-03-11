@@ -105,7 +105,7 @@
         State
     } from 'vuex-class'
     import {Loading} from "element-ui";
-    import {getProducts,batchSetting,getProductCategory,delProduct,lookDissetting} from '@/common/fetch';
+    import {getProducts,batchSetting,getProductCategory,delProduct,lookDissetting,getShippingTemplate} from '@/common/fetch';
     import {findArrayIdx, plainArray, createTmplArray, objTranslate} from '@/common/utils';
     import _ from 'underscore'
     import {float} from "html2canvas/dist/types/css/property-descriptors/float";
@@ -219,6 +219,12 @@
                     search: false
                 },
                 {
+                    prop: "express_show",
+                    label: "物流方式",
+                    align:'center',
+                    search: false
+                },
+                {
                     prop: "Product_Cate",
                     label: "商品分类",
                     align:'center',
@@ -236,6 +242,19 @@
                     align:'center',
                     width:150,
                     value:'',
+                    search: {
+                        option:'',
+                        type: 'select',
+                        operate: 'like',
+                    }
+                },
+                {
+                    prop: "logistics",
+                    label: "物流方式筛选",
+                    align:'center',
+                    width:150,
+                    value:'',
+                    showIf:(row)=>false,
                     search: {
                         option:'',
                         type: 'select',
@@ -391,16 +410,27 @@
             let nameIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'Products_Name'})
             let oattrIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'attr'})
             let cateIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'Product_Cate'})
+
+            let oattrIdxs = findArrayIdx(this.dataTableOpt.columns,{prop:'logistics'})
             let data={
                 pageSize: this.dataTableOpt.pageSize,
                 page:this.dataTableOpt.page,
                 pro_name:this.dataTableOpt.columns[nameIdx].value,
                 sel_oattr:this.dataTableOpt.columns[oattrIdx].value,
                 sel_cate:this.dataTableOpt.columns[cateIdx].value,
+                shipping_id:this.dataTableOpt.columns[oattrIdxs].value,
                 status:this.activeName,
                 store_id:''
             }
-
+            getShippingTemplate().then(res=>{
+                let datas=res.data
+                for(let item of datas){
+                    item.label=item.Template_Name
+                    item.value=item.Template_ID
+                }
+                datas.push({label:'固定运费',value:'-1'})
+                this.dataTableOpt.columns[oattrIdxs].search.option=datas
+            })
             getProducts(data).then(res=>{
                 if(res.errorCode==0){
                     this.dataTableOpt.dataList=res.data
