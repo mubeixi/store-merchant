@@ -331,12 +331,21 @@
           </el-radio>
           <el-radio   label="2" style="display: block;margin-bottom: 15px;height: 30px;line-height: 30px" >
             物流模板
-            <template  v-if="ruleForm.goods==2">
+            <template  v-if="ruleForm.goods==2&&yunfei.length>0">
               <el-select    v-model="shipping_temp" placeholder="请选择类型"  style="width: 160px;margin-left: 23px;">
                 <template v-for="(prod,prodIn) of yunfei">
                   <el-option  :label="prod.Template_Name" :value="prod.Template_ID"></el-option>
                 </template>
               </el-select>
+            </template>
+            <template v-else-if="ruleForm.goods==2" >
+                <span style="margin-left: 23px;color: #606266 !important" >
+                  无模板
+                </span>
+                <span style="color: #606266 !important;margin-right: 4px;margin-left: 4px" >|</span>
+                <span  @click="addWuliu">
+                  去添加 >
+                </span>
             </template>
           </el-radio>
 <!--          <el-radio  label="2" style="display: block;margin-bottom: 15px" >-->
@@ -722,7 +731,9 @@
     })
     export default class AddProduct extends Vue {
 
-
+        addWuliu(){
+            window.location.href=window.parent.location.href+'shop/shipping_template_add.php';
+        }
 
         goProduct(){
             this.$router.push({
@@ -822,7 +833,7 @@
             url:'',
             type:'image'
         }
-        yunfei={}
+        yunfei=[]
         show_cate_list = []
         cate_list = []
         cate_ids = ''
@@ -1401,7 +1412,7 @@
                     if(this.ruleForm.goods==1){
                         //如果是免运费的话
                         productInfo.fix_fee=this.fix_fee;
-                    }else if(this.ruleForm.goods==2){
+                    }else if(this.ruleForm.goods==2&&this.yunfei.length>0){
                         if(!this.shipping_temp){
                             this.$message({
                                 type: 'error',
@@ -1885,7 +1896,7 @@
               this.editorText=productInfo.Products_Description;//富文本类型
               if(this.ruleForm.goods==1){
                   this.fix_fee =productInfo.fix_fee
-              }else{
+              }else if(this.ruleForm.goods==2&&this.yunfei.length>0){
                   this.shipping_temp =productInfo.shipping_temp
               }
               this.$nextTick().then(()=>{
