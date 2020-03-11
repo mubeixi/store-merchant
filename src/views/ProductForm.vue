@@ -314,15 +314,31 @@
       </el-form-item>
       <el-form-item label="运费计算" prop="goods">
         <el-radio-group v-model="ruleForm.goods">
-          <el-radio label="1" style="display: block;margin-bottom: 15px"  :disabled="noEditField.Products_IsShippingFree">
-            免运费
-              <el-select :disabled="noEditField.Products_IsShippingFree"   v-model="ruleForm.freight" placeholder="请选择类型"  style="width: 160px;margin-left: 37px;">
-                <template v-for="(prod,prodIn) of prodConfig.shipping_company_dropdown">
-                  <el-option  :label="prodConfig.shipping_company_dropdown[prodIn]" :value="prodIn"></el-option>
+<!--          <el-radio label="1" style="display: block;margin-bottom: 15px"  :disabled="noEditField.Products_IsShippingFree">-->
+<!--            免运费-->
+<!--              <el-select :disabled="noEditField.Products_IsShippingFree"   v-model="ruleForm.freight" placeholder="请选择类型"  style="width: 160px;margin-left: 37px;">-->
+<!--                <template v-for="(prod,prodIn) of prodConfig.shipping_company_dropdown">-->
+<!--                  <el-option  :label="prodConfig.shipping_company_dropdown[prodIn]" :value="prodIn"></el-option>-->
+<!--                </template>-->
+<!--              </el-select>-->
+<!--          </el-radio>-->
+          <el-radio  label="1" style="display: block;margin-bottom: 15px;height: 30px;line-height: 30px" >
+            固定运费
+            <template v-if="ruleForm.goods==1">
+              <el-input   v-model="fix_fee"  class="sortInput" placeholder="运费金额：¥" style="width: 160px;margin-left: 23px;"></el-input>
+              元
+            </template>
+          </el-radio>
+          <el-radio   label="2" style="display: block;margin-bottom: 15px;height: 30px;line-height: 30px" >
+            物流模板
+            <template  v-if="ruleForm.goods==2">
+              <el-select    v-model="shipping_temp" placeholder="请选择类型"  style="width: 160px;margin-left: 23px;">
+                <template v-for="(prod,prodIn) of yunfei">
+                  <el-option  :label="prod.Template_Name" :value="prod.Template_ID"></el-option>
                 </template>
               </el-select>
+            </template>
           </el-radio>
-          <el-radio :disabled="noEditField.Products_IsShippingFree"  label="0" style="display: block;margin-bottom: 15px" >物流模板</el-radio>
 <!--          <el-radio  label="2" style="display: block;margin-bottom: 15px" >-->
 <!--            固定运费-->
 <!--            <el-input   v-model="ruleForm.freightGu"  class="sortInput" placeholder="运费金额：¥" style="width: 200px;margin-left: 23px;"></el-input>-->
@@ -663,7 +679,8 @@
         systemOperateProd,
         systemProdDetail,
         virtualCardType,
-        virtualCardList
+        virtualCardList,
+        getShippingTemplate
     } from '@/common/fetch'
     import _ from 'underscore';
     import {
@@ -716,8 +733,8 @@
         domainFn(url){
             return domain(url)
         }
-
-
+        fix_fee=0
+        shipping_temp=''
         self_commi='1'
         parent_commi='1'
         manage_commi='1'
@@ -805,7 +822,7 @@
             url:'',
             type:'image'
         }
-
+        yunfei={}
         show_cate_list = []
         cate_list = []
         cate_ids = ''
@@ -929,7 +946,7 @@
             otherAttributes:[],//其他属性
             Products_Count:'',//商品库存
             refund:'',//退货说明
-            goods:'0',//运费
+            goods:'1',//运费
             pintuan_flag:false,//是否拼团
             content:'',//富文本
             orderType:'0',//订单类型
@@ -1322,7 +1339,7 @@
                         Products_Count:this.ruleForm.Products_Count,//库存
                         Products_Type:this.ruleForm.Products_Type,//商品类型id
                         Products_Weight:this.ruleForm.Products_Weight,//商品重量
-                        Products_IsShippingFree:this.ruleForm.goods,//运费选择
+                        fee_type:this.ruleForm.goods,//运费选择
                         prod_order_type:this.ruleForm.orderType,//订单类型
                         Products_Description:this.editorText,//富文本类型
                         Product_backup:this.ruleForm.refund,//退货id
@@ -1381,9 +1398,19 @@
                         if(item=='推荐')productInfo.Products_IsRecommend=1;
                     }
 
-                    if(this.ruleForm.goods==0){
+                    if(this.ruleForm.goods==1){
                         //如果是免运费的话
-                        productInfo.Shipping_Free_Company=this.ruleForm.freight;
+                        productInfo.fix_fee=this.fix_fee;
+                    }else if(this.ruleForm.goods==2){
+                        if(!this.shipping_temp){
+                            this.$message({
+                                type: 'error',
+                                message: `物流模板不能为空`
+                            });
+                            this.isLoading=false;
+                            return;
+                        }
+                        productInfo.shipping_temp=this.shipping_temp;
                     }
 
                     if(this.prodConfig.Payment_RmainderEnabled){
@@ -1798,6 +1825,9 @@
             }).catch();
 
             let id = this.$route.query.prod_id;
+            await getShippingTemplate().then(res=>{
+                this.yunfei=res.data
+            })
             await  virtualCardList({prod_id:id}).then(res=>{
                 this.CardList=res.data;
                 this.multipleSelection=[];
@@ -1848,12 +1878,16 @@
               this.ruleForm.Products_Count=productInfo.Products_Count;//库存
               this.ruleForm.Products_Type=productInfo.Products_Type;//商品类型id
               this.ruleForm.Products_Weight=productInfo.Products_Weight;//商品重量
-              this.ruleForm.goods=String(productInfo.Products_IsShippingFree);//运费选择
+              this.ruleForm.goods=String(productInfo.fee_type);//运费选择
               this.ruleForm.freight=String(productInfo.Shipping_Free_Company);
               this.ruleForm.orderType=String(productInfo.prod_order_type);//订单类型
 
               this.editorText=productInfo.Products_Description;//富文本类型
-
+              if(this.ruleForm.goods==1){
+                  this.fix_fee =productInfo.fix_fee
+              }else{
+                  this.shipping_temp =productInfo.shipping_temp
+              }
               this.$nextTick().then(()=>{
                 //做一下富文本的格式化，兼容原来浏览器的视频标签
                 let richTxt = formatRichTextByKindEditor(productInfo.Products_Description)
