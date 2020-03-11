@@ -332,7 +332,7 @@
           <el-radio   label="2" style="display: block;margin-bottom: 15px;height: 30px;line-height: 30px" >
             物流模板
             <template  v-if="ruleForm.goods==2&&yunfei.length>0">
-              <el-select    v-model="shipping_temp" placeholder="请选择类型"  style="width: 160px;margin-left: 23px;">
+              <el-select    v-model="shipping_temp" placeholder="请选择物流模板"  style="width: 160px;margin-left: 23px;">
                 <template v-for="(prod,prodIn) of yunfei">
                   <el-option  :label="prod.Template_Name" :value="prod.Template_ID"></el-option>
                 </template>
