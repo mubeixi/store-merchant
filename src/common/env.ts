@@ -1,4 +1,4 @@
-export const staticUrl = process.env.NODE_ENV === 'production'?'':'https://new401.bafangka.com';
+export const staticUrl = process.env.NODE_ENV === 'production'?'':'https://new401t.bafangka.com';
 
 export const front_url = process.env.VUE_APP_FRONT_URL;
 
