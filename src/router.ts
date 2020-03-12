@@ -40,6 +40,8 @@ import Contribute from '@/views/distributor/Contribute.vue';
 import ContributeDetail from '@/views/distributor/ContributeDetail.vue';
 
 import DesignPanel from '@/views/design/DesignPanel';
+import SameCityDelivery from '@/views/SameCityDelivery';
+
 
 const routerInstance = new Router({
   routes: [
@@ -295,6 +297,14 @@ const routerInstance = new Router({
       component: TransactionStatistics,
       meta:{
         title:'交易统计'
+      }
+    },
+    {
+      path: '/SameCityDelivery',
+      name: 'SameCityDelivery',
+      component: SameCityDelivery,
+      meta:{
+        title:'同城配送'
       }
     },
     {

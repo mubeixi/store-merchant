@@ -206,7 +206,8 @@
         delProduct,
         storeProductBack,
         getStoreDetail,
-        getProductAtts
+        getProductAtts,
+        getShippingTemplate
     } from '@/common/fetch';
     import {findArrayIdx, plainArray, createTmplArray, objTranslate,compare_obj} from '@/common/utils';
     import _ from 'underscore'
@@ -910,6 +911,12 @@
                     search: false
                 },
                 {
+                    prop: "express_show",
+                    label: "物流方式",
+                    align:'center',
+                    search: false
+                },
+                {
                     prop: "Product_Cate",
                     label: "商品分类",
                     align:'center',
@@ -926,6 +933,19 @@
                     label: "特殊属性",
                     align:'center',
                     value:'',
+                    search: {
+                        option:'',
+                        type: 'select',
+                        operate: 'like',
+                    }
+                },
+                {
+                    prop: "logistics",
+                    label: "物流方式筛选",
+                    align:'center',
+                    width:150,
+                    value:'',
+                    showIf:(row)=>false,
                     search: {
                         option:'',
                         type: 'select',
@@ -999,6 +1019,7 @@
             let nameIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'Products_Name'})
             let oattrIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'attr'})
             let cateIdx = findArrayIdx(this.dataTableOpt.columns,{prop:'Product_Cate'})
+            let oattrIdxs = findArrayIdx(this.dataTableOpt.columns,{prop:'logistics'})
 
             let data={
                 store_id:Stores_ID,
@@ -1009,6 +1030,15 @@
                 sel_cate:this.dataTableOpt.columns[cateIdx].value,
                 status:this.activeName
             }
+            getShippingTemplate().then(res=>{
+                let datas=res.data
+                for(let item of datas){
+                    item.label=item.Template_Name
+                    item.value=item.Template_ID
+                }
+                datas.push({label:'固定运费',value:'-1'})
+                this.dataTableOpt.columns[oattrIdxs].search.option=datas
+            })
 
 
             getProducts(data).then(res=>{

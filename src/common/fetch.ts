@@ -150,6 +150,10 @@ export const getFlashSaleList = (data:object={},options:any=false) => fetch('get
 
 //获取限时抢购
 export const getSpikeList = (data:object={},options:any=false) => fetch('get_spike_list', data, options)
+//获取物流模板
+export const getShippingTemplate = (data:object={},options:any=false) => fetch('getShippingTemplate', data, options)
+
+
 
 export const getSpikeProd = (data:object={},options:any=false) => fetch('get_spike_prod', data, options)
 
