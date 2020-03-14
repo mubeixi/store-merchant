@@ -53,6 +53,11 @@
               </el-tab-pane>
 
               <el-tab-pane label="产品详情" name="3" :disabled="!config.page.product.show">
+                <div class="goods-search padding15">
+                  <el-input size="small" placeholder="请输入内容" v-model="goods_search_title" class="input-with-select">
+                    <el-button @click="searchGooodsFun" slot="append" icon="el-icon-search"></el-button>
+                  </el-input>
+                </div>
                 <el-radio-group v-model="innerDialog.product.checked" class="systemPage">
                   <el-radio style="padding-bottom: 4px;" class="pageBlock" :label="item.path"
                             v-for="(item, index) in innerDialog.product.data"
@@ -174,6 +179,7 @@
 
     data() {
       return {
+        goods_search_title:'',
         innerVisible: false,
         innerDialog: {
           mini:{
@@ -424,7 +430,7 @@
               });
           }
           if (val === '3' && !this.innerDialog.product.isHasData) {
-            getProductList({ pageSize: 999 })
+            getProductList({ pageSize: 9999 })
               .then(res => {
                 this.innerDialog.product.isHasData = true;
                 let data = res.data.map(v => {
@@ -504,6 +510,28 @@
       }
     },
     methods: {
+      //按名字搜索
+      searchGooodsFun(){
+        if(!this.goods_search_title){
+          fun.error({msg:'请输入关键字'})
+          return;
+        }
+        let Products_Name = this.goods_search_title
+
+        this.innerDialog.product.isHasData = false
+        getProductList({ pageSize: 9999,Products_Name})
+          .then(res => {
+            this.innerDialog.product.isHasData = true;
+            let data = res.data.map(v => {
+              v.text = `[商品] ${v.Products_Name}`;
+              v.path = `/pages/detail/detail?Products_ID=${v.Products_ID}`;
+              v.type = 'default';
+              return v;
+            });
+            this.innerDialog.product.data = data;
+          });
+
+      },
       closeFun() {
         console.log('触发关闭BindLinkComponents');
         this.$emit('cancel');
