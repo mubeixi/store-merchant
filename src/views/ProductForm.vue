@@ -1613,13 +1613,14 @@
             plainArray(origin_cate_list,'children',plain_cate_list)
             //console.log(plain_cate_list)
 
-            //console.log('原始数据',origin_cate_list)
-            //console.log('返回的数据',dataArr)
+            console.log('原始数据',origin_cate_list)
+            console.log('返回的数据',dataArr)
 
             let child_arr = [];
             let cate_data = {}
             let str=''
             let all_cate_list = []
+            //console.log("ssss",plain_cate_list)
             if(dataArr.length>0){
                 for(let item of dataArr){
                     str+=item.Category_ID+','+item.Category_ParentID+','  // +item.Category_ParentID+',' 选中第三级的时候把第一级第二级也选中
@@ -2032,7 +2033,8 @@
               let  all_cate_list = []
               //铺平数组
               plainArray(origin_cate_list,'child',cates)
-              //console.log(cates,select_cate_ids)
+              console.log(cates,select_cate_ids)
+                //西西
               for(var cate of cates){
                 if(select_cate_ids.indexOf(cate.Category_ID+'')!=-1){
                   //console.log(cate)
