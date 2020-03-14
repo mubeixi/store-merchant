@@ -53,6 +53,11 @@
               </el-tab-pane>
 
               <el-tab-pane label="产品详情" name="3" :disabled="!config.page.product.show">
+                <div class="goods-search padding15">
+                  <el-input size="small" placeholder="请输入内容" v-model="goods_search_title" class="input-with-select">
+                    <el-button @click="searchGooodsFun" slot="append" icon="el-icon-search"></el-button>
+                  </el-input>
+                </div>
                 <el-radio-group v-model="innerDialog.product.checked" class="systemPage">
                   <el-radio style="padding-bottom: 4px;" class="pageBlock" :label="item.path"
                             v-for="(item, index) in innerDialog.product.data"
@@ -88,6 +93,15 @@
                 </el-radio-group>
               </el-tab-pane>
 
+              <el-tab-pane label="大转盘" name="7" :disabled="!config.page.rotate.show">
+                <el-radio-group v-model="innerDialog.rotate.checked" class="systemPage">
+                  <el-radio style="padding-bottom: 4px;" class="pageBlock" :label="item.path"
+                            v-for="(item, index) in innerDialog.rotate.data"
+                            :key="index" @change="saveRotate(item)">{{ item.text }}
+                  </el-radio>
+                </el-radio-group>
+              </el-tab-pane>
+
 
             </el-tabs>
           </el-tab-pane>
@@ -104,7 +118,9 @@
 </template>
 
 <script>
-  import { getProductCategory, getProductList,getDiyPageList,getSystemUrl,getDiyUrl,systemArticleUrl } from '@/common/fetch';
+  import {
+    getProductCategory, getProductList,getDiyPageList,getSystemUrl,getDiyUrl,systemArticleUrl,getTurns
+  } from "../common/fetch";
   import { deepCopy } from '@/common/utils';
   import {fun} from '../common';
 
@@ -159,6 +175,123 @@
         type: Function,
         default: noop,
       },
+    },
+
+    data() {
+      return {
+        goods_search_title:'',
+        innerVisible: false,
+        innerDialog: {
+          mini:{
+            innerText:'',
+            appid:'',
+            url:'',
+            origin_id:''
+          },
+          data: ['手动输入', '选择页面'],
+          index: 'customize',
+          customizeLink: '',
+          customizeStart: 'http://',
+          customizeIndex: '0',
+          system: {
+            data:[],
+            isHasData: false,
+            checked: '',
+            checkedObj: {}
+          },
+          product: {
+            data: [],
+            checked: '',
+            isHasData: false,
+            checkedObj: {}
+          },
+          customer: {
+            data: [],
+            checked: '',
+            isHasData: false,
+            checkedObj: {}
+          },
+          diy: {
+            data: [],
+            checked: '',
+            isHasData: false,
+            checkedObj: {}
+          },
+          article: {
+              data: [],
+              checked: '',
+              isHasData: false,
+              checkedObj: {}
+          },
+          classify: {
+            data: [],
+            index: 0,
+            i: 0,
+            defaultProps: {
+              children: 'children',
+              label: 'label'
+            },
+            isHasData: false
+          },
+          rotate:{
+            data: [],
+            checked: '',
+            isHasData: false,
+            checkedObj: {}
+          }
+        },
+        config: {
+          mini:{
+            show:true,
+          },
+          customize: {
+            show: true
+          },
+          page: {
+            show: true,
+            system: {
+              show: true
+            },
+            classify: {
+              show: true
+            },
+            product: {
+              show: true
+            },
+            customer:{
+              show:true
+            },
+            diy:{
+              show:true
+            },
+            article:{
+              show:true
+            },
+            rotate:{
+              show:true
+            }
+
+          }
+        }
+
+      };
+    },
+    computed: {
+      leftMenuData() {
+        let data = [];
+        if (this.config.customize) {
+          if (this.config.customize.show !== false) {
+            data.push('跳转网页');
+          }
+          if (this.config.page.show !== false) {
+            data.push('选择页面');
+          }
+          if (this.config.mini.show !== false) {
+            data.push('跳转小程序');
+          }
+        }
+        return data;
+      }
     },
     watch: {
       data(val) {
@@ -251,12 +384,12 @@
 
       },
       'innerDialog.index':{
-          immediate: true,
-          handler(val) {
-              if(val=='page'){
-                  this.innerDialog.customizeIndex='1'
-              }
+        immediate: true,
+        handler(val) {
+          if(val=='page'){
+            this.innerDialog.customizeIndex='1'
           }
+        }
       },
       show: {
         immediate: true,
@@ -268,206 +401,137 @@
         }
       },
       'innerDialog.customizeIndex':{
-          immediate:true,
-          handler(val) {
+        immediate:true,
+        handler(val) {
 
-              if (!this.innerVisible) return;
+          if (!this.innerVisible) return;
 
-              if (val === '1' && !this.innerDialog.system.isHasData) {
-                  getSystemUrl()
-                      .then(res => {
-                          this.innerDialog.system.isHasData = true;
-                          let data = res.data.map((v,idx) => {
-                              v.id = idx;
-                              v.text = `[系统页面] ${v.name}`;
-                              v.path = v.url;
-                              v.type = 'default';
-                              return v;
-                          });
-                          this.innerDialog.system.data.push(...data);
-                      });
-              }
+          if (val === '1' && !this.innerDialog.system.isHasData) {
+            getSystemUrl()
+              .then(res => {
+                this.innerDialog.system.isHasData = true;
+                let data = res.data.map((v,idx) => {
+                  v.id = idx;
+                  v.text = `[系统页面] ${v.name}`;
+                  v.path = v.url;
+                  v.type = 'default';
+                  return v;
+                });
+                this.innerDialog.system.data.push(...data);
+              });
+          }
 
-              if (val === '2' && !this.innerDialog.classify.isHasData) {
-                  getProductCategory()
-                      .then(res => {
-                          this.innerDialog.classify.isHasData = true;
-                          let data = refreshCateData(res.data);
-                          this.innerDialog.classify.data.push(...data);
-                      });
-              }
-              if (val === '3' && !this.innerDialog.product.isHasData) {
-                  getProductList({ pageSize: 999 })
-                      .then(res => {
-                          this.innerDialog.product.isHasData = true;
-                          let data = res.data.map(v => {
-                              v.text = `[商品] ${v.Products_Name}`;
-                              v.path = `/pages/detail/detail?Products_ID=${v.Products_ID}`;
-                              v.type = 'default';
-                              return v;
-                          });
-                          this.innerDialog.product.data.push(...data);
-                      });
-
-              }
-
-              if (val === '4' && !this.innerDialog.customer.isHasData) {
-                  getDiyUrl({ pageSize: 999 })
-                      .then(res => {
-                          this.innerDialog.customer.isHasData = true;
-                          let data = res.data.map(v => {
-                              v.text = `[自定义URL] ${v.Url_Name}`;
-                              v.path = v.Url_Value;
-                              v.type = 'default';
-                              return v;
-                          });
-                          this.innerDialog.customer.data.push(...data);
-                      });
-
-              }
-
-              if (val === '5' && !this.innerDialog.diy.isHasData) {
-                  getDiyPageList({ pageSize: 999 })
-                      .then(res => {
-                          this.innerDialog.diy.isHasData = true;
-                          let data = res.data.map(v => {
-                              v.text = `[自定义页面] ${v.Home_Name}`;
-                              v.path = `/pages/page/page?Home_ID=${v.Home_ID}`;
-                              v.type = 'default';
-                              return v;
-                          });
-                          this.innerDialog.diy.data.push(...data);
-                      });
-
-              }
-              if (val === '6' && !this.innerDialog.article.isHasData) {
-                  systemArticleUrl({ pageSize: 999 })
-                      .then(res => {
-                          this.innerDialog.article.isHasData = true;
-                          let data = res.data.map(v => {
-                              v.text = `[文章] ${v.Article_Title}`;
-                              v.path = `/pages/common/article?Article_ID=${v.Article_ID}`;
-                              v.type = 'article';
-                              return v;
-                          });
-                          this.innerDialog.article.data.push(...data);
-                      });
-
-              }
-
-
-
+          if (val === '2' && !this.innerDialog.classify.isHasData) {
+            getProductCategory()
+              .then(res => {
+                this.innerDialog.classify.isHasData = true;
+                let data = refreshCateData(res.data);
+                this.innerDialog.classify.data.push(...data);
+              });
+          }
+          if (val === '3' && !this.innerDialog.product.isHasData) {
+            getProductList({ pageSize: 9999 })
+              .then(res => {
+                this.innerDialog.product.isHasData = true;
+                let data = res.data.map(v => {
+                  v.text = `[商品] ${v.Products_Name}`;
+                  v.path = `/pages/detail/detail?Products_ID=${v.Products_ID}`;
+                  v.type = 'default';
+                  return v;
+                });
+                this.innerDialog.product.data.push(...data);
+              });
 
           }
-      }
-    },
-    data() {
-      return {
-        innerVisible: false,
-        innerDialog: {
-          mini:{
-            innerText:'',
-            appid:'',
-            url:'',
-            origin_id:''
-          },
-          data: ['手动输入', '选择页面'],
-          index: 'customize',
-          customizeLink: '',
-          customizeStart: 'http://',
-          customizeIndex: '0',
-          system: {
-            data:[],
-            isHasData: false,
-            checked: '',
-            checkedObj: {}
-          },
-          product: {
-            data: [],
-            checked: '',
-            isHasData: false,
-            checkedObj: {}
-          },
-          customer: {
-            data: [],
-            checked: '',
-            isHasData: false,
-            checkedObj: {}
-          },
-          diy: {
-            data: [],
-            checked: '',
-            isHasData: false,
-            checkedObj: {}
-          },
-          article: {
-              data: [],
-              checked: '',
-              isHasData: false,
-              checkedObj: {}
-          },
-          classify: {
-            data: [],
-            index: 0,
-            i: 0,
-            defaultProps: {
-              children: 'children',
-              label: 'label'
-            },
-            isHasData: false
-          }
-        },
-        config: {
-          mini:{
-            show:true,
-          },
-          customize: {
-            show: true
-          },
-          page: {
-            show: true,
-            system: {
-              show: true
-            },
-            classify: {
-              show: true
-            },
-            product: {
-              show: true
-            },
-            customer:{
-              show:true
-            },
-            diy:{
-              show:true
-            },
-            article:{
-              show:true
-            }
+
+          if (val === '4' && !this.innerDialog.customer.isHasData) {
+            getDiyUrl({ pageSize: 999 })
+              .then(res => {
+                this.innerDialog.customer.isHasData = true;
+                let data = res.data.map(v => {
+                  v.text = `[自定义URL] ${v.Url_Name}`;
+                  v.path = v.Url_Value;
+                  v.type = 'default';
+                  return v;
+                });
+                this.innerDialog.customer.data.push(...data);
+              });
 
           }
+
+          if (val === '5' && !this.innerDialog.diy.isHasData) {
+            getDiyPageList({ pageSize: 999 })
+              .then(res => {
+                this.innerDialog.diy.isHasData = true;
+                let data = res.data.map(v => {
+                  v.text = `[自定义页面] ${v.Home_Name}`;
+                  v.path = `/pages/page/page?Home_ID=${v.Home_ID}`;
+                  v.type = 'default';
+                  return v;
+                });
+                this.innerDialog.diy.data.push(...data);
+              });
+
+          }
+          if (val === '6' && !this.innerDialog.article.isHasData) {
+            systemArticleUrl({ pageSize: 999 })
+              .then(res => {
+                this.innerDialog.article.isHasData = true;
+                let data = res.data.map(v => {
+                  v.text = `[文章] ${v.Article_Title}`;
+                  v.path = `/pages/common/article?Article_ID=${v.Article_ID}`;
+                  v.type = 'article';
+                  return v;
+                });
+                this.innerDialog.article.data.push(...data);
+              });
+
+          }
+
+          if (val === '7' && !this.innerDialog.rotate.isHasData) {
+            getTurns({ pageSize: 999 })
+              .then(res => {
+                this.innerDialog.rotate.isHasData = true;
+                let data = res.data.map(v => {
+                  v.text = `[大转盘] ${v.title}`;
+                  v.path = `/pagesA/marketing/rotate?activity_id=${v.id}`;
+                  v.type = 'rotate';
+                  return v;
+                });
+                this.innerDialog.rotate.data.push(...data);
+              });
+
+          }
+
+
+
+
         }
-
-      };
-    },
-    computed: {
-      leftMenuData() {
-        let data = [];
-        if (this.config.customize) {
-          if (this.config.customize.show !== false) {
-            data.push('跳转网页');
-          }
-          if (this.config.page.show !== false) {
-            data.push('选择页面');
-          }
-          if (this.config.mini.show !== false) {
-            data.push('跳转小程序');
-          }
-        }
-        return data;
       }
     },
     methods: {
+      //按名字搜索
+      searchGooodsFun(){
+        if(!this.goods_search_title){
+          fun.error({msg:'请输入关键字'})
+          return;
+        }
+        let Products_Name = this.goods_search_title
+
+        this.innerDialog.product.isHasData = false
+        getProductList({ pageSize: 9999,Products_Name})
+          .then(res => {
+            this.innerDialog.product.isHasData = true;
+            let data = res.data.map(v => {
+              v.text = `[商品] ${v.Products_Name}`;
+              v.path = `/pages/detail/detail?Products_ID=${v.Products_ID}`;
+              v.type = 'default';
+              return v;
+            });
+            this.innerDialog.product.data = data;
+          });
+
+      },
       closeFun() {
         console.log('触发关闭BindLinkComponents');
         this.$emit('cancel');
@@ -501,6 +565,9 @@
       },
       saveDiyPage(item) {
         this.innerDialog.diy.checkedObj = item;
+      },
+      saveRotate(item){
+        this.innerDialog.rotate.checkedObj = item;
       },
       saveArticlePage(item){
           this.innerDialog.article.checkedObj = item;
@@ -597,6 +664,13 @@
                   tooltip = `文章：${this.innerDialog.article.checkedObj.Article_Title}`;
                   dataItem = this.innerDialog.article.checkedObj;
                   type = 'article';
+              break;
+            case '7':
+              path = this.innerDialog.rotate.checked;
+              if (path === '') return this.$message('请先选择大转盘活动');
+              tooltip = `大转盘：${this.innerDialog.rotate.checkedObj.title}`;
+              dataItem = this.innerDialog.rotate.checkedObj;
+              type = 'rotate';
               break;
           }
         }

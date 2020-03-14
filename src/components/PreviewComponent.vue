@@ -534,6 +534,8 @@
                 this.isAjax = true
                 let mixinData = {plugin:this.templateData,system:this.system}
 
+                console.log(`提交模板配置`,mixinData)
+
 
                 let postData = {
                     //this.templateData换掉最新的
@@ -952,7 +954,7 @@
             })
             .then(mixinData => {
 
-                //console.log(mixinData)
+                console.log('拿到的数据',mixinData)
                 let templateData = mixinData.plugin;
 
 

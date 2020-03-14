@@ -1622,7 +1622,7 @@
             let all_cate_list = []
             if(dataArr.length>0){
                 for(let item of dataArr){
-                    str+=item.Category_ID+','
+                    str+=item.Category_ID+','+item.Category_ParentID+','  // +item.Category_ParentID+',' 选中第三级的时候把第一级第二级也选中
                     all_cate_list.push(item.Category_ID)
                     this.getAllPid({arr:plain_cate_list,self:item,key:'Category_ID',pkey:'Category_ParentID',rt:all_cate_list})
                 }

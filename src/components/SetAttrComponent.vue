@@ -161,7 +161,9 @@
                                @click="openSwiperBindLink(item,idx,item.bindCB)">绑定链接
                     </el-button>
                   </el-tooltip>
-<!--                  <span class="padding10-c font12" :title="item.value[idx].tooltip">{{item.value[idx].tooltip|cutstr(14,'..')}}</span>-->
+                  <span class="padding10-c font12" v-if="item.value[idx].tooltip" >{{item.value[idx].tooltip|cutstr(14,'..')}}</span>
+                  <!--<span style="color: #409eff;cursor: pointer;text-decoration: underline;" v-if="item.value[idx].tooltip" class="padding10-c font12 color-blue" >{{item.value[idx].tooltip|cutstr(30,'..')}}</span>-->
+                  <!--<span style="color: #409eff;cursor: pointer;text-decoration: underline;" v-else class="padding10-c font12" >点击绑定</span>-->
                 </div>
 
               </div>
