@@ -23,6 +23,7 @@ export const getStyle = function (el, name) {
  */
 export const domain = (url,style='') => {
   if (!url) return '';
+  console.log(url,'1111111111111111111',staticUrl)
   if (url.indexOf('http') == -1) return staticUrl + url;
   return url+style;
 }
