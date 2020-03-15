@@ -731,6 +731,26 @@
     })
     export default class AddProduct extends Vue {
 
+        plainArrays = (arr,key,newArr)=>{
+            let that=this
+            if(!arr || !key)return false;
+
+            for(var item of arr){
+                let tempObj = objTranslate(item)
+                if(tempObj.hasOwnProperty(key)){
+                    tempObj[key] = 1
+                }
+                newArr.push(tempObj)
+
+                if(item && item[key] && _.isArray(item[key])){
+                    that.plainArrays(item[key],key,newArr);
+                }
+
+            }
+
+        }
+
+
         addWuliu(){
             window.location.href=window.parent.location.href+'shop/shipping_template_add.php';
         }
@@ -1633,9 +1653,10 @@
             //console.log('all_cate_list is ',all_cate_list)
 
             let resultarr = [...new Set(all_cate_list)];
-            //console.log('all_cate_list end is ',resultarr)
+            console.log('all_cate_list end is ',resultarr)
 
-            this.cate_ids= str;//resultarr.join(',')
+            //this.cate_ids= str;//resultarr.join(',')
+            this.cate_ids=resultarr.join(',')
 
 
             let cates_end_list = []
@@ -2032,7 +2053,7 @@
 
               let  all_cate_list = []
               //铺平数组
-              plainArray(origin_cate_list,'child',cates)
+              this.plainArrays(origin_cate_list,'child',cates)
               console.log(cates,select_cate_ids)
                 //西西
               for(var cate of cates){
@@ -2068,6 +2089,7 @@
               let resultarr = [...new Set(all_cate_list)];
               //console.log('all_cate_list end is ',resultarr)
 
+              this.cate_ids=resultarr.join(',')
 
               let cates_end_list = []
               for(let row of cates){
@@ -2079,11 +2101,19 @@
               this.show_cate_list = cates_end_list.map(cate=>{
                 return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
               })
-
-              this.cate_list = dataArr.map(cate=>{
+               //新增遍历
+              let dataArrTwo=[]
+                for(let item of cates){
+                    for(let it of  dataArr){
+                        if(item.Category_ID==it.Category_ID&&item.child!=1){
+                              dataArrTwo.push(it)
+                        }
+                    }
+                }
+              //console.log(dataArrTwo,dataArr,"qqqq")
+              this.cate_list = dataArrTwo.map(cate=>{
                 return {Category_Name:cate.Category_Name,Category_ID:cate.Category_ID}
               })
-
 
               loadingObj.close()
 
