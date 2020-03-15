@@ -51,6 +51,14 @@
           <el-checkbox v-model="ruleForm.pintuan_flag" :disabled="noEditField.pintuan_flag"  name="group">是否参与拼团</el-checkbox>
         </el-tooltip>
       </el-form-item>
+
+      <el-form-item label="优惠券" prop="type" style="margin-bottom: 10px">
+        <div @click="selectCoupon"  style="cursor: pointer;color: #409eff">选择优惠券</div>
+        <template v-for="(item,index) of productData">
+              <div  class="lst" >{{item.title}}</div>
+        </template>
+      </el-form-item>
+
       <div class="group" style="margin-left: 120px;margin-bottom: 22px;" v-if="ruleForm.pintuan_flag">
         <el-form-item label="拼团人数" prop="pintuan_people" style="margin-bottom: 0px">
           <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.pintuan_people">
@@ -655,7 +663,34 @@
       佣金设置
     </div>
 
-
+    <el-dialog class="myProduct" title="选择优惠券" :visible.sync="settingShow" width="40%" >
+      <fun-table
+        style="height: 400px;overflow: auto"
+        ref="funTableComp"
+        vkey="id"
+        :has="selectValue"
+        :showSave=true
+        :columns="dataTableOpt.columns"
+        :dataList="dataTableOpt.dataList"
+        :act="dataTableOpt.act"
+        :_totalCount="dataTableOpt.totalCount"
+        :_pageSize="dataTableOpt.pageSize"
+        :is_paginate="dataTableOpt.is_paginate"
+        :formSize="'small'"
+        :isRow="false"
+        @closeDialog="closeDialog"
+        @handleSizeChange="handleSizeChange"
+        @currentChange="currentChanges"
+        @selectVal="selectVal"
+        @submit="submit"
+        @reset="reset"
+      >
+      </fun-table>
+            <span slot="footer" class="dialog-footer">
+                  <el-button @click="closeDialog">取 消</el-button>
+                  <el-button type="primary" @click="saveCoupon">确 定</el-button>
+            </span>
+    </el-dialog>
 
   </div>
 </template>
@@ -689,7 +724,8 @@
         systemProdDetail,
         virtualCardType,
         virtualCardList,
-        getShippingTemplate
+        getShippingTemplate,
+        getGivingCoupons
     } from '@/common/fetch'
     import _ from 'underscore';
     import {
@@ -750,6 +786,105 @@
 
         }
 
+
+
+        settingShow=false
+        closeDialog(){
+            this.settingShow=false
+        }
+        selectCoupon(){
+            this.settingShow=true
+            this.getProduct()
+        }
+        saveCoupon(){
+            this.selectValue=[]
+            this.productData=[]
+
+            for(let item of this.val){
+                this.productData.push(item)
+                if(this.selectValue.indexOf(item.id)==-1){
+                    this.selectValue.push(item.id)
+                    //this.productData.push(item)
+                }
+            }
+            for(let it of  this.vals){
+                for(let i=0;i<this.selectValue.length;i++){
+                    if(this.selectValue[i]==it.id){
+                        this.selectValue.splice(i,1)
+                        //this.productData.splice(i,1)
+                    }
+                }
+            }
+            this.settingShow=false
+        }
+        dataTableOpt = {
+            act : 'get_giving_coupons',
+            dataList:[],
+            page:1,
+            totalCount:100,
+            pageSize:9999,
+            is_paginate:false,//是否显示分页 默认显示
+            columns : [
+                {
+                    prop: "id",
+                    label: "优惠券ID",
+                    align:'center',
+                    search: false //不需要搜索ID,所以都不需要了
+                },
+                {
+                    prop: "title",
+                    label: "优惠券名称",
+                    align:'center',
+                    search: false //不需要搜索ID,所以都不需要了
+                }
+
+            ]
+        }
+
+        //重置
+        reset(){
+            for(let it in this.dataTableOpt.columns){
+                this.dataTableOpt.columns[it].value=''
+            }
+            this.selectValue=[]
+            this.getProduct()
+        }
+        //搜索
+        submit(){
+            this.getProduct()
+        }
+        //一页多少行
+        handleSizeChange(val){
+            this.dataTableOpt.pageSize=val
+            this.getProduct()
+        }
+        //当前页数
+        currentChanges(val){
+            this.dataTableOpt.page=val
+            this.getProduct()
+        }
+        getProduct(){
+            let data={
+                pageSize: this.dataTableOpt.pageSize,
+                page:this.dataTableOpt.page
+            }
+            getGivingCoupons(data).then(res=>{
+                if(res.errorCode==0){
+                    this.dataTableOpt.dataList=res.data
+                    this.dataTableOpt.totalCount=res.totalCount
+                }
+            })
+        }
+        selectValue=[]
+        productData=[]
+        val=[]
+        vals=[]
+        //获取选中数据
+        selectVal(val,vals){
+            console.log(val,vals,"sssss1111")
+            this.val=val
+            this.vals=vals
+        }
 
         addWuliu(){
             window.location.href=window.parent.location.href+'shop/shipping_template_add.php';
@@ -1408,6 +1543,10 @@
                         productInfo.Products_JSON=JSON.stringify({"ImgPath":this.thumb})
                     }
 
+                    //优惠券
+                    if(this.selectValue.length>0){
+                        productInfo.coupon_present=this.selectValue.join(',')
+                    }
 
                     productInfo.video_url=this.video?this.video:'';
                     productInfo.cover_url=this.imgs?this.imgs:'';
@@ -1883,6 +2022,24 @@
                 //编辑模式，需要加载商品信息
                 const productRT = await systemProdDetail({prod_id:id})
               let productInfo = productRT.data
+
+
+                //优惠券
+                this.selectValue=productInfo.coupon_present.split(',')
+                getGivingCoupons({pageSize:9999,page:1}).then(res=>{
+                    if(res.errorCode==0){
+                        let data=res.data
+                        this.productData=[]
+                        for(let item of data){
+                            for(let it of this.selectValue){
+                                if(item.id==it){
+                                    this.productData.push(item)
+                                }
+                            }
+                        }
+                    }
+                })
+
               console.log(productInfo)
               this.parent_commi=String(productInfo.commi_type.parent_commi)
               this.self_commi=String(productInfo.commi_type.self_commi)
@@ -2589,5 +2746,10 @@ table{
   box-shadow: 0 -3px 5px #eee;
   z-index: 1;
   transition: right .2s ease;
+}
+.lst{
+  overflow: hidden;
+  height: 20px;
+  line-height: 23px;
 }
 </style>
