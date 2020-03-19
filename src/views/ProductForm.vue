@@ -868,10 +868,16 @@
             this.getProduct()
         }
         getProduct(){
+            let id = this.$route.query.prod_id;
             let data={
                 pageSize: this.dataTableOpt.pageSize,
                 page:this.dataTableOpt.page
             }
+            // if(id){
+            //     data.prod_id=id
+            // }else{
+            //     data.prod_id=-1
+            // }
             getGivingCoupons(data).then(res=>{
                 if(res.errorCode==0){
                     this.dataTableOpt.dataList=res.data
@@ -2016,6 +2022,8 @@
             await virtualCardType().then(res=>{
                 this.CardType=res.data;
             })
+
+
 
             let productInfo = {}
             let Products_Stores = []
