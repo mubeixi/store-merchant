@@ -52,12 +52,7 @@
         </el-tooltip>
       </el-form-item>
 
-      <el-form-item label="优惠券" prop="type" style="margin-bottom: 10px">
-        <div @click="selectCoupon"  style="cursor: pointer;color: #409eff">选择优惠券</div>
-        <template v-for="(item,index) of productData">
-              <div  class="lst" >{{item.title}}</div>
-        </template>
-      </el-form-item>
+
 
       <div class="group" style="margin-left: 120px;margin-bottom: 22px;" v-if="ruleForm.pintuan_flag">
         <el-form-item label="拼团人数" prop="pintuan_people" style="margin-bottom: 0px">
@@ -87,6 +82,8 @@
         <el-input v-model="ruleForm.Products_Profit" :disabled="noEditField.Products_Profit"   class="sortInput sortInputs" ></el-input>
         <span class="sortMsg">注：佣金将从商品利润中取出一部分发放</span>
       </el-form-item>
+
+
 
       <el-dialog  title="预览素材" :visible.sync="preDialogInstance.show">
         <video width="100%" style="max-height: 500px" controls autoplay :src="domainFn(preDialogInstance.url)" v-if="preDialogInstance.type==='video'"></video>
@@ -319,6 +316,13 @@
         <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_Weight" >
             <el-input v-model="ruleForm.Products_Weight"  :disabled="noEditField.Products_Weight"  class="sortInput" ></el-input> kg
         </el-tooltip>
+      </el-form-item>
+
+      <el-form-item label="优惠券" prop="type" style="margin-bottom: 10px">
+        <div @click="selectCoupon"  style="cursor: pointer;color: #409eff">选择优惠券</div>
+        <template v-for="(item,index) of productData">
+          <div  class="lst" >{{item.title}}</div>
+        </template>
       </el-form-item>
       <el-form-item label="运费计算" prop="goods">
         <el-radio-group v-model="ruleForm.goods">
