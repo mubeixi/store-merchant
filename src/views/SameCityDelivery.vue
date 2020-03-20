@@ -7,7 +7,7 @@
                   <div class="same-top-bottom">启用后，买家下单可以选择同城配送，由你提供上门配送服务</div>
                 </div>
                 <div class="el-switchs">
-                  <el-switch v-model="form"></el-switch>
+                  <el-switch v-model="open"></el-switch>
                 </div>
             </div>
         <el-form size="small" :rules="rules" ref="ruleForm" :inline-message="true" label-width="130px"   class="ruleForm">
@@ -17,7 +17,7 @@
 
             <el-form-item label="业务类型:" prop="Products_Index" class="line12">
                 <div class="radio-same">
-                  <el-radio-group v-model="forms">
+                  <el-radio-group v-model="business_type">
                     <el-radio label="美食" class="radio-wid"></el-radio>
                     <el-radio label="美发" class="radio-wid"></el-radio>
                     <el-radio label="水果生鲜" class="radio-wid"></el-radio>
@@ -62,11 +62,11 @@
                                     申请开通
                                   </div>
                                 </div>
-                                <div class="flex item-right-last" style="margin-left: 30px;color: #428CF7">
-                                  <div>
-                                    查询余额
-                                  </div>
-                                </div>
+<!--                                <div class="flex item-right-last" style="margin-left: 30px;color: #428CF7">-->
+<!--                                  <div>-->
+<!--                                    查询余额-->
+<!--                                  </div>-->
+<!--                                </div>-->
                           </div>
                     </div>
 
@@ -75,33 +75,38 @@
 
 
             <el-form-item label="智能配送:" prop="Products_Index" style="margin-top: 40px"  class="line12">
-              <el-radio-group v-model="forms">
-                <el-radio label="开启"></el-radio>
-                <el-radio label="关闭"></el-radio>
+              <el-radio-group v-model="intellect_send">
+                <el-radio label="1">开启</el-radio>
+                <el-radio label="2">关闭</el-radio>
               </el-radio-group>
               <div class="shuoming">
                 开启后，系统会默认选中配送费最低的服务商，您也可自定义设置
               </div>
             </el-form-item>
-
+            <el-form-item label="配送限制:" prop="Products_Index" style="color: #666666;margin-bottom: 40px !important;">
+              配送距离
+              <el-input class="input-width margin-input" v-model="limit_config.send_distance"></el-input>km
+              起送价
+              <el-input class="input-width margin-input" v-model="limit_config.start_send_money"></el-input>元
+            </el-form-item>
             <el-form-item label="费用配置:" prop="Products_Index" style="color: #666666">
-                <el-input class="input-width"></el-input>
+                <el-input class="input-width" v-model="distance_money_config.start_distance"></el-input>
                 km内按
-                <el-input class="input-width"></el-input>
+                <el-input class="input-width margin-input" v-model="distance_money_config.start_money"></el-input>
                 元收取配送费，每超出
-                <el-input class="input-width"></el-input>
+                <el-input class="input-width margin-input" v-model="distance_money_config.plus_distance"></el-input>
                 km费用增加
-                <el-input class="input-width"></el-input>
+                <el-input class="input-width margin-input" v-model="distance_money_config.plus_money"></el-input>
                 元
             </el-form-item>
 
             <el-form-item label="续重收费:" prop="Products_Index" style="color: #666666;margin-top: 40px;">
               商品重量
-              <el-input class="input-width"></el-input>
+              <el-input class="input-width margin-input" v-model="weight_money_config.free_weight"></el-input>
               kg内不额外收费，每超出
-              <el-input class="input-width"></el-input>
+              <el-input class="input-width margin-input" v-model="weight_money_config.plus_weight"></el-input>
               kg费用增加
-              <el-input class="input-width"></el-input>
+              <el-input class="input-width margin-input" v-model="weight_money_config.plus_money"></el-input>
               元
               <div class="include">
                 <div>
@@ -139,8 +144,32 @@
     })
 
     export default class SameCityDelivery extends Vue {
-        form=true
-        forms=1
+        //是否开启
+        open=true
+        //开启智能配送
+        intellect_send='1'
+        //配送限制
+        limit_config={
+            start_send_money:'',//起送价
+            send_distance:''//配送距离
+        }
+        //费用配置
+        distance_money_config={
+            //多少距离内多少钱，每加多少距离，另外再加多少钱
+            start_distance:"",
+            start_money:"",
+            plus_distance:"",
+            plus_money:""
+        }
+        //续重收费
+        weight_money_config={
+            //多少kg内不额外收费，每超出多少kg，另外增收多少钱
+            free_weight:"",
+            plus_weight:"",
+            plus_money:""
+        }
+        //业务类型
+        business_type=1
         async created(){
 
 
@@ -299,5 +328,9 @@
     margin: 83px 0px 71px 171px;
     width: 92px;
     height: 37px;
+  }
+  .margin-input{
+    margin-left: 2px;
+    margin-right: 2px;
   }
 </style>

@@ -52,12 +52,7 @@
         </el-tooltip>
       </el-form-item>
 
-      <el-form-item label="优惠券" prop="type" style="margin-bottom: 10px">
-        <div @click="selectCoupon"  style="cursor: pointer;color: #409eff">选择优惠券</div>
-        <template v-for="(item,index) of productData">
-              <div  class="lst" >{{item.title}}</div>
-        </template>
-      </el-form-item>
+
 
       <div class="group" style="margin-left: 120px;margin-bottom: 22px;" v-if="ruleForm.pintuan_flag">
         <el-form-item label="拼团人数" prop="pintuan_people" style="margin-bottom: 0px">
@@ -87,6 +82,8 @@
         <el-input v-model="ruleForm.Products_Profit" :disabled="noEditField.Products_Profit"   class="sortInput sortInputs" ></el-input>
         <span class="sortMsg">注：佣金将从商品利润中取出一部分发放</span>
       </el-form-item>
+
+
 
       <el-dialog  title="预览素材" :visible.sync="preDialogInstance.show">
         <video width="100%" style="max-height: 500px" controls autoplay :src="domainFn(preDialogInstance.url)" v-if="preDialogInstance.type==='video'"></video>
@@ -320,6 +317,8 @@
             <el-input v-model="ruleForm.Products_Weight"  :disabled="noEditField.Products_Weight"  class="sortInput" ></el-input> kg
         </el-tooltip>
       </el-form-item>
+
+
       <el-form-item label="运费计算" prop="goods">
         <el-radio-group v-model="ruleForm.goods">
 <!--          <el-radio label="1" style="display: block;margin-bottom: 15px"  :disabled="noEditField.Products_IsShippingFree">-->
@@ -403,6 +402,23 @@
           <div style="font-size: 14px;margin-left: 10px">件</div>
         </el-checkbox-group>
       </el-form-item>
+
+      <el-form-item label="赠送优惠券" prop="type" style="margin-bottom: 30px">
+        <div style="display: flex;align-items: center">
+          <template v-for="(item,index) of productData">
+            <span  class="lst" >
+              {{item.title}}
+               <div class="imgDel" @click="delCoupon(item.id)">
+                  <i class="el-icon-error"></i>
+                </div>
+            </span>
+
+          </template>
+          <span @click="selectCoupon"  class="lst-q">选择优惠券</span>
+          <span class="sortMsg">注：订单支付成功后发放</span>
+        </div>
+      </el-form-item>
+
       <el-form-item label="订单类型" prop="orderType" >
         <el-radio-group v-model="ruleForm.orderType" :disabled="noEditField.prod_order_type" @change="changeRadio">
           <el-radio label="0" style="display: block;margin-bottom: 15px" >实物订单  <span class="font12">( 买家下单 -> 买家付款 -> 商家发货 -> 买家收货 -> 订单完成 )</span> </el-radio>
@@ -767,6 +783,22 @@
     })
     export default class AddProduct extends Vue {
 
+        delCoupon(id){
+            let arr=[]
+            for(let i=0;i<this.selectValue.length;i++){
+                if(this.selectValue[i]==id){
+                    this.selectValue.splice(i,1)
+                    console.log(this.selectValue,"sss")
+                    for(let item of this.productData){
+                        if(item.id!=id){
+                            arr.push(item)
+                        }
+                    }
+                    this.productData=arr
+                }
+            }
+        }
+
         plainArrays = (arr,key,newArr)=>{
             let that=this
             if(!arr || !key)return false;
@@ -864,10 +896,16 @@
             this.getProduct()
         }
         getProduct(){
+            let id = this.$route.query.prod_id;
             let data={
                 pageSize: this.dataTableOpt.pageSize,
                 page:this.dataTableOpt.page
             }
+            // if(id){
+            //     data.prod_id=id
+            // }else{
+            //     data.prod_id=-1
+            // }
             getGivingCoupons(data).then(res=>{
                 if(res.errorCode==0){
                     this.dataTableOpt.dataList=res.data
@@ -2013,6 +2051,8 @@
                 this.CardType=res.data;
             })
 
+
+
             let productInfo = {}
             let Products_Stores = []
             let select_cate_ids = []
@@ -2748,8 +2788,33 @@ table{
   transition: right .2s ease;
 }
 .lst{
-  overflow: hidden;
-  height: 20px;
-  line-height: 23px;
+  height: 30px;
+  position: relative;
+  line-height: 30px;
+  background-color: #F8F8F8;
+  padding: 0px  8px;
+  box-sizing: border-box;
+  margin-right: 20px;
+  display: inline-block;
+  &:hover{
+    .imgDel{
+      visibility: visible;
+    }
+  }
+  /*删除图片样式*/
+  .imgDel{
+    visibility: hidden;
+    position: absolute;
+    top: -3px;
+    right: -10px;
+    font-size: 20px;
+    height: 20px;
+    line-height: 20px;
+    cursor: pointer;
+  }
 }
+
+  .lst-q{
+    cursor: pointer;color: #409eff;height: 30px;line-height: 30px; padding: 0px  8px; box-sizing: border-box; display: inline-block;
+  }
 </style>
