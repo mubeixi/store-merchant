@@ -4,51 +4,60 @@
             <div class="same-top flex">
                 <div class="flex1">
                   <div class="same-top-top">同城配送功能</div>
-                  <div class="same-top-bottom">启用后，买家下单可以选择同城配送，由你提供上门配送服务</div>
+                  <div class="same-top-bottom">该服务开通后，订单发货时可以选择以下服务商帮您配送，产生的配送费用将从您的店铺余额中扣除，当余额不足以支付配送费时，发货会失败，请保证店铺余额充足。</div>
                 </div>
                 <div class="el-switchs">
-                  <el-switch v-model="open"></el-switch>
+                  <el-switch v-model="open"  @change="changeSwitch"></el-switch>
                 </div>
             </div>
-        <el-form size="small" :rules="rules" ref="ruleForm" :inline-message="true" label-width="130px"   class="ruleForm">
+        <el-form size="small"  ref="ruleForm" :inline-message="true" label-width="130px"   class="ruleForm"  v-if="show">
             <el-form-item label="取货地址:" prop="Products_Index" class="padding-tb-30 line12">
               郑州市金水区文化路东风路硅谷广场A座2208室      联系电话：13688888888   <span class="update-address">修改</span>
             </el-form-item>
 
             <el-form-item label="业务类型:" prop="Products_Index" class="line12">
-                <div class="radio-same">
-                  <el-radio-group v-model="business_type">
-                    <el-radio label="美食" class="radio-wid"></el-radio>
-                    <el-radio label="美发" class="radio-wid"></el-radio>
-                    <el-radio label="水果生鲜" class="radio-wid"></el-radio>
-                    <el-radio label="服装" class="radio-wid"></el-radio>
-                    <el-radio label="电器" class="radio-wid"></el-radio>
-                    <el-radio label="水果生鲜" class="radio-wid"></el-radio>
-                    <el-radio label="电器" class="radio-wid"></el-radio>
-                    <el-radio label="水果生鲜" class="radio-wid"></el-radio>
-                    <el-radio label="电器" class="radio-wid"></el-radio>
-                    <el-radio label="水果生鲜" class="radio-wid"></el-radio>
-                  </el-radio-group>
-                </div>
-                <el-button type="primary" size="mini">保存</el-button>
+                <template v-if="business_show==1">
+                  <div class="radio-same">
+                    <el-radio-group v-model="business_type">
+                      <template v-for="(item,index) in business_type_list" >
+                        <el-radio :label="index" class="radio-wid">{{index}}</el-radio>
+                      </template>
+                    </el-radio-group>
+                  </div>
+                  <el-button type="primary" size="mini"   @click="saveRadio"  :loading="loading">保存</el-button>
+                </template>
+                <template v-else>
+                   {{business_type}}<span class="update-address" style="margin-left: 20px" @click="business_show=1">修改</span>
+                </template>
             </el-form-item>
 
             <el-form-item label="服务商:" prop="Products_Index" style="margin-top: 30px"  class="line12">
                 <div class="fuwushang">
-                    <div class="item-fuwushang">
+                    <div class="item-fuwushang" v-if="provider.dada==1">
                           <div class="item-name">
                               达达
                           </div>
                           <div class="item-right">
-<!--                                <div class="kaitong">-->
-<!--                                  已开通-->
-<!--                                </div>-->
-                                <div class="kaitong">
+                                <div class="kaitong" v-if="dada.provider_status==2">
+                                  已开通
+                                </div>
+                                <div class="kaitong" v-else-if="dada.provider_status==1">
+                                  审核中
+                                </div>
+                                <div class="kaitong" v-else-if="dada.provider_status==-1">
                                   <div class="kaitong-6">
-                                    审核中
+                                    已驳回
                                   </div>
                                   <div class="kaitong-9">
-                                    预计2个工作日审核完成
+                                    {{dada.reject_reason}}
+                                  </div>
+                                </div>
+                                <div class="kaitong" v-else>
+                                  <div class="kaitong-6">
+                                    未开通
+                                  </div>
+                                  <div class="kaitong-9">
+                                    没有配送单为你配送，请试试开通其他配送
                                   </div>
                                 </div>
                                 <div class="flex item-right-last">
@@ -58,9 +67,13 @@
                                     </div>
                                 </div>
                                 <div class="flex item-right-last" style="margin-left: 30px">
-                                  <div>
-                                    申请开通
+                                  <div @click="application('dada')" v-if="dada.status==1">
+                                    关闭服务
                                   </div>
+                                  <div @click="application('dada')" v-else>
+                                    开启服务
+                                  </div>
+
                                 </div>
 <!--                                <div class="flex item-right-last" style="margin-left: 30px;color: #428CF7">-->
 <!--                                  <div>-->
@@ -69,21 +82,120 @@
 <!--                                </div>-->
                           </div>
                     </div>
+                    <div class="item-fuwushang"  v-if="provider.meituan==1">
+                      <div class="item-name">
+                        美团
+                      </div>
+                      <div class="item-right">
+                        <div class="kaitong" v-if="meituan.provider_status==2">
+                          已开通
+                        </div>
+                        <div class="kaitong" v-else-if="meituan.provider_status==1">
+                          审核中
+                        </div>
+                        <div class="kaitong" v-else-if="meituan.provider_status==-1">
+                          <div class="kaitong-6">
+                            已驳回
+                          </div>
+                          <div class="kaitong-9">
+                            {{meituan.reject_reason}}
+                          </div>
+                        </div>
+                        <div class="kaitong" v-else>
+                          <div class="kaitong-6">
+                            未开通
+                          </div>
+                          <div class="kaitong-9">
+                           没有配送单为你配送，请试试开通其他配送
+                          </div>
+                        </div>
+
+                        <div class="flex item-right-last">
+                          <div>
+                            配费说明
+                            <img src="@/assets/img/wenhao.png">
+                          </div>
+                        </div>
+                        <div class="flex item-right-last" style="margin-left: 30px">
+                          <div @click="application('meituan')" v-if="meituan.status==1">
+                            关闭服务
+                          </div>
+                          <div @click="application('meituan')" v-else>
+                            开启服务
+                          </div>
+
+                        </div>
+                        <!--                                <div class="flex item-right-last" style="margin-left: 30px;color: #428CF7">-->
+                        <!--                                  <div>-->
+                        <!--                                    查询余额-->
+                        <!--                                  </div>-->
+                        <!--                                </div>-->
+                      </div>
+                    </div>
+                    <div class="item-fuwushang"  v-if="provider.fengniao==1">
+                      <div class="item-name">
+                        蜂鸟
+                      </div>
+                      <div class="item-right">
+                        <div class="kaitong" v-if="fengniao.provider_status==2">
+                          已开通
+                        </div>
+                        <div class="kaitong" v-else-if="fengniao.provider_status==1">
+                          审核中
+                        </div>
+                        <div class="kaitong" v-else-if="fengniao.provider_status==-1">
+                          <div class="kaitong-6">
+                            已驳回
+                          </div>
+                          <div class="kaitong-9">
+                            {{fengniao.reject_reason}}
+                          </div>
+                        </div>
+                        <div class="kaitong" v-else>
+                          <div class="kaitong-6">
+                            未开通
+                          </div>
+                          <div class="kaitong-9">
+                            没有配送单为你配送，请试试开通其他配送
+                          </div>
+                        </div>
+                        <div class="flex item-right-last">
+                          <div>
+                            配费说明
+                            <img src="@/assets/img/wenhao.png">
+                          </div>
+                        </div>
+                        <div class="flex item-right-last" style="margin-left: 30px">
+                          <div @click="application('fengniao')" v-if="fengniao.status==1">
+                            关闭服务
+                          </div>
+                          <div @click="application('fengniao')" v-else>
+                            开启服务
+                          </div>
+
+                        </div>
+                        <!--                                <div class="flex item-right-last" style="margin-left: 30px;color: #428CF7">-->
+                        <!--                                  <div>-->
+                        <!--                                    查询余额-->
+                        <!--                                  </div>-->
+                        <!--                                </div>-->
+                      </div>
+                    </div>
 
                 </div>
             </el-form-item>
 
 
-            <el-form-item label="智能配送:" prop="Products_Index" style="margin-top: 40px"  class="line12">
-              <el-radio-group v-model="intellect_send">
-                <el-radio label="1">开启</el-radio>
-                <el-radio label="2">关闭</el-radio>
-              </el-radio-group>
-              <div class="shuoming">
-                开启后，系统会默认选中配送费最低的服务商，您也可自定义设置
-              </div>
-            </el-form-item>
-            <el-form-item label="配送限制:" prop="Products_Index" style="color: #666666;margin-bottom: 40px !important;">
+<!--            <el-form-item label="智能配送:" prop="Products_Index" style="margin-top: 40px"  class="line12">-->
+<!--              <el-radio-group v-model="intellect_send">-->
+<!--                <el-radio label="1">开启</el-radio>-->
+<!--                <el-radio label="0">关闭</el-radio>-->
+<!--              </el-radio-group>-->
+<!--              <div class="shuoming">-->
+<!--                开启后，系统会默认选中配送费最低的服务商，您也可自定义设置-->
+<!--              </div>-->
+<!--            </el-form-item>-->
+            <el-form-item label="配送限制:" prop="Products_Index" style="color: #666666;margin-bottom: 40px !important;margin-top: 40px">
               配送距离
               <el-input class="input-width margin-input" v-model="limit_config.send_distance"></el-input>km
               起送价
@@ -117,7 +229,7 @@
                 </div>
               </div>
             </el-form-item>
-            <el-button type="primary" class="last-button" size="small">保存</el-button>
+            <el-button type="primary" class="last-button" size="small" @click="saveAll" :loading="loadings">保存</el-button>
         </el-form>
 
       </div>
@@ -135,6 +247,7 @@
         State
     } from 'vuex-class'
     import fa from "element-ui/src/locale/lang/fa";
+    import  {getCityExpressConfig,opCityExpressConfig,cityExpressProvider} from '../common/fetch'
 
     @Component({
         mixins:[],
@@ -144,10 +257,12 @@
     })
 
     export default class SameCityDelivery extends Vue {
+        loading=false
+        loadings=false
         //是否开启
-        open=true
+        open=false
         //开启智能配送
-        intellect_send='1'
+       // intellect_send='1'
         //配送限制
         limit_config={
             start_send_money:'',//起送价
@@ -168,11 +283,128 @@
             plus_weight:"",
             plus_money:""
         }
+
+        //配送商服务列表
+        express_info=[]
         //业务类型
-        business_type=1
+        business_type_list={}
+        business_type=''
+        business_show=1
+
+        //是否显示服务商
+        provider={}
+        dada={}
+        meituan={}
+        fengniao={}
+
+        //开启关闭服务商
+        application(item){
+            cityExpressProvider({type:item}).then(res=>{
+                  this.getList()
+            })
+        }
+
+
+        //保存业务类型
+        saveRadio(){
+            if(this.loading)return
+            this.loading=true
+
+            opCityExpressConfig({business_type:this.business_type}).then(res=>{
+                if(res.errorCode==0){
+                    this.business_show=2
+                    this.$notify({
+                        title: '成功',
+                        message: '保存成功',
+                        type: 'success'
+                    });
+                }
+            })
+            this.loading=false
+
+
+        }
+
+        //保存所有
+        saveAll(){
+            if(this.loadings)return
+            this.loadings=true
+
+            let data={
+                business_type: this.business_type,
+               // intellect_send:this.intellect_send,
+                limit_config:JSON.stringify(this.limit_config),
+                distance_money_config:JSON.stringify(this.distance_money_config),
+                weight_money_config:JSON.stringify(this.weight_money_config)
+            }
+
+
+            opCityExpressConfig(data).then(res=>{
+                this.$notify({
+                    title: '成功',
+                    message: '保存成功',
+                    type: 'success'
+                });
+            })
+            this.loadings=false
+        }
+        show=false
+
+        changeSwitch(value){
+            opCityExpressConfig({open:this.open?1:0}).then(res=>{
+                this.show=this.open
+            }).catch(e=>{
+                this.show=false
+                this.open=false
+            })
+        }
+
+        getList(){
+            getCityExpressConfig().then(res=>{
+                this.business_type_list=res.data.business_type
+                this.provider=res.data.provider
+                this.express_info=res.data.express_info
+                for(let item of this.express_info){
+                    if(item.provider=='dada'){
+                        this.dada=item
+                    }
+                    if(item.provider=='meituan'){
+                        this.meituan=item
+                    }
+                    if(item.provider=='fengniao'){
+                        this.fengniao=item
+                    }
+                }
+                if(!res.data.city_express_config){
+                    this.business_show=1
+                    for(let item in this.business_type_list){
+                        this.business_type=item
+                        break
+                    }
+                }else{
+                    this.open=(res.data.city_express_config.open)==1?true:false
+                    this.show=this.open
+                    this.business_show=2
+                    if(res.data.city_express_config.business_type){
+                        this.business_type=res.data.city_express_config.business_type
+                    }else{
+                        this.business_show=1
+                        for(let item in this.business_type_list){
+                            this.business_type=item
+                            break
+                        }
+                    }
+
+                    this.weight_money_config=res.data.city_express_config.weight_money_config
+                    this.distance_money_config=res.data.city_express_config.distance_money_config
+                    this.limit_config=res.data.city_express_config.limit_config
+                    //this.intellect_send=String(res.data.city_express_config.intellect_send)
+                }
+
+            })
+        }
         async created(){
-
-
+            this.getList()
         }
 
 
@@ -194,6 +426,8 @@
     background-color: #ffffff;
     width: 100%;
     padding-top: 30px;
+    box-sizing: border-box;
+    height: 100vh;
   }
   .same-top{
     width: 70%;
