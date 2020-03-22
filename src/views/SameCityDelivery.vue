@@ -1,7 +1,7 @@
 <template>
   <div class="same-city">
       <div class="same-main">
-            <div class="same-top flex">
+            <div class="same-top flex" v-if="!stores_id">
                 <div class="flex1">
                   <div class="same-top-top">同城配送功能</div>
                   <div class="same-top-bottom">该服务开通后，订单发货时可以选择以下服务商帮您配送，产生的配送费用将从您的店铺余额中扣除，当余额不足以支付配送费时，发货会失败，请保证店铺余额充足。</div>
@@ -10,12 +10,12 @@
                   <el-switch v-model="open"  @change="changeSwitch"></el-switch>
                 </div>
             </div>
-        <el-form size="small"  ref="ruleForm" :inline-message="true" label-width="130px"   class="ruleForm"  v-if="show">
+        <el-form size="small"  ref="ruleForm" :inline-message="true" label-width="130px"   class="ruleForm"  v-if="show||stores_id">
             <el-form-item label="取货地址:" prop="Products_Index" class="padding-tb-30 line12">
-              {{contact_info.address}}      联系电话：{{contact_info.mobile}}   <span class="update-address">修改</span>
+              {{contact_info.address}}     联系电话：{{contact_info.mobile}}   <span class="update-address" @click="goUpdata">修改</span>
             </el-form-item>
 
-            <el-form-item label="业务类型:" prop="Products_Index" class="line12">
+            <el-form-item label="业务类型:" prop="Products_Index" class="line12"   v-if="!stores_id">
                 <template v-if="business_show==1">
                   <div class="radio-same">
                     <el-radio-group v-model="business_type">
@@ -186,15 +186,15 @@
             </el-form-item>
 
 
-<!--            <el-form-item label="智能配送:" prop="Products_Index" style="margin-top: 40px"  class="line12">-->
-<!--              <el-radio-group v-model="intellect_send">-->
-<!--                <el-radio label="1">开启</el-radio>-->
-<!--                <el-radio label="0">关闭</el-radio>-->
-<!--              </el-radio-group>-->
-<!--              <div class="shuoming">-->
-<!--                开启后，系统会默认选中配送费最低的服务商，您也可自定义设置-->
-<!--              </div>-->
-<!--            </el-form-item>-->
+            <el-form-item label="免运费权益:" prop="Products_Index" style="margin-top: 40px"  class="line12"  v-if="!stores_id">
+              <el-radio-group v-model="free_shipping">
+                <el-radio label="1">适用</el-radio>
+                <el-radio label="2">不适用</el-radio>
+              </el-radio-group>
+              <div class="shuoming">
+                平台设置的各种免运费权益是否适用于同城配送
+              </div>
+            </el-form-item>
             <el-form-item label="配送限制:" prop="Products_Index" style="color: #666666;margin-bottom: 40px !important;margin-top: 40px">
               配送距离
               <el-input class="input-width margin-input" v-model="limit_config.send_distance"></el-input>km
@@ -247,7 +247,7 @@
         State
     } from 'vuex-class'
     import fa from "element-ui/src/locale/lang/fa";
-    import  {getCityExpressConfig,opCityExpressConfig,cityExpressProvider} from '../common/fetch'
+    import  {getCityExpressConfig,opCityExpressConfig,cityExpressProvider,get_Stores_ID} from '../common/fetch'
 
     @Component({
         mixins:[],
@@ -262,7 +262,7 @@
         //是否开启
         open=false
         //开启智能配送
-       // intellect_send='1'
+        free_shipping='1'
         //配送限制
         limit_config={
             start_send_money:'',//起送价
@@ -302,6 +302,11 @@
 
         }
 
+        //修改
+        goUpdata(){
+            window.location.href=window.parent.location.origin+'/member/wechat/recieve.php'
+        }
+
         //开启关闭服务商
         application(item){
             cityExpressProvider({type:item}).then(res=>{
@@ -336,13 +341,14 @@
             this.loadings=true
 
             let data={
-                business_type: this.business_type,
-               // intellect_send:this.intellect_send,
                 limit_config:JSON.stringify(this.limit_config),
                 distance_money_config:JSON.stringify(this.distance_money_config),
                 weight_money_config:JSON.stringify(this.weight_money_config)
             }
-
+            if(!this.stores_id){
+                data.business_type=this.business_type
+                data.free_shipping=this.free_shipping
+            }
 
             opCityExpressConfig(data).then(res=>{
                 this.$notify({
@@ -400,17 +406,20 @@
                             break
                         }
                     }
-
                     this.weight_money_config=res.data.city_express_config.weight_money_config
                     this.distance_money_config=res.data.city_express_config.distance_money_config
                     this.limit_config=res.data.city_express_config.limit_config
-                    //this.intellect_send=String(res.data.city_express_config.intellect_send)
+                    this.free_shipping=String(res.data.city_express_config.free_shipping)
                 }
 
             })
         }
+        stores_id=''
         async created(){
-            this.getList()
+            this.stores_id=await get_Stores_ID()
+            await this.getList()
+
+
         }
 
 
@@ -552,7 +561,7 @@
   }
   .shuoming{
     margin-top: 17px;
-    margin-bottom: 40px;
+    //margin-bottom: 40px;
     font-size: 14px;
     color: #999999;
   }
