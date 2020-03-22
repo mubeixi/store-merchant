@@ -12,7 +12,7 @@
             </div>
         <el-form size="small"  ref="ruleForm" :inline-message="true" label-width="130px"   class="ruleForm"  v-if="show">
             <el-form-item label="取货地址:" prop="Products_Index" class="padding-tb-30 line12">
-              郑州市金水区文化路东风路硅谷广场A座2208室      联系电话：13688888888   <span class="update-address">修改</span>
+              {{contact_info.address}}      联系电话：{{contact_info.mobile}}   <span class="update-address">修改</span>
             </el-form-item>
 
             <el-form-item label="业务类型:" prop="Products_Index" class="line12">
@@ -297,6 +297,11 @@
         meituan={}
         fengniao={}
 
+        //地址
+        contact_info={
+
+        }
+
         //开启关闭服务商
         application(item){
             cityExpressProvider({type:item}).then(res=>{
@@ -364,6 +369,7 @@
                 this.business_type_list=res.data.business_type
                 this.provider=res.data.provider
                 this.express_info=res.data.express_info
+                this.contact_info=res.data.contact_info
                 for(let item of this.express_info){
                     if(item.provider=='dada'){
                         this.dada=item
