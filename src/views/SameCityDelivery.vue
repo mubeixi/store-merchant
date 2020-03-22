@@ -304,7 +304,12 @@
 
         //修改
         goUpdata(){
-            window.location.href=window.parent.location.origin+'/member/wechat/recieve.php'
+            if(this.stores_id){
+                window.location.href=window.parent.location.origin+'/stores/prefile_edit.php'
+            }else{
+                window.location.href=window.parent.location.origin+'/member/wechat/recieve.php'
+            }
+
         }
 
         //开启关闭服务商
