@@ -79,6 +79,13 @@ export const fetch = function (act: String, param: Object = {}, options = false,
 
 };
 
+//获取同城配送参数
+export const getCityExpressConfig = (data:object={},options:any=false)=> fetch('getCityExpressConfig', data, options)
+//同城配送配置编辑
+export const opCityExpressConfig = (data:object={},options:any=false)=> fetch('opCityExpressConfig', data, options)
+//开启和关闭对应同城配送服务商
+export const cityExpressProvider = (data:object={},options:any=false)=> fetch('cityExpressProvider', data, options)
+
 export const getCommonConfig = (data:object={},options:any=false)=> fetch('shopconfig', data, options)
 
 export const getFileList = (data:object={},options:any=false)=> fetch('getFolderDir', data, options)
