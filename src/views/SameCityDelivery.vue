@@ -11,11 +11,11 @@
                 </div>
             </div>
         <el-form size="small"  ref="ruleForm" :inline-message="true" label-width="130px"   class="ruleForm"  v-if="show||stores_id">
-            <el-form-item label="取货地址:" prop="Products_Index" class="padding-tb-30 line12">
+            <el-form-item label="取货地址：" prop="Products_Index" class="padding-tb-30 line12">
               {{contact_info.address}}     联系电话：{{contact_info.mobile}}   <span class="update-address" @click="goUpdata">修改</span>
             </el-form-item>
 
-            <el-form-item label="业务类型:" prop="Products_Index" class="line12"   v-if="!stores_id">
+            <el-form-item label="业务类型：" prop="Products_Index" class="line12"   v-if="!stores_id">
                 <template v-if="business_show==1">
                   <div class="radio-same">
                     <el-radio-group v-model="business_type">
@@ -31,7 +31,7 @@
                 </template>
             </el-form-item>
 
-            <el-form-item label="服务商:" prop="Products_Index" style="margin-top: 30px"  class="line12">
+            <el-form-item label="服务商：" prop="Products_Index" style="margin-top: 30px"  class="line12">
                 <div class="fuwushang">
                     <div class="item-fuwushang" v-if="provider.dada==1">
                           <div class="item-name">
@@ -52,25 +52,20 @@
                                     {{dada.reject_reason}}
                                   </div>
                                 </div>
-                                <div class="kaitong" v-else>
-                                  <div class="kaitong-6">
+                                <div class="kaitong color-6" v-else >
                                     未开通
-                                  </div>
-                                  <div class="kaitong-9">
-                                    没有配送单为你配送，请试试开通其他配送
-                                  </div>
                                 </div>
-                                <div class="flex item-right-last">
-                                    <div>
-                                      配费说明
-                                      <img src="@/assets/img/wenhao.png">
-                                    </div>
-                                </div>
+<!--                                <div class="flex item-right-last">-->
+<!--                                    <div>-->
+<!--                                      配费说明-->
+<!--                                      <img src="@/assets/img/wenhao.png">-->
+<!--                                    </div>-->
+<!--                                </div>-->
                                 <div class="flex item-right-last" style="margin-left: 30px">
-                                  <div @click="application('dada')" v-if="dada.status==1">
+                                  <div @click="application('dada')" v-if="dada.status==1"  style="color: #ff0000"  v-loading="dada_loading">
                                     关闭服务
                                   </div>
-                                  <div @click="application('dada')" v-else>
+                                  <div @click="application('dada')" v-else   v-loading="dada_loading">
                                     开启服务
                                   </div>
 
@@ -101,26 +96,21 @@
                             {{meituan.reject_reason}}
                           </div>
                         </div>
-                        <div class="kaitong" v-else>
-                          <div class="kaitong-6">
+                        <div class="kaitong color-6" v-else  >
                             未开通
-                          </div>
-                          <div class="kaitong-9">
-                           没有配送单为你配送，请试试开通其他配送
-                          </div>
                         </div>
 
-                        <div class="flex item-right-last">
-                          <div>
-                            配费说明
-                            <img src="@/assets/img/wenhao.png">
-                          </div>
-                        </div>
+<!--                        <div class="flex item-right-last">-->
+<!--                          <div>-->
+<!--                            配费说明-->
+<!--                            <img src="@/assets/img/wenhao.png">-->
+<!--                          </div>-->
+<!--                        </div>-->
                         <div class="flex item-right-last" style="margin-left: 30px">
-                          <div @click="application('meituan')" v-if="meituan.status==1">
+                          <div @click="application('meituan')" v-if="meituan.status==1"   style="color: #ff0000"  v-loading="meituan_loading">
                             关闭服务
                           </div>
-                          <div @click="application('meituan')" v-else>
+                          <div @click="application('meituan')" v-else     v-loading="meituan_loading">
                             开启服务
                           </div>
 
@@ -151,25 +141,20 @@
                             {{fengniao.reject_reason}}
                           </div>
                         </div>
-                        <div class="kaitong" v-else>
-                          <div class="kaitong-6">
+                        <div class="kaitong color-6" v-else   >
                             未开通
-                          </div>
-                          <div class="kaitong-9">
-                            没有配送单为你配送，请试试开通其他配送
-                          </div>
                         </div>
-                        <div class="flex item-right-last">
-                          <div>
-                            配费说明
-                            <img src="@/assets/img/wenhao.png">
-                          </div>
-                        </div>
+<!--                        <div class="flex item-right-last">-->
+<!--                          <div>-->
+<!--                            配费说明-->
+<!--                            <img src="@/assets/img/wenhao.png">-->
+<!--                          </div>-->
+<!--                        </div>-->
                         <div class="flex item-right-last" style="margin-left: 30px">
-                          <div @click="application('fengniao')" v-if="fengniao.status==1">
+                          <div @click="application('fengniao')" v-if="fengniao.status==1"   style="color: #ff0000"  v-loading="fengniao_loading">
                             关闭服务
                           </div>
-                          <div @click="application('fengniao')" v-else>
+                          <div @click="application('fengniao')" v-else  v-loading="fengniao_loading">
                             开启服务
                           </div>
 
@@ -186,7 +171,7 @@
             </el-form-item>
 
 
-            <el-form-item label="免运费权益:" prop="Products_Index" style="margin-top: 40px"  class="line12"  v-if="!stores_id">
+            <el-form-item label="免运费权益：" prop="Products_Index" style="margin-top: 40px"  class="line12"  v-if="!stores_id">
               <el-radio-group v-model="free_shipping">
                 <el-radio label="1">适用</el-radio>
                 <el-radio label="2">不适用</el-radio>
@@ -195,13 +180,13 @@
                 平台设置的各种免运费权益是否适用于同城配送
               </div>
             </el-form-item>
-            <el-form-item label="配送限制:" prop="Products_Index" style="color: #666666;margin-bottom: 40px !important;margin-top: 40px">
-              配送距离
+            <el-form-item label="配送限制：" prop="Products_Index" style="color: #666666;margin-bottom: 40px !important;margin-top: 40px">
+              配送距离限制
               <el-input class="input-width margin-input" v-model="limit_config.send_distance"></el-input>km
-              起送价
+              <span style="margin-left: 20px">起送价</span>
               <el-input class="input-width margin-input" v-model="limit_config.start_send_money"></el-input>元
             </el-form-item>
-            <el-form-item label="费用配置:" prop="Products_Index" style="color: #666666">
+            <el-form-item label="费用配置：" prop="Products_Index" style="color: #666666">
                 <el-input class="input-width" v-model="distance_money_config.start_distance"></el-input>
                 km内按
                 <el-input class="input-width margin-input" v-model="distance_money_config.start_money"></el-input>
@@ -212,7 +197,7 @@
                 元
             </el-form-item>
 
-            <el-form-item label="续重收费:" prop="Products_Index" style="color: #666666;margin-top: 40px;">
+            <el-form-item label="续重收费：" prop="Products_Index" style="color: #666666;margin-top: 40px;">
               商品重量
               <el-input class="input-width margin-input" v-model="weight_money_config.free_weight"></el-input>
               kg内不额外收费，每超出
@@ -222,11 +207,11 @@
               元
               <div class="include">
                 <div>
-                  说明：1. 最终费用=收费标准+续重收费（数值为0时表示不使用续重收费）
+                  说明：最终费用=费用配置+续重收费
                 </div>
-                <div style="margin-left: 42px">
-                  2. 需要对续重收费的商品开启该功能，并设置商品重量
-                </div>
+<!--                <div style="margin-left: 42px">-->
+<!--                  2. 需要对续重收费的商品开启该功能，并设置商品重量-->
+<!--                </div>-->
               </div>
             </el-form-item>
             <el-button type="primary" class="last-button" size="small" @click="saveAll" :loading="loadings">保存</el-button>
@@ -311,12 +296,52 @@
             }
 
         }
+        dada_loading=false
+        meituan_loading=false
+        fengniao_loading=false
 
         //开启关闭服务商
         application(item){
-            cityExpressProvider({type:item}).then(res=>{
-                  this.getList()
-            })
+                switch(item){
+                    case 'dada':
+                        this.dada_loading=true
+                        break;
+                    case 'meituan':
+                        this.meituan_loading=true
+                        break;
+                    case 'fengniao':
+                        this.fengniao_loading=true
+                        break;
+                }
+
+                cityExpressProvider({type:item}).then(res=>{
+                    this.getList()
+                    switch(item){
+                        case 'dada':
+                            this.dada_loading=false
+                            break;
+                        case 'meituan':
+                            this.meituan_loading=false
+                            break;
+                        case 'fengniao':
+                            this.fengniao_loading=false
+                            break;
+                    }
+                }).catch(e=>{
+                    switch(item){
+                        case 'dada':
+                            this.dada_loading=false
+                            break;
+                        case 'meituan':
+                            this.meituan_loading=false
+                            break;
+                        case 'fengniao':
+                            this.fengniao_loading=false
+                            break;
+                    }
+                })
+
+
         }
 
 
@@ -505,12 +530,12 @@
     width: 70px;
   }
   .fuwushang{
-    width: 835px;
+    width: 588px;
     border: 1px solid #EAEAEA;
     box-sizing: border-box;
   }
   .item-fuwushang{
-    width: 835px;
+    width: 588px;
     background-color: #ffffff;
     height: 70px;
     display: flex;
@@ -530,14 +555,16 @@
       box-sizing: border-box;
     }
     .item-right{
-      width: 697px;
+      width: 450px;
       border-right: 1px solid #EAEAEA;
       display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
   }
 
   .kaitong{
-    width: 407px;
+    //width: 407px;
     height: 70px;
     line-height: 70px;
     font-size: 14px;
@@ -552,17 +579,21 @@
     margin-top: 16px;
     margin-bottom: 12px;
   }
+  .color-6{
+    color: #666666;
+  }
   .kaitong-9{
     color: #999999;
     height: 13px;
     line-height: 13px;
   }
   .item-right-last{
-    height: 70px;
-    line-height: 70px;
+    height: 30px;
+    line-height: 30px;
     font-size: 14px;
-    color: #999999;
+    color: #428CF7;
     cursor: pointer;
+    margin-right: 40px;
   }
   .shuoming{
     margin-top: 17px;
