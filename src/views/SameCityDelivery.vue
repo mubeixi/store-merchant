@@ -182,28 +182,28 @@
             </el-form-item>
             <el-form-item label="配送限制：" prop="Products_Index" style="color: #666666;margin-bottom: 40px !important;margin-top: 40px">
               配送距离限制
-              <el-input class="input-width margin-input" v-model="limit_config.send_distance"></el-input>km
+              <el-input class="input-width margin-input" v-model="limit_config.send_distance" oninput ="value=value.replace(/[^0-9.]/g,'')"></el-input>km
               <span style="margin-left: 20px">起送价</span>
-              <el-input class="input-width margin-input" v-model="limit_config.start_send_money"></el-input>元
+              <el-input class="input-width margin-input" v-model="limit_config.start_send_money" oninput ="value=value.replace(/[^0-9.]/g,'')"></el-input>元
             </el-form-item>
             <el-form-item label="费用配置：" prop="Products_Index" style="color: #666666">
-                <el-input class="input-width" v-model="distance_money_config.start_distance"></el-input>
+                <el-input class="input-width" v-model="distance_money_config.start_distance" oninput ="value=value.replace(/[^0-9.]/g,'')"></el-input>
                 km内按
-                <el-input class="input-width margin-input" v-model="distance_money_config.start_money"></el-input>
+                <el-input class="input-width margin-input" v-model="distance_money_config.start_money" oninput ="value=value.replace(/[^0-9.]/g,'')"></el-input>
                 元收取配送费，每超出
-                <el-input class="input-width margin-input" v-model="distance_money_config.plus_distance"></el-input>
+                <el-input class="input-width margin-input" v-model="distance_money_config.plus_distance" oninput ="value=value.replace(/[^0-9.]/g,'')"></el-input>
                 km费用增加
-                <el-input class="input-width margin-input" v-model="distance_money_config.plus_money"></el-input>
+                <el-input class="input-width margin-input" v-model="distance_money_config.plus_money" oninput ="value=value.replace(/[^0-9.]/g,'')"></el-input>
                 元
             </el-form-item>
 
             <el-form-item label="续重收费：" prop="Products_Index" style="color: #666666;margin-top: 40px;">
               商品重量
-              <el-input class="input-width margin-input" v-model="weight_money_config.free_weight"></el-input>
+              <el-input class="input-width margin-input" v-model="weight_money_config.free_weight" oninput ="value=value.replace(/[^0-9.]/g,'')"></el-input>
               kg内不额外收费，每超出
-              <el-input class="input-width margin-input" v-model="weight_money_config.plus_weight"></el-input>
+              <el-input class="input-width margin-input" v-model="weight_money_config.plus_weight" oninput ="value=value.replace(/[^0-9.]/g,'')"></el-input>
               kg费用增加
-              <el-input class="input-width margin-input" v-model="weight_money_config.plus_money"></el-input>
+              <el-input class="input-width margin-input" v-model="weight_money_config.plus_money" oninput ="value=value.replace(/[^0-9.]/g,'')"></el-input>
               元
               <div class="include">
                 <div>
@@ -369,6 +369,32 @@
         saveAll(){
             if(this.loadings)return
             this.loadings=true
+
+            if(this.limit_config.start_send_money<0||this.limit_config.send_distance<=0){
+                this.$notify.error({
+                    title: '错误',
+                    message: '配送限制设置数值有误，请重新设置'
+                });
+                this.loadings=false
+                return;
+            }
+            if(this.distance_money_config.start_distance<0||this.distance_money_config.start_money<0||this.distance_money_config.plus_distance<=0||this.distance_money_config.plus_money<0){
+                this.$notify.error({
+                    title: '错误',
+                    message: '费用配置设置数值有误，请重新设置'
+                });
+                this.loadings=false
+                return;
+            }
+            if(this.weight_money_config.free_weight<0||this.weight_money_config.plus_weight<=0||this.weight_money_config.plus_money<0){
+                this.$notify.error({
+                    title: '错误',
+                    message: '续重收费设置数值有误，请重新设置'
+                });
+                this.loadings=false
+                return;
+            }
+
 
             let data={
                 limit_config:JSON.stringify(this.limit_config),
