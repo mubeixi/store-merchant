@@ -1,7 +1,8 @@
 <template>
   <div class="same-city">
       <div class="same-main">
-            <div class="same-top flex" v-if="!stores_id">
+            <div class="same-top flex" >
+<!--              v-if="!stores_id"-->
                 <div class="flex1">
                   <div class="same-top-top">同城配送功能</div>
                   <div class="same-top-bottom">该服务开通后，订单发货时可以选择以下服务商帮您配送，产生的配送费用将从您的店铺余额中扣除，当余额不足以支付配送费时，发货会失败，请保证店铺余额充足。</div>
@@ -399,10 +400,11 @@
             let data={
                 limit_config:JSON.stringify(this.limit_config),
                 distance_money_config:JSON.stringify(this.distance_money_config),
-                weight_money_config:JSON.stringify(this.weight_money_config)
+                weight_money_config:JSON.stringify(this.weight_money_config),
+                business_type:this.business_type
             }
             if(!this.stores_id){
-                data.business_type=this.business_type
+                // data.business_type=this.business_type
                 data.free_shipping=this.free_shipping
             }
 
