@@ -388,6 +388,8 @@ export const getTradeStatistic = (data: object={}, options: any=false) => fetch(
 // 更新商户配置
 export const updateBizConfig = (data: object={}, options: any=false) => fetch('updateBizConfig', data, options);
 
+// 获取商户配置
+export const getBizConfig = (data: object={}, options: any=false) => fetch('getBizConfig', data, options);
 
 
 

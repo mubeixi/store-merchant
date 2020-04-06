@@ -40,7 +40,7 @@
   })
   export default class FormWrap extends Vue {
 
-    formData = []
+    formData = [];
     @Prop({
       type:Array,
       default: ()=>[]
@@ -62,7 +62,7 @@
 
     //自己控制更新才可靠
     rowUpdate({idx,val}){
-      //this.$set(this.formData,idx,val)
+      this.$set(this.formData,idx,val)
     }
 
     rowDel(idx){
@@ -95,9 +95,8 @@
 
     }
 
-    async created() {
-
-
+    created() {
+      this.formData = this._conf.concat([])
     }
 
   }

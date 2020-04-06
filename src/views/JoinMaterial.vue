@@ -26,7 +26,7 @@
         <span slot="reference" class="select-cate-right" @click.prevent="openCompanyAdd">添加</span>
       </el-popover>
     </div>
-    <form-wrap @change="upCompanyData" ref="company"></form-wrap>
+    <form-wrap v-if="ready" :_conf="companyData" @change="upCompanyData" ref="company"></form-wrap>
     <div class="p-30"></div>
     <div class="cate-div">
       <span class="select-cate">个人入驻资料设置:</span>
@@ -53,7 +53,7 @@
         <span slot="reference" class="select-cate-right" @click.prevent="openPersonAdd">添加</span>
       </el-popover>
     </div>
-    <form-wrap @change="upPersonData" ref="person"></form-wrap>
+    <form-wrap v-if="ready" :_conf="personData" @change="upPersonData" ref="person"></form-wrap>
     <div class="flex m-t-40">
       <el-button size="small" @click="sub" type="primary">提交</el-button>
       <el-button size="small" @click="cancel" type="info">取消</el-button>
@@ -70,7 +70,7 @@
   import FormWrap from "../components/form/FormWrap";
   import {fun} from "../common";
   import {
-    updateBizConfig
+    updateBizConfig,getBizConfig
   } from "../common/fetch";
 
 
@@ -79,8 +79,10 @@
   })
   export default class JoinMaterial extends Vue {
 
-    personData = []
-    companyData = []
+    ready = false;
+
+    personData = [];
+    companyData = [];
 
     eleTypeList = [
       {title:'文本框',type:'input'},
@@ -152,6 +154,14 @@
 
     async created(){
 
+      getBizConfig().then(res => {
+        const {company=[],person=[]} =res.data.industry_form
+        this.personData = person
+        this.companyData = company
+        this.ready = true
+      }).catch(err => {
+
+      })
 
     }
 

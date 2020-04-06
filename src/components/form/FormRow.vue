@@ -42,7 +42,9 @@
       conf:{
         immediate:true,
         deep:true,
-        handler(newVal){
+        handler(newVal,oldVal){
+          //这一句很关键，不然会是一条衔尾的蛇吃完所有内存
+          if(JSON.stringify(newVal) === JSON.stringify(oldVal))return'';
           this.rowData = Object.assign({},newVal)
         }
       }
@@ -79,6 +81,7 @@
 
     @Watch('rowData', {deep: true})
     onChangeValue(newVal,oldVal){
+      console.log('row change')
       this.$emit('change',{idx:this.idx,val:newVal})
     }
 

@@ -8,6 +8,13 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' )
 
 module.exports = {
   // options...
+  productionSourceMap: true,
+  // 是否使用css分离插件 ExtractTextPlugin
+  extract: true,
+  // 开启 CSS source maps?
+  sourceMap: true,
+  drop_debugger: true,
+  drop_console: true,
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   // configureWebpack: {
   //   plugins: [
@@ -20,7 +27,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'https://new401t.bafangka.com/api', // 'https://new401t.bafangka.com/api',
+        target: 'https://newo2o.bafangka.com/api', // 'https://new401t.bafangka.com/api',
         changeOrigin: true,
         // http2: true,
         ws: true,
