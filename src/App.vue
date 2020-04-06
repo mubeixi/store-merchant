@@ -40,6 +40,9 @@ export default class App extends Vue {
 <style lang="stylus">
   @import "assets/css/app.styl";
 </style>
+<style lang="scss">
+  @import "assets/css/style.scss";
+</style>
 <style lang="less">
 .el-carousel__container{
   height: auto;

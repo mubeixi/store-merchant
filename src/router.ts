@@ -2,45 +2,43 @@ import Vue from 'vue';
 import Router from 'vue-router';
 Vue.use(Router);
 
-import Page from '@/views/PageTmpl.vue';
-
-import Home from './views/Home';
-import Diy from './views/Diy';
-import Empty from './views/Empty';
-import ProductForm from "@/views/ProductForm.vue";
-import UserList from '@/views/UserList.vue';
-import Marketing from '@/views/Marketing.vue';
-import DayMark from '@/views/DayMark.vue';
-import LabelManagement from '@/views/LabelManagement.vue'
-import LabelAdd from '@/views/LabelAdd.vue'
-import CrowdName from '@/views/CrowdName.vue'
-import CrowdClient from '@/views/CrowdClient.vue'
-import DayMarkDetail from '@/views/DayMarkDetail.vue';
-import StoreChannel from '@/views/StoreChannel.vue';
-import StorePurchase from '@/views/StorePurchase.vue';
-import SystemNotice from '@/views/SystemNotice.vue';
-import StorePurchaseApply from './views/StorePurchaseApply.vue';
-import StorePurchaseBack from './views/StorePurchaseBack.vue';
-
-import MessageSend from '@/views/MessageSend.vue';
-import MessageStationSend from '@/views/MessageStationSend.vue';
-import CouponGift from '@/views/CouponGift.vue';
-import GiftsGift from '@/views/GiftsGift.vue';
-import NotFound from '@/views/NotFound.vue';
-import ProductList from '@/views/ProductList.vue';
-import StoreProductList from '@/views/StoreProductList.vue';
-import DistributorLevel from '@/views/DistributorLevel.vue';
-import Rotate from '@/views/Rotate.vue';
-import RotateList from '@/views/RotateList.vue';
-import ProductStatistics from '@/views/statistics/ProductStatistics.vue'
-import VipStatistics from '@/views/statistics/VipStatistics.vue'
-import TransactionStatistics from '@/views/statistics/TransactionStatistics.vue'
-
-import Contribute from '@/views/distributor/Contribute.vue';
-import ContributeDetail from '@/views/distributor/ContributeDetail.vue';
-
-import DesignPanel from '@/views/design/DesignPanel';
-import SameCityDelivery from '@/views/SameCityDelivery';
+const Page = () => import("@/views/PageTmpl")
+const Home = () => import('@/views/Home')
+const Diy = () => import('@/views/Diy')
+const Empty = () => import('@/views/Empty')
+const ProductForm = () => import('@/views/ProductForm')
+const UserList = () => import('@/views/UserList')
+const Marketing = () => import('@/views/Marketing')
+const DayMark = () => import('@/views/DayMark')
+const LabelManagement = () => import('@/views/LabelManagement')
+const LabelAdd = () => import('@/views/LabelAdd')
+const CrowdName = () => import('@/views/CrowdName')
+const CrowdClient = () => import('@/views/CrowdClient')
+const DayMarkDetail = () => import('@/views/DayMarkDetail')
+const StoreChannel = () => import('@/views/StoreChannel')
+const StorePurchase = () => import('@/views/StorePurchase')
+const SystemNotice = () => import('@/views/SystemNotice')
+const StorePurchaseApply = () => import('@/views/StorePurchaseApply')
+const StorePurchaseBack = () => import('@/views/StorePurchaseBack')
+const MessageSend = () => import('@/views/MessageSend')
+const MessageStationSend = () => import('@/views/MessageStationSend')
+const CouponGift = () => import('@/views/CouponGift')
+const GiftsGift = () => import('@/views/GiftsGift')
+const NotFound = () => import('@/views/NotFound')
+const ProductList = () => import('@/views/ProductList')
+const StoreProductList = () => import('@/views/StoreProductList')
+const DistributorLevel = () => import('@/views/DistributorLevel')
+const Rotate = () => import('@/views/Rotate')
+const RotateList = () => import('@/views/RotateList')
+const ProductStatistics = () => import('@/views/statistics/ProductStatistics')
+const VipStatistics = () => import('@/views/statistics/VipStatistics')
+const TransactionStatistics = () => import('@/views/statistics/TransactionStatistics')
+const Contribute = () => import('@/views/distributor/Contribute')
+const ContributeDetail = () => import('@/views/distributor/ContributeDetail')
+const DesignPanel = () => import('@/views/design/DesignPanel')
+const SameCityDelivery = () => import('@/views/SameCityDelivery')
+const JoinCate = () => import('@/views/JoinCate')
+const JoinMaterial = () => import('@/views/JoinMaterial')
 
 
 const routerInstance = new Router({
@@ -50,13 +48,28 @@ const routerInstance = new Router({
       name: 'Home',
       component: Home,
     },
-
     {
       path:'/StorePurchaseApply',
       name:'StorePurchaseApply',
       component: StorePurchaseApply,
       meta:{
         title:'进货记录'
+      }
+    },
+    {
+      path:'/JoinCate',
+      name:'JoinCate',
+      component: JoinCate,
+      meta:{
+        title:'行业分类'
+      }
+    },
+    {
+      path:'/JoinMaterial',
+      name:'JoinMaterial',
+      component: JoinMaterial,
+      meta:{
+        title:'入驻资料'
       }
     },
     {
@@ -311,17 +324,6 @@ const routerInstance = new Router({
       path: '*',
       redirect:'/NotFound'
     }
-
-
-
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    //   // route level code-splitting
-    //   // this generates a separate chunk (about.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
-    // },
   ],
 });
 routerInstance.beforeEach((to, from, next) => {

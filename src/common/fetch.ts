@@ -385,6 +385,21 @@ export const getNewOldTradeStatistic = (data: object={}, options: any=false) => 
 // 交易数据统计
 export const getTradeStatistic = (data: object={}, options: any=false) => fetch('getTradeStatistic', data, options);
 
+// 更新商户配置
+export const updateBizConfig = (data: object={}, options: any=false) => fetch('updateBizConfig', data, options);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function get_Appid() {
   return 'xhh';
