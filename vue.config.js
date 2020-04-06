@@ -8,13 +8,6 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' )
 
 module.exports = {
   // options...
-  productionSourceMap: true,
-  // 是否使用css分离插件 ExtractTextPlugin
-  extract: true,
-  // 开启 CSS source maps?
-  sourceMap: true,
-  drop_debugger: true,
-  drop_console: true,
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   // configureWebpack: {
   //   plugins: [

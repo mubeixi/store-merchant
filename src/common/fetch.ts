@@ -391,12 +391,17 @@ export const updateBizConfig = (data: object={}, options: any=false) => fetch('u
 // 获取商户配置
 export const getBizConfig = (data: object={}, options: any=false) => fetch('getBizConfig', data, options);
 
+//新增行业分类
+export const addBizIndustry =  (data: object={}, options: any=false) => fetch('addBizIndustry', data, options);
 
+//编辑行业分类
+export const editBizIndustry =  (data: object={}, options: any=false) => fetch('editBizIndustry', data, options);
 
+//删除行业分类
+export const getBizIndustryDetail =  (data: object={}, options: any=false) => fetch('bizIndustryDetail', data, options);
 
-
-
-
+//获取行业分类
+export const bizIndustryList =  (data: object={}, options: any=false) => fetch('bizIndustryList', data, options);
 
 
 
