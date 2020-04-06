@@ -7,7 +7,7 @@ const shell = require('shelljs');
 
 shell.exec('git pull origin master');
 //
-if (shell.exec('npm run buildtest').code !== 0) { // 执行npm run build 命令
+if (shell.exec('npm run build').code !== 0) { // 执行npm run build 命令
   shell.echo('Error: Git commit failed');
   shell.exit(1);
 }
