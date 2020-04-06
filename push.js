@@ -11,13 +11,15 @@ if (shell.exec('npm run build').code !== 0) { // 执行npm run build 命令
 }
 
 
+shell.rm('-rf', '../shop-diy-dist/htdocs/member/shop/setting/diy');// 删除
 
-shell.rm('-rf', '../shop-diy-dist/htdocs/member/shop/setting/diy');//删除
 // 由于我的用另外一个仓库存放dist目录，所以这里要将文件增量复制到目标目录。并切换到对应目录。
 shell.cp('-r', './dist/*', '../shop-diy-dist/htdocs/member/shop/setting/diy');
 shell.cd('../shop-diy-dist');
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 const sd = require('silly-datetime');
+
 const time = sd.format(new Date(), 'YYYY-MM-DD HH:mm');
 console.log(time);
 
