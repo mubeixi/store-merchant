@@ -341,7 +341,7 @@ export default class ProductStatistics extends Vue {
         return;
     }else {
       systemProdSales(postData,{loading: true}).then(res=>{
-        this.proSalesList = res.data;
+        this.proSalesList = res.data.list;
         this.sale_total = res.totalCount
       })
     }
