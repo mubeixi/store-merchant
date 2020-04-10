@@ -100,7 +100,18 @@
         },
         computed: {
             limit(){
-              return this.goods.value.cate_id ? this.goods.value.limit :6
+              try {
+                if(Array.isArray(this.goods.value.cate_id) && this.goods.value.cate_id.length>0){
+                  return this.goods.value.limit
+                }else if(Array.isArray(this.goods.value.list) && this.goods.value.list.length>0){
+                  return this.goods.value.list.length
+                }else{
+                  return 6
+                }
+
+              }catch (e) {
+                return 6
+              }
             },
             isEmpeyInfo() {
                 return !this.goods.config.attr.title.show && !this.goods.config.attr.desc.show && !this.goods.config.attr.price.show && !this.goods.config.attr.buybtn.show

@@ -100,7 +100,19 @@
         },
         computed: {
             limit(){
-              return this.goods.value.cate_id ? this.goods.value.limit :6
+              try {
+
+                if(Array.isArray(this.goods.value.cate_id) && this.goods.value.cate_id.length>0){
+                  return this.goods.value.limit
+                }else if(Array.isArray(this.goods.value.list) && this.goods.value.list.length>0){
+                  return this.goods.value.list.length
+                }else{
+                  return 6
+                }
+
+              }catch (e) {
+                return 6
+              }
             },
             isEmpeyInfo() {
                 return !this.goods.config.attr.title.show && !this.goods.config.attr.desc.show && !this.goods.config.attr.price.show && !this.goods.config.attr.buybtn.show
@@ -195,7 +207,7 @@
                 handler(val) {
 
                     if (!val) return;
-                    let {list = [], cate_id=[], limit} = val;
+                    let {list = [], cate_id=[]} = val;
 
                     //console.log(list,cate_id,limit)
 
@@ -205,7 +217,7 @@
                         return;
                     }
 
-                    let param = {pageSize: cate_id.length===0 && limit ? limit : 6}
+                    let param = {pageSize: this.limit}
                     if (cate_id.length>0) {
                         param.Cate_ID = cate_id.join(',')
                     } else {
