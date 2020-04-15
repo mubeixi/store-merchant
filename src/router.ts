@@ -39,6 +39,7 @@ const DesignPanel = () => import('@/views/design/DesignPanel')
 const SameCityDelivery = () => import('@/views/SameCityDelivery')
 const JoinCate = () => import('@/views/JoinCate')
 const JoinMaterial = () => import('@/views/JoinMaterial')
+const RightCard = () => import('@/views/RightCard')
 
 
 const routerInstance = new Router({
@@ -318,6 +319,14 @@ const routerInstance = new Router({
       component: SameCityDelivery,
       meta:{
         title:'同城配送'
+      }
+    },
+    {
+      path: '/RightCard',
+      name: 'RightCard',
+      component: RightCard,
+      meta:{
+        title:'权益卡'
       }
     },
     {
