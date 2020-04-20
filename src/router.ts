@@ -40,7 +40,7 @@ const SameCityDelivery = () => import('@/views/SameCityDelivery')
 const JoinCate = () => import('@/views/JoinCate')
 const JoinMaterial = () => import('@/views/JoinMaterial')
 const RightCard = () => import('@/views/RightCard')
-
+const FreeSetting = () => import('@/views/FreeSetting')
 
 const routerInstance = new Router({
   routes: [
@@ -327,6 +327,14 @@ const routerInstance = new Router({
       component: RightCard,
       meta:{
         title:'权益卡'
+      }
+    },
+    {
+      path: '/FreeSetting',
+      name: 'FreeSetting',
+      component: FreeSetting,
+      meta:{
+        title:'免单设置'
       }
     },
     {
