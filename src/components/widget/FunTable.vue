@@ -111,13 +111,13 @@
               immediate:true,
               deep:true,
               handler(val){
-
                   if(_.isArray(val)){
                       this.lists = [...val]
                   }
               }
           },
           lists:{
+              immediate:true,
               deep:true,
               handler(val){
                   //有变动就需要渲染下
