@@ -32,7 +32,7 @@
 
             <el-form-item label="单笔订单最高面单金额：">
               <div class="flex flex-align-c c8">
-                <el-input class="inputs" style="width: 150px !important;"></el-input> 元
+                <el-input class="inputs" v-model="top_free" style="width: 150px !important;"></el-input> 元
 
               </div>
             </el-form-item>
@@ -41,16 +41,16 @@
               <div>
                 <el-checkbox label=0 v-model="miss_free1" :disabled="miss_free2.length>0||miss_free3.length>0">不做任何处理</el-checkbox>
               </div>
-              <div>
-                <el-checkbox label=1 v-model="miss_free2" :disabled="miss_free1.length>0">送赠品</el-checkbox> <span class="select" v-if="miss_free2.length>0">选择赠品</span>
-                <div class="give-div"  v-if="miss_free2.length>0">
-                    <div class="give-div-item flex flex-align-c">
-                      <img class="imgs" src="https://new401t.bafangka.com/static/template/20191206151009125.jpg" >
-                      秋装2019年新款裙子女法式复古气质宽松中长款假两件连衣裙新款法式复古
-                      <img src="@/assets/img/mydel.png"  style="margin-left: auto">
-                    </div>
-                </div>
-              </div>
+<!--              <div>-->
+<!--                <el-checkbox label=1 v-model="miss_free2" :disabled="miss_free1.length>0">送赠品</el-checkbox> <span class="select" v-if="miss_free2.length>0">选择赠品</span>-->
+<!--                <div class="give-div"  v-if="miss_free2.length>0">-->
+<!--                    <div class="give-div-item flex flex-align-c">-->
+<!--                      <img class="imgs" src="https://new401t.bafangka.com/static/template/20191206151009125.jpg" >-->
+<!--                      秋装2019年新款裙子女法式复古气质宽松中长款假两件连衣裙新款法式复古-->
+<!--                      <img src="@/assets/img/mydel.png"  style="margin-left: auto">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--              </div>-->
               <div>
                 <el-checkbox label=2 v-model="miss_free3" :disabled="miss_free1.length>0">送优惠卷</el-checkbox> <span  v-if="miss_free3.length>0" class="select" @click="openCoupon">选择优惠券</span>
                 <div v-if="miss_free3.length>0">
@@ -63,17 +63,18 @@
             </el-form-item>
 
             <el-form-item label="免单商品：">
-            <span class="select"  style="margin-left: 0">选择商品</span>
+            <span class="select"  style="margin-left: 0" @click="openPro">选择商品</span>
 
-            <div class="give-div" style="margin-left: -90px">
-              <div class="give-div-item flex flex-align-c" style="width: 660px">
-                <img class="imgs" src="https://new401t.bafangka.com/static/template/20191206151009125.jpg" >
-                <span style="width: 400px;overflow-x: hidden">秋装2019年新款裙子女法式复古气质宽松中长款假两件连衣裙新款法式复古</span>
-                <div class="tui-btn disableds">推荐</div>
-                <el-tooltip class="item" effect="dark" content="Top Left 提示文字" placement="top-start">
+            <div class="give-div" style="margin-left: -90px" v-if="productDatas.length>0">
+              <div class="give-div-item flex flex-align-c" style="width: 660px"   v-for="(item,index) of productDatas" :key="index">
+                <img class="imgs" :src="item.ImgPath" >
+                <span style="width: 400px;overflow-x: hidden">{{item.Coupon_Subject}}</span>
+                <div class="tui-btn disableds" v-if="item.checked" @click="changeStatus(index)">取消推荐</div>
+                <div class="tui-btn " v-else  @click="changeStatus(index)">推荐</div>
+                <el-tooltip class="item" effect="dark" content="Top Left 提示文字" placement="top-start"  v-if="!item.checked">
                   <img src="@/assets/img/wen.png"  style="margin-left: auto">
                 </el-tooltip>
-                <img src="@/assets/img/mydel.png"  style="margin-left: auto">
+                <img src="@/assets/img/mydel.png"  style="margin-left: auto" @click="delPro(index)">
               </div>
             </div>
           </el-form-item>
@@ -93,7 +94,7 @@
         </div>
 
       <div class="submit-div">
-        <div class="submit">保存</div>
+        <div class="submit" @click="saveActive">保存</div>
       </div>
 
 
@@ -129,6 +130,39 @@
           >
           </fun-table>
       </el-dialog>
+
+
+
+      <el-dialog
+        title="选择商品"
+        width="60%"
+        @close="closeDialogs"
+        append-to-body
+        :visible.sync="isShows"
+        class="setting"
+      >
+        <fun-table
+          v-if="isShows"
+          ref="funTableComps"
+          vkey="Products_ID"
+          :has.sync="selectValues"
+          :showSave=true
+          :columns="dataTableOpts.columns"
+          :dataList="dataTableOpts.dataList"
+          :_totalCount="dataTableOpts.totalCount"
+          :_pageSize="dataTableOpts.pageSize"
+          :is_paginate="dataTableOpts.is_paginate"
+          :formSize="'small'"
+          :isRow="false"
+          @closeDialog="closeDialogs"
+          @handleSizeChange="handleSizeChanges"
+          @currentChange="currentChangess"
+          @selectVal="selectVals"
+          @submit="submits"
+          @reset="resets"
+        >
+        </fun-table>
+      </el-dialog>
     </div>
 </template>
 
@@ -138,7 +172,8 @@
     Vue,
     Watch
   } from 'vue-property-decorator';
-  import  {getCouponLists} from '@/common/fetch'
+  import  {getCouponLists,getProductList,opActive} from '@/common/fetch'
+  import {findArrayIdx, plainArray, createTmplArray, objTranslate} from '@/common/utils';
   @Component({
     mixins:[],
     components: {
@@ -148,10 +183,78 @@
 
   export default class FreeSetting extends Vue {
 
+    saveActive(){
+
+      if(this.value2.length<=0){
+        this.$message.error('请选择开始时间和结束时间');
+        return
+      }
+      if(!this.first||!this.after){
+        this.$message.error('请输入免单概率');
+        return
+      }
+      if(!this.top_free){
+        this.$message.error('请输入最高免单金额');
+        return
+      }
+      if(this.productDatas.length<=0){
+        this.$message.error('请选择免单商品');
+        return
+      }
+
+        let str=''
+        let com_pid=''
+        let pid=''
+        let arr=[]
+        let arrs=[]
+        if(this.selectValue.length>0){
+          str=this.selectValue.join(',')
+        }
+        for(let item of this.productDatas){
+          if(item.checked){
+            arr.push(item.Products_ID)
+          }else{
+            arrs.push(item.Products_ID)
+          }
+        }
+      com_pid=arr.join(',')
+      pid=arrs.join(',')
+
+
+        let data={
+          type:'freeorder',
+          status:this.status?1:0,
+          start_time:this.value2[0],
+          end_time:this.value2[1],
+          descr:this.descr
+        }
+        let obj={
+          probability:{
+            first:this.first,
+            after:this.after
+          },
+          top_free:this.top_free,
+          miss_free:{
+            act:this.miss_free1.length>0?0:2,
+            value: this.miss_free1.length>0?'':str
+          },
+          recommend_prod_id:com_pid,
+          prod_id:pid
+        }
+      data.active_info=JSON.stringify(obj)
+
+      opActive(data).then(res=>{
+        
+      })
+    }
+
+
+
     status=true
     value2=''
     first=''
     after=''
+    top_free=''
     miss_free1=[]
     miss_free2=[]
     miss_free3=[]
@@ -269,8 +372,146 @@
     }
 
 
+    isShows=false
+    //商品选择
+    changeStatus(index){
+      this.productDatas[index].checked=!this.productDatas[index].checked
+    }
+    openPro(){
+      this.isShows=true;
+      this.selectValues=[]
+      this.productDatas.map(item=>{
+        this.selectValues.push(item.Products_ID)
+      })
+
+    }
+    delPro(idx){
+      this.selectValues=[]
+      this.productDatas.splice(idx,1)
+      this.productDatas.map(item=>{
+        this.selectValues.push(item.Products_ID)
+      })
+    }
+    closeDialogs(){
+      this.isShows=false
+    }
+    dataTableOpts = {
+      act : '',
+      dataList:[],
+      page:1,
+      totalCount:100,
+      pageSize:10,
+      is_paginate:true,//是否显示分页 默认显示
+      columns : [
+        {
+          prop: "Products_ID",
+          label: "商品ID",
+          align:'center',
+          search: false //不需要搜索ID,所以都不需要了
+
+        },{
+          prop: "Products_Name",
+          label: "商品名称",
+          value: '',
+          align: 'center',
+          field: "Products_Name",
+          // align: "center",
+          // sortable: true,
+          //后面这些是filter使用的
+          required: true,
+          search: {
+            type: 'input',
+            operate: 'like',
+          }
+        },
+        {
+          prop: "Products_PriceX",
+          label: "商品价格",
+          width:120,
+          align:'center',
+          search: false
+        },
+        {
+          prop: "Products_Sales",
+          label: "销量/库存",
+          align:'center',
+          width:150,
+          search: false
+        }
+      ]
+    }
+
+    selectValues=[]
+    productDatas=[]
+    //获取选中数据
+    selectVals(val,vals){
+      this.selectValues=[]
+      this.productDatas=[]
+
+      for(let item of val){
+        this.productDatas.push(item)
+        if(this.selectValues.indexOf(item.Products_ID)==-1){
+          this.selectValues.push(item.Products_ID)
+          //this.productData.push(item)
+        }
+      }
+      for(let it of  vals){
+        for(let i=0;i<this.selectValues.length;i++){
+          if(this.selectValues[i]==it.Products_ID){
+            this.selectValues.splice(i,1)
+            //this.productData.splice(i,1)
+          }
+        }
+      }
+      this.productDatas = this.productDatas.map(item => {
+        return {...item, checked: false}
+      })
+
+
+    }
+    //重置
+    resets(){
+      console.log("11111111")
+      for(let it in this.dataTableOpts.columns){
+        this.dataTableOpts.columns[it].value=''
+      }
+      this.selectValues=[]
+      this.getProducts()
+    }
+    //搜索
+    submits(){
+      this.getProducts()
+    }
+    //一页多少行
+    handleSizeChanges(val){
+      this.dataTableOpts.pageSize=val
+      this.getProducts()
+    }
+    //当前页数
+    currentChangess(val){
+      this.dataTableOpts.page=val
+      this.getProducts()
+    }
+    getProducts(){
+      let nameIdx = findArrayIdx(this.dataTableOpts.columns,{prop:'Products_Name'})
+      let data={
+        pageSize: this.dataTableOpts.pageSize,
+        page:this.dataTableOpts.page,
+        Products_Name:this.dataTableOpts.columns[nameIdx].value
+      }
+
+      getProductList(data).then(res=>{
+        if(res.errorCode==0){
+          this.dataTableOpts.dataList=res.data
+          this.dataTableOpts.totalCount=res.totalCount
+        }
+      })
+    }
+
+
     created(){
       this.getProduct()
+      this.getProducts()
     }
 
 
@@ -301,6 +542,7 @@
     color: #FFFFFF;
   }
   .tui-btn{
+    cursor: pointer;
     width: 60px;
     height: 25px;
     line-height: 25px;
@@ -336,6 +578,9 @@
     background-color: #F9F9F9;
     font-size: 12px;
     color: #888888;
+  }
+  .active{
+    background-color: #428CF7 !important;
   }
   .imgs{
     width: 30px;
