@@ -34,7 +34,7 @@
       </el-form-item>
 
       <el-form-item label="产品价格" >
-        <el-form-item prop="Products_PriceY" style="display: inline-block;margin-bottom: 0px" >
+        <el-form-item prop="Products_PriceY" style="display: inline-block;margin-bottom: 0px"  v-if="need_price_y==1">
           <el-tooltip class="item" effect="light" :content="textTitle" placement="top-start" :disabled="!noEditField.Products_PriceY">
             <el-input v-model="ruleForm.Products_PriceY"  :disabled="noEditField.Products_PriceY"  placeholder="原价:¥" class="sortInput"></el-input>
           </el-tooltip>
@@ -1098,9 +1098,10 @@
                 if (value === '') {
                     callback(new Error('请输入现价'));
                 } else {
-                    if (Number(value) >= Number(this.ruleForm.Products_PriceY)) {
-                        callback(new Error('现价应低于原价'));
-                    }
+
+                    // if (Number(value) > Number(this.ruleForm.Products_PriceY)) {
+                    //     callback(new Error('现价应低于原价'));
+                    // }
                     callback();
                 }
             },
@@ -1170,9 +1171,9 @@
             //     { required: true, message: '请输入虚拟销量', trigger: 'blur' },
             //     { type: 'number', message: '虚拟销量必须为数字值'}
             // ],
-            Products_PriceY:[
-                { required: true, message: '请输入原价',trigger: 'blur' }
-            ],
+            // Products_PriceY:[
+            //     { required: true, message: '请输入原价',trigger: 'blur' }
+            // ],
             Products_PriceX:[
                 { validator:this.validateFn.pass, trigger: 'blur' }
             ],
@@ -1970,7 +1971,8 @@
             }
 
         }
-
+      //是否展示原价
+      need_price_y=0
 
         async created(){
 
@@ -1990,6 +1992,7 @@
                     Type_Name: "无规格"})
                 this.dis_level_list = res.data.dis_level_list
                 this.Dis_Level_arr = res.data.Dis_Level_arr
+                this.need_price_y=res.data.need_price_y
 
                 let tempArr = this.dis_level_list.map(item1=>{
                     return []
