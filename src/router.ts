@@ -41,6 +41,7 @@ const JoinCate = () => import('@/views/JoinCate')
 const JoinMaterial = () => import('@/views/JoinMaterial')
 const RightCard = () => import('@/views/RightCard')
 const FreeSetting = () => import('@/views/FreeSetting')
+const RightCardDetail = () => import('@/views/RightCardDetail')
 
 const routerInstance = new Router({
   routes: [
@@ -325,6 +326,14 @@ const routerInstance = new Router({
       path: '/RightCard',
       name: 'RightCard',
       component: RightCard,
+      meta:{
+        title:'权益卡'
+      }
+    },
+    {
+      path: '/RightCardDetail',
+      name: 'RightCardDetail',
+      component: RightCardDetail,
       meta:{
         title:'权益卡'
       }
