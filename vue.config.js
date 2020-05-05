@@ -6,21 +6,30 @@ const path = require('path')
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' )
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' )
 
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 module.exports = {
   // options...
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
-  // configureWebpack: {
-  //   plugins: [
-  //     new webpack.DefinePlugin({
-  //       'process.env.STAGE': JSON.stringify(environment.stage),
-  //       'process.env.API_BASE_URL': JSON.stringify(environment.apiurl)
-  //     })
-  //   ]
-  // },
+  configureWebpack: {
+    optimization: {
+      minimizer: [
+        new UglifyJsPlugin({
+          uglifyOptions: {
+            compress: {
+              warnings: false,
+              drop_console: true,//console
+              drop_debugger: false,
+              pure_funcs: ['console.log']//移除console
+            }
+          }
+        })
+      ]
+    }
+  },
   devServer: {
     proxy: {
       '/api': {
-        target: 'https://new401t.bafangka.com/api', // 'https://new401t.bafangka.com/api',
+        target: 'https://new401.bafangka.com/api', // 'https://new401t.bafangka.com/api',
         changeOrigin: true,
         // http2: true,
         ws: true,

@@ -1555,6 +1555,8 @@
                         commission_ratio:this.commission_ratio,
                         manage_Reward:this.manage_Reward
                     };
+
+                    if(!this.need_price_y)delete productInfo.Products_PriceY
                     if(this.ruleForm.orderType==2){
                         let arr=[];
                         for(let item of this.multipleSelection){

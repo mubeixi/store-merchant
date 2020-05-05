@@ -110,8 +110,9 @@
             let obj = {Home_ID,users_id:Users_ID};
             let str = serialize(obj);
             if(str)str = '?'+str;
-            console.log('更新preurl',this.preUrl);
+            
             this.preUrl = front_url+'pages/page/page'+str;
+            console.log('更新preurl',this.preUrl);
 
         }
         setAct(idx,mode,title,desc){
