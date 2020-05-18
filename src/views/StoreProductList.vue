@@ -75,7 +75,8 @@
           <i  v-show="cartsDialogInstance.innerVisible" class="el-icon-arrow-down"></i>
         </div>
       </div>
-      <el-button class="sub-channel" @click="changeChannel" >退货渠道<span v-if="channelDialogInstance.channel">:{{channelDialogInstance.channel=='shop'?'平台':'门店'}}</span><i class="el-icon-arrow-up"></i></el-button>
+<!--      <el-button class="sub-channel" @click="changeChannel" >退货渠道<span v-if="channelDialogInstance.channel">:{{channelDialogInstance.channel=='shop'?'平台':'门店'}}</span><i class="el-icon-arrow-up"></i></el-button>-->
+      <el-button class="sub-channel"  >退货渠道<span v-if="channelDialogInstance.channel">:{{initType==-1?'平台':'门店'}}</span><i class="el-icon-arrow-up"></i></el-button>
       <el-button class="sub-btn" @click="subBackFn" v-loading="subLoading">确认退货</el-button>
     </div>
 
@@ -212,6 +213,7 @@
     import {findArrayIdx, plainArray, createTmplArray, objTranslate,compare_obj} from '@/common/utils';
     import _ from 'underscore'
     import {float} from "html2canvas/dist/types/css/property-descriptors/float";
+    import store from "../store";
     const getParentsCount = (arr,key,pkey,val,tempArr)=>{
         var idx = false
         for(var i in arr){
@@ -405,20 +407,20 @@
             }
             postData.prod_json = JSON.stringify(prod_attr)
 
-            if(!this.channelDialogInstance.channel){
-                fun.error({msg:'退货渠道必填'})
-                return;
-            }
+            // if(!this.channelDialogInstance.channel){
+            //     fun.error({msg:'退货渠道必填'})
+            //     return;
+            // }
 
 
             // && this.channelDialogInstance.store_no已经检查过了
-            if(this.channelDialogInstance.channel === 'store'){
-                if(!this.channelDialogInstance.store_no){
-                    fun.error({msg:'选择门店退货，门店编号必填'})
-                    return;
-                }
+            if(this.initType!=-1){
+                // if(!this.channelDialogInstance.store_no){
+                //     fun.error({msg:'选择门店退货，门店编号必填'})
+                //     return;
+                // }
                 postData.purchase_type = 'store'
-                postData.purchase_store_sn = this.channelDialogInstance.store_no
+                postData.purchase_store_id = this.initType
             }else{
                 postData.purchase_type = 'shop'
             }
@@ -1049,8 +1051,11 @@
             })
         }
 
+        initData={}
+        initType=''
+        storeDetailData={}
         created(){
-
+            this.initData=store.state.initData
             this.getProduct()
             getProductCategory().then(res=>{
                 let cates = res.data
@@ -1066,9 +1071,26 @@
                 }
             })
 
+
             getStoreDetail({store_id:this.self_store_id}).then(res=>{
                 //去掉平台
                 !res.data.allow_from_plat && this.channelDialogInstance.channels.splice(1)
+               this.storeDetailData=res.data
+
+              if(this.storeDetailData.pid==0){
+               //平台
+                this.initType=-1
+              }else{
+
+                if(this.initData.same_level_purchase==0&&this.storeDetail.type_id<=this.storeDetail.parent_store.type_id){
+                    //平台
+                  this.initType=-1
+                }else{
+                  //上级
+                  this.initType=this.storeDetailData.pid
+                }
+              }
+
             })
 
         }

@@ -209,6 +209,7 @@
     import {Cart} from '@/common/cart';
     import _ from 'underscore';
     import Cookies from 'js-cookie';
+    import store from "../store";
 
     const cartInstance = new Cart()
 
@@ -490,9 +491,9 @@
             let select_store_id = 0
 
             //如果有门店，需要换成从门店进货
-            if(this.$route.query.store_no && this.$route.query.channel == 1 && this.store_info.Stores_ID){
-              select_store_id = this.store_info.Stores_ID
-            }
+            // if(this.channel == 1){
+            //   select_store_id = this.store_info.pid
+            // }
 
             let postData = {
                 cart_key:'StorePifa',
@@ -501,6 +502,11 @@
                 qty:(nVal-oVal),
                 active_id: `${Stores_ID}_${select_store_id}`
             }
+
+          // if(this.$route.query.channel == 1){
+          //   postData.store_id=this.store_info.pid
+          // }
+
 
             if(this.cartCurrentItem.Productsattrstrval){
                 if(!this.cartCurrentItem.prd_attr_id){
@@ -720,8 +726,11 @@
             let select_store_id = 0
 
             //如果有门店，需要换成从门店进货
-            if(this.$route.query.store_no && this.$route.query.channel == 1 && this.store_info.Stores_ID){
-              select_store_id = this.store_info.Stores_ID
+            // if(this.$route.query.store_no && this.$route.query.channel == 1 && this.store_info.Stores_ID){
+            //   select_store_id = this.store_info.Stores_ID
+            // }
+            if(this.channel == 1){
+              select_store_id=this.store_info.pid
             }
 
             let postData = {
@@ -730,6 +739,11 @@
                 prod_id:this.dialogInstance.product.Products_ID,
                 qty:this.dialogInstance.num,
                 active_id: `${Stores_ID}_${select_store_id}`
+            }
+            if(this.channel == 1){
+              postData.store_id=this.store_info.pid
+            }else{
+              postData.store_id=''
             }
 
             if(this.dialogInstance.product.skujosn_new.length>0 && this.dialogInstance.prd_attr_id){
@@ -749,6 +763,8 @@
             let add_card_rt = false
 
             this.dialogInstance.addCartReq = true
+          console.log(postData,this.channel,"ss")
+
             await updateCart(postData).then(res=>{
                 add_card_rt = true
                 this.dialogInstance.addCartReq = false
@@ -964,9 +980,9 @@
 
 
             //如果是门店进货，那就从门店
-            if(this.$route.query.channel == 1 && this.$route.query.store_no){
+            if(this.channel == 1 ){
                 getProductListFn = getPifaProductList
-                postData.purchase_store_sn = this.$route.query.store_no
+                postData.purchase_store_id = this.purchase_store_id
                 //参数居然是小写，用一个吴经理祭天
                 postData.cate_id = postData.Cate_ID
             }
@@ -1056,23 +1072,46 @@
             }
 
         }
+      initData={}
+      purchase_store_id=''
+      channel=2
 
         async created(){
+          this.initData=store.state.initData
 
-            this.loadGoodsInfo()
-            if(!this.$route.query.channel){
-                fun.error({msg:'请选择进货渠道'})
-                this.$router.push({
-                    name:'StoreChannel'
-                })
-                return;
-            }
+            // if(!this.$route.query.channel){
+            //     fun.error({msg:'请选择进货渠道'})
+            //     this.$router.push({
+            //         name:'StoreChannel'
+            //     })
+            //     return;
+            // }
 
-            if(this.$route.query.channel == 1 && this.$route.query.store_no){
-                await getStoreDetail({store_sn:this.$route.query.store_no,store_id:null,User_ID:null}).then(res=>{
-                    this.store_info = res.data
-                })
+            // if(this.$route.query.channel == 1 && this.$route.query.store_no){
+            //     await getStoreDetail({store_sn:this.$route.query.store_no,store_id:null,User_ID:null}).then(res=>{
+            //         this.store_info = res.data
+            //     })
+            // }
+
+          await getStoreDetail({store_id:Stores_ID,User_ID:null}).then(res=>{
+            this.store_info = res.data
+            if(this.store_info.pid==0){
+              //平台
+              this.channel=2
+            }else{
+
+              if(this.initData.same_level_purchase==0&&this.store_info.type_id<=this.store_info.parent_store.type_id){
+                //平台
+                this.channel=2
+              }else{
+                //上级
+                this.channel=1
+                this.purchase_store_id=this.store_info.pid
+              }
             }
+          })
+
+         await  this.loadGoodsInfo()
 
             await this.syncCardList().then((CartList)=>{
                 console.log(CartList)
