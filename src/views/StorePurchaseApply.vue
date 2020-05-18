@@ -15,12 +15,12 @@
             <div class="info flex flex1">
               <div class="store-pic" :style="{backgroundImage:'url('+apply.supplier_img+')'}"></div>
               <div class="store-title">{{apply.supplier_name}}</div>
-              <div class="action" >(<span @click="showStore(apply.active_id)" class="action-item">查看信息</span>
-                <template v-if="inArray(apply.Order_Status,[20,22,25])">
-                  <span  class="padding4-c">/</span><span class="action-item" @click="changeChannel(apply)" >修改渠道</span>
-                </template>
+              <div class="action" ><span @click="showStore(apply.active_id)" class="action-item">(查看信息)</span>
+<!--                <template v-if="inArray(apply.Order_Status,[20,22,25])">-->
+<!--                  <span  class="padding4-c">/</span><span class="action-item" @click="changeChannel(apply)" >修改渠道</span>-->
+<!--                </template>-->
 
-                )
+
               </div>
               <div class="order_no">进货单号: {{apply.Order_ID}}</div>
             </div>
