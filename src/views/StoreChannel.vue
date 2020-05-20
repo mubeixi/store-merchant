@@ -129,7 +129,7 @@ import Cookies from 'js-cookie';
         getStoreDetail({store_id:this.self_store_id}).then(res=>{
             //去掉平台
 
-            !res.data.allow_from_plat && this.channels.splice(1)
+            //!res.data.allow_from_plat && this.channels.splice(1)
         })
         // this.province_list = City.getProvinceList()
     }

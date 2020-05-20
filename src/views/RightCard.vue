@@ -28,6 +28,10 @@
         <template slot="status-column"  slot-scope="props">
           <span>{{props.row.status==1?'正常':'禁用'}}</span>
         </template>
+        <template slot="operate-column" slot-scope="props">
+          <span class="spans" @click="goEdit(props)">编辑</span>
+<!--          <span class="spans" @click="delProduct(props)">删除</span>-->
+        </template>
       </fun-table>
   </div>
 </template>
@@ -51,6 +55,17 @@
   })
 
   export default class RightCard extends Vue {
+
+    goEdit(item){
+
+      this.$router.push({
+        name: 'RightCardDetail',
+        query: {
+          id:item.row.id
+        }
+      })
+    }
+
 
     closeDialog(){}
     settingShow=false
@@ -107,6 +122,13 @@
             operate: 'like',
             option:[{label:'正常',value:1},{label:'禁用',value:0}]
           }
+        },
+        {
+          prop: "operate",
+          label: "操作",
+          align:'center',
+          width:150,
+          search: false
         }
       ]
     }
@@ -386,6 +408,11 @@
   .myProduct /deep/ .el-dialog{
     height: 600px;
     overflow: auto;
+  }
+  .spans{
+    color:#428CF7;
+    margin-right:4px;
+    cursor:pointer;
   }
 
 </style>
