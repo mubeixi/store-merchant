@@ -38,7 +38,7 @@
 
 import {Component, Vue} from 'vue-property-decorator';
 import {fun} from '../common';
-import {getStoreDetail} from '@/common/fetch';
+import {getStoreDetail} from '@/api/store';
 
 import BindStoreComponent from '../components/comm/BindStoreComponent'
 import Cookies from 'js-cookie';
