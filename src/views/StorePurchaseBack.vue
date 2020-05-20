@@ -266,43 +266,31 @@
 
 <script lang="ts">
 
-    import {
-        Component,
-        Vue
-    } from 'vue-property-decorator';
-    import {
-        Action,
-        State
-    } from 'vuex-class'
-    import {
-        getStorePurchaseApply,
-        getStorePurchaseApplyInfo,
-        getStoreList,
-        changeStoreApplyChannel,
-        updateStoreApplyGoodsNum,
-        cancalStorePurchaseApply,
-        subStorePurchaseApply,
-        delStorePurchaseApply,
-        recallStorePurchaseApply,
-        orderPay,
-        calcApplyMoneyCount,
-        store_pifa_order_completed,
-        storeProductBackOrderList,
-        store_prod_back_order_cancel,
-        get_store_prod_back_order_detail,
-        getShippingList,
-        store_prod_back_order_send,
-        store_prod_back_order_confirm,
-        getStoreDetail
-    } from '../common/fetch';
-    import {objTranslate,findArrayIdx} from '@/common/utils';
-    import {fun} from '@/common';
-    import BindStoreComponent from '../components/comm/BindStoreComponent'
-    import LogisticsInfo from '@/components/comm/LogisticsInfo'
-    import Cookies from 'js-cookie';
+import {Component, Vue} from 'vue-property-decorator';
+import {
+  calcApplyMoneyCount,
+  changeStoreApplyChannel,
+  delStorePurchaseApply,
+  get_store_prod_back_order_detail,
+  getShippingList,
+  getStoreDetail,
+  getStoreList,
+  recallStorePurchaseApply,
+  store_pifa_order_completed,
+  store_prod_back_order_cancel,
+  store_prod_back_order_confirm,
+  store_prod_back_order_send,
+  storeProductBackOrderList,
+  subStorePurchaseApply
+} from '../common/fetch';
+import {findArrayIdx, objTranslate} from '@/common/utils';
+import {fun} from '@/common';
+import BindStoreComponent from '../components/comm/BindStoreComponent'
+import LogisticsInfo from '@/components/comm/LogisticsInfo'
+import Cookies from 'js-cookie';
 
 
-    const noop = ()=>{}
+const noop = ()=>{}
 
 
     @Component({

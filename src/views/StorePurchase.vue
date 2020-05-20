@@ -179,38 +179,26 @@
 
 <script lang="ts">
 
-    import {
-        Component,
-        Vue
-    } from 'vue-property-decorator';
-    import {
-        Action,
-        State
-    } from 'vuex-class'
-    import {fun} from '../common';
-    import {
-        getProductList,
-        getProductDetail,
-        updateCart,
-        getCartList,
-        delCart,
-        getPifaProductList,
-        createOrder,
-        getProductCategory, getStoreDetail, subStorePurchaseApply, orderPay
-    } from '../common/fetch';
-    import {
-        numberSort,
-        findArrayIdx,
-        objTranslate,
-        compare_obj,
-        get_arr_column
-    } from '@/common/utils';
-    import {Fly} from '../common/UnitBezier';
-    import {Cart} from '@/common/cart';
-    import _ from 'underscore';
-    import Cookies from 'js-cookie';
+import {Component, Vue} from 'vue-property-decorator';
+import {fun} from '../common';
+import {
+  createOrder,
+  delCart,
+  getCartList,
+  getPifaProductList,
+  getProductCategory,
+  getProductList,
+  getStoreDetail,
+  orderPay,
+  updateCart
+} from '../common/fetch';
+import {compare_obj, objTranslate} from '@/common/utils';
+import {Fly} from '../common/UnitBezier';
+import {Cart} from '@/common/cart';
+import _ from 'underscore';
+import Cookies from 'js-cookie';
 
-    const cartInstance = new Cart()
+const cartInstance = new Cart()
 
     const Stores_ID = Cookies.get('Stores_ID')
     const User_ID = Cookies.get('Stores_Bind_User_ID')

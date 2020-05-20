@@ -262,25 +262,30 @@
 
 <script lang="ts">
 
-    import {
-        Component,
-        Vue
-    } from 'vue-property-decorator';
-    import {
-        Action,
-        State
-    } from 'vuex-class'
+import {Component, Vue} from 'vue-property-decorator';
 
-    import {getStorePurchaseApply,getStorePurchaseApplyInfo,getStoreList,changeStoreApplyChannel,updateStoreApplyGoodsNum,cancalStorePurchaseApply,subStorePurchaseApply,delStorePurchaseApply,recallStorePurchaseApply,orderPay,calcApplyMoneyCount,store_pifa_order_completed,getStoreDetail} from '../common/fetch';
-    import {objTranslate,findArrayIdx} from '@/common/utils';
-    import {fun} from '@/common';
-    import Cookies from 'js-cookie';
+import {
+  calcApplyMoneyCount,
+  cancalStorePurchaseApply,
+  changeStoreApplyChannel,
+  delStorePurchaseApply,
+  getStoreDetail,
+  getStoreList,
+  getStorePurchaseApply,
+  getStorePurchaseApplyInfo,
+  recallStorePurchaseApply,
+  store_pifa_order_completed,
+  subStorePurchaseApply
+} from '../common/fetch';
+import {findArrayIdx} from '@/common/utils';
+import {fun} from '@/common';
+import Cookies from 'js-cookie';
 
-    import BindStoreComponent from '../components/comm/BindStoreComponent'
-    import LogisticsInfo from '@/components/comm/LogisticsInfo'
+import BindStoreComponent from '../components/comm/BindStoreComponent'
+import LogisticsInfo from '@/components/comm/LogisticsInfo'
 
 
-    const noop = ()=>{}
+const noop = ()=>{}
 
     @Component({
         mixins:[],

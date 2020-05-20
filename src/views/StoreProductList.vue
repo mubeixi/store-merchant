@@ -190,29 +190,24 @@
   </div>
 </template>
 <script lang="ts">
-    import {
-        Component,
-        Vue
-    } from 'vue-property-decorator'
-    import {
-        Action,
-        State
-    } from 'vuex-class'
-    import BindStoreComponent from '../components/comm/BindStoreComponent'
-    import {
-        getProducts,
-        batchSetting,
-        getProductCategory,
-        delProduct,
-        storeProductBack,
-        getStoreDetail,
-        getProductAtts,
-        getShippingTemplate
-    } from '@/common/fetch';
-    import {findArrayIdx, plainArray, createTmplArray, objTranslate,compare_obj} from '@/common/utils';
-    import _ from 'underscore'
-    import {float} from "html2canvas/dist/types/css/property-descriptors/float";
-    const getParentsCount = (arr,key,pkey,val,tempArr)=>{
+import {Component, Vue} from 'vue-property-decorator'
+import BindStoreComponent from '../components/comm/BindStoreComponent'
+import {
+  getProductAtts,
+  getProductCategory,
+  getProducts,
+  getShippingTemplate,
+  getStoreDetail,
+  storeProductBack
+} from '@/common/fetch';
+import {compare_obj, createTmplArray, findArrayIdx, objTranslate, plainArray} from '@/common/utils';
+import {Cart} from '../common/cart';
+import {fun} from '../common';
+import {Fly} from '../common/UnitBezier';
+
+import Cookies from 'js-cookie';
+
+const getParentsCount = (arr,key,pkey,val,tempArr)=>{
         var idx = false
         for(var i in arr){
             let item = arr[i]
@@ -243,12 +238,7 @@
         return plainArr
     }
 
-    import {Cart} from '../common/cart';
-    import {fun} from '../common';
-    import {Fly} from '../common/UnitBezier';
-
-    import Cookies from 'js-cookie';
-    const Stores_ID = Cookies.get('Stores_ID')
+const Stores_ID = Cookies.get('Stores_ID')
     const User_ID = Cookies.get('Stores_Bind_User_ID')
 
 

@@ -36,22 +36,15 @@
 
 <script lang="ts">
 
-    import {
-        Component,
-        Vue
-    } from 'vue-property-decorator';
-    import {
-        Action,
-        State
-    } from 'vuex-class'
-    import {fun} from '../common';
-    import {getStoreDetail} from '@/common/fetch';
-    // import {City} from '../common/city';
-    import BindStoreComponent from '../components/comm/BindStoreComponent'
-    import Cookies from 'js-cookie';
+import {Component, Vue} from 'vue-property-decorator';
+import {fun} from '../common';
+import {getStoreDetail} from '@/common/fetch';
+
+import BindStoreComponent from '../components/comm/BindStoreComponent'
+import Cookies from 'js-cookie';
 
 
-    @Component({
+@Component({
         components:{BindStoreComponent},
         watch:{}
     })
