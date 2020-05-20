@@ -18,7 +18,10 @@ export const fetch = function (act: String, param: Object = {}, options = false,
 
   // @ts-ignore
   param.act = act;
-  param.env = 'system';
+  if(!param.env){
+    param.env = 'system';
+  }
+
   // param.Users_Account = get_Users_Account();
 
   // console.log('生效了')

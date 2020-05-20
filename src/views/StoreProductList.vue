@@ -199,17 +199,9 @@
         Action,
         State
     } from 'vuex-class'
+    import Cookies from 'js-cookie';
     import BindStoreComponent from '../components/comm/BindStoreComponent'
-    import {
-        getProducts,
-        batchSetting,
-        getProductCategory,
-        delProduct,
-        storeProductBack,
-        getStoreDetail,
-        getProductAtts,
-        getShippingTemplate
-    } from '@/common/fetch';
+    import {getProductsByStore,getProductCategoryByStore,storeProductBack,getStoreDetail,getProductAttsByStore,getShippingTemplateByStore} from '@/api/store'
     import {findArrayIdx, plainArray, createTmplArray, objTranslate,compare_obj} from '@/common/utils';
     import _ from 'underscore'
     import {float} from "html2canvas/dist/types/css/property-descriptors/float";
@@ -245,6 +237,9 @@
         return plainArr
     }
 
+    import {Cart} from '../common/cart';
+    import {fun} from '../common';
+    import {Fly} from '../common/UnitBezier';
 const Stores_ID = Cookies.get('Stores_ID')
     const User_ID = Cookies.get('Stores_Bind_User_ID')
 
@@ -292,7 +287,7 @@ const Stores_ID = Cookies.get('Stores_ID')
                 store_id:this.self_store_id,
                 product_id:id
             }
-            getProductAtts(data).then(res=>{
+            getProductAttsByStore(data).then(res=>{
                 if(res.errorCode==0){
                     this.skuList=res.data
                 }
@@ -318,7 +313,7 @@ const Stores_ID = Cookies.get('Stores_ID')
             store_sn:''
         }
 
-        //getProductAtts
+        //getProductAttsByStore
 
 
         changeBackChannel(){
@@ -1027,7 +1022,7 @@ const Stores_ID = Cookies.get('Stores_ID')
                 sel_cate:this.dataTableOpt.columns[cateIdx].value,
                 status:this.activeName
             }
-            getShippingTemplate().then(res=>{
+          getShippingTemplateByStore().then(res=>{
                 let datas=res.data
                 for(let item of datas){
                     item.label=item.Template_Name
@@ -1038,7 +1033,7 @@ const Stores_ID = Cookies.get('Stores_ID')
             })
 
 
-            getProducts(data).then(res=>{
+          getProductsByStore(data).then(res=>{
                 this.dataTableOpt.dataList=res.data
                 this.dataTableOpt.totalCount=res.totalCount
 
@@ -1052,7 +1047,7 @@ const Stores_ID = Cookies.get('Stores_ID')
         created(){
             this.initData=store.state.initData
             this.getProduct()
-            getProductCategory().then(res=>{
+            getProductCategoryByStore().then(res=>{
                 let cates = res.data
                 // arr2table(newArr,'Category_ID','Category_ParentID')
                 this.cates = restArr(cates,'child')

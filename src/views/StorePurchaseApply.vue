@@ -269,14 +269,13 @@ import {
   cancalStorePurchaseApply,
   changeStoreApplyChannel,
   delStorePurchaseApply,
-  getStoreDetail,
-  getStoreList,
   getStorePurchaseApply,
   getStorePurchaseApplyInfo,
   recallStorePurchaseApply,
   store_pifa_order_completed,
   subStorePurchaseApply
-} from '../common/fetch';
+} from '@/api/store';
+import {getStoreListByStore,getStoreDetail} from '../api/store'
 import {findArrayIdx} from '@/common/utils';
 import {fun} from '@/common';
 import Cookies from 'js-cookie';
@@ -927,7 +926,7 @@ const noop = ()=>{}
             })
 
             // this.loadInfo()
-            getStoreList({pageSize:999}).then(res=>{
+            getStoreListByStore({pageSize:999}).then(res=>{
                 this.stores = res.data
             })
         }

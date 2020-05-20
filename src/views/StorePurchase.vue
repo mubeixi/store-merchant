@@ -188,16 +188,10 @@
         State
     } from 'vuex-class'
     import {fun} from '../common';
-    import {
-        getProductList,
-        getProductDetail,
-        updateCart,
-        getCartList,
-        delCart,
-        getPifaProductList,
-        createOrder,
-        getProductCategory, getStoreDetail, subStorePurchaseApply, orderPay
-    } from '../common/fetch';
+
+    import  { updateCart,orderPay,
+      getCartList,
+      delCart,getProductListByStore,getPifaProductList,createOrder,getProductCategoryByStore,getStoreDetail} from '@/api/store'
     import {
         numberSort,
         findArrayIdx,
@@ -976,7 +970,7 @@
 
             let postData = {Products_Name:this.keyword,...this.paginate,Cate_ID}
 
-            let getProductListFn = getProductList
+            let getProductListFn = getProductListByStore
 
 
             //如果是门店进货，那就从门店
@@ -1135,7 +1129,7 @@
             })
 
 
-            getProductCategory().then(res=>{
+            getProductCategoryByStore().then(res=>{
                 this.cates = res.data
                 // arr2table(newArr,'Category_ID','Category_ParentID')
                 //this.cates = restArr(cates,'child')
