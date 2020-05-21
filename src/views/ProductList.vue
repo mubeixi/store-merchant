@@ -63,7 +63,7 @@
         <template slot="operate-column" slot-scope="props">
           <span class="spans" @click="goEdit(props)">编辑</span>
           <span class="spans" @click="delProduct(props)">删除</span>
-          <span class="spans" @click="bindStoreList(props)">绑定门店</span>
+          <span class="spans" @click="bindStoreList(props)">设置门店</span>
         </template>
       </fun-table>
     </div>
@@ -120,7 +120,9 @@
           <div class="specs">
             <!--            :max="dialogInstance.stock"去掉库存限制-->
             <el-input-number controls-position="right" :min="1"  size="small" v-model="dialogInstance.num" :step="1"></el-input-number>
-            <span class="font12 graytext2 padding10-c">库存{{dialogInstance.stock||'-'}}件</span>
+            <span class="font12 graytext2 padding10-c" v-if="dialogInstance.product.skujosn_new&&dialogInstance.product.skujosn_new.length>0">库存{{dialogInstance.stock||'-'}}件</span>
+            <span class="font12 graytext2 padding10-c" v-else>库存{{dialogInstance.product.Products_Count||'-'}}件</span>
+
           </div>
         </div>
       </div>
@@ -232,18 +234,33 @@
         this.dialogInstance.proSkuShow=false
       }
       async dialogSub(){
-
-        if(this.dialogInstance.stock<(this.dialogInstance.num*this.selectStoreValue.length)){
-          this.$notify.error({
-            title: '库存不足',
-            message: '库存小于当前库存'
-          });
-          return
+        this.dialogInstance.addCartReq=true
+        if(this.dialogInstance.product.skujosn_new.length>0){
+          if(this.dialogInstance.stock<(this.dialogInstance.num*this.selectStoreValue.length)){
+            this.$notify.error({
+              title: '库存不足',
+              message: '库存小于当前库存'
+            })
+            this.dialogInstance.addCartReq=false
+            return
+          }
+        }else{
+          if(this.dialogInstance.product.Products_Count<(this.dialogInstance.num*this.selectStoreValue.length)){
+            this.$notify.error({
+              title: '库存不足',
+              message: '库存小于当前库存'
+            })
+            this.dialogInstance.addCartReq=false
+            return
+          }
         }
+
+
         let cart_buy={}
+        let attr_id=this.dialogInstance.prd_attr_id?this.dialogInstance.prd_attr_id:0
         let proSku={
           [this.dialogInstance.product.Products_ID]:{
-            [this.dialogInstance.prd_attr_id]:this.dialogInstance.num
+            [attr_id]:this.dialogInstance.num
           }
         }
         for(let item of  this.selectStoreValue){
@@ -265,12 +282,15 @@
           this.selectStoreValue=[]
           this.bindStoreShow=false
           this.dialogInstance.proSkuShow=false
+          this.dialogInstance.addCartReq=false
         }).catch(e=>{
           this.$notify.error({
             title: '错误',
             message: e.msg
           })
+          this.dialogInstance.addCartReq=false
         })
+
 
 
 
