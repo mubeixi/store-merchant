@@ -514,6 +514,8 @@
 
         handleClick(){
             this.getProduct()
+            this.$store.dispatch('setProPage',1)
+            this.dataTableOpt.page=1
         }
         //重置
         reset(){
@@ -626,7 +628,7 @@
         //当前页数
         currentChange(val){
             this.dataTableOpt.page=val
-            this.$store.dispatch('setProPage',this.dataTableOpt.page)
+            //this.$store.dispatch('setProPage',this.dataTableOpt.page)
             this.getProduct()
         }
 
