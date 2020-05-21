@@ -107,6 +107,13 @@
             }
         },
         watch:{
+          proPage:{
+            immediate:true,
+            deep:true,
+            handler(val){
+              this.currentPage=val
+            }
+          },
           dataList:{
               immediate:true,
               deep:true,
@@ -157,6 +164,13 @@
         filterColVal(row,columName){
             return row[columName]
         }
+
+      @Prop({
+        type:Number,
+        default:1
+      })
+      proPage //页数
+
         @Prop({
             type:String,
         })

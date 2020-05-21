@@ -83,6 +83,8 @@ export const fetch = function (act: String, param: Object = {}, options = false,
 };
 
 //获取权益卡
+export const giveStoreProd = (data:object={},options:any=false)=> fetch('giveStoreProd', data, options)
+//获取权益卡
 export const opRightsCard = (data:object={},options:any=false)=> fetch('opRightsCard', data, options)
 //获取权益卡
 export const opActive = (data:object={},options:any=false)=> fetch('opActive', data, options)

@@ -118,9 +118,24 @@
   function noop() {
   }
 
+  const valInArr = (val,arr)=>{
+    let rt = false
+    for(var i in arr){
+      if(arr[i]==val){
+        rt = true;
+        break;
+      }
+    }
+    return rt;
+  }
+
   export default {
     name: 'BindStoreComponent',
     props: {
+      isType:{
+        type:Boolean,
+        default:false
+      },
       //默认不允许点击关闭
       maskClose:{
         type:Boolean,
@@ -262,12 +277,32 @@
             this.loadStoreInfo((arr) => {
               //this.finish = true;
               this.list = arr;
+              if(this.has.length>0){
+                let rows=[]
+
+                for(let item of this.list){
+                  if(valInArr(item['Stores_ID'],this.has)){
+                    rows.push(item)
+                  }
+                }
+                console.log('设置为选中',rows)
+
+                let _self = this
+                if (rows) {
+                  setTimeout(function () {
+                    rows.forEach(row => {
+                      _self.$refs.multipleTable.toggleRowSelection(row,true);
+                    });
+                  },10)
+
+                }
+              }
             });
 
           }
 
         }
-      },
+      }
     },
     computed: {
       page_total() {
@@ -326,6 +361,10 @@
           get_top:this.get_top,
           self_store_id:this.self_store_id
         };
+        if(this.isType){
+          postData.stores_type=1
+          postData.bind_user=1
+        }
 
         console.log(postData)
 
