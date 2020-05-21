@@ -37,6 +37,10 @@ export const setSystem = ({commit}, data) => {
   commit('system', data);
 };
 
+export const setProPage = ({commit}, data) => {
+  commit('proPage', data);
+};
+
 
 
 

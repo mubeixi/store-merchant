@@ -10,6 +10,7 @@ export default {
   editStatus: false,
   finderDialogInstance:finderDialogInstance,
   mode:'attr',
+  page:1,
   initData:initData,
   componentTitle:{
     title:'',

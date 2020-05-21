@@ -39,6 +39,10 @@ export const system = function(state:any,value:any){
   state.system = value
 }
 
+export const proPage = function (state: any, value: any) {
+  state.page = value;
+};
+
 // export const eTitle = function (state: any, value: any) {
 //   state.eTitle = value
 // };

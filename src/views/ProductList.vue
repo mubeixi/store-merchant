@@ -23,6 +23,7 @@
         :is_paginate="dataTableOpt.is_paginate"
         :formSize="'small'"
         :isRow="true"
+        :proPage="dataTableOpt.page"
         @handleSizeChange="handleSizeChange"
         @currentChange="currentChange"
         @selectVal="selectVal"
@@ -62,6 +63,7 @@
         <template slot="operate-column" slot-scope="props">
           <span class="spans" @click="goEdit(props)">编辑</span>
           <span class="spans" @click="delProduct(props)">删除</span>
+          <span class="spans" @click="bindStoreList(props)">绑定门店</span>
         </template>
       </fun-table>
     </div>
@@ -79,6 +81,53 @@
           </template>
         </el-table-column>
       </el-table>
+    </el-dialog>
+
+
+        <bind-store-component
+          @cancel="bindStoreCancel"
+          @success="bindStoreSuccessCall"
+          :pageEl="pageEl"
+          :has="storeList"
+          :isType="!boo"
+          :show="bindStoreShow"
+        />
+
+    <el-dialog
+      :visible.sync="dialogInstance.proSkuShow"
+      title="选择商品属性"
+      width="500px"
+      center
+      :close-on-click-modal="boo"
+      @close="dialogCancels"
+      append-to-body
+      class="innerDislog"
+    >
+      <!--            :class="dialogInstance.skuval[idx1]==spec?'skuCheck':'unablechoose'"-->
+      <div class="dialog-container" v-loading="dialogInstance.loading" >
+        <div class="row" v-for="(item,idx1) of dialogInstance.product.skujosn_new" :key="idx1" >
+          <span class="label">{{item.sku}}:</span>
+          <div class="specs">
+            <div class="spec-item" :class="getClassFn(idx1,idx2)"  @click="selectAttr(item.sku,spec,idx1,idx2)"  v-for="(spec,idx2) of item.val" :key="idx2">
+              {{spec}}
+              <i class="el-icon-check"></i>
+              <div class="fill"></div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <span class="label">数量:</span>
+          <div class="specs">
+            <!--            :max="dialogInstance.stock"去掉库存限制-->
+            <el-input-number controls-position="right" :min="1"  size="small" v-model="dialogInstance.num" :step="1"></el-input-number>
+            <span class="font12 graytext2 padding10-c">库存{{dialogInstance.stock||'-'}}件</span>
+          </div>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogCancel">取 消</el-button>
+                <el-button @click="dialogSub" :loading="dialogInstance.addCartReq" style="background: #F43131;color:white" >确 定</el-button>
+            </span>
     </el-dialog>
 
 <!--    <el-dialog-->
@@ -105,10 +154,11 @@
         State
     } from 'vuex-class'
     import {Loading} from "element-ui";
-    import {getProducts,batchSetting,getProductCategory,delProduct,lookDissetting,getShippingTemplate} from '@/common/fetch';
-    import {findArrayIdx, plainArray, createTmplArray, objTranslate} from '@/common/utils';
+    import {getProducts,batchSetting,getProductCategory,delProduct,lookDissetting,getShippingTemplate,giveStoreProd} from '@/common/fetch';
+    import {findArrayIdx, plainArray, createTmplArray, objTranslate,compare_obj} from '@/common/utils';
     import _ from 'underscore'
     import {float} from "html2canvas/dist/types/css/property-descriptors/float";
+    import BindStoreComponent from "@/components/comm/BindStoreComponent.vue";
     const getParentsCount = (arr,key,pkey,val,tempArr)=>{
         var idx = false
         for(var i in arr){
@@ -140,6 +190,7 @@
         return plainArr
     }
 
+
     // import Cookies from 'js-cookie';
     // const Stores_ID = Cookies.get('Stores_ID')
     // const User_ID = Cookies.get('Stores_Bind_User_ID')
@@ -147,11 +198,182 @@
     @Component({
         mixins:[],
         components: {
-
+          BindStoreComponent
         }
     })
 
     export default class ProductList extends Vue {
+
+        //绑定门店
+      boo=false
+        bindStoreShow=false
+        storeList=[]
+        pageEl=this
+        selectStoreValue=[]
+        proRow={} //点击商品的时候的信息
+      dialogInstance={
+        proSkuShow:false,
+        loading:false,
+        num:0,
+        check_attr:[],
+        skuval:{},
+        product:{},
+        item:null,
+        stock:0,
+        idx:0,
+        addCartReq:false,
+        prd_attr_id:null//记录最终选出的attrid
+      }
+      dialogCancel(){
+          this.dialogInstance.proSkuShow=false
+          this.bindStoreShow=true
+      }
+      dialogCancels(){
+        this.dialogInstance.proSkuShow=false
+      }
+      async dialogSub(){
+
+        if(this.dialogInstance.stock<(this.dialogInstance.num*this.selectStoreValue.length)){
+          this.$notify.error({
+            title: '库存不足',
+            message: '库存小于当前库存'
+          });
+          return
+        }
+        let cart_buy={}
+        let proSku={
+          [this.dialogInstance.product.Products_ID]:{
+            [this.dialogInstance.prd_attr_id]:this.dialogInstance.num
+          }
+        }
+        for(let item of  this.selectStoreValue){
+          cart_buy[item]=proSku
+        }
+
+        let data={
+          cart_buy:JSON.stringify(cart_buy),
+          store_id:''
+        }
+
+        giveStoreProd(data).then(res=>{
+          this.$notify({
+            title: '成功',
+            message: res.msg,
+            type: 'success'
+          })
+          this.storeList=[]
+          this.selectStoreValue=[]
+          this.bindStoreShow=false
+          this.dialogInstance.proSkuShow=false
+        }).catch(e=>{
+          this.$notify.error({
+            title: '错误',
+            message: e.msg
+          })
+        })
+
+
+
+      }
+
+          //点击绑定门店
+        bindStoreList(props){
+          this.bindStoreShow=true
+          this.proRow=props.row
+          this.dialogInstance.product=this.proRow
+          let skujosn = this.dialogInstance.product.skujosn;
+          let skujosn_new = [];
+          for (let i in  this.dialogInstance.product.skujosn) {
+            skujosn_new.push({
+              sku: i,
+              val: skujosn[i]
+            });
+          }
+
+          this.dialogInstance.product.skujosn_new = skujosn_new;
+          console.log(props,"sss")
+        }
+      bindStoreCancel(){
+        this.bindStoreShow = false
+      }
+      bindStoreSuccessCall(list){
+          this.selectStoreValue=[]
+          for(let item of list){
+            this.selectStoreValue.push(item.Stores_ID)
+          }
+          this.storeList=this.selectStoreValue
+          this.bindStoreShow = false
+          this.dialogInstance.proSkuShow=true
+      }
+      getClassFn(idx1,idx2){
+        if(JSON.stringify(this.dialogInstance.product) == '{}')return {};
+        let disabled = true;
+        let count = 0;
+        let spec_info = {[this.dialogInstance.product.skujosn_new[idx1].sku]:this.dialogInstance.product.skujosn_new[idx1].val[idx2]};
+        // console.log(spec_info)
+
+        //模拟一下，如果现有的规格加上现在这个，还能有数量。那么就可以被选中
+        //直接用自己的属性覆盖上去，如果有同样一行的，就覆盖掉
+        let tempSkuVal = Object.assign({},this.dialogInstance.skuval,spec_info)
+
+        for(var key in this.dialogInstance.product.skuvaljosn){
+          //看是不是已经选中的属性在数组二中存在,只要存在一个，就不会是禁用的
+          //而且要有库存
+          if(compare_obj(tempSkuVal,this.dialogInstance.product.skuvaljosn[key].Attr_Value) && this.dialogInstance.product.skuvaljosn[key].Property_count>0){
+            disabled = false;
+            //累计可用库存
+            count += this.dialogInstance.product.skuvaljosn[key].Property_count
+          }
+        }
+
+
+
+        //是否选中
+        let choose = false
+        if(this.dialogInstance.skuval.hasOwnProperty(this.dialogInstance.product.skujosn_new[idx1].sku)){
+          if(this.dialogInstance.skuval[this.dialogInstance.product.skujosn_new[idx1].sku] === this.dialogInstance.product.skujosn_new[idx1].val[idx2])choose=true
+        }
+
+        let use = !disabled
+        return {choose,disabled,use}
+
+      }
+      //直接赋值了
+      selectAttr(val1,val2,idx1,idx2){
+
+        //是否禁用
+        let classObj = this.getClassFn(idx1,idx2)
+        if(classObj.disabled)return;
+
+        this.$set(this.dialogInstance.skuval,val1,val2)
+
+        let count = 0;
+        for(var key in this.dialogInstance.product.skuvaljosn){
+          //看是不是已经选中的属性在数组二中存在,只要存在一个，就不会是禁用的
+          //而且要有库存
+          if(compare_obj(this.dialogInstance.skuval,this.dialogInstance.product.skuvaljosn[key].Attr_Value) && this.dialogInstance.product.skuvaljosn[key].Property_count>0){
+
+            //正反来一下，就行了
+            if(compare_obj(this.dialogInstance.product.skuvaljosn[key].Attr_Value,this.dialogInstance.skuval)){
+              this.dialogInstance.prd_attr_id = this.dialogInstance.product.skuvaljosn[key].Product_Attr_ID
+            }
+            //累计可用库存
+            count += this.dialogInstance.product.skuvaljosn[key].Property_count
+          }
+        }
+
+        this.dialogInstance.stock = count
+
+        //数量太大就重置为1
+        if(this.dialogInstance.num>count){
+          this.dialogInstance.num = 1
+        }
+
+      }
+
+        //绑定门店主要逻辑
+
+
 
         imgPro=[]
         changeImg(url){
@@ -162,7 +384,7 @@
         dataTableOpt = {
             act : 'get_self_store_prod',
             dataList:[],
-            page:1,
+            page:4,
             totalCount:100,
             pageSize:10,
             is_paginate:true,//是否显示分页 默认显示
@@ -379,6 +601,7 @@
         }
         //跳转编辑页面
         goEdit(props){
+            this.$store.dispatch('setProPage',this.dataTableOpt.page)
             this.$router.push({
                 name: 'product',
                 query: {
@@ -441,6 +664,8 @@
         }
 
         created(){
+
+            this.dataTableOpt.page=this.$store.state.page
             let pro_name = this.$route.query.pro_name
             let activeNames = this.$route.query.status
 
@@ -476,7 +701,73 @@
     margin-right:4px;
     cursor:pointer;
   }
+  .dialog-container{
+    .row{
+      display: flex;
+      margin-bottom: 10px;
+      *{
+        user-select: none;
+      }
+      .label{
+        display: inline-block;
+        padding-right: 10px;
+        width: 60px;
+        height: 30px;
+        line-height: 30px;
+        text-align: right;
 
+      }
+      .specs{
+        flex: 1;
+        .spec-item{
+          position: relative;
+          display: inline-block;
+          margin: 0 10px 5px 0;
+          height: 30px;
+
+          min-width: 50px;
+          padding: 0 4px;
+          line-height: 30px;
+          text-align: center;
+          border: 1px solid #e7e7e7;
+          overflow: hidden;
+          cursor: pointer;
+
+          .el-icon-check{
+            display: none;
+          }
+          &.use:hover{
+            background: #f2f2f2;
+          }
+          &.disabled{
+            background: #f8f8f8 !important;
+            cursor: not-allowed !important;
+          }
+          &.choose{
+            .fill{
+              background: #F43131;
+              position: absolute;
+              right: -13px;
+              bottom: -12px;
+              width: 26px;
+              height: 26px;
+              transform: rotate(45deg);
+            }
+            .el-icon-check{
+              font-size: 12px;
+              position: absolute;
+              z-index: 2;
+              right: 0;
+              bottom: 0;
+              color: white;
+              display: inline-block;
+            }
+          }
+
+        }
+      }
+    }
+  }
 
 
 </style>
