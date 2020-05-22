@@ -102,7 +102,7 @@
 
       <span slot="footer" class="dialog-footer">
                 <el-button @click="cancel">取 消</el-button>
-                <el-button type="primary" @click="selectCoupon">确 定</el-button>
+                <el-button type="primary" @click="selectCoupon">{{isNext?'下一步':'确 定'}}</el-button>
             </span>
     </el-dialog>
 
@@ -132,6 +132,10 @@
   export default {
     name: 'BindStoreComponent',
     props: {
+      isNext:{
+        type:Boolean,
+        default:false
+      },
       isType:{
         type:Boolean,
         default:false
