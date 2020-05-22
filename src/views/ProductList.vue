@@ -63,7 +63,7 @@
         <template slot="operate-column" slot-scope="props">
           <span class="spans" @click="goEdit(props)">编辑</span>
           <span class="spans" @click="delProduct(props)">删除</span>
-          <span class="spans" @click="bindStoreList(props)">设置门店</span>
+          <span class="spans" @click="bindStoreList(props)">经销商配货</span>
         </template>
       </fun-table>
     </div>
@@ -90,6 +90,7 @@
           :pageEl="pageEl"
           :has="storeList"
           :isType="!boo"
+          :isNext="!boo"
           :show="bindStoreShow"
         />
 
@@ -521,7 +522,7 @@
                     prop: "operate",
                     label: "操作",
                     align:'center',
-                    width:150,
+                    width:200,
                     search: false
                 }
             ]
