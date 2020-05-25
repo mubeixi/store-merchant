@@ -391,6 +391,40 @@
             if(id){
                 info.id=id
             }
+            if(info.start_time){
+
+              let nowDate = new Date();
+              let yy = nowDate.getFullYear(); //年
+              let mm = nowDate.getMonth() + 1; //月
+              let dd = nowDate.getDate(); //日
+              let hh = nowDate.getHours(); //时
+              let ii = nowDate.getMinutes(); //分
+              let ss = nowDate.getSeconds(); //秒
+              let time = yy + "-";
+              if (mm < 10) time += "0";
+              time += mm + "-";
+              if (dd < 10) time += "0";
+              time += dd + " ";
+              if (hh < 10) time += "0";
+              time += hh + ":";
+              if (ii < 10) time += '0';
+              time += ii + ":";
+              if (ss < 10) time += '0';
+              time += ss;
+
+              let infoStart=new Date(info.start_time).getTime()
+              let start=new Date(time).getTime()
+              if(infoStart < start){
+                this.$message({
+                  message:'开始时间不能小于当前时间',
+                  type: 'error'
+                })
+                this.isLoadng=false
+                return
+              }
+            }
+
+
             let that=this
             addTurn(info).then(res=>{
                 if(res.errorCode==0){
