@@ -1546,7 +1546,6 @@
                         Products_Weight:this.ruleForm.Products_Weight,//商品重量
                         fee_type:this.ruleForm.goods,//运费选择
                         prod_order_type:this.ruleForm.orderType,//订单类型
-                        Products_Description:this.editorText,//富文本类型
                         Product_backup:this.ruleForm.refund,//退货id
                         platForm_Income_Reward:this.platForm_Income_Reward,
                         nobi_ratio:this.nobi_ratio,
@@ -1555,6 +1554,13 @@
                         commission_ratio:this.commission_ratio,
                         manage_Reward:this.manage_Reward
                     };
+                    if(this.editorText){
+                      productInfo.Products_Description=this.editorText//富文本类型
+                    }else{
+                      productInfo.Products_Description=''//富文本类型
+                    }
+
+
 
                     if(!this.need_price_y)delete productInfo.Products_PriceY
                     if(this.ruleForm.orderType==2){
@@ -2116,6 +2122,7 @@
               this.ruleForm.goods=String(productInfo.fee_type);//运费选择
               this.ruleForm.freight=String(productInfo.Shipping_Free_Company);
               this.ruleForm.orderType=String(productInfo.prod_order_type);//订单类型
+
 
               this.editorText=productInfo.Products_Description;//富文本类型
               if(this.ruleForm.goods==1){
