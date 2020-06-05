@@ -1360,9 +1360,15 @@
             this.multipleSelection = val;
         }
         changeRadio(){
-            // if(this.ruleForm.orderType==2){
-            //     this.isShow=true;
-            // }
+            if(this.ruleForm.orderType==2){
+              let boo=confirm("选择该订单类型将会重置您设置的规格，确认选择吗？");
+              if (boo==true) {
+                this.specs=[]
+                this.ruleForm.Products_Type=''
+              } else {
+                this.ruleForm.orderType='0'
+              }
+            }
         }
         clickRadio(){
             this.isShow=true;
@@ -1370,7 +1376,9 @@
         searchCard(){
             let data={
                 card_name:this.CardIdSelect,
-                type_id:this.CardTypeSelect
+                type_id:this.CardTypeSelect,
+                page:1,
+                pageSize:10
             }
             let id = this.$route.query.prod_id;
             if(id){
@@ -2049,7 +2057,7 @@
             await getShippingTemplate().then(res=>{
                 this.yunfei=res.data
             })
-            await  virtualCardList({prod_id:id}).then(res=>{
+            await  virtualCardList({prod_id:id,page:1,pageSize:10}).then(res=>{
                 this.CardList=res.data;
                 this.multipleSelection=[];
                 for(let item of this.CardList){
