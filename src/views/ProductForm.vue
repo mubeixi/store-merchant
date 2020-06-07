@@ -673,6 +673,16 @@
             show-overflow-tooltip>
           </el-table-column>
         </el-table>
+        <el-pagination
+          background
+          @size-change="handleSizeChangeCard"
+          @current-change="handleCurrentChangeCard"
+          :page-size="cardPageSize"
+          :current-page="currentPage"
+          layout="total, sizes, prev, pager, next, jumper"
+          :page-sizes="[10, 20, 30, 40,50]"
+          :total="cardTotalCount">
+        </el-pagination>
         <el-button  type="primary" style="margin-top: 10px" @click="sureCard">确定</el-button>
     </el-dialog>
     <div class="setting ponint" @click="commission=true">
@@ -1377,12 +1387,12 @@
             let data={
                 card_name:this.CardIdSelect,
                 type_id:this.CardTypeSelect,
-                page:1,
-                pageSize:10
+                page:this.currentPage,
+                pageSize:this.cardPageSize
             }
             let id = this.$route.query.prod_id;
             if(id){
-                data.prod_id=id;
+                data.prod_id=id
             }
             virtualCardList(data).then(res=>{
                 this.CardList=res.data;
@@ -1989,7 +1999,18 @@
         }
       //是否展示原价
       need_price_y=0
+      cardTotalCount=0
+      cardPageSize=10
+      currentPage=1
+      handleCurrentChangeCard(val){
 
+        this.currentPage = val
+        this.searchCard()
+      }
+      handleSizeChangeCard(val){
+        this.cardPageSize = val
+        this.searchCard()
+      }
         async created(){
 
             const loadingObj = this.$loading({
@@ -2057,8 +2078,9 @@
             await getShippingTemplate().then(res=>{
                 this.yunfei=res.data
             })
-            await  virtualCardList({prod_id:id,page:1,pageSize:10}).then(res=>{
+            await  virtualCardList({prod_id:id,page:this.currentPage,pageSize:this.cardPageSize}).then(res=>{
                 this.CardList=res.data;
+                this.cardTotalCount=res.totalCount
                 this.multipleSelection=[];
                 for(let item of this.CardList){
                     if(item.Products_Relation_ID==id){
