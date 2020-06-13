@@ -1269,6 +1269,7 @@
             if(this.noEditField.Products_Type) return
             if(this.specs[i].vals.length<=1) return;
             this.specs[i].vals.splice(j,1);
+            this.specs[i].imgs.splice(j,1);
             //this.createSkuData();
         }
         createSkuData(){
