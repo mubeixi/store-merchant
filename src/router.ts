@@ -231,7 +231,8 @@ const routerInstance = new Router({
       name: 'ProductList',
       component: ProductList,
       meta:{
-        title:'商品列表'
+        title:'商品列表',
+        keepAlive: true
       }
     },
     {
