@@ -2,7 +2,10 @@
   <div id="app">
     <!--全局的资源管理器-->
     <wzw-finder :show="finderDialogInstance.visible"></wzw-finder>
-    <router-view/>
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive" />
   </div>
 </template>
 <script lang="ts">
