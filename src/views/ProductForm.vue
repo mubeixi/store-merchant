@@ -673,6 +673,16 @@
             show-overflow-tooltip>
           </el-table-column>
         </el-table>
+        <el-pagination
+          background
+          @size-change="handleSizeChangeCard"
+          @current-change="handleCurrentChangeCard"
+          :page-size="cardPageSize"
+          :current-page="currentPage"
+          layout="total, sizes, prev, pager, next, jumper"
+          :page-sizes="[10, 20, 30, 40,50]"
+          :total="cardTotalCount">
+        </el-pagination>
         <el-button  type="primary" style="margin-top: 10px" @click="sureCard">确定</el-button>
     </el-dialog>
     <div class="setting ponint" @click="commission=true">
@@ -1259,6 +1269,7 @@
             if(this.noEditField.Products_Type) return
             if(this.specs[i].vals.length<=1) return;
             this.specs[i].vals.splice(j,1);
+            this.specs[i].imgs.splice(j,1);
             //this.createSkuData();
         }
         createSkuData(){
@@ -1360,9 +1371,15 @@
             this.multipleSelection = val;
         }
         changeRadio(){
-            // if(this.ruleForm.orderType==2){
-            //     this.isShow=true;
-            // }
+            if(this.ruleForm.orderType==2){
+              let boo=confirm("选择该订单类型将会重置您设置的规格，确认选择吗？");
+              if (boo==true) {
+                this.specs=[]
+                this.ruleForm.Products_Type=''
+              } else {
+                this.ruleForm.orderType='0'
+              }
+            }
         }
         clickRadio(){
             this.isShow=true;
@@ -1370,11 +1387,13 @@
         searchCard(){
             let data={
                 card_name:this.CardIdSelect,
-                type_id:this.CardTypeSelect
+                type_id:this.CardTypeSelect,
+                page:this.currentPage,
+                pageSize:this.cardPageSize
             }
             let id = this.$route.query.prod_id;
             if(id){
-                data.prod_id=id;
+                data.prod_id=id
             }
             virtualCardList(data).then(res=>{
                 this.CardList=res.data;
@@ -1546,7 +1565,6 @@
                         Products_Weight:this.ruleForm.Products_Weight,//商品重量
                         fee_type:this.ruleForm.goods,//运费选择
                         prod_order_type:this.ruleForm.orderType,//订单类型
-                        Products_Description:this.editorText,//富文本类型
                         Product_backup:this.ruleForm.refund,//退货id
                         platForm_Income_Reward:this.platForm_Income_Reward,
                         nobi_ratio:this.nobi_ratio,
@@ -1555,6 +1573,13 @@
                         commission_ratio:this.commission_ratio,
                         manage_Reward:this.manage_Reward
                     };
+                    if(this.editorText){
+                      productInfo.Products_Description=this.editorText//富文本类型
+                    }else{
+                      productInfo.Products_Description=''//富文本类型
+                    }
+
+
 
                     if(!this.need_price_y)delete productInfo.Products_PriceY
                     if(this.ruleForm.orderType==2){
@@ -1975,7 +2000,18 @@
         }
       //是否展示原价
       need_price_y=0
+      cardTotalCount=0
+      cardPageSize=10
+      currentPage=1
+      handleCurrentChangeCard(val){
 
+        this.currentPage = val
+        this.searchCard()
+      }
+      handleSizeChangeCard(val){
+        this.cardPageSize = val
+        this.searchCard()
+      }
         async created(){
 
             const loadingObj = this.$loading({
@@ -2043,8 +2079,9 @@
             await getShippingTemplate().then(res=>{
                 this.yunfei=res.data
             })
-            await  virtualCardList({prod_id:id}).then(res=>{
+            await  virtualCardList({prod_id:id,page:this.currentPage,pageSize:this.cardPageSize}).then(res=>{
                 this.CardList=res.data;
+                this.cardTotalCount=res.totalCount
                 this.multipleSelection=[];
                 for(let item of this.CardList){
                     if(item.Products_Relation_ID==id){
@@ -2116,6 +2153,7 @@
               this.ruleForm.goods=String(productInfo.fee_type);//运费选择
               this.ruleForm.freight=String(productInfo.Shipping_Free_Company);
               this.ruleForm.orderType=String(productInfo.prod_order_type);//订单类型
+
 
               this.editorText=productInfo.Products_Description;//富文本类型
               if(this.ruleForm.goods==1){
