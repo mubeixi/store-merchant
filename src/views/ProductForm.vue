@@ -439,7 +439,8 @@
       </el-form-item>
       <el-form-item label="商品详情">
         <div style="padding-right: 200px">
-          <wzw-editor ref="richtext" :content.sync="editorText"    @on-content-change="onContentChange"></wzw-editor>
+          <wzw-tinymce :content.sync="editorText"  ref="richtext"></wzw-tinymce>
+<!--          <wzw-editor ref="richtext" :content.sync="editorText"    @on-content-change="onContentChange"></wzw-editor>-->
 <!--          <kind-editor id="container" height="400px" width="800px" :content.sync="editorText"-->
 <!--                      :afterChange="afterChange()"-->
 <!--                      :loadStyleMode="false"-->
@@ -735,12 +736,11 @@
     import BindCateComponents from '@/components/BindCateComponents.vue';
     import BindStoreComponent from "@/components/comm/BindStoreComponent.vue";
     import SettingComponent from "@/components/comm/SettingComponent.vue";
-    // import KindEditor from "@/components/comm/kindeditor.vue"
-    import WzwEditor from "../components/editor/WzwEditor.vue";
+    import WzwTinymce from "../components/editor/WzwTinymce.vue";
 
     import {
         FUNFinder
-    } from '../components/editor/ckeditt-resource/FUNFinder';
+    } from '../components/editor/FUNFinder';
 
     import {
         getProductCategory,
@@ -773,9 +773,7 @@
         components: {
             BindStoreComponent,
             SettingComponent,
-            WzwEditor,
-
-            // KindEditor,
+            WzwTinymce,
             UploadComponents,BindCateComponents
         },
         watch:{
@@ -1519,6 +1517,9 @@
 
         }
         submitForm(formName) {
+
+          this.editorText = this.$refs.richtext.getContent()
+
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.isLoading=true;
@@ -2163,8 +2164,9 @@
               }
               this.$nextTick().then(()=>{
                 //做一下富文本的格式化，兼容原来浏览器的视频标签
-                let richTxt = formatRichTextByKindEditor(productInfo.Products_Description)
-                this.$refs.richtext.setData(richTxt)
+
+                let richTxt = productInfo.Products_Description//formatRichTextByKindEditor(productInfo.Products_Description)
+                this.$refs.richtext.setContent(richTxt)
               })
 
 

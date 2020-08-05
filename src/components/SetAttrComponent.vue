@@ -413,7 +413,7 @@
         Action,
         State
     } from 'vuex-class'
-    import {FUNFinder} from '../components/editor/ckeditt-resource/FUNFinder';
+    import {FUNFinder} from '../components/editor/FUNFinder';
 
 
 

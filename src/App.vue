@@ -19,6 +19,7 @@ import {
     State
 } from 'vuex-class'
 import WzwFinder from './components/editor/WzwFinder';
+import { FUNFinder } from "./components/editor/FUNFinder";
 
 @Component({
     components:{
@@ -32,6 +33,7 @@ export default class App extends Vue {
     @Action setInitData
     @State initData
     created() {
+      window.FUNFinder = FUNFinder
         getCommonConfig().then(res=>{
             this.setInitData(res.data)
 
