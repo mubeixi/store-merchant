@@ -193,17 +193,18 @@
         this.$emit('change',content)
       },
       destroyTinymce() {
+        console.log('destroyTinymce')
         if (window.tinymce.get(this.tinymceId)) {
           window.tinymce.get(this.tinymceId).destroy()
         }
       },
       // 设置编辑器内容
       setContent(value) {
-        window.tinymce.get(this.tinymceId).setContent(value)
+        window.tinymce && window.tinymce.get(this.tinymceId).setContent(value)
       },
       // 获取编辑器内容
       getContent() {
-        return window.tinymce.get(this.tinymceId).getContent()
+        return window.tinymce && window.tinymce.get(this.tinymceId).getContent()
       },
       loadResource(){
         return new Promise((resolve, reject) => {
@@ -232,6 +233,7 @@
           language: 'zh_CN',
           height: 500,
           max_height:700,
+          toolbar_mode:'wrap',
           // menubar:false,
           plugins: 'funimgs code print preview searchreplace autolink directionality visualblocks visualchars fullscreen media template codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount imagetools textpattern link lplink help emoticons autosave indent2em lineheight',
           toolbar: 'code  | removeformat forecolor backcolor link lplink | styleselect alignment indent2em lineheight |table funimgs media |  fontselect fontsizeselect | bullist numlist| charmap emoticons hr pagebreak insertdatetime | blockquote subscript superscript   |  print preview fullscreen undo redo restoredraft',

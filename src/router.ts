@@ -121,6 +121,7 @@ const routerInstance = new Router({
       name: 'product',
       component: ProductForm,
       meta:{
+        keepAlive:false,
         title:'发布商品'
       }
     }
@@ -232,7 +233,7 @@ const routerInstance = new Router({
       component: ProductList,
       meta:{
         title:'商品列表',
-        keepAlive: true
+        keepAlive: false
       }
     },
     {

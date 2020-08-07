@@ -4,12 +4,12 @@
 const shell = require('shelljs');
 // 全局模式下，就不需要用shell开头了。
 // require('shelljs/global');
-shell.exec('git pull origin master');
-//
-if (shell.exec('npm run buildtest').code !== 0) { // 执行npm run build 命令
-  shell.echo('Error: Git commit failed');
-  shell.exit(1);
-}
+// shell.exec('git pull origin master');
+// //
+// if (shell.exec('npm run buildtest').code !== 0) { // 执行npm run build 命令
+//   shell.echo('Error: Git commit failed');
+//   shell.exit(1);
+// }
 
 // 不能在一股脑全部添加了
 const options = {
@@ -68,7 +68,7 @@ ftpDeploy.deploy(config, (err, res) => {
 ftpDeploy.on('uploading', (data) => {
   console.log(`${data.transferredFileCount}----${data.totalFilesCount}`); // total file count being transferred
   // console.log(); // number of files transferred
-  const size = parseInt(data.totalFilesCount / 1024 * 100,10) / 100;
+  const size = parseInt(data.totalFilesCount / 1024 * 100, 10) / 100;
   console.log(`start up ${data.filename} ，fileSize ${size}kb`); // partial path with filename being uploaded
 });
 ftpDeploy.on('uploaded', (data) => {
