@@ -73,10 +73,10 @@
       <el-table :data="settingData" >
         <el-table-column align="center" type="index" label="序号" width="150"></el-table-column>
         <el-table-column align="center" property="level_name" label="级别名称" width="200"></el-table-column>
-        <el-table-column align="center" label="佣金明细">
+        <el-table-column align="center" label="首购佣金明细">
           <template  slot-scope="scope" >
             <div v-for="(item,index) of settingData[scope.$index].commisions">
-              {{item.label}}{{item.value}}(佣金比例的百分比)
+              {{item.label}} {{item.value}} ({{item.desc}})
             </div>
           </template>
         </el-table-column>
