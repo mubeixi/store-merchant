@@ -669,7 +669,7 @@
             getAddress({User_ID}).then(res=>{
                 this.addData = res.data;
                 this.addData.forEach(item=>{
-                    item.addinfo = item.Address_Province_name + item.Address_City_name + item.Address_Area_name + item.Address_Town_name;
+                    item.addinfo = item.Address_Province_name + item.Address_City_name + item.Address_Area_name + item.Address_Town_name + item.Address_Detailed;
                 })
                 console.log(this.addData);
             })
