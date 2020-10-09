@@ -649,7 +649,7 @@
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
               <el-input v-model="platForm_Income_Reward"
                         style="width: 80px;margin-left: 19px;"></el-input>
-              % <span class="msg">(发放金额所占网站利润百分比；小于100%大于0%)0</span>
+              % <span class="msg">(发放金额所占网站利润百分比；小于100%大于0%)</span>
             </el-form-item>
           </div>
         </div>
