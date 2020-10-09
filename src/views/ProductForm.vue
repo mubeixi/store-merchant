@@ -907,6 +907,7 @@
   import {FUNFinder} from '../components/editor/FUNFinder';
 
   import {
+    getCommonConfig,
     getGivingCoupons,
     getProductCategory,
     getShippingTemplate,
@@ -926,7 +927,7 @@
     plainArray
   } from '@/common/utils';
   import {fun} from '@/common';
-  import {State} from "vuex-class";
+  import {Action, State} from "vuex-class";
 
   @Component({
     mixins: [],
@@ -965,6 +966,7 @@
   })
   export default class AddProduct extends Vue {
     @State initData
+    @Action setInitData
     delCoupon(id) {
       let arr = []
       for (let i = 0; i < this.selectValue.length; i++) {
@@ -2270,6 +2272,11 @@
         text: '拼命加载中',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.3)'
+      })
+
+      await getCommonConfig().then(res=>{
+        this.setInitData(res.data)
+        this.initData=res.data
       })
 
       await systemProdConfig().then(res => {
