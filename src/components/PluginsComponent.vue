@@ -5,7 +5,15 @@
       <ul>
         <li :data-label="item.label" draggable="true" :title="item.tip" @dragstart="sourceDrag"
             v-for="(item,key) in group.list">
-          <div class="center">
+          <block v-if="item.label=='flash'">
+            <div class="center"   v-if="initData.version_type>1">
+              <img draggable="false" class="icon" :src="item.icon" />
+              <img draggable="false" class="icona" :src="item.icona" />
+              <div class="text">{{item.value}}</div>
+            </div>
+          </block>
+
+          <div class="center" v-else>
             <img draggable="false" class="icon" :src="item.icon" />
             <img draggable="false" class="icona" :src="item.icona" />
             <div class="text">{{item.value}}</div>
@@ -22,10 +30,12 @@
 <script lang="ts">
     import {Component, Prop, Vue} from 'vue-property-decorator';
     import {PLUGINSLIST} from '@/common/data';
+    import {State} from "vuex-class";
 
     @Component
     export default class PluginsComponent extends Vue {
         @Prop() private msg!: string;
+        @State initData
 
         plugins = PLUGINSLIST
 
