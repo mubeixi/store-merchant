@@ -653,7 +653,7 @@
             </el-form-item>
           </div>
         </div>
-        <div class="commissionDiv">
+        <div class="commissionDiv" v-if="initData.version_type>1">
           <div class="titles">
             爵位奖励比例
           </div>
@@ -664,7 +664,7 @@
             </el-form-item>
           </div>
         </div>
-        <div class="commissionDiv">
+        <div class="commissionDiv"  v-if="initData.version_type>1">
           <div class="titles">
             区域代理比例
           </div>
@@ -676,7 +676,7 @@
             </el-form-item>
           </div>
         </div>
-        <div class="commissionDiv">
+        <div class="commissionDiv"  v-if="initData.version_type>1">
           <div class="titles">
             股东佣金比例
           </div>
@@ -926,6 +926,7 @@
     plainArray
   } from '@/common/utils';
   import {fun} from '@/common';
+  import {State} from "vuex-class";
 
   @Component({
     mixins: [],
@@ -963,7 +964,7 @@
     }
   })
   export default class AddProduct extends Vue {
-
+    @State initData
     delCoupon(id) {
       let arr = []
       for (let i = 0; i < this.selectValue.length; i++) {
@@ -1988,6 +1989,15 @@
           productInfo.self_commi = this.self_commi
           productInfo.parent_commi = this.parent_commi
           productInfo.manage_commi = this.manage_commi
+
+          if(this.initData.version_type<=1){
+            productInfo.nobi_ratio=0
+            productInfo.area_Proxy_Reward=0
+            productInfo.sha_Reward=0
+          }
+
+
+
           systemOperateProd(productInfo, {}).then(res => {
             if (res.errorCode == 0) {
               this.isLoading = false;
@@ -2314,6 +2324,13 @@
         this.area_Proxy_Reward = res.data.Shop_Commision_Reward_Json.area_Proxy_Reward;
         this.commission_ratio = res.data.Shop_Commision_Reward_Json.commission_Reward;
         this.manage_Reward = res.data.Shop_Commision_Reward_Json.manage_Reward;
+
+        if(this.initData.version_type<=1){
+          this.nobi_ratio=0
+          this.area_Proxy_Reward=0
+          this.sha_Reward=0
+        }
+
       }).catch();
 
       let id = this.$route.query.prod_id;
@@ -2464,6 +2481,13 @@
         this.sha_Reward = productInfo.sha_Reward;
         this.commission_ratio = productInfo.commission_ratio;
         this.manage_Reward = productInfo.manage_Reward
+
+
+        if(this.initData.version_type<=1){
+          this.nobi_ratio=0
+          this.area_Proxy_Reward=0
+          this.sha_Reward=0
+        }
 
         this.Products_Promise = [];
         if (productInfo.Products_SoldOut) {
