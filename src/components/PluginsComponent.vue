@@ -3,22 +3,25 @@
     <div v-for="(group,idx) in plugins">
       <div class="dt">{{group.groupTitle}}</div>
       <ul>
-        <li :data-label="item.label" draggable="true" :title="item.tip" @dragstart="sourceDrag"
-            v-for="(item,key) in group.list">
-          <block v-if="item.label=='flash'">
-            <div class="center"   v-if="initData.version_type>1">
+        <block v-for="(item,key) in group.list">
+          <li :data-label="item.label" draggable="true" :title="item.tip" @dragstart="sourceDrag"  v-if="item.label=='flash'&&initData.version_type>1"
+          >
+              <div class="center"  >
+                <img draggable="false" class="icon" :src="item.icon" />
+                <img draggable="false" class="icona" :src="item.icona" />
+                <div class="text">{{item.value}}</div>
+              </div>
+          </li>
+          <li :data-label="item.label" draggable="true" :title="item.tip" @dragstart="sourceDrag"  v-else-if="item.label!='flash'"
+          >
+            <div class="center" >
               <img draggable="false" class="icon" :src="item.icon" />
               <img draggable="false" class="icona" :src="item.icona" />
               <div class="text">{{item.value}}</div>
             </div>
-          </block>
+          </li>
+        </block>
 
-          <div class="center" v-else>
-            <img draggable="false" class="icon" :src="item.icon" />
-            <img draggable="false" class="icona" :src="item.icona" />
-            <div class="text">{{item.value}}</div>
-          </div>
-        </li>
 
       </ul>
     </div>
