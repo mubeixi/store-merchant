@@ -115,7 +115,7 @@
 
 
 
-            this.preUrl = front_url+'/pages/index/pre'+str;
+            this.preUrl = front_url+'/fre/pages/index/pre'+str;
             console.log('更新preurl',this.preUrl);
 
         }
