@@ -2,7 +2,7 @@ let {origin} = location
 console.log('origin is',origin)
 export const staticUrl = process.env.NODE_ENV === 'production'?origin:'https://new401t.bafangka.com/';
 //process.env.NODE_ENV === 'production'?origin:
-export const front_url = process.env.VUE_APP_FRONT_URL;
+export const front_url = process.env.NODE_ENV === 'production'?origin:'https://new401t.bafangka.com/'
 
 export const apiKey = '458f_$#@$*!fdjisdJDFHUk4%%653154%^@#(FSD#$@0-T';
 
