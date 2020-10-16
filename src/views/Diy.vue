@@ -111,7 +111,7 @@
             let str = serialize(obj);
             if(str)str = '?'+str;
 
-            this.preUrl = front_url+'/pages/page/page'+str;
+            this.preUrl = front_url+'/fre/pages/page/page'+str;
             console.log('更新preurl',this.preUrl);
 
         }
