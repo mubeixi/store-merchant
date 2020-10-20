@@ -99,10 +99,10 @@ function setAttrData() {
           console.log(dataType, type, path, tooltip, dataArr, pageEl, idx2)
           pageEl.bindCateDialogShow = false;
 
-          let tabItemEl = document.getElementById('tab-item' + idx2);
-          if (tabItemEl) {
-            tabItemEl.click();
-          }
+          //let tabItemEl = document.getElementById('tab-item' + idx2);
+          //if (tabItemEl) {
+            //tabItemEl.click();
+          //}
 
           let ids = dataArr.map(item=>item.id)
 
