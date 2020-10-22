@@ -19,11 +19,13 @@
     </div>
     <fun-table
       ref="dataTable"
+      @handleSizeChange='handleSizeChange'
+      @currentChange='currentChange'
       :columns="dataTableOpt.columns"
       :isSelect="dataTableOpt.isSelect"
       :dataList="dataTableOpt.dataList"
-      :totalCount="dataTableOpt.totalCount"
-      :pageSize="dataTableOpt.pageSize"
+      :_totalCount="dataTableOpt.totalCount"
+      :_pageSize="dataTableOpt.pageSize"
       :is_paginate="dataTableOpt.is_paginate"
       :formSize="'small'"
       :isRow="true"
@@ -196,7 +198,7 @@
             isSelect:false,
             totalCount:0,
             pageSize:10,
-            is_paginate:false,//是否显示分页 默认显示
+            is_paginate:true,//是否显示分页 默认显示
             columns : [
                 {
                     prop: "user_id",
@@ -335,12 +337,25 @@
         // }
 
         loadFnc({index = 0}={}){
-            getDistributorContributeDetail({rule_id:this.$route.query.id,index}).then(res=>{
+            getDistributorContributeDetail({rule_id:this.$route.query.id,index,page:this.dataTableOpt.page,pageSize:this.dataTableOpt.pageSize}).then(res=>{
+                this.dataTableOpt.totalCount=res.totalCount
                 this.dataTableOpt.dataList = res.data.record
+                
                 let {name,total_sales,rule_arr,time} = res.data
                 this.rule_list = rule_arr
                 this.info = {name,total_sales,time}
             })
+        }
+
+        handleSizeChange(pageSize){
+            this.dataTableOpt.pageSize=pageSize
+            this.dataTableOpt.page=1
+            this.loadFnc()
+            
+        }
+        currentChange(page){
+            this.dataTableOpt.page=page
+            this.loadFnc()
         }
 
         created(){
