@@ -105,6 +105,37 @@
         <span class="sortMsg">注：佣金将从商品利润中取出一部分发放</span>
       </el-form-item>
 
+       <el-form-item label="赠送积分" prop="Products_Profit">
+        <el-input v-model="ruleForm.Integral_gain" :disabled="noEditField.Products_Profit"
+                  class="sortInput "></el-input>
+      </el-form-item>
+
+
+      <el-form-item label="经销商进货折扣" prop="Products_Profit">
+        <!-- prodConfig.stores_type_list -->
+        <div v-for="(item,index) of stores_type_list" :key="index" style="display:flex;margin-bottom:10px;">
+          <div style="width:100px">{{item.type_name}}</div>
+          <el-input v-if="stores_type_list[index]" v-model="stores_type_list[index].retailer_fee" :disabled="noEditField.Products_Profit"
+                  class="sortInput sortInputs" style="margin-right:10px"></el-input>
+        </div>
+        
+      </el-form-item>
+
+      <el-form-item label="会员折扣" prop="Products_Profit">
+        <!-- prodConfig.stores_type_list -->
+        <div v-for="(item,index) of user_level_list" :key="index" style="display:flex;margin-bottom:10px;">
+          <div style="width:100px">{{item.level_name}}</div>
+          <el-input v-if="user_level_list[index]" v-model="user_level_list[index].discount" :disabled="noEditField.Products_Profit"
+                  class="sortInput " style="margin-right:10px"></el-input>折
+        </div>
+        
+      </el-form-item>
+
+
+      
+      
+      
+
 
       <el-dialog title="预览素材" :visible.sync="preDialogInstance.show">
         <video width="100%" style="max-height: 500px" controls autoplay
@@ -1350,6 +1381,7 @@
       pintuan_pricex: '',//拼团价格
       pintuan_end_time: '',//拼团时间
       Products_Profit: '',//商品利润
+      Integral_gain:'',
       Products_BriefDescription: '',//商品简介
       Products_Type: '',//商品类型
       Products_Weight: 0,//商品重量
@@ -1785,6 +1817,7 @@
             Products_PriceX: this.ruleForm.Products_PriceX,//现价
             pintuan_flag: this.ruleForm.pintuan_flag ? '1' : '0',//是否拼团
             Products_Profit: this.ruleForm.Products_Profit,//产品利润
+            Integral_gain: this.ruleForm.Integral_gain,//产品利润
             Products_BriefDescription: this.ruleForm.Products_BriefDescription,//产品简介
             Products_Count: this.ruleForm.Products_Count,//库存
             Products_Type: this.ruleForm.Products_Type,//商品类型id
@@ -1997,6 +2030,25 @@
             productInfo.area_Proxy_Reward=0
             productInfo.sha_Reward=0
           }
+          let retailer_feejson={}
+          if(this.stores_type_list.length>0){
+            for(let item of  this.stores_type_list){
+                retailer_feejson[item.id]=item.retailer_fee
+            }
+            productInfo.retailer_feejson=JSON.stringify(retailer_feejson)
+
+          }
+
+          let user_discountjson={}
+          if(this.user_level_list.length>0){
+            for(let item of  this.user_level_list){
+                user_discountjson[item.id]=item.discount
+            }
+            productInfo.user_discountjson=JSON.stringify(user_discountjson)
+
+          }
+
+          
 
 
 
@@ -2263,7 +2315,8 @@
 
 
     showEditor = true
-
+    stores_type_list=[]
+    user_level_list=[]
 
     async created() {
 
@@ -2288,6 +2341,12 @@
           Type_ID: 0,
           Type_Name: "无规格"
         })
+        this.stores_type_list=JSON.parse(JSON.stringify(this.prodConfig.stores_type_list))
+
+        this.user_level_list=JSON.parse(JSON.stringify(this.prodConfig.user_level_list))
+
+
+
         this.dis_level_list = res.data.dis_level_list
         this.Dis_Level_arr = res.data.Dis_Level_arr
         this.need_price_y = res.data.need_price_y
@@ -2374,6 +2433,27 @@
         let productInfo = productRT.data
 
 
+        let retailer_feejson=JSON.parse(productInfo.retailer_feejson)
+        let user_discountjson=JSON.parse(productInfo.user_discountjson)
+        for(let retailer in retailer_feejson){
+          for(let it of this.stores_type_list){
+              if(retailer==it.id){
+                it.retailer_fee=retailer_feejson[retailer]
+              }
+          }
+        }
+
+        for(let discountjson in user_discountjson){
+          for(let it of this.user_level_list){
+              if(discountjson==it.id){
+                it.discount=user_discountjson[discountjson]
+              }
+          }
+        }
+
+        
+
+
         //优惠券
         this.selectValue = productInfo.coupon_present.split(',')
         getGivingCoupons({pageSize: 9999, page: 1}).then(res => {
@@ -2414,6 +2494,8 @@
         this.ruleForm.Products_PriceX = productInfo.Products_PriceX;//现价
         this.ruleForm.pintuan_flag = productInfo.pintuan_flag ? true : false;//是否拼团
         this.ruleForm.Products_Profit = productInfo.Products_Profit;//产品利润
+        this.ruleForm.Integral_gain = productInfo.Integral_gain;//产品利润
+        
         this.ruleForm.Products_BriefDescription = productInfo.Products_BriefDescription;//产品简介
         this.ruleForm.Products_Count = productInfo.Products_Count;//库存
         this.ruleForm.Products_Type = productInfo.Products_Type;//商品类型id
