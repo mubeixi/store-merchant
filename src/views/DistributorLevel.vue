@@ -203,13 +203,14 @@
                   <el-option label="文本框" value="input" ></el-option>
                   <el-option label="选择框" value="select" ></el-option>
                   <el-option label="地区选择" value="address" ></el-option>
+                  <el-option label="图片" value="image" ></el-option>
                 </el-select>
               </div>
               <div class="td">
                 <el-input class="widthmbx" v-model="item.name" maxlength="10"></el-input>
               </div>
               <div class="td">
-                <el-input class="widthmbx" v-model="item.place" maxlength="10" placeholder="多个值以|分隔" :disabled="item.type=='address'"></el-input>
+                <el-input class="widthmbx" v-model="item.place" maxlength="10" placeholder="多个值以|分隔" :disabled="item.type=='address'||item.type=='img'"></el-input>
               </div>
               <div class="td" style="width: 125px">
                 <img src="@/assets/img/mydel.png" style="cursor:pointer;" @click="delManual(index)">
