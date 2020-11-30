@@ -2042,7 +2042,7 @@
           let user_discountjson={}
           if(this.user_level_list.length>0){
             for(let item of  this.user_level_list){
-                user_discountjson[item.id]=item.discount
+                user_discountjson[item.level]=item.discount
             }
             productInfo.user_discountjson=JSON.stringify(user_discountjson)
 
