@@ -26,6 +26,9 @@
         </el-tooltip>
       </el-form-item>
 
+      
+
+
       <el-form-item label="商品分类">
         <span class="classificationSpan" @click="bindCateDialogShow=true">选择分类</span>
       </el-form-item>
@@ -38,6 +41,10 @@
                   class="sortInput"></el-input>
         <span class="sortMsg">注：消费者看到的销量</span>
       </el-form-item>
+
+
+
+  
 
       <el-form-item label="产品价格">
         <el-form-item prop="Products_PriceY" style="display: inline-block;margin-bottom: 0px"
@@ -111,7 +118,7 @@
       </el-form-item>
 
 
-      <el-form-item label="经销商进货折扣" prop="Products_Profit">
+      <el-form-item label="经销商进货折扣" prop="Products_Profit" v-if="stores_type_list.length>0">
         <!-- prodConfig.stores_type_list -->
         <div v-for="(item,index) of stores_type_list" :key="index" style="display:flex;margin-bottom:10px;">
           <div style="width:100px">{{item.type_name}}</div>
@@ -121,7 +128,7 @@
         
       </el-form-item>
 
-      <el-form-item label="会员折扣" prop="Products_Profit">
+      <el-form-item label="会员折扣" prop="Products_Profit" v-if="user_level_list.length>0">
         <!-- prodConfig.stores_type_list -->
         <div v-for="(item,index) of user_level_list" :key="index" style="display:flex;margin-bottom:10px;">
           <div style="width:100px">{{item.level_name}}</div>
@@ -2341,9 +2348,16 @@
           Type_ID: 0,
           Type_Name: "无规格"
         })
-        this.stores_type_list=JSON.parse(JSON.stringify(this.prodConfig.stores_type_list))
+        if(this.prodConfig.stores_type_list.length>0){
+          this.stores_type_list=JSON.parse(JSON.stringify(this.prodConfig.stores_type_list))
 
-        this.user_level_list=JSON.parse(JSON.stringify(this.prodConfig.user_level_list))
+        }
+         if(this.prodConfig.user_level_list.length>0){
+           this.user_level_list=JSON.parse(JSON.stringify(this.prodConfig.user_level_list))
+
+        }
+        
+       
 
 
 
@@ -2432,24 +2446,34 @@
         const productRT = await systemProdDetail({prod_id: id})
         let productInfo = productRT.data
 
-
-        let retailer_feejson=JSON.parse(productInfo.retailer_feejson)
-        let user_discountjson=JSON.parse(productInfo.user_discountjson)
-        for(let retailer in retailer_feejson){
-          for(let it of this.stores_type_list){
-              if(retailer==it.id){
-                it.retailer_fee=retailer_feejson[retailer]
-              }
-          }
+        if(productInfo.retailer_feejson){
+             let retailer_feejson=JSON.parse(productInfo.retailer_feejson)
+          for(let retailer in retailer_feejson){
+                    for(let it of this.stores_type_list){
+                        if(retailer==it.id){
+                          it.retailer_fee=retailer_feejson[retailer]
+                        }
+                    }
+                  }
         }
 
-        for(let discountjson in user_discountjson){
-          for(let it of this.user_level_list){
-              if(discountjson==it.id){
-                it.discount=user_discountjson[discountjson]
+          if(productInfo.user_discountjson){
+
+              let user_discountjson=JSON.parse(productInfo.user_discountjson)
+        
+
+              for(let discountjson in user_discountjson){
+                for(let it of this.user_level_list){
+                    if(discountjson==it.id){
+                      it.discount=user_discountjson[discountjson]
+                    }
+                }
               }
           }
-        }
+
+
+       
+        
 
         
 
@@ -2490,6 +2514,7 @@
 
         select_cate_ids = productInfo.Products_Category;//商品分类
         this.ruleForm.Products_Sales = productInfo.Products_Sales;//虚拟销量
+
         this.ruleForm.Products_PriceY = productInfo.Products_PriceY;//原价
         this.ruleForm.Products_PriceX = productInfo.Products_PriceX;//现价
         this.ruleForm.pintuan_flag = productInfo.pintuan_flag ? true : false;//是否拼团
