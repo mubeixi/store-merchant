@@ -406,7 +406,7 @@
             act : 'get_self_store_prod',
             dataList:[],
             page:4,
-            totalCount:100,
+            totalCount:0,
             pageSize:10,
             is_paginate:true,//是否显示分页 默认显示
             columns : [
@@ -683,6 +683,7 @@
                     this.dataTableOpt.dataList=res.data
                     this.dataTableOpt.totalCount=res.totalCount
                     this.dataTableOpt.columns[oattrIdx].search.option=res.oattrs
+                    console.log(this.dataTableOpt,"dataTableOptdataTableOptdataTableOpt")
                 }
             })
         }
