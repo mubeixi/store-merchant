@@ -698,7 +698,7 @@
           <div class="rightTitle">
             <el-form-item label="" prop="sort" style="margin-bottom: 0px;">
               <el-input v-model="nobi_ratio" style="width: 80px;margin-left: 19px;"></el-input>
-              % <span class="msg">(按照团队最多9级来发放级别差奖励，当下级有和自己同级别身份的就不再发放)</span>
+              % <span class="msg">(按照团队最多9级来发放级别差奖励，所占发放比例的百分比，当下级有和自己同级别身份的发放同级奖，同级奖只发放一次。<span style="color:red">注：同级奖不占此比例，防止超发</span>)</span>
             </el-form-item>
           </div>
         </div>
