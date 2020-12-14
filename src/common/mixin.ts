@@ -22,10 +22,10 @@ export const doLoginMixin = {
     }
 
     if(isDev){
-      Cookies.set('Users_ID', 'fdgj2sfv2d')
+      Cookies.set('Users_ID', 'wkbq6nc2kc')
       Cookies.set('Stores_Bind_User_ID', '213')//为了区分其他的user_id，所以弄了这个代表店铺的user_id
       Cookies.set('Stores_ID', '157')
-      Cookies.set('access_token', '2dhuh9eitdcar9u1a0340nrt05')//手动写hack
+      Cookies.set('access_token', 'sxexw2yi9SrwZPi01f4MjW4QqMFhucrv')//手动写hack
     }
     // if (isDev && !Cookies.get('access_token')) {
     //   let mockLoginAccount = {Account: 'admin', Password: '123456'}
