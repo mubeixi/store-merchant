@@ -2464,7 +2464,8 @@
 
               for(let discountjson in user_discountjson){
                 for(let it of this.user_level_list){
-                    if(discountjson==it.id){
+                  console.log(discountjson,it,"discountjsondiscountjsondiscountjsondiscountjson")
+                    if(discountjson==it.level){
                       it.discount=user_discountjson[discountjson]
                     }
                 }
