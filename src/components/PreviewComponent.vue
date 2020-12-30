@@ -600,7 +600,7 @@ import {trim} from 'vue-resource/src/util';
 
         })
 
-        await this.convert2canvas(el)
+       // await this.convert2canvas(el)
         postData.Skin_Img = this.imgUrl;
 
 
