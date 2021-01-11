@@ -393,7 +393,7 @@
 
 
     sendDialogInstance = {
-      is_need_shipping: 0,
+      is_need_shipping: '0',
       innerVisible: false,
       apply: null,
       idx: null,
